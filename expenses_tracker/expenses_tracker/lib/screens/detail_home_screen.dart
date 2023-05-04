@@ -1,13 +1,12 @@
-import 'dart:convert';
-
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expenses_tracker/screens/transaction_screen.dart';
 import 'package:expenses_tracker/screens/transactions_of_month.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import '../model/transaction.dart';
 import '../model/users.dart';
 import '../utils/const.dart';
@@ -17,9 +16,12 @@ import '../widgets/custom_balance_card.dart';
 import '../widgets/custom_card.dart';
 import '../widgets/custom_header.dart';
 import '../widgets/custom_linear_process_indicator.dart';
+import '../widgets/custom_no_data.dart';
 import '../widgets/custom_textstyle.dart';
 import '../widgets/custom_transaction.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import 'home_screen.dart';
 
 class DetailHomeScreen extends StatefulWidget {
   const DetailHomeScreen({super.key});
@@ -29,11 +31,22 @@ class DetailHomeScreen extends StatefulWidget {
 }
 
 class _DetailHomeScreenState extends State<DetailHomeScreen> {
+  static int needs_percentage = 50;
+  static int wants_percentage = 30;
+  static int saving_percentage = 20;
+
   bool _isloading = false;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   String? wishingtext, curentmonth;
   List<AllTransactionDetails> transactions = [];
   List<AllTransactionDetails> currentMonthtransactions = [];
+  String _savingtext = "";
+  String _needtext = "";
+  String _wanttext = "";
+
+  final TextEditingController _needscontroller = TextEditingController();
+  final TextEditingController _wantscontroller = TextEditingController();
+  final TextEditingController _savingcontroller = TextEditingController();
 
   static double? _userScore = 0.0;
   static String? pf_score;
@@ -230,7 +243,7 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
     }
   }
 
-  static getBalance() {
+  static void getBalance() {
     balance_of_the_month_value =
         (income_of_the_month_value! - spending_of_the_month_value!);
     print(balance_of_the_month_value);
@@ -240,11 +253,11 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
 
     // curentmonthincometransactions[]
     needs_of_the_month_value =
-        (income_for_personal_finance! * 50 / 100) as double?;
+        (income_for_personal_finance! * needs_percentage / 100) as double?;
     wants_of_the_month_value =
-        (income_for_personal_finance! * 30 / 100) as double?;
+        (income_for_personal_finance! * wants_percentage / 100) as double?;
     saving_of_the_month_value =
-        (income_for_personal_finance! * 20 / 100) as double?;
+        (income_for_personal_finance! * saving_percentage / 100) as double?;
 
     getPersonalFinance();
   }
@@ -360,24 +373,22 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
       _userScore = 0.00;
     }
 
-    if(_userScore!<=0){
-      pf_score="Bad";
+    if (_userScore! <= 0) {
+      pf_score = "Bad";
+    } else if (_userScore! >= 1 && _userScore! <= 60) {
+      pf_score = "Good";
+    } else if (_userScore! >= 61 && _userScore! <= 100) {
+      pf_score = "Excellent";
     }
-    else if(_userScore!>=1 && _userScore!<=60){
-      pf_score="Good";
-    }
-    else if(_userScore!>=61 && _userScore! <=100){
-      pf_score="Excellent";
-    }
-    // pf_score = _userScore!.toStringAsFixed(2);
 
     print("Value check: $_savingprogressValue");
     print("Value check: $_needprogressValue");
     print("Value check: $_wantprogressValue");
 
     FirebaseFirestore firestore = FirebaseFirestore.instance;
-    String pf_name = DateFormat('MMM yyyy').format(DateTime.now()).toString();;
-    
+    String pf_name = DateFormat('MMM yyyy').format(DateTime.now()).toString();
+    ;
+
     Timestamp createdAt = Timestamp.now();
     final personal_finance_data = firestore
         .collection('users')
@@ -387,52 +398,113 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
     personal_finance_data.set({
       'uId': userId,
       'incomeForPF': income_for_personal_finance,
-      'balanceLeftOnPF':balance_of_the_month_pf_value,
+      'balanceLeftOnPF': balance_of_the_month_pf_value,
       'needAlocatedAmoount': needs_of_the_month_value,
       'wantAlocatedAmoount': wants_of_the_month_value,
       'savingAlocatedAmoount': saving_of_the_month_value,
-      'expenseOnNeed':expense_needs_of_the_value,
-      'expenseOnWant':expense_wants_of_the_value,
-      'expenseOnSaving':expense_saving_of_the_value,
-      'pfScore':_userScore,
+      'expenseOnNeed': expense_needs_of_the_value,
+      'expenseOnWant': expense_wants_of_the_value,
+      'expenseOnSaving': expense_saving_of_the_value,
+      'pfScore': _userScore,
       'lastUpdated': createdAt
     });
   }
+
+  void loadVariableFromPrefs() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      needs_percentage = prefs.getInt('needs_percent') ?? needs_percentage;
+      wants_percentage = prefs.getInt('wants_percent') ?? wants_percentage;
+      saving_percentage = prefs.getInt('saving_percent') ?? saving_percentage;
+      _needscontroller.text = "$needs_of_the_month_value";
+      _wantscontroller.text = "$wants_of_the_month_value";
+      _savingcontroller.text = "$saving_of_the_month_value";
+    });
+  }
+
+  void saveNeedToPrefs(int need_value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('needs_percent', need_value);
+  }
+
+  void savewantToPrefs(int want_value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('wants_percent', want_value);
+  }
+
+  void saveSavingToPref(int saving_value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    await prefs.setInt('saving_percent', saving_value);
+  }
+
+  var maskFormatter = new MaskTextInputFormatter(
+    mask: '##',
+    filter: {"#": RegExp(r'[0-9]')},
+  );
 
   @override
   void initState() {
     uid = FirebaseAuth.instance.currentUser!.uid;
     wishingtext = getCurrentHour();
     curentmonth = getCurrentMonth();
+
     getSingleUserData();
+    loadVariableFromPrefs();
     getAllTransaction();
-    scheduleNotification(); 
+    scheduleNotification();
+    scheduleWeeklyNotification();
     getBlanceOfMonth();
     super.initState();
   }
 
+  void scheduleWeeklyNotification() async {
+    DateTime now = DateTime.now();
+    int timestamp = now.millisecondsSinceEpoch ~/ 1000;
+
+    await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: timestamp,
+        channelKey: 'high_importance_channel',
+        title: 'Vyaya App',
+        body: 'Check your Expenses of the Week!',
+        notificationLayout: NotificationLayout.BigText,
+      ),
+      schedule: NotificationCalendar(
+        weekday: DateTime.monday,
+        hour: 09,
+        minute: 00,
+        second: 00,
+        millisecond: 0,
+        repeats: true,
+        allowWhileIdle: true,
+      ),
+    );
+  }
+
   void scheduleNotification() async {
-  await AwesomeNotifications().createNotification(
-    content: NotificationContent(
-      id: 0,
-      channelKey: 'scheduled_channel',
-      title: 'Vyaya App',
-      body: 'Don\'t forget to complete your daily tasks!',
-      notificationLayout: NotificationLayout.BigText,
-    ),
-    schedule: NotificationCalendar(
-      weekday: DateTime.thursday,
-      hour: 19,
-      minute: 47,
-      second: 0,
-      millisecond: 0,
-      allowWhileIdle: true,
-    ),
-  );
-}
+    DateTime now = DateTime.now();
+    int timestamp = now.millisecondsSinceEpoch ~/ 1000;
 
+    await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: timestamp,
+        channelKey: 'high_importance_channel',
+        title: 'Vyaya App',
+        body: 'Don\'t forget to enter your daily Expenses!',
+        notificationLayout: NotificationLayout.BigText,
+      ),
+      schedule: NotificationCalendar(
+        hour: 19,
+        minute: 00,
+        second: 00,
+        millisecond: 0,
+        repeats: true,
+        allowWhileIdle: true,
+      ),
+    );
+  }
 
-  
   Future<void> getSingleUserData() async {
     setState(() {
       _isloading = true;
@@ -450,14 +522,14 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
               userIdfrommobile: e['userIdfrommobile'],
               userMobile: e['userMobile'],
               userName: e['userName'],
-              userToken:e['UserToken']))
+              userToken: e['UserToken']))
           .toList();
       setState(() {
         listofUsers = userData;
         username = listofUsers[0].userName;
         initial_of_name = username!.substring(0, 1).toUpperCase();
         userId = listofUsers[0].userIdfrommobile;
-        UserData.CurentUserToken=listofUsers[0].userToken;
+        UserData.CurentUserToken = listofUsers[0].userToken;
         UserData.CurentUserName = listofUsers[0].userName;
         UserData.CurentUserPhone = listofUsers[0].userMobile;
         UserData.CurrentUserEmail = listofUsers[0].Useremail;
@@ -504,7 +576,10 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = MediaQuery.of(context).platformBrightness;
+    bool isDarkMode = brightness == Brightness.dark;
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.primary,
       body: _isloading == true
           ? HomeSkeleton()
           // ? Center(child: CircularProgressIndicator())
@@ -517,13 +592,15 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                       CustomHeader(
                           initial_of_name: initial_of_name,
                           username: username,
-                          wishingtext: wishingtext),
+                          wishingtext: wishingtext,
+                          textColor: Theme.of(context).colorScheme.secondary),
                       const SizedBox(
                         height: 25,
                       ),
                       CustomTextStyle(
                           customtextstyletext: "$curentmonth",
-                          customtextcolor: PrimaryColor.color_black,
+                          customtextcolor:
+                              Theme.of(context).colorScheme.secondary,
                           customtextfontweight: FontWeight.normal,
                           customtextstyle: null,
                           customtextsize: 25.0),
@@ -540,6 +617,7 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                                 color: PrimaryColor.color_red,
                                 size: 32,
                               ),
+                              themecolor: PrimaryColor.color_white,
                               spe_or_inc_month_value:
                                   spending_of_the_month_value,
                               title: "Spending"),
@@ -550,6 +628,7 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                                 color: PrimaryColor.color_bottle_green,
                                 size: 32,
                               ),
+                              themecolor: PrimaryColor.color_white,
                               spe_or_inc_month_value: income_of_the_month_value,
                               title: "Income"),
                         ],
@@ -559,7 +638,10 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                       ),
                       CustomBalanceCard(
                           balance_of_the_month_value:
-                              balance_of_the_month_value),
+                              balance_of_the_month_value,
+                          theme_color: Theme.of(context).cardColor,
+                          text_theme_color:
+                              Theme.of(context).colorScheme.secondary),
                       const SizedBox(
                         height: 10,
                       ),
@@ -570,13 +652,307 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                           children: [
                             CustomTextStyle(
                                 customtextstyletext: "Personal Finance",
-                                customtextcolor: PrimaryColor.color_black,
+                                customtextcolor:
+                                    Theme.of(context).colorScheme.secondary,
                                 customtextfontweight: FontWeight.bold,
                                 customtextstyle: null,
                                 customtextsize: 20),
                             GestureDetector(
                               onTap: () {
+                                _needscontroller.text = "$needs_percentage";
+                                _wantscontroller.text = "$wants_percentage";
+                                _savingcontroller.text = "$saving_percentage";
 
+                                showDialog(
+                                  
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    int needs =
+                                        int.parse(_needscontroller.text);
+                                    int wants =
+                                        int.parse(_wantscontroller.text);
+                                    int saving =
+                                        int.parse(_savingcontroller.text);
+                                    int? finaltotal;
+                                    finaltotal = needs + wants + saving;
+                                    return AlertDialog(
+                                      backgroundColor:
+                                Theme.of(context).colorScheme.primary,
+                                      shape: RoundedRectangleBorder(
+                                side: BorderSide(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondary),
+                                borderRadius: BorderRadius.circular(8)),
+                                      title: CustomTextStyle(
+                                          customtextstyletext:
+                                              "Set Personal Finance",
+                                          customtextcolor: Theme.of(context)
+                                              .colorScheme
+                                              .secondary,
+                                          customtextfontweight:
+                                              FontWeight.normal,
+                                          customtextstyle: null,
+                                          customtextsize: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.025),
+                                      content: Container(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.23,
+                                        child: Column(
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Flexible(
+                                                    child: Text(
+                                                  "Needs:",
+                                                  style: TextStyle(
+                                                      fontSize:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .height *
+                                                              0.020,
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .secondary),
+                                                )),
+                                                SizedBox(
+                                                  width: 10,
+                                                ),
+                                                Flexible(
+                                                  flex: 3,
+                                                  child: TextField(
+                                                    enableInteractiveSelection: false,
+                                                    cursorColor:
+                                                        Theme.of(context)
+                                                            .colorScheme
+                                                            .onPrimary,
+                                                    style: TextStyle(
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .secondary),
+                                                    inputFormatters: [
+                                                      maskFormatter
+                                                    ],
+                                                    keyboardType:
+                                                        TextInputType.phone,
+                                                    controller:
+                                                        _needscontroller,
+                                                    decoration: InputDecoration(
+                                                        focusedBorder:
+                                                            UnderlineInputBorder(
+                                                          borderSide: BorderSide(
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .colorScheme
+                                                                  .onPrimary),
+                                                        ),
+                                                        border:
+                                                            UnderlineInputBorder(
+                                                          borderSide: BorderSide(
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .colorScheme
+                                                                  .secondary),
+                                                        ),
+                                                        hintText:
+                                                            "Set Needs Percentage"),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            Row(
+                                              children: [
+                                                Flexible(
+                                                    child: Text(
+                                                  "Wants:",
+                                                  style: TextStyle(
+                                                      fontSize:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .height *
+                                                                0.020,
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .secondary),
+                                                )),
+                                                SizedBox(
+                                                  width: 10,
+                                                ),
+                                                Flexible(
+                                                  flex: 3,
+                                                  child: TextField(
+                                                    enableInteractiveSelection: false,
+                                                    cursorColor:
+                                                        Theme.of(context)
+                                                            .colorScheme
+                                                            .onPrimary,
+                                                    style: TextStyle(
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .secondary),
+                                                    inputFormatters: [
+                                                      maskFormatter
+                                                    ],
+                                                    keyboardType:
+                                                        TextInputType.phone,
+                                                    controller:
+                                                        _wantscontroller,
+                                                    decoration: InputDecoration(
+                                                        focusedBorder:
+                                                            UnderlineInputBorder(
+                                                          borderSide: BorderSide(
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .colorScheme
+                                                                  .onPrimary),
+                                                        ),
+                                                        border:
+                                                            UnderlineInputBorder(
+                                                          borderSide: BorderSide(
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .colorScheme
+                                                                  .secondary),
+                                                        ),
+                                                        hintText:
+                                                            "Set Wants Percentage"),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            Row(
+                                              children: [
+                                                Flexible(
+                                                    child: Text(
+                                                  "Saving:",
+                                                  style: TextStyle(
+                                                      fontSize:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .height *
+                                                              0.020,
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .secondary),
+                                                )),
+                                                SizedBox(
+                                                  width: 10,
+                                                ),
+                                                Flexible(
+                                                  flex: 3,
+                                                  child: TextField(
+                                                    enableInteractiveSelection: false,
+                                                    style: TextStyle(
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .secondary),
+                                                    cursorColor:
+                                                        Theme.of(context)
+                                                            .colorScheme
+                                                            .onPrimary,
+                                                    keyboardType:
+                                                        TextInputType.phone,
+                                                    inputFormatters: [
+                                                      maskFormatter
+                                                    ],
+                                                    controller:
+                                                        _savingcontroller,
+                                                    decoration: InputDecoration(
+                                                        focusedBorder:
+                                                            UnderlineInputBorder(
+                                                          borderSide: BorderSide(
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .colorScheme
+                                                                  .onPrimary),
+                                                        ),
+                                                        border:
+                                                            UnderlineInputBorder(
+                                                          borderSide: BorderSide(
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .colorScheme
+                                                                  .secondary),
+                                                        ),
+                                                        hintStyle: TextStyle(
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .hintColor),
+                                                        hintText:
+                                                            "Set Saving Percentage"),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              height: 07,
+                                            ),
+                                            finaltotal == 100
+                                                ? Text('')
+                                                : Row(
+                                                    children: [
+                                                      Text(
+                                                        "Please Enter possible values",
+                                                        style: TextStyle(
+                                                            color: PrimaryColor
+                                                                .color_red),
+                                                      ),
+                                                    ],
+                                                  ),
+                                          ],
+                                        ),
+                                      ),
+                                      actions: <Widget>[
+                                        GestureDetector(
+                                            onTap: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: Text(
+                                              "Cancel",
+                                              style: TextStyle(
+                                                  color:
+                                                      PrimaryColor.color_red),
+                                            )),
+                                        SizedBox(
+                                          width: 07,
+                                        ),
+                                        GestureDetector(
+                                            onTap: () {
+                                              needs = int.parse(
+                                                  _needscontroller.text);
+                                              wants = int.parse(
+                                                  _wantscontroller.text);
+                                              saving = int.parse(
+                                                  _savingcontroller.text);
+                                              finaltotal =
+                                                  needs + wants + saving;
+
+                                              if (finaltotal == 100) {
+                                                saveNeedToPrefs(needs);
+                                                savewantToPrefs(wants);
+                                                saveSavingToPref(saving);
+
+                                                Navigator.pushReplacement(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            HomeScreen()));
+                                              } else {}
+                                            },
+                                            child: Text(
+                                              "Save",
+                                              style: TextStyle(
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .onPrimary),
+                                            )),
+                                      ],
+                                    );
+                                  },
+                                );
                               },
                               child: CustomTextStyle(
                                   customtextstyletext: "Set Manually",
@@ -616,16 +992,13 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                                   : MediaQuery.of(context).size.height * 0.30,
                           width: MediaQuery.of(context).size.width,
                           child: Card(
-                            child: balance_of_the_month_pf_value! <= 0
-                                ? Center(
-                                    child: CustomTextStyle(
-                                        customtextstyletext: "No Data",
-                                        customtextcolor: Colors.black38,
-                                        customtextfontweight: FontWeight.bold,
-                                        customtextstyle: null,
-                                        customtextsize:
-                                            MediaQuery.of(context).size.height *
-                                                0.025))
+                            shape: RoundedRectangleBorder(
+                                side:
+                                    BorderSide(color: PrimaryColor.color_white),
+                                borderRadius: BorderRadius.circular(18)),
+                            color: Theme.of(context).cardColor,
+                            child: income_for_personal_finance! <= 0
+                                ? Center(child: CustomNoData())
                                 : Column(
                                     children: [
                                       Row(
@@ -638,7 +1011,8 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                                             child: Text(
                                               'Amount Left',
                                               style: TextStyle(
-                                                color: Colors.black38,
+                                                color:
+                                                    Theme.of(context).hintColor,
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: MediaQuery.of(context)
                                                         .size
@@ -653,7 +1027,8 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                                             child: Text(
                                               'Performance',
                                               style: TextStyle(
-                                                color: Colors.black38,
+                                                color:
+                                                    Theme.of(context).hintColor,
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: MediaQuery.of(context)
                                                         .size
@@ -674,7 +1049,9 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                                             child: Text(
                                               '₹$balance_of_the_month_pf_value',
                                               style: TextStyle(
-                                                color: Colors.black87,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .secondary,
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: MediaQuery.of(context)
                                                         .size
@@ -689,7 +1066,9 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                                             child: Text(
                                               '${pf_score}',
                                               style: TextStyle(
-                                                color: Colors.black87,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .secondary,
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: MediaQuery.of(context)
                                                         .size
@@ -701,9 +1080,11 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                                         ],
                                       ),
                                       Container(
-                                        // height: ,
                                         child: CustomLinearProcessIndicator(
                                             title: "Needs ",
+                                            theme_color: Theme.of(context)
+                                                .colorScheme
+                                                .secondary,
                                             needprogressValue:
                                                 _needprogressValue,
                                             expense_needs_of_the_value:
@@ -715,6 +1096,9 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                                       ),
                                       CustomLinearProcessIndicator(
                                           title: "Wants ",
+                                          theme_color: Theme.of(context)
+                                              .colorScheme
+                                              .secondary,
                                           needprogressValue: _wantprogressValue,
                                           expense_needs_of_the_value:
                                               expense_wants_of_the_value,
@@ -723,6 +1107,9 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                                           color_name: PrimaryColor.color_red),
                                       CustomLinearProcessIndicator(
                                           title: "Saving",
+                                          theme_color: Theme.of(context)
+                                              .colorScheme
+                                              .secondary,
                                           needprogressValue:
                                               _savingprogressValue,
                                           expense_needs_of_the_value:
@@ -741,7 +1128,8 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                           children: [
                             CustomTextStyle(
                                 customtextstyletext: "Recent Transaction",
-                                customtextcolor: PrimaryColor.color_black,
+                                customtextcolor:
+                                    Theme.of(context).colorScheme.secondary,
                                 customtextfontweight: FontWeight.bold,
                                 customtextstyle: null,
                                 customtextsize: 20),
@@ -764,20 +1152,11 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                         ),
                       ),
                       Container(
+                        color: Theme.of(context).colorScheme.primary,
                         height: MediaQuery.of(context).size.height * 0.479,
                         width: MediaQuery.of(context).size.width,
                         child: transactions.length <= 0
-                            ? Center(
-                                child: Text(
-                                  'No Data',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize:
-                                          MediaQuery.of(context).size.height *
-                                              0.025,
-                                      color: Colors.black38),
-                                ),
-                              )
+                            ? Center(child: CustomNoData())
                             : ListView.builder(
                                 physics: NeverScrollableScrollPhysics(),
                                 itemCount: transactions.length,
@@ -793,7 +1172,7 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                                     iconcolor = PrimaryColor.color_red;
                                   }
                                   if (categoryid == 2) {
-                                    iconcolor = PrimaryColor.color_mint_green;
+                                    iconcolor = PrimaryColor.color_bottle_green;
                                   }
 
                                   String datetimeformat =
@@ -810,18 +1189,7 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                                   String transaction_date_string =
                                       "$datestamp $timestamp";
                                   return transactions.length == 0
-                                      ? Center(
-                                          child: Text(
-                                            'No Data',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.025,
-                                                color: Colors.black38),
-                                          ),
-                                        )
+                                      ? Center(child: CustomNoData())
                                       : GestureDetector(
                                           onTap: () {
                                             int? amount = transactions[index]
@@ -859,6 +1227,12 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                                                         )));
                                           },
                                           child: CustomTransaction(
+                                              theme_color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary,
+                                              text_theme: Theme.of(context)
+                                                  .colorScheme
+                                                  .secondary,
                                               icon_color: iconcolor,
                                               categoryid: categoryid,
                                               subcateid: subcateid,

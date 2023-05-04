@@ -6,15 +6,16 @@ import 'package:flutter/material.dart';
 import '../model/category.dart';
 
 class PrimaryColor{
+ 
+
+  static Color color_transperent=const Color(0xff000000);
   static Color color_black= const Color(0xff000000);
-    static Color color_white = const Color(0xffffffff);
+  static Color color_white = const Color(0xffffffff);
 
   static Color color_dark_blue = const Color(0xff443AD8);
   static Color color_neon_green =const Color(0xffCAFCC4);
 
-  static Color color_dark_green =const Color(0xff00ac47);
-  static Color color_mint_green =const Color(0xff007629);
-  static Color color_sea_green =const Color(0xff9adcb2);
+  
   static Color color_bottle_green =const Color(0xff04836B);
   
   static Color color_blue=const Color(0xff2d81f7);

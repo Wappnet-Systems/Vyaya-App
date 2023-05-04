@@ -5,12 +5,44 @@ String? textFormFieldValidator(String? value) {
   return null;
 }
 
+String? numbervalidation(String? value){
+  final number = RegExp(r'^\d{2}$');
+   if (value!.isEmpty || value == null) {
+    return 'Please this field must be filled';
+  } else if (!number.hasMatch(value) || value.length < 2) {
+    return 'Please enter correct value';
+  } else {
+    return null;
+  }
+}
+
+String? nameValidator(String? value){
+  if (value!.isNotEmpty) {
+    if(value.length >20){
+      return 'Please Enter Name Which contain 20 Characters';
+    }
+    else if(value.isEmpty){
+    return 'Please this field must be filled';
+
+    }
+
+    return null;
+  }
+  else if(value!.isEmpty){
+    return 'Please this field must be filled';
+  }
+  else{
+
+  }
+  
+  return null; 
+}
+
 String? noteValidator(String? value){
   if(value!.isNotEmpty){
     if(value.length>=20){
       return 'Trasaction note upto 20 characters';
     }
-
   }
   else{
         return 'Please this field must be filled';

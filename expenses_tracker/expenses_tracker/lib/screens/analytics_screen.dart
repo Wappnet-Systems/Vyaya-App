@@ -48,8 +48,6 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
   static int? balance_of_the_curentpagetransactions_value = 00;
   bool _isloading = false;
 
-  
-
   Future<void> getAllTransaction() async {
     curentpageIncometransactions.clear();
     curentpagespendingtransactions.clear();
@@ -231,7 +229,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
   void updateWeek(int id) {
     if (id == 1) {
       DateTime currentWeek = analytics_weekly ??
-          DateTime.now().subtract(Duration(days: DateTime.now().weekday - 1));
+      DateTime.now().subtract(Duration(days: DateTime.now().weekday - 1));
       DateTime nextWeek = currentWeek.add(Duration(days: 7));
       print('Current week: ${_getWeekRange(currentWeek)}');
       print('Next week: ${_getWeekRange(nextWeek)}');
@@ -357,21 +355,21 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
   @override
   void initState() {
     super.initState();
-        uid = FirebaseAuth.instance.currentUser!.uid;
+    uid = FirebaseAuth.instance.currentUser!.uid;
     analytics_monthly_text = DateFormat.yMMM().format(analytics_monthly!);
     analytics_yearly_text = DateFormat.y().format(analytics_yearly!);
     getWeekDates();
   }
 
-  
-
   @override
   Widget build(BuildContext context) {
+    final brightness = MediaQuery.of(context).platformBrightness;
+    bool isDarkMode = brightness == Brightness.dark;
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.primary,
       body: SingleChildScrollView(
         child: Container(
-                          padding: EdgeInsets.only(left: 10,right: 10,top: 15),
-
+          padding: EdgeInsets.only(left: 10,right: 10,top: 15),
           child: Column(
             children: [
               // Text('Transaction Analysis',style: TextStyle(color: PrimaryColor.color_bottle_green,fontSize: MediaQuery.of(context).size.height*0.03),),
@@ -394,7 +392,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                       side: BorderSide(
                           color: (value == 0)
                               ? PrimaryColor.color_bottle_green
-                              : Colors.black),
+                              : Theme.of(context).colorScheme.secondary),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
@@ -406,7 +404,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                             style: TextStyle(
                               color: (value == 0)
                                   ? PrimaryColor.color_bottle_green
-                                  : Colors.black,
+                                  : Theme.of(context).colorScheme.secondary,
                             ),
                           ),
                           Text(
@@ -414,7 +412,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                             style: TextStyle(
                               color: (value == 0)
                                   ? PrimaryColor.color_bottle_green
-                                  : Colors.black,
+                                  : Theme.of(context).colorScheme.secondary,
                             ),
                           ),
                         ],
@@ -437,7 +435,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                       side: BorderSide(
                           color: (value == 1)
                               ? PrimaryColor.color_bottle_green
-                              : Colors.black),
+                              : Theme.of(context).colorScheme.secondary),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
@@ -449,7 +447,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                             style: TextStyle(
                               color: (value == 1)
                                   ? PrimaryColor.color_bottle_green
-                                  : Colors.black,
+                                  : Theme.of(context).colorScheme.secondary,
                             ),
                           ),
                           Text(
@@ -457,7 +455,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                             style: TextStyle(
                               color: (value == 1)
                                   ? PrimaryColor.color_bottle_green
-                                  : Colors.black,
+                                  : Theme.of(context).colorScheme.secondary,
                             ),
                           ),
                         ],
@@ -480,7 +478,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                       side: BorderSide(
                           color: (value == 2)
                               ? PrimaryColor.color_bottle_green
-                              : Colors.black),
+                              : Theme.of(context).colorScheme.secondary),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
@@ -492,7 +490,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                             style: TextStyle(
                               color: (value == 2)
                                   ? PrimaryColor.color_bottle_green
-                                  : Colors.black,
+                                  : Theme.of(context).colorScheme.secondary,
                             ),
                           ),
                           Text(
@@ -500,7 +498,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                             style: TextStyle(
                               color: (value == 2)
                                   ? PrimaryColor.color_bottle_green
-                                  : Colors.black,
+                                  : Theme.of(context).colorScheme.secondary,
                             ),
                           ),
                         ],
@@ -535,6 +533,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                       ? Text(
                           "$analytics_start_week_text",
                           style: TextStyle(
+                            color: Theme.of(context).colorScheme.secondary,
                               fontSize:
                                   MediaQuery.of(context).size.height * 0.023),
                         )
@@ -543,6 +542,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                               ? Text(
                                   '$analytics_monthly_text',
                                   style: TextStyle(
+                                    color: Theme.of(context).colorScheme.secondary,
                                       fontSize:
                                           MediaQuery.of(context).size.height *
                                               0.023),
@@ -550,6 +550,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                               : Text(
                                   '$analytics_yearly_text',
                                   style: TextStyle(
+                                    color: Theme.of(context).colorScheme.secondary,
                                       fontSize:
                                           MediaQuery.of(context).size.height *
                                               0.023),
@@ -684,20 +685,22 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                     height: MediaQuery.of(context).size.height * 0.05,
                     width: MediaQuery.of(context).size.width * 0.45,
                     child: Card(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20)),
+                      color: Theme.of(context).colorScheme.primary,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18),side: BorderSide(color: Theme.of(context).colorScheme.secondary)),
+                
+                      
                       child: Center(
                           child: balance_of_the_curentpagetransactions_value! > 0 ?CustomTextStyle(
                                       customtextstyletext:
                                           "Balance: ₹${balance_of_the_curentpagetransactions_value}",
-                                      customtextcolor: PrimaryColor.color_black,
+                                      customtextcolor: Theme.of(context).colorScheme.secondary,
                                       customtextfontweight: FontWeight.normal,
                                       customtextstyle: null,
                                       customtextsize: 15.0)
                                   :CustomTextStyle(
                                       customtextstyletext:
                                           "Balance: - ₹${balance_of_the_curentpagetransactions_value?.abs()}",
-                                      customtextcolor: PrimaryColor.color_black,
+                                      customtextcolor: Theme.of(context).colorScheme.secondary,
                                       customtextfontweight: FontWeight.normal,
                                       customtextstyle: null,
                                       customtextsize: 15.0)),
@@ -714,7 +717,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                     Text(
                       'Category-wise Spending',
                       style: TextStyle(
-                          color: PrimaryColor.color_black,
+                          color: Theme.of(context).colorScheme.secondary,
                           fontSize: MediaQuery.of(context).size.height * 0.024,
                           fontWeight: FontWeight.bold),
                     ),
@@ -722,10 +725,12 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 ),
               ),
               Card(
+                color: Theme.of(context).colorScheme.primary,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18),side: BorderSide(color: Theme.of(context).colorScheme.secondary)),
                 child: Container(
                   height: MediaQuery.of(context).size.height * 0.30,
                   child: 
-                  curentpagespendingtransactions.length==0 ?Center(child: Text('No Data',style: TextStyle(fontWeight: FontWeight.bold,fontSize: MediaQuery.of(context).size.height*0.025,color: Colors.black38),),)
+                  curentpagespendingtransactions.length==0 ?Center(child: Text('No Data',style: TextStyle(fontWeight: FontWeight.bold,fontSize: MediaQuery.of(context).size.height*0.025,color: Theme.of(context).hintColor),),)
                       :SfCircularChart(series: <CircularSeries>[
                     PieSeries<AllTransactionDetails, String>(
                         dataSource: curentpagespendingtransactions,
@@ -737,6 +742,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                             data.transactionnote!+ '\n' + (data.transactionAmount).toString() as String,
                         radius: '55%',
                         dataLabelSettings: DataLabelSettings(
+                          textStyle: TextStyle(color:Theme.of(context).hintColor),
                             isVisible: true,
                             margin: EdgeInsets.zero,
                             labelIntersectAction: LabelIntersectAction.none,
@@ -759,7 +765,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                     Text(
                       'Category-wise Income',
                       style: TextStyle(
-                          color: PrimaryColor.color_black,
+                          color: Theme.of(context).colorScheme.secondary,
                           fontSize: MediaQuery.of(context).size.height * 0.024,
                           fontWeight: FontWeight.bold),
                     ),
@@ -767,10 +773,12 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 ),
               ),
               Card(
+                color: Theme.of(context).colorScheme.primary,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18),side: BorderSide(color: Theme.of(context).colorScheme.secondary)),
                 child: Container(
                   height: MediaQuery.of(context).size.height * 0.30,
                   child: 
-                      curentpageIncometransactions.length==0 ?Center(child: Text('No Data',style: TextStyle(fontWeight: FontWeight.bold,fontSize: MediaQuery.of(context).size.height*0.025,color: Colors.black38),),)
+                      curentpageIncometransactions.length==0 ?Center(child: Text('No Data',style: TextStyle(fontWeight: FontWeight.bold,fontSize: MediaQuery.of(context).size.height*0.025,color: Theme.of(context).hintColor),),)
                       :SfCircularChart(series: <CircularSeries>[
                         PieSeries<AllTransactionDetails, String>(
                             dataSource: curentpageIncometransactions,
@@ -782,6 +790,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                             data.transactionnote!+ '\n' + (data.transactionAmount).toString() as String,
                             radius: '55%',
                             dataLabelSettings: DataLabelSettings(
+                                textStyle: TextStyle(color:Theme.of(context).hintColor),
+
                                 isVisible: true,
                                 margin: EdgeInsets.zero,
                                 labelIntersectAction: LabelIntersectAction.none,
@@ -795,8 +805,6 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                     
                 ),
               ),
-        
-              
               SizedBox(
                 height: 10,
               ),
@@ -807,6 +815,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                     Text(
                       'Stats',
                       style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary,
                         fontSize: MediaQuery.of(context).size.height * 0.024,
                         fontWeight: FontWeight.bold,
                       ),
@@ -817,9 +826,11 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
               ),
         
               Container(
-                height: MediaQuery.of(context).size.height * 0.205,
+                height: MediaQuery.of(context).size.height * 0.150,
                 width: MediaQuery.of(context).size.width,
                 child: Card(
+                  color: Theme.of(context).colorScheme.primary,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18),side: BorderSide(color:Theme.of(context).colorScheme.secondary,)),
                   child: Padding(
                     padding: const EdgeInsets.all(15.0),
                     child: Column(
@@ -831,39 +842,27 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                               'Number of Transaction',
                               style: TextStyle(
                                   fontSize:
-                                      MediaQuery.of(context).size.height * 0.022,color: Colors.black45),
+                                      MediaQuery.of(context).size.height * 0.022,color:Theme.of(context).hintColor),
                             ),
                             Text(
                               '$len_of_all_transactions',
                               style: TextStyle(
                                   fontSize:
-                                      MediaQuery.of(context).size.height * 0.022,color: Colors.black45),
+                                      MediaQuery.of(context).size.height * 0.022,color:Theme.of(context).hintColor),
                             )
                           ],
                         ),
-                        // SizedBox(
-                        //   height: ,
-                        // ),
-                        Row(
-                          children: [
-                            Text(
-                              'Average Income',
-                              style: TextStyle(
-                                  fontSize:
-                                      MediaQuery.of(context).size.height * 0.022,color: Colors.black45),
-                            ),
-                          ],
-                        ),
+                        
                         Container(
                           padding: EdgeInsets.fromLTRB(20, 0, 0, 5),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                'Per Transaction',
+                                'Average Income',
                                 style: TextStyle(
                                     fontSize: MediaQuery.of(context).size.height *
-                                        0.020,color: Colors.black45),
+                                        0.020,color:Theme.of(context).hintColor),
                               ),
                               average_income!.isNaN
                                   ? Text(
@@ -871,27 +870,17 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                       style: TextStyle(
                                           fontSize:
                                               MediaQuery.of(context).size.height *
-                                                  0.020,color: Colors.black45),
+                                                  0.020,color:Theme.of(context).hintColor),
                                     )
                                   : Text(
                                       '₹$average_income',
                                       style: TextStyle(
                                           fontSize:
                                               MediaQuery.of(context).size.height *
-                                                  0.020,color: Colors.black45),
+                                                  0.020,color:Theme.of(context).hintColor),
                                     ),
                             ],
                           ),
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              'Average Spending',
-                              style: TextStyle(
-                                  fontSize:
-                                      MediaQuery.of(context).size.height * 0.022,color: Colors.black45),
-                            ),
-                          ],
                         ),
                         Container(
                           padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
@@ -899,10 +888,10 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                'Per Transaction',
+                                'Average Spending',
                                 style: TextStyle(
                                     fontSize: MediaQuery.of(context).size.height *
-                                        0.020,color: Colors.black45),
+                                        0.020,color:Theme.of(context).hintColor),
                               ),
                               average_spending!.isNaN
                                   ? Text(
@@ -910,14 +899,14 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                       style: TextStyle(
                                           fontSize:
                                               MediaQuery.of(context).size.height *
-                                                  0.020),
+                                                  0.020,color:Theme.of(context).hintColor),
                                     )
                                   : Text(
                                       '₹$average_spending',
                                       style: TextStyle(
                                           fontSize:
                                               MediaQuery.of(context).size.height *
-                                                  0.020,color: Colors.black45),
+                                                  0.020,color:Theme.of(context).hintColor),
                                     )
                             ],
                           ),

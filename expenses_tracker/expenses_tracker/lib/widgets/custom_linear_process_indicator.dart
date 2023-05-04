@@ -7,7 +7,7 @@ class CustomLinearProcessIndicator extends StatelessWidget {
   final double? needs_of_the_month_value;
   final double? expense_needs_of_the_value;
   final double? needprogressValue;
-  final Color? color_name;
+  final Color? color_name,theme_color;
   final String? title;
   CustomLinearProcessIndicator(
       {super.key,
@@ -15,7 +15,7 @@ class CustomLinearProcessIndicator extends StatelessWidget {
       required this.needprogressValue,
       required this.expense_needs_of_the_value,
       required this.needs_of_the_month_value,
-      required this.color_name});
+      required this.color_name,required this.theme_color});
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +31,7 @@ class CustomLinearProcessIndicator extends StatelessWidget {
             children: [
               CustomTextStyle(
                   customtextstyletext: "$title",
-                  customtextcolor: Colors.black38,
+                  customtextcolor: theme_color,
                   customtextfontweight: FontWeight.bold,
                   customtextstyle: null,
                   customtextsize: MediaQuery.of(context).size.height * 0.021),

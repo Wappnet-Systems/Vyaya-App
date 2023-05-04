@@ -23,30 +23,29 @@ class CustomTextFormField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       keyboardType: textInputType,
-      style: TextStyle(color: Color(0xff000000)),
+      style: TextStyle(color: Theme.of(context).colorScheme.secondary),
       obscureText: !customobscuretext,
-      cursorColor: Color(0xff000000),
+      enableInteractiveSelection: false,
+      cursorColor: Theme.of(context).colorScheme.onPrimary,
       controller: textEditingController,
-      // readOnly: readOnly!,
       decoration: InputDecoration(
-        border: OutlineInputBorder(
-          borderSide: BorderSide(color: Color(0xff000000)),
+      border: OutlineInputBorder(
+      borderSide: BorderSide(color:Theme.of(context).hintColor),
           borderRadius: BorderRadius.vertical(),
         ),
         focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Color(0xff000000)),
+            borderSide: BorderSide(color:Theme.of(context).colorScheme.onPrimary),
           borderRadius: BorderRadius.vertical(),
         ),
         contentPadding: EdgeInsets.symmetric(horizontal: 13, vertical: 12),
         hintText: texteditinghinttext,
         hintStyle: TextStyle(
-          color: Color(0xff000000),
+          color: Theme.of(context).hintColor,
           fontWeight: FontWeight.w400,
           fontSize: 12,
         ),
         prefixIcon: customprefixicon,
         suffixIcon: custominkwell,
-        
       ),
       validator: validationfunction,
     );

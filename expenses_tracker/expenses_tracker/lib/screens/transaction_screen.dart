@@ -50,8 +50,6 @@ class _TransactionScreenState extends State<TransactionScreen> {
   GlobalKey<FormState> transactionFormGloblaKey = GlobalKey<FormState>();
 
   FirebaseFirestore firestore = FirebaseFirestore.instance;
-  // CollectionReference tranactions =
-  //     FirebaseFirestore.instance.collection('transaction');
 
   DateTime _dateTime = DateTime.now();
 
@@ -61,6 +59,58 @@ class _TransactionScreenState extends State<TransactionScreen> {
   int? categoryindex;
   int? personal_finaance_cetegory;
   bool _isChecked = true;
+
+  void updateTransaction() {
+    if (transactionFormGloblaKey.currentState!.validate()) {
+      String dateonly = _setdateController.text.substring(0, 12);
+      String timeonly = _setdateController.text.substring(13, 21);
+      
+      DateTime _dateTime =
+          DateFormat('MMM d, yyyy h:mm a').parse("$dateonly $timeonly");
+
+      DateTime currentdatetime = DateTime.now();
+      print(widget.transactionId);
+
+      if (value == 1) {
+        if (_isChecked == true) {
+          categoryindex = 3;
+        } else if (_isChecked == false) {
+          categoryindex = 0;
+        }
+      }
+      Timestamp timestamp = Timestamp.fromDate(_dateTime);
+      Timestamp currenttimestamp = Timestamp.fromDate(currentdatetime);
+
+      transactionnote = _noteController.text;
+
+      transactionamount = _amountController.text;
+      int amountOfmoney = int.parse(transactionamount!);
+      String tID = widget.transactionId.toString();
+      transactionpaymentmode = 'Cash';
+
+      final transactionRef = firestore
+          .collection('users')
+          .doc(userid)
+          .collection('transaction')
+          .doc(tID);
+
+      transactionRef.set({
+        'uId': userid,
+        'tID': tID,
+        'transactionCategory': categoryindex,
+        'transactionsubcategory': subcategory,
+        'transactionsubcategoryindex': subcategoryindex,
+        'transactionDate': timestamp,
+        'transactionAmount': amountOfmoney,
+        'transactionpaymentmode': transactionpaymentmode,
+        'transactionnote': transactionnote,
+        'transactionCreatedAt': currenttimestamp
+      });
+
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: ((context) => HomeScreen())));
+    }
+  }
 
   void addTransaction() {
     if (transactionFormGloblaKey.currentState!.validate()) {
@@ -73,22 +123,20 @@ class _TransactionScreenState extends State<TransactionScreen> {
       print(_dateTime);
 
       DateTime currentdatetime = DateTime.now();
-      
-      if(value==1){
-        if(_isChecked==true){
-                    categoryindex = 3;
-        }
-        else if(_isChecked==false){
-                    categoryindex = 0;
-        }
 
+      if (value == 1) {
+        if (_isChecked == true) {
+          categoryindex = 3;
+        } else if (_isChecked == false) {
+          categoryindex = 0;
+        }
       }
-      
+
       final transactionRef = firestore
           .collection('users')
           .doc(userid)
           .collection('transaction')
-          .doc();
+          .doc(widget.transactionId);
 
       transactioncategory = "Expenses";
       transactiondate = _dateTime.toString();
@@ -129,11 +177,53 @@ class _TransactionScreenState extends State<TransactionScreen> {
       initialDate: _dateTime,
       firstDate: DateTime(2023),
       lastDate: DateTime.now(),
+      builder: (context, child) {
+          return Theme(
+              
+            data: Theme.of(context).copyWith(
+              colorScheme: ColorScheme.light(
+                
+                primary: Theme.of(context).colorScheme.onPrimary,
+                onPrimary: Theme.of(context).colorScheme.primary,
+                onSurface: PrimaryColor.color_black,
+              ),
+              primaryTextTheme: TextTheme(),
+              textButtonTheme: TextButtonThemeData(
+                style: TextButton.styleFrom(
+                  primary: PrimaryColor.color_bottle_green,
+                ),
+              ),
+              hintColor: Colors.black38
+            ),
+            child: child!,
+          );
+        }
     );
     if (picked != null) {
       final time = await showTimePicker(
         context: context,
         initialTime: TimeOfDay.fromDateTime(_dateTime),
+        builder: (context, child) {
+          return Theme(
+              
+            data: Theme.of(context).copyWith(
+              colorScheme: ColorScheme.light(
+                
+                primary: Theme.of(context).colorScheme.onPrimary,
+                onPrimary: Theme.of(context).colorScheme.primary,
+                onSurface: PrimaryColor.color_black,
+              ),
+              primaryTextTheme: TextTheme(),
+              textButtonTheme: TextButtonThemeData(
+                style: TextButton.styleFrom(
+                  primary: PrimaryColor.color_bottle_green,
+                ),
+              ),
+              hintColor: Colors.black38
+            ),
+            child: child!,
+          );
+        }
       );
       if (time != null) {
         setState(() {
@@ -156,14 +246,6 @@ class _TransactionScreenState extends State<TransactionScreen> {
   @override
   void initState() {
     super.initState();
-
-    // if(widget.id==2){
-    //   _dateTime=widget.trasactionDate.toString();
-    //   _amountController.text=widget.transactionAmount.toString();
-    //   _noteController.text=widget.transactionNote.toString();
-    // // }
-    // uid = FirebaseAuth.instance.currentUser!.uid;
-
     if (widget.id == 1) {
       userid = FirebaseAuth.instance.currentUser!.uid;
       _setdateController.text =
@@ -183,12 +265,15 @@ class _TransactionScreenState extends State<TransactionScreen> {
       subcategory = 0;
       personal_finaance_cetegory = 1;
     } else {
+      print(widget.transactionCategory);
+      userid = FirebaseAuth.instance.currentUser!.uid;
       _amountController.text = widget.transactionAmount.toString();
       _noteController.text = widget.transactionNote.toString();
       _paymentModeController.text = "Cash";
       _setdateController.text = widget.trasactionDate!;
       subcategory = widget.tranactionsSubCategory;
       personal_finaance_cetegory = 1;
+      categoryindex = widget.transactionCategory;
       if (widget.transactionCategory == 1) {
         value = widget.transactionCategory! - 1;
         _incomecategoryController.text = ListOfAppData
@@ -196,7 +281,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
         prefixIcon = ListOfAppData
             .listOfCategory[widget.tranactionsSubCategoryindex!].categoryIcon;
       } else {
-        value = widget.transactionCategory! + 1;
+        value = widget.transactionCategory! - 2;
         _expensescategoryController.text = ListOfAppData
             .listofIncome[widget.tranactionsSubCategoryindex!].categoryText!;
         prefixIcon = ListOfAppData
@@ -209,6 +294,8 @@ class _TransactionScreenState extends State<TransactionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.primary,
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         iconTheme: IconThemeData(color: PrimaryColor.color_white),
         title: widget.id == 1
@@ -242,15 +329,15 @@ class _TransactionScreenState extends State<TransactionScreen> {
                           borderRadius: BorderRadius.circular(10)),
                       side: BorderSide(
                           color: (value == 0)
-                              ? PrimaryColor.color_bottle_green
-                              : Colors.black),
+                              ? Theme.of(context).colorScheme.onPrimary
+                              : Theme.of(context).colorScheme.secondary),
                     ),
                     child: Text(
                       "Expenses",
                       style: TextStyle(
                         color: (value == 0)
-                            ? PrimaryColor.color_bottle_green
-                            : Colors.black,
+                            ? Theme.of(context).colorScheme.onPrimary
+                            : Theme.of(context).colorScheme.secondary,
                       ),
                     ),
                   ),
@@ -268,15 +355,15 @@ class _TransactionScreenState extends State<TransactionScreen> {
                           borderRadius: BorderRadius.circular(10)),
                       side: BorderSide(
                           color: (value == 1)
-                              ? PrimaryColor.color_bottle_green
-                              : Colors.black),
+                              ? Theme.of(context).colorScheme.onPrimary
+                              : Theme.of(context).colorScheme.secondary),
                     ),
                     child: Text(
                       "Income",
                       style: TextStyle(
                         color: (value == 1)
-                            ? PrimaryColor.color_bottle_green
-                            : Colors.black,
+                            ? Theme.of(context).colorScheme.onPrimary
+                            : Theme.of(context).colorScheme.secondary,
                       ),
                     ),
                   ),
@@ -294,15 +381,15 @@ class _TransactionScreenState extends State<TransactionScreen> {
                           borderRadius: BorderRadius.circular(10)),
                       side: BorderSide(
                           color: (value == 2)
-                              ? PrimaryColor.color_bottle_green
-                              : Colors.black),
+                              ? Theme.of(context).colorScheme.onPrimary
+                              : Theme.of(context).colorScheme.secondary),
                     ),
                     child: Text(
                       "Transfer",
                       style: TextStyle(
                         color: (value == 2)
-                            ? PrimaryColor.color_bottle_green
-                            : Colors.black,
+                            ? Theme.of(context).colorScheme.onPrimary
+                            : Theme.of(context).colorScheme.secondary,
                       ),
                     ),
                   ),
@@ -341,13 +428,30 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                   },
                                   controller: _setdateController,
                                   validator: textFormFieldValidator,
+                                  style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                                   decoration: InputDecoration(
-                                      hintText: "Enter Date",
-                                      prefixIconConstraints:
-                                          BoxConstraints.tightFor(
-                                              height: 05, width: 35)),
+                                    hintStyle: TextStyle(color: Theme.of(context).hintColor),
+                                    hintText: "Enter Date",
+                                    prefixIconConstraints:
+                                        BoxConstraints.tightFor(
+                                            height: 05, width: 35),
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary, // Change this to your desired border color
+                                      ),
+                                    ),
+                                    focusedBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onPrimary, // Change this to your desired border color
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                              ),
+                              )
                             ],
                           ),
                           SizedBox(
@@ -373,13 +477,31 @@ class _TransactionScreenState extends State<TransactionScreen> {
                               Flexible(
                                 child: TextFormField(
                                   keyboardType: TextInputType.number,
+                                  cursorColor: Theme.of(context).colorScheme.onPrimary,
+                                  style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                                  enableInteractiveSelection: false,
                                   controller: _amountController,
                                   validator: amountvalidator,
                                   decoration: InputDecoration(
-                                      hintText: "Enter Amount",
-                                      prefixIconConstraints:
-                                          BoxConstraints.tightFor(
-                                              height: 05, width: 35)),
+                                    hintText: "Enter Amount",
+                                    prefixIconConstraints:
+                                        BoxConstraints.tightFor(
+                                            height: 05, width: 35),
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary, // Change this to your desired border color
+                                      ),
+                                    ),
+                                    focusedBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onPrimary, // Change this to your desired border color
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ),
                             ],
@@ -408,22 +530,41 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                           children: [
                                             Container(
                                               child: TextFormField(
-                                                validator: textFormFieldValidator,
+                                                validator:
+                                                    textFormFieldValidator,
                                                 onTap: () {
                                                   navigate(context, 0);
                                                 },
                                                 readOnly: true,
                                                 controller:
                                                     _expensescategoryController,
+                                                    style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                                                 decoration: InputDecoration(
-                                                    suffixIcon:
-                                                        Icon(Icons.chevron_right),
-                                                    prefixIconConstraints:
-                                                        BoxConstraints.tightFor(
-                                                            height: 05, width: 35)),
+                                                  suffixIcon:
+                                                      Icon(Icons.chevron_right),
+                                                  prefixIconConstraints:
+                                                      BoxConstraints.tightFor(
+                                                          height: 05,
+                                                          width: 35),
+                                                  enabledBorder:
+                                                      UnderlineInputBorder(
+                                                    borderSide: BorderSide(
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .secondary, // Change this to your desired border color
+                                                    ),
+                                                  ),
+                                                  focusedBorder:
+                                                      UnderlineInputBorder(
+                                                    borderSide: BorderSide(
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .onPrimary, // Change this to your desired border color
+                                                    ),
+                                                  ),
+                                                ),
                                               ),
                                             ),
-                                            
                                           ],
                                         ),
                                       ),
@@ -442,21 +583,37 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                             readOnly: true,
                                             controller:
                                                 _incomecategoryController,
+                                                style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                                             decoration: InputDecoration(
-                                                suffixIcon:
-                                                    Icon(Icons.chevron_right),
-                                                prefixIconConstraints:
-                                                    BoxConstraints.tightFor(
-                                                        height: 05,
-                                                        width: 35)),
+                                              suffixIcon:
+                                                  Icon(Icons.chevron_right),
+                                              prefixIconConstraints:
+                                                  BoxConstraints.tightFor(
+                                                      height: 05, width: 35),
+                                              enabledBorder:
+                                                  UnderlineInputBorder(
+                                                borderSide: BorderSide(
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .secondary, // Change this to your desired border color
+                                                ),
+                                              ),
+                                              focusedBorder:
+                                                  UnderlineInputBorder(
+                                                borderSide: BorderSide(
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .onPrimary, // Change this to your desired border color
+                                                ),
+                                              ),
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ),
                             ],
                           ),
-      
-                          
+
                           SizedBox(
                             height: 10,
                           ),
@@ -484,48 +641,84 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                   child: Container(
                                     child: TextFormField(
                                       readOnly: true,
+                                      style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                                       validator: textFormFieldValidator,
                                       keyboardType: TextInputType.number,
                                       controller: _paymentModeController,
                                       decoration: InputDecoration(
-                                          suffixIcon: Icon(Icons.chevron_right),
-                                          prefixIconConstraints:
-                                              BoxConstraints.tightFor(
-                                                  height: 05, width: 35)),
+                                        suffixIcon: Icon(Icons.chevron_right),
+                                        prefixIconConstraints:
+                                            BoxConstraints.tightFor(
+                                                height: 05, width: 35),
+                                        enabledBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .secondary, 
+                                          ),
+                                        ),
+                                        focusedBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onPrimary, 
+                                          ),
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
                             ],
                           ),
-                          value==1 ?Row(
-                            children: [
-                                                Checkbox(
-                                                  value: _isChecked,
-                                                  onChanged: (bool? newValue) {
-                                                      _isChecked = newValue!;
-                                                      print("_isChecked : $_isChecked");
-                                                    
-                                                    setState(() {
-                                                      
-                                                    });
-                                                  },
-                                                ),
-                                                const Text(
-                                                    'Add to Personal Finance Portion'),
-                                              ],
-                                            )
-                                            :SizedBox(height: 0,),
-      
+                          value == 1
+                              ? Padding(
+                                padding: const EdgeInsets.only(top :8.0,left: 8.0),
+                                child: Row(
+                                    children: [
+                                      Container(
+                                        height: MediaQuery.of(context).size.height*0.025,
+                                        width: MediaQuery.of(context).size.width*0.056,
+                                        decoration: BoxDecoration(
+                                  border: _isChecked
+                                      ? Border.all(
+                                        
+                                          color: Theme.of(context).colorScheme.secondary, // Change this to your desired border color
+                                        )
+                                      : null,
+                                ),
+                                
+                                        child: Checkbox(
+                                          shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.secondary),),
+                                          side: BorderSide(color: Theme.of(context).colorScheme.secondary),
+                                          checkColor: Theme.of(context).colorScheme.secondary,
+                                          value: _isChecked,
+                                          onChanged: (bool? newValue) {
+                                            _isChecked = newValue!;
+                                            print("_isChecked : $_isChecked");
+                                      
+                                            setState(() {});
+                                          },
+                                        ),
+                                      ),
+                                      SizedBox(width: 8.0,),
+                                      Text(
+                                          'Add to Personal Finance Portion',style: TextStyle(color: Theme.of(context).colorScheme.secondary),),
+                                    ],
+                                  ),
+                              )
+                              : SizedBox(
+                                  height: 0,
+                                ),
+
                           SizedBox(
                             height: 20,
                           ),
-                          // Divider(color: PrimaryColor.color_bottle_green,),
                           Row(
                             children: [
                               CustomTextStyle(
                                   customtextstyletext: "Other Details",
-                                  customtextcolor: Colors.black,
+                                  customtextcolor: Theme.of(context).colorScheme.secondary,
                                   customtextfontweight: FontWeight.bold,
                                   customtextstyle: null,
                                   customtextsize: 18.00),
@@ -550,14 +743,32 @@ class _TransactionScreenState extends State<TransactionScreen> {
                               Flexible(
                                 child: TextFormField(
                                   readOnly: false,
+                                  cursorColor: Theme.of(context).colorScheme.onPrimary,
+                                  style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                                   keyboardType: TextInputType.text,
                                   validator: noteValidator,
+                                  enableInteractiveSelection: false,
                                   controller: _noteController,
                                   decoration: InputDecoration(
-                                      hintText: "Note",
-                                      prefixIconConstraints:
-                                          BoxConstraints.tightFor(
-                                              height: 05, width: 35)),
+                                    hintText: "Note",
+                                    prefixIconConstraints:
+                                        BoxConstraints.tightFor(
+                                            height: 05, width: 35),
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary, 
+                                      ),
+                                    ),
+                                    focusedBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onPrimary, 
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ),
                             ],
@@ -569,13 +780,21 @@ class _TransactionScreenState extends State<TransactionScreen> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-          backgroundColor: PrimaryColor.color_bottle_green,
-          child: Icon(
-            Icons.save,
-            color: PrimaryColor.color_white,
-          ),
-          onPressed: addTransaction),
+      floatingActionButton: widget.id == 1
+          ? FloatingActionButton(
+              backgroundColor: PrimaryColor.color_bottle_green,
+              child: Icon(
+                Icons.save,
+                color: PrimaryColor.color_white,
+              ),
+              onPressed: addTransaction)
+          : FloatingActionButton(
+              backgroundColor: PrimaryColor.color_bottle_green,
+              child: Icon(
+                Icons.save,
+                color: PrimaryColor.color_white,
+              ),
+              onPressed: updateTransaction),
     );
   }
 
@@ -606,7 +825,6 @@ class _TransactionScreenState extends State<TransactionScreen> {
         //             categoryindex = 0;
 
         // }
-        
       } else if (id == 1) {
         _incomecategoryController.text =
             ListOfAppData.listOfCategory[index].categoryText!;

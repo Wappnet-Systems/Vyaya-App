@@ -6,12 +6,13 @@ import 'custom_textstyle.dart';
 class CustomCard extends StatelessWidget {
   final int? spe_or_inc_month_value;
   final Icon? icon;
-  final Color? color;
+  final Color? color,themecolor;
   final String? title;
-  CustomCard({super.key,required this.color,required this.icon,required this.spe_or_inc_month_value,required this.title});
+  CustomCard({super.key,required this.color,required this.icon,required this.spe_or_inc_month_value,required this.title,required this.themecolor});
 
   @override
   Widget build(BuildContext context) {
+
     return Card(
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20)),
@@ -28,7 +29,7 @@ class CustomCard extends StatelessWidget {
                                         shape: RoundedRectangleBorder(
                                             borderRadius:
                                                 BorderRadius.circular(60)),
-                                        color: PrimaryColor.color_white,
+                                        color: themecolor,
                                         child: Container(
                                           width: MediaQuery.of(context)
                                                   .size
@@ -50,7 +51,7 @@ class CustomCard extends StatelessWidget {
                                         CustomTextStyle(
                                             customtextstyletext: "$title",
                                             customtextcolor:
-                                                PrimaryColor.color_white,
+                                              themecolor,
                                             customtextfontweight:
                                                 FontWeight.normal,
                                             customtextstyle: null,
@@ -59,7 +60,7 @@ class CustomCard extends StatelessWidget {
                                             customtextstyletext:
                                                 "₹${spe_or_inc_month_value}",
                                             customtextcolor:
-                                                PrimaryColor.color_white,
+                                                themecolor,
                                             customtextfontweight:
                                                 FontWeight.bold,
                                             customtextstyle: null,

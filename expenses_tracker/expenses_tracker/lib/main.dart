@@ -1,60 +1,67 @@
+import 'package:expenses_tracker/provider/theme_provider.dart';
 import 'package:expenses_tracker/screens/splash_screen.dart';
+import 'package:expenses_tracker/services/notification_services.dart';
+import 'package:expenses_tracker/services/theme_manager.dart';
 import 'package:expenses_tracker/utils/const.dart';
-import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 Future<void> _firebaseMessangingBackgroundHandler(RemoteMessage message)async{
   print('Handling Background Notification message ${message.messageId}');
 }
 
+
 Future main() async{
   WidgetsFlutterBinding.ensureInitialized();
 
    await Firebase.initializeApp();
-   AwesomeNotifications().initialize(
-    'resource://drawable/res_app_icon',
-    [
-      NotificationChannel(
-        channelKey: 'scheduled_channel',
-        channelName: 'Scheduled Notifications',
-        channelDescription: 'Notifications scheduled at 9 pm',
-        defaultColor: Color(0xFF9D50DD),
-        ledColor: Colors.white,
-        importance: NotificationImportance.High,
-        vibrationPattern: highVibrationPattern,
-      ),
-    ],
-  );
-
+   await NotificationService.initializeNotification();
    await FirebaseMessaging.instance.getInitialMessage();
-   FirebaseMessaging.onBackgroundMessage(_firebaseMessangingBackgroundHandler);
-   final Future<void> firebase_app_check= FirebaseAppCheck.instance.activate(
-    webRecaptchaSiteKey: 'recaptcha-v3-site-key',
-    androidProvider: AndroidProvider.debug,
-  );
-  runApp(const MyApp());
+   final provider = ThemeProvider();
+    provider.loadThemeMode();
+    
+
+  runApp(ChangeNotifierProvider.value(
+      value: provider,
+      child: MyApp(),
+    ),);
 }
 
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MyApp extends StatefulWidget {
+  MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    // final Future<FirebaseApp> _initialization=Firebase.initializeApp();
-    
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+
+  @override
+  void initState() {
+    super.initState();
+
+  }  
+  
+  @override
+  Widget build(BuildContext context) => ChangeNotifierProvider(
+
+        create: (context) => ThemeProvider(),
+        builder: (context, _) {
+          final themeProvider = Provider.of<ThemeProvider>(context,listen: true);
+          final provider = context.watch<ThemeProvider>();
+                   
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Vyaya App',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: PrimaryColor.color_bottle_green),
-        useMaterial3: true,
-      ),
-      home: SplashScreen(),
-    );
-    
-  }
+      theme: MyTheme.lightTheme,
+      darkTheme: MyTheme.darkTheme,
+      themeMode: provider.themeMode,
+    home: SplashScreen(),
+    );}   
+  );
 }

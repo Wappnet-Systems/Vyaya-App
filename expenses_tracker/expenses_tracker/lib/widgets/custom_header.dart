@@ -5,7 +5,8 @@ import 'custom_textstyle.dart';
 
 class CustomHeader extends StatelessWidget {
   final String? wishingtext,username,initial_of_name;
-  CustomHeader({super.key,required this.initial_of_name,required this.username,required this.wishingtext});
+  final Color? textColor;
+  CustomHeader({super.key,required this.initial_of_name,required this.username,required this.wishingtext,required this.textColor});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +21,7 @@ class CustomHeader extends StatelessWidget {
                                 children: [
                                   CustomTextStyle(
                                     customtextstyletext: "$wishingtext",
-                                    customtextcolor: PrimaryColor.color_black,
+                                    customtextcolor: textColor,
                                     customtextfontweight: FontWeight.normal,
                                     customtextsize: 17.0,
                                     customtextstyle: null,
@@ -32,7 +33,7 @@ class CustomHeader extends StatelessWidget {
                                 children: [
                                   CustomTextStyle(
                                     customtextstyletext: "$username",
-                                    customtextcolor: PrimaryColor.color_black,
+                                    customtextcolor: textColor,
                                     customtextfontweight: FontWeight.bold,
                                     customtextsize: 22.0,
                                     customtextstyle: null,

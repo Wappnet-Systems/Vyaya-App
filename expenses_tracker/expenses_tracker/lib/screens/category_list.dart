@@ -15,6 +15,7 @@ class _CategoryListState extends State<CategoryList> {
     @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.primary,
       appBar: AppBar(
         iconTheme: IconThemeData(color: PrimaryColor.color_white),
         title: Text(
@@ -48,7 +49,7 @@ class _CategoryListState extends State<CategoryList> {
                     ),
                   ),
                   SizedBox(width: 10,),
-                  Text("${ListOfAppData.listofIncome[index].categoryText}",style: TextStyle(color: PrimaryColor.color_black,fontSize: 15),),
+                  Text("${ListOfAppData.listofIncome[index].categoryText}",style: TextStyle(color: Theme.of(context).colorScheme.secondary,fontSize: 15),),
                   // Text('${ListOfAppData.listOfCategory[index].categoryText}',style: TextStyle(color: PrimaryColor.color_black,fontSize: 15),),
                 ],
               ),
@@ -79,7 +80,7 @@ class _CategoryListState extends State<CategoryList> {
                     ),
                   ),
                   SizedBox(width: 10,),
-                  Text("${ListOfAppData.listOfCategory[index].categoryText}",style: TextStyle(color: PrimaryColor.color_black,fontSize: 15),),
+                  Text("${ListOfAppData.listOfCategory[index].categoryText}",style: TextStyle(color: Theme.of(context).colorScheme.secondary,fontSize: 15),),
                   // Text('${ListOfAppData.listOfCategory[index].categoryText}',style: TextStyle(color: PrimaryColor.color_black,fontSize: 15),),
                 ],
               ),

@@ -77,17 +77,19 @@ class _TransactonOfMonthState extends State<TransactonOfMonth> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = MediaQuery.of(context).platformBrightness;
     Color iconcolor = PrimaryColor.color_bottle_green;
 
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.primary,
       appBar: AppBar(
-        iconTheme: IconThemeData(color: PrimaryColor.color_white),
+        iconTheme: IconThemeData(color: Theme.of(context).colorScheme.secondary),
         title: Text(
           'Monthly Transaction',
-          style: TextStyle(color: PrimaryColor.color_white),
+          style: TextStyle(color: Theme.of(context).colorScheme.secondary),
         ),
         elevation: 5,
-        backgroundColor: PrimaryColor.color_bottle_green,
+        backgroundColor: Theme.of(context).bottomAppBarColor,
       ),
       body: _isloading == true
           ? const Center(child: CircularProgressIndicator())
@@ -131,7 +133,7 @@ class _TransactonOfMonthState extends State<TransactonOfMonth> {
                             iconcolor = PrimaryColor.color_red;
                           }
                           if (categoryid == 2) {
-                            iconcolor = PrimaryColor.color_mint_green;
+                            iconcolor = PrimaryColor.color_bottle_green;
                           }
                           return curentmonthtransactions.length == 0
                               ? Center(
@@ -145,8 +147,20 @@ class _TransactonOfMonthState extends State<TransactonOfMonth> {
                                         color: Colors.black38),
                                   ),
                                 )
-                              : CustomTransaction(icon_color: iconcolor, categoryid: categoryid,subcateid: subcateid, transaction_amount: curentmonthtransactions[index].transactionAmount, transactionnote: curentmonthtransactions[index].transactionnote, datestamp: datestamp, timestamp: timestamp);
-
+                              : CustomTransaction(
+                                  theme_color: Theme.of(context).colorScheme.primary,
+                                  text_theme: Theme.of(context).colorScheme.secondary,
+                                  icon_color: iconcolor,
+                                  categoryid: categoryid,
+                                  subcateid: subcateid,
+                                  transaction_amount:
+                                      curentmonthtransactions[index]
+                                          .transactionAmount,
+                                  transactionnote:
+                                      curentmonthtransactions[index]
+                                          .transactionnote,
+                                  datestamp: datestamp,
+                                  timestamp: timestamp);
                         }),
                   ),
                 ),

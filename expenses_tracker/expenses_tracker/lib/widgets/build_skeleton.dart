@@ -36,7 +36,8 @@ class HomeSkeleton extends StatelessWidget {
                   CustomHeader(
                       initial_of_name: "...",
                       username: "....",
-                      wishingtext: "..."),
+                      wishingtext: "...",
+                      textColor: PrimaryColor.color_black),
                   const SizedBox(height: 25),
                   CustomTextStyle(
                       customtextstyletext: "Current Month",

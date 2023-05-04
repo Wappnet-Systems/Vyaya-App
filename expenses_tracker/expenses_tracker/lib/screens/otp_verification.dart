@@ -45,6 +45,7 @@ class _MyVerifyState extends State<MyVerify> {
     );
 
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.primary,
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -71,7 +72,7 @@ class _MyVerifyState extends State<MyVerify> {
               ),
               Text(
                 "Phone Verification",
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold,color: Theme.of(context).colorScheme.secondary),
               ),
               SizedBox(
                 height: 10,
@@ -80,6 +81,7 @@ class _MyVerifyState extends State<MyVerify> {
                 "We need to register your phone without getting started!",
                 style: TextStyle(
                   fontSize: 16,
+                  color: Theme.of(context).colorScheme.secondary
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -92,6 +94,7 @@ class _MyVerifyState extends State<MyVerify> {
                   code=value;
                 },
                 showCursor: true,
+
                 onCompleted: (pin) => print(pin),
               ),
               SizedBox(
@@ -112,11 +115,16 @@ class _MyVerifyState extends State<MyVerify> {
                               verificationId: PhoneAuth.verify, smsCode: code);
                       await auth.signInWithCredential(credential);
                       print(PhoneAuth.verify);
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text('Login successful!'),));
                       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> UserDetail()));
                       }
                       catch(e){
-                        print(e);                
-                      }
+                        print(e);
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text('Error: Invalid Otp'),
+                    ));                
+                    }
                     },
                     child: Text(
                       "Verify Phone Number",
@@ -131,7 +139,7 @@ class _MyVerifyState extends State<MyVerify> {
                       },
                       child: Text(
                         "Edit Phone Number ?",
-                        style: TextStyle(color: Colors.black),
+                        style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                       ))
                 ],
               )

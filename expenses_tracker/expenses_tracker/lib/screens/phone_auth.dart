@@ -16,6 +16,7 @@ class PhoneAuth extends StatefulWidget {
 
 class _PhoneAuthState extends State<PhoneAuth> {
   TextEditingController countryController = TextEditingController();
+  bool isloading=false;
   var phone = "";
   @override
   void initState() {
@@ -31,6 +32,7 @@ class _PhoneAuthState extends State<PhoneAuth> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.primary,
       body: Container(
         margin: EdgeInsets.only(left: 25, right: 25),
         alignment: Alignment.center,
@@ -43,7 +45,8 @@ class _PhoneAuthState extends State<PhoneAuth> {
               ),
               Text(
                 "Phone Verification",
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold,color: Theme.of(context).colorScheme.secondary,
+),
               ),
               SizedBox(
                 height: 10,
@@ -51,6 +54,7 @@ class _PhoneAuthState extends State<PhoneAuth> {
               Text(
                 "We need to register your phone without getting started!",
                 style: TextStyle(
+                  color: Theme.of(context).colorScheme.secondary,
                   fontSize: 16,
                 ),
                 textAlign: TextAlign.center,
@@ -61,7 +65,7 @@ class _PhoneAuthState extends State<PhoneAuth> {
               Container(
                 height: 55,
                 decoration: BoxDecoration(
-                    border: Border.all(width: 1, color: Colors.grey),
+                    border: Border.all(width: 1,color: Theme.of(context).colorScheme.secondary,),
                     borderRadius: BorderRadius.circular(10)),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -73,6 +77,7 @@ class _PhoneAuthState extends State<PhoneAuth> {
                       width: 40,
                       child: TextField(
                         readOnly: true,
+                        style: TextStyle(color:Theme.of(context).colorScheme.secondary,),
                         controller: countryController,
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
@@ -82,7 +87,7 @@ class _PhoneAuthState extends State<PhoneAuth> {
                     ),
                     Text(
                       "|",
-                      style: TextStyle(fontSize: 33, color: Colors.grey),
+                      style: TextStyle(fontSize: 33, color: Theme.of(context).colorScheme.secondary),
                     ),
                     SizedBox(
                       width: 10,
@@ -90,6 +95,8 @@ class _PhoneAuthState extends State<PhoneAuth> {
                     Expanded(
                         child: TextField(
                       inputFormatters: [maskFormatter],
+                        style: TextStyle(color:Theme.of(context).colorScheme.secondary,),
+                        cursorColor: Theme.of(context).colorScheme.onPrimary,
 
                       onChanged: (value) {
                         phone = value;
@@ -115,25 +122,52 @@ class _PhoneAuthState extends State<PhoneAuth> {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10))),
                     onPressed: () async {
+                      setState(() {
+                        isloading=true;
+                      });
                       await FirebaseAuth.instance.verifyPhoneNumber(
+                        timeout: Duration(seconds: 60),
                         phoneNumber: '${countryController.text + phone}',
                         verificationCompleted:
-                            (PhoneAuthCredential credential) {},
+                            (PhoneAuthCredential credential) {
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text('Login successful!'),
+                        ));
+                            },
                         verificationFailed: (FirebaseAuthException e) {
-                          Fluttertoast.showToast(msg: 'Verification failed. Code: ${e.code}. Message: ${e.message}');
+                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text('Verification failed,Try Again'),
+                          
+                        ));
+                        setState(() {
+                        isloading=false;
+                      }); 
+                          //Fluttertoast.showToast(msg: 'Verification failed. Code: ${e.code}. Message: ${e.message}');
                         },
                         codeSent: (String verificationId, int? resendToken) {
                           PhoneAuth.verify = verificationId;
                           print(verificationId);
-                          Navigator.push(
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text('Verification code sent!'),
+                          
+                        ));
+                        setState(() {
+                        isloading=false;
+                      });
+                          Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => MyVerify()));
                         },
-                        codeAutoRetrievalTimeout: (String verificationId) {},
+                        codeAutoRetrievalTimeout: (String verificationId) {  
+                        },
                       );
                     },
-                    child: Text(
+                    child: isloading==true ?Padding(
+                      padding: const EdgeInsets.all(2.0),
+                      child: CircularProgressIndicator(),
+                    ) 
+                    :Text(
                       "Send the code",
                       style: TextStyle(color: PrimaryColor.color_white),
                     )),
