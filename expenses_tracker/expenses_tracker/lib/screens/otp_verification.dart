@@ -1,4 +1,3 @@
-import 'package:expenses_tracker/screens/home_screen.dart';
 import 'package:expenses_tracker/screens/phone_auth.dart';
 import 'package:expenses_tracker/screens/user_detail.dart';
 import 'package:expenses_tracker/utils/const.dart';
@@ -19,31 +18,7 @@ class _MyVerifyState extends State<MyVerify> {
 
   @override
   Widget build(BuildContext context) {
-    var code="";
-    final defaultPinTheme = PinTheme(
-      width: 56,
-      height: 56,
-      textStyle: TextStyle(
-          fontSize: 20,
-          color: Color.fromRGBO(30, 60, 87, 1),
-          fontWeight: FontWeight.w600),
-      decoration: BoxDecoration(
-        border: Border.all(color: Color.fromRGBO(234, 239, 243, 1)),
-        borderRadius: BorderRadius.circular(20),
-      ),
-    );
-
-    final focusedPinTheme = defaultPinTheme.copyDecorationWith(
-      border: Border.all(color: Color.fromRGBO(114, 178, 238, 1)),
-      borderRadius: BorderRadius.circular(8),
-    );
-
-    final submittedPinTheme = defaultPinTheme.copyWith(
-      decoration: defaultPinTheme.decoration?.copyWith(
-        color: Color.fromRGBO(234, 239, 243, 1),
-      ),
-    );
-
+    var code="";    
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primary,
       extendBodyBehindAppBar: true,
@@ -53,7 +28,7 @@ class _MyVerifyState extends State<MyVerify> {
           onPressed: () {
             Navigator.pop(context);
           },
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back_ios_rounded,
             color: Colors.black,
           ),
@@ -61,20 +36,21 @@ class _MyVerifyState extends State<MyVerify> {
         elevation: 0,
       ),
       body: Container(
-        margin: EdgeInsets.only(left: 25, right: 25),
+        margin: const EdgeInsets.only(left: 25, right: 25),
         alignment: Alignment.center,
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(
-                height: 25,
-              ),
+              // const SizedBox(height: 10),
+              // SizedBox(
+              //     height: MediaQuery.of(context).size.height / 3,
+              //     child: Image.asset("assets/phone.png")),
               Text(
                 "Phone Verification",
                 style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold,color: Theme.of(context).colorScheme.secondary),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               Text(
@@ -85,7 +61,7 @@ class _MyVerifyState extends State<MyVerify> {
                 ),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 30,
               ),
               Pinput(
@@ -95,9 +71,9 @@ class _MyVerifyState extends State<MyVerify> {
                 },
                 showCursor: true,
 
-                onCompleted: (pin) => print(pin),
+                
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               SizedBox(
@@ -105,7 +81,7 @@ class _MyVerifyState extends State<MyVerify> {
                 height: 45,
                 child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: PrimaryColor.color_bottle_green,
+                        backgroundColor: PrimaryColor.colorBottleGreen,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10))),
                     onPressed: () async {
@@ -114,21 +90,21 @@ class _MyVerifyState extends State<MyVerify> {
                           PhoneAuthProvider.credential(
                               verificationId: PhoneAuth.verify, smsCode: code);
                       await auth.signInWithCredential(credential);
-                      print(PhoneAuth.verify);
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                       content: Text('Login successful!'),));
-                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> UserDetail()));
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> const UserDetail()));
                       }
                       catch(e){
-                        print(e);
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                       content: Text('Error: Invalid Otp'),
                     ));                
                     }
                     },
                     child: Text(
                       "Verify Phone Number",
-                      style: TextStyle(color: PrimaryColor.color_white),
+                      style: TextStyle(color: PrimaryColor.colorWhite),
                     )),
               ),
               Row(

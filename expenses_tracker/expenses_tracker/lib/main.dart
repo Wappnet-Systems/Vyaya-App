@@ -1,67 +1,65 @@
 import 'package:expenses_tracker/provider/theme_provider.dart';
 import 'package:expenses_tracker/screens/splash_screen.dart';
 import 'package:expenses_tracker/services/notification_services.dart';
-import 'package:expenses_tracker/services/theme_manager.dart';
-import 'package:expenses_tracker/utils/const.dart';
+import 'package:expenses_tracker/utils/functions.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-
-Future<void> _firebaseMessangingBackgroundHandler(RemoteMessage message)async{
-  print('Handling Background Notification message ${message.messageId}');
-}
-
+import 'model/localtransaction.dart';
+import 'model/userlogin.dart';
 
 Future main() async{
   WidgetsFlutterBinding.ensureInitialized();
-
    await Firebase.initializeApp();
    await NotificationService.initializeNotification();
+   //  For Local Database
+   final appDocumentDir = await getApplicationDocumentsDirectory();
+   Hive.init(appDocumentDir.path);
+   await Hive.initFlutter('hive.db'); 
+   Hive.registerAdapter(LocalTransactionAdapter());
+   Hive.registerAdapter(UserLoginAdapter());  
+   await Hive.openBox<UserLogin>('userlogin');
+   
+  //  For Firebase Notification
    await FirebaseMessaging.instance.getInitialMessage();
    final provider = ThemeProvider();
-    provider.loadThemeMode();
-    
+    provider.loadThemeMode();   
 
   runApp(ChangeNotifierProvider.value(
       value: provider,
-      child: MyApp(),
+      child: const MyApp(),
     ),);
 }
 
-
-class MyApp extends StatefulWidget {
-  MyApp({super.key});
-
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
-  void initState() {
-    super.initState();
+  Widget build(BuildContext context){
 
-  }  
-  
-  @override
-  Widget build(BuildContext context) => ChangeNotifierProvider(
-
+  return ChangeNotifierProvider(
         create: (context) => ThemeProvider(),
         builder: (context, _) {
-          final themeProvider = Provider.of<ThemeProvider>(context,listen: true);
           final provider = context.watch<ThemeProvider>();
-                   
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Vyaya App',
-      theme: MyTheme.lightTheme,
-      darkTheme: MyTheme.darkTheme,
-      themeMode: provider.themeMode,
-    home: SplashScreen(),
+
+    return ScreenUtilInit(
+      designSize: MediaQuery.of(context).size,
+      splitScreenMode: true,
+      builder: (context,child){
+        return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: AppDetailsClass.appName,
+        theme: MyTheme.lightTheme,
+        darkTheme: MyTheme.darkTheme,
+        themeMode: provider.themeMode,
+      home: const SplashScreen(),
+      );
+      }
     );}   
   );
+}
 }

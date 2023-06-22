@@ -1,9 +1,5 @@
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:expenses_tracker/utils/const.dart';
-import 'package:expenses_tracker/screens/transaction_screen.dart';
-
 
 class NotificationService {
   static Future<void> initializeNotification() async {
@@ -46,7 +42,5 @@ class NotificationService {
 
     // });
     
-  }
-
- 
-  }
+  } 
+}

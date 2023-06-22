@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'custom_textstyle.dart';
+import 'custom_text_style.dart';
 
 class CustomNoData extends StatelessWidget {
   const CustomNoData({super.key});
@@ -8,10 +8,10 @@ class CustomNoData extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomTextStyle(
-        customtextstyletext: "No Data",
-        customtextcolor: Theme.of(context).hintColor,
-        customtextfontweight: FontWeight.bold,
+        customTextStyleText: "No Data",
+        customTextColor: Theme.of(context).hintColor,
+        customTextFontWeight: FontWeight.bold,
         customtextstyle: null,
-        customtextsize: MediaQuery.of(context).size.height * 0.025);
+        customTextSize: MediaQuery.of(context).size.height * 0.025);
   }
 }

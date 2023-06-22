@@ -2,9 +2,7 @@ import 'package:expenses_tracker/screens/otp_verification.dart';
 import 'package:expenses_tracker/utils/const.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-
 
 class PhoneAuth extends StatefulWidget {
   const PhoneAuth({Key? key}) : super(key: key);
@@ -16,7 +14,7 @@ class PhoneAuth extends StatefulWidget {
 
 class _PhoneAuthState extends State<PhoneAuth> {
   TextEditingController countryController = TextEditingController();
-  bool isloading=false;
+  bool isLoading = false;
   var phone = "";
   @override
   void initState() {
@@ -24,7 +22,7 @@ class _PhoneAuthState extends State<PhoneAuth> {
     super.initState();
   }
 
-  var maskFormatter = new MaskTextInputFormatter(
+  var maskFormatter = MaskTextInputFormatter(
     mask: '##### #####',
     filter: {"#": RegExp(r'[0-9]')},
   );
@@ -34,21 +32,25 @@ class _PhoneAuthState extends State<PhoneAuth> {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primary,
       body: Container(
-        margin: EdgeInsets.only(left: 25, right: 25),
+        margin: const EdgeInsets.only(left: 25, right: 25),
         alignment: Alignment.center,
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              const SizedBox(height: 10),
               SizedBox(
-                height: 25,
-              ),
+                  height: MediaQuery.of(context).size.height / 3,
+                  child: Image.asset("assets/phone.png")),
               Text(
                 "Phone Verification",
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold,color: Theme.of(context).colorScheme.secondary,
-),
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               Text(
@@ -59,50 +61,58 @@ class _PhoneAuthState extends State<PhoneAuth> {
                 ),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 30,
               ),
               Container(
                 height: 55,
                 decoration: BoxDecoration(
-                    border: Border.all(width: 1,color: Theme.of(context).colorScheme.secondary,),
+                    border: Border.all(
+                      width: 1,
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
                     borderRadius: BorderRadius.circular(10)),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
                     SizedBox(
                       width: 40,
                       child: TextField(
                         readOnly: true,
-                        style: TextStyle(color:Theme.of(context).colorScheme.secondary,),
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.secondary,
+                        ),
                         controller: countryController,
                         keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           border: InputBorder.none,
                         ),
                       ),
                     ),
                     Text(
                       "|",
-                      style: TextStyle(fontSize: 33, color: Theme.of(context).colorScheme.secondary),
+                      style: TextStyle(
+                          fontSize: 33,
+                          color: Theme.of(context).colorScheme.secondary),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
                     Expanded(
                         child: TextField(
                       inputFormatters: [maskFormatter],
-                        style: TextStyle(color:Theme.of(context).colorScheme.secondary,),
-                        cursorColor: Theme.of(context).colorScheme.onPrimary,
-
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary,
+                      ),
+                      cursorColor: Theme.of(context).colorScheme.onPrimary,
                       onChanged: (value) {
                         phone = value;
                       },
                       keyboardType: TextInputType.phone,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: InputBorder.none,
                         hintText: "Phone",
                       ),
@@ -110,7 +120,7 @@ class _PhoneAuthState extends State<PhoneAuth> {
                   ],
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               SizedBox(
@@ -118,59 +128,85 @@ class _PhoneAuthState extends State<PhoneAuth> {
                 height: 45,
                 child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: PrimaryColor.color_bottle_green,
+                        backgroundColor: PrimaryColor.colorBottleGreen,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10))),
                     onPressed: () async {
                       setState(() {
-                        isloading=true;
+                        isLoading = true;
                       });
                       await FirebaseAuth.instance.verifyPhoneNumber(
-                        timeout: Duration(seconds: 60),
-                        phoneNumber: '${countryController.text + phone}',
-                        verificationCompleted:
-                            (PhoneAuthCredential credential) {
-                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text('Login successful!'),
-                        ));
-                            },
+                        timeout: const Duration(seconds: 60),
+                        phoneNumber: countryController.text + phone,
+                        verificationCompleted: (PhoneAuthCredential credential) {
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(
+                            content: Row(
+                              children: [
+                                Text(
+                                  'Login successful!',
+                                  style: TextStyle(color: Colors.green),
+                                ),
+                              ],
+                            ),
+                          ));
+                        },
                         verificationFailed: (FirebaseAuthException e) {
-                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text('Verification failed,Try Again'),
-                          
-                        ));
-                        setState(() {
-                        isloading=false;
-                      }); 
-                          //Fluttertoast.showToast(msg: 'Verification failed. Code: ${e.code}. Message: ${e.message}');
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(
+                            content: Row(
+                              children: [
+                                Icon(Icons.error, color: Colors.red),
+                                SizedBox(width: 10),
+                                Text(
+                                  'Verification failed,Try Again',
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                              ],
+                            ),
+                          ));
+                          setState(() {
+                            isLoading = false;
+                          });
                         },
                         codeSent: (String verificationId, int? resendToken) {
                           PhoneAuth.verify = verificationId;
-                          print(verificationId);
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text('Verification code sent!'),
-                          
-                        ));
-                        setState(() {
-                        isloading=false;
-                      });
-                          Navigator.pushReplacement(
+        
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(
+                            content: Row(
+                              children: [
+                                Icon(Icons.check_circle, color: Colors.green),
+                                SizedBox(width: 10),
+                                Text(
+                                  'Verification code sent!',
+                                  style: TextStyle(color: Colors.green),
+                                ),
+                              ],
+                            ),
+                          ));
+                          setState(() {
+                            isLoading = false;
+                          });
+                          Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => MyVerify()));
+                                  builder: (context) => const MyVerify()));
                         },
-                        codeAutoRetrievalTimeout: (String verificationId) {  
-                        },
+                        codeAutoRetrievalTimeout: (String verificationId) {},
                       );
                     },
-                    child: isloading==true ?Padding(
-                      padding: const EdgeInsets.all(2.0),
-                      child: CircularProgressIndicator(),
-                    ) 
-                    :Text(
-                      "Send the code",
-                      style: TextStyle(color: PrimaryColor.color_white),
-                    )),
+                    child: isLoading == true
+                        ? const Padding(
+                            padding: EdgeInsets.all(6.0),
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                            ),
+                          )
+                        : Text(
+                            "Send the code",
+                            style: TextStyle(color: PrimaryColor.colorWhite),
+                          )),
               )
             ],
           ),

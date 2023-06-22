@@ -1,6 +1,4 @@
 import 'dart:io';
-
-import 'package:expenses_tracker/screens/notification_screen.dart';
 import 'package:expenses_tracker/screens/profile_screen.dart';
 import 'package:expenses_tracker/screens/transaction_screen.dart';
 import 'package:flutter/material.dart';
@@ -19,18 +17,16 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
-  bool _isloading = false;
   
   @override
   void initState() {
-    super.initState();
-    
+    super.initState();    
   }
 
+  
   @override
-  Widget build(BuildContext context) {
-    
-    final List<Widget> _screens = [
+  Widget build(BuildContext context) {    
+    final List<Widget> screens = [
       const DetailHomeScreen(),
       const FilterTransaction(),
       const AnalyticsScreen(),
@@ -51,11 +47,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             title: Text(
                               "Close App",
                               style: TextStyle(
-                                color: PrimaryColor.color_red,
+                                color: PrimaryColor.colorRed,
                               ),
                             ),
                             content:
-                                new Text("Are you sure you want to Exit?",style: TextStyle(
+                                Text("Are you sure you want to Exit?",style: TextStyle(
                                 color: Theme.of(context).colorScheme.secondary,
                               ),),
                             actions: <Widget>[
@@ -70,7 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 color: Theme.of(context).colorScheme.secondary,
                               ),),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     width: 15,
                                   ),
                                   GestureDetector(
@@ -80,7 +76,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     child: Text(
                                       "Exit",
                                       style: TextStyle(
-                                          color: PrimaryColor.color_red,
+                                          color: PrimaryColor.colorRed,
                                           fontWeight: FontWeight.bold),
                                     ),
                                   ),
@@ -95,13 +91,13 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Scaffold(
             backgroundColor: Theme.of(context).colorScheme.primary,
               body: Container(
-                child: _screens[_currentIndex],
+                child: screens[_currentIndex],
               ),
               bottomNavigationBar: BottomAppBar(
-                shape: CircularNotchedRectangle(),
+                shape: const CircularNotchedRectangle(),
                 notchMargin: 8.0,
                 clipBehavior: Clip.antiAlias,
-                color: Theme.of(context).bottomAppBarColor,
+                color: Theme.of(context).bottomAppBarTheme.color,
                 height: MediaQuery.of(context).size.height * 0.08,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -113,7 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         size: MediaQuery.of(context).size.height * 0.038,
                       ),
                       color: _currentIndex == 0
-                          ? PrimaryColor.color_bottle_green
+                          ? PrimaryColor.colorBottleGreen
                           : Theme.of(context).colorScheme.secondary,
                       onPressed: () {
                         setState(() {
@@ -127,7 +123,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         size: MediaQuery.of(context).size.height * 0.038,
                       ),
                       color: _currentIndex == 1
-                          ? PrimaryColor.color_bottle_green
+                          ? PrimaryColor.colorBottleGreen
                           : Theme.of(context).colorScheme.secondary,
                       onPressed: () {
                         setState(() {
@@ -144,7 +140,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         size: MediaQuery.of(context).size.height * 0.038,
                       ),
                       color: _currentIndex == 2
-                          ? PrimaryColor.color_bottle_green
+                          ? PrimaryColor.colorBottleGreen
                           : Theme.of(context).colorScheme.secondary,
                       onPressed: () {
                         setState(() {
@@ -155,11 +151,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     
                     IconButton(
                       icon: Icon(
-                        Icons.people_rounded,
+                        Icons.person,
                         size: MediaQuery.of(context).size.height * 0.038,
                       ),
                       color: _currentIndex == 3
-                          ? PrimaryColor.color_bottle_green
+                          ? PrimaryColor.colorBottleGreen
                           : Theme.of(context).colorScheme.secondary,
                       onPressed: () {
                         setState(() {
@@ -175,19 +171,21 @@ class _HomeScreenState extends State<HomeScreen> {
               floatingActionButton: FloatingActionButton(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(50)),
-                backgroundColor: PrimaryColor.color_bottle_green,
+                backgroundColor: PrimaryColor.colorBottleGreen,
                 foregroundColor: Colors.white,
                 elevation: 4,
                 splashColor: Colors.white.withOpacity(0.8),
                 onPressed: navigationForTransaction,
-                child: Icon(Icons.add, color: PrimaryColor.color_white),
+                child: Icon(Icons.add, color: PrimaryColor.colorWhite),
               )),
         ));
   }
 
+  
+
   String formatTimestamp(int timestamp) {
-    var format = new DateFormat('d MMM, hh:mm a');
-    var date = new DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
+    var format = DateFormat('d MMM, hh:mm a');
+    var date = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
     return format.format(date);
   }
 
@@ -195,7 +193,7 @@ class _HomeScreenState extends State<HomeScreen> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => TransactionScreen(
+            builder: (context) => const TransactionScreen(
                   id: 1,
                 )));
   }

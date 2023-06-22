@@ -1,40 +1,35 @@
 import 'package:flutter/material.dart';
-
 import '../utils/const.dart';
-import 'custom_textstyle.dart';
+import 'custom_text_style.dart';
 
 class CustomLinearProcessIndicator extends StatelessWidget {
-  final double? needs_of_the_month_value;
-  final double? expense_needs_of_the_value;
-  final double? needprogressValue;
-  final Color? color_name,theme_color;
+  final double? needsOfTheMonthValue;
+  final double? expenseNeedsOfTheValue;
+  final double? needProgressValue;
+  final Color? colorName,themeColor;
   final String? title;
-  CustomLinearProcessIndicator(
+  const CustomLinearProcessIndicator(
       {super.key,
       required this.title,
-      required this.needprogressValue,
-      required this.expense_needs_of_the_value,
-      required this.needs_of_the_month_value,
-      required this.color_name,required this.theme_color});
+      required this.needProgressValue,
+      required this.expenseNeedsOfTheValue,
+      required this.needsOfTheMonthValue,
+      required this.colorName,required this.themeColor});
 
   @override
   Widget build(BuildContext context) {
-
-    return 
-    Padding(
-      
-      // ?padding:  EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0)
-       padding:  EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+    return Padding(
+      padding:  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
       child: Column(
         children: [
           Row(
             children: [
               CustomTextStyle(
-                  customtextstyletext: "$title",
-                  customtextcolor: theme_color,
-                  customtextfontweight: FontWeight.bold,
+                  customTextStyleText: "$title",
+                  customTextColor: themeColor,
+                  customTextFontWeight: FontWeight.w400,
                   customtextstyle: null,
-                  customtextsize: MediaQuery.of(context).size.height * 0.021),
+                  customTextSize: MediaQuery.of(context).size.height * 0.021),
               Flexible(
                 child: Stack(
                   children: [
@@ -43,8 +38,8 @@ class CustomLinearProcessIndicator extends StatelessWidget {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(20),
                         child: LinearProgressIndicator(
-                          value: needprogressValue,
-                          backgroundColor: color_name,
+                          value: needProgressValue,
+                          backgroundColor: colorName,
                           color: Colors.grey,
                           minHeight: 20,
                         ),
@@ -60,11 +55,11 @@ class CustomLinearProcessIndicator extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "${expense_needs_of_the_value}",
-                            style: TextStyle(
+                            "$expenseNeedsOfTheValue",
+                            style: const TextStyle(
                               fontSize: 15,
                               color: Colors.white,
-                              fontWeight: FontWeight.bold,
+                              fontWeight: FontWeight.w400,
                             ),
                           ),
                         ],
@@ -80,11 +75,11 @@ class CustomLinearProcessIndicator extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
-                            "${needs_of_the_month_value}",
-                            style: TextStyle(
+                            "$needsOfTheMonthValue",
+                            style: const TextStyle(
                               fontSize: 15,
                               color: Colors.white,
-                              fontWeight: FontWeight.bold,
+                              fontWeight: FontWeight.w400,
                             ),
                           ),
                         ],
@@ -97,14 +92,14 @@ class CustomLinearProcessIndicator extends StatelessWidget {
           ),
           Row(
             children: [
-              needs_of_the_month_value! < expense_needs_of_the_value!
+              needsOfTheMonthValue! < expenseNeedsOfTheValue!
                   ? Text(
                       "You're spending more than your availability in $title",
                       style: TextStyle(
-                          color: PrimaryColor.color_red,
+                          color: PrimaryColor.colorRed,
                           fontSize: MediaQuery.of(context).size.height * 0.015),
                     )
-                  : SizedBox(
+                  : const SizedBox(
                       height: 0,
                     ),
             ],

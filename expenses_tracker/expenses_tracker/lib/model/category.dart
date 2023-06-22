@@ -1,10 +1,10 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class Category{
-  final int? categoryindex;
+  final int? categoryIndex;
   final Icon? categoryIcon;
   final String? categoryText;
-  final int? categorytype;
+  final int? categoryType;
 
-  Category({required this.categoryindex,required this.categoryIcon,required this.categoryText,required this.categorytype});
+  Category({required this.categoryIndex,required this.categoryIcon,required this.categoryText,required this.categoryType});
 }

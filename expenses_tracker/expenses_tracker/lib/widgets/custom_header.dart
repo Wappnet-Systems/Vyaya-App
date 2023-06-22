@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 import '../utils/const.dart';
-import 'custom_textstyle.dart';
+import 'custom_text_style.dart';
 
 class CustomHeader extends StatelessWidget {
-  final String? wishingtext,username,initial_of_name;
+  final String? wishingText,username,initialOfName;
   final Color? textColor;
-  CustomHeader({super.key,required this.initial_of_name,required this.username,required this.wishingtext,required this.textColor});
+  const CustomHeader({super.key,required this.initialOfName,required this.username,required this.wishingText,required this.textColor});
 
   @override
   Widget build(BuildContext context) {
@@ -20,10 +20,10 @@ class CustomHeader extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   CustomTextStyle(
-                                    customtextstyletext: "$wishingtext",
-                                    customtextcolor: textColor,
-                                    customtextfontweight: FontWeight.normal,
-                                    customtextsize: 17.0,
+                                    customTextStyleText: "$wishingText",
+                                    customTextColor: textColor,
+                                    customTextFontWeight: FontWeight.normal,
+                                    customTextSize: 17.0,
                                     customtextstyle: null,
                                   ),
                                 ],
@@ -32,28 +32,28 @@ class CustomHeader extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   CustomTextStyle(
-                                    customtextstyletext: "$username",
-                                    customtextcolor: textColor,
-                                    customtextfontweight: FontWeight.bold,
-                                    customtextsize: 22.0,
+                                    customTextStyleText: "$username",
+                                    customTextColor: textColor,
+                                    customTextFontWeight: FontWeight.w400,
+                                    customTextSize: 22.0,
                                     customtextstyle: null,
                                   ),
                                 ],
                               ),
                             ],
                           ),
-                          Container(
+                          SizedBox(
                             width: MediaQuery.of(context).size.width * 0.15,
                             height: MediaQuery.of(context).size.height * 0.065,
                             child: Card(
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(50)),
-                              color: PrimaryColor.color_bottle_green,
+                              color: PrimaryColor.colorBottleGreen,
                               child: Center(
                                   child: Text(
-                                "$initial_of_name",
+                                "$initialOfName",
                                 style: TextStyle(
-                                    color: PrimaryColor.color_white,
+                                    color: PrimaryColor.colorWhite,
                                     fontSize:
                                         MediaQuery.of(context).size.height *
                                             0.035),

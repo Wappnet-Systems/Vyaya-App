@@ -1,57 +1,43 @@
-import 'dart:ui';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import '../model/category.dart';
 
 class PrimaryColor{
- 
-
-  static Color color_transperent=const Color(0xff000000);
-  static Color color_black= const Color(0xff000000);
-  static Color color_white = const Color(0xffffffff);
-
-  static Color color_dark_blue = const Color(0xff443AD8);
-  static Color color_neon_green =const Color(0xffCAFCC4);
-
-  
-  static Color color_bottle_green =const Color(0xff04836B);
-  
-  static Color color_blue=const Color(0xff2d81f7);
-  static Color color_red=Color.fromARGB(255, 212, 64, 64);
-  
+  static Color colorBlack= const Color(0xff000000);
+  static Color colorWhite = const Color(0xffffffff);
+  static Color colorBottleGreen =const Color(0xff04836B);
+  static Color colorBlue=const Color(0xff2d81f7);
+  static Color colorRed=const Color(0xFFFF4040);
 }
 
 class UserData{
-  static String? CurrentUserId;
-  static String? CurentUserName;
-  static String? CurrentUserEmail;
-  static String? CurentUserPhone;
-  static String? CurentUserToken;
+  static String? currentUserId;
+  static String? currentUserName;
+  static String? currentUserEmail;
+  static String? currentUserPhone;
+  static String? currentUserToken;
+  static String? userIdForLocal;
 }
 
 class ListOfAppData{
   static List<Category> listOfCategory=[
-    Category(categoryindex: 0, categoryIcon: Icon(Icons.more_horiz,color: PrimaryColor.color_white,size: 30,), categoryText: "Others",categorytype: 1),
-    Category(categoryindex: 1, categoryIcon: Icon(Icons.food_bank,color: PrimaryColor.color_white,size: 30,), categoryText: "Food & Dinning",categorytype: 1),
-    Category(categoryindex: 2, categoryIcon: Icon(Icons.shopping_cart,color: PrimaryColor.color_white,size: 30,), categoryText: "Shopping",categorytype: 1),
-    Category(categoryindex: 3, categoryIcon: Icon(Icons.travel_explore,color: PrimaryColor.color_white,size: 30,), categoryText: "Travelling",categorytype: 1),
-    Category(categoryindex: 4, categoryIcon: Icon(Icons.live_tv,color: PrimaryColor.color_white,size: 30,), categoryText: "Entertainment",categorytype: 1),
-    Category(categoryindex: 5, categoryIcon: Icon(Icons.personal_injury,color: PrimaryColor.color_white,size: 30,), categoryText: "Personal care",categorytype: 0),
-    Category(categoryindex: 6, categoryIcon: Icon(Icons.book,color: PrimaryColor.color_white,size: 30,), categoryText: "Education",categorytype: 0),
-    Category(categoryindex: 7, categoryIcon: Icon(Icons.receipt,color: PrimaryColor.color_white,size: 30,), categoryText: "Bills & Utilities",categorytype: 0),
-    Category(categoryindex: 8, categoryIcon: Icon(Icons.moving,color: PrimaryColor.color_white,size: 30,), categoryText: "Investment",categorytype: 2),
-    Category(categoryindex: 9, categoryIcon: Icon(Icons.home_work,color: PrimaryColor.color_white,size: 30,), categoryText: "Rent",categorytype: 0),
-    Category(categoryindex: 10, categoryIcon: Icon(Icons.content_paste_go,color: PrimaryColor.color_white,size: 30,), categoryText: "Taxes",categorytype: 0),
-    Category(categoryindex: 11, categoryIcon: Icon(Icons.security,color: PrimaryColor.color_white,size: 30,), categoryText: "Insurances",categorytype: 2),
+    Category(categoryIndex: 0, categoryIcon: Icon(Icons.more_horiz,color: PrimaryColor.colorWhite,size: 30,), categoryText: "Others",categoryType: 1),
+    Category(categoryIndex: 1, categoryIcon: Icon(Icons.food_bank,color: PrimaryColor.colorWhite,size: 30,), categoryText: "Food & Dinning",categoryType: 1),
+    Category(categoryIndex: 2, categoryIcon: Icon(Icons.shopping_cart,color: PrimaryColor.colorWhite,size: 30,), categoryText: "Shopping",categoryType: 1),
+    Category(categoryIndex: 3, categoryIcon: Icon(Icons.travel_explore,color: PrimaryColor.colorWhite,size: 30,), categoryText: "Traveling",categoryType: 1),
+    Category(categoryIndex: 4, categoryIcon: Icon(Icons.live_tv,color: PrimaryColor.colorWhite,size: 30,), categoryText: "Entertainment",categoryType: 1),
+    Category(categoryIndex: 5, categoryIcon: Icon(Icons.personal_injury,color: PrimaryColor.colorWhite,size: 30,), categoryText: "Personal care",categoryType: 0),
+    Category(categoryIndex: 6, categoryIcon: Icon(Icons.book,color: PrimaryColor.colorWhite,size: 30,), categoryText: "Education",categoryType: 0),
+    Category(categoryIndex: 7, categoryIcon: Icon(Icons.receipt,color: PrimaryColor.colorWhite,size: 30,), categoryText: "Bills & Utilities",categoryType: 0),
+    Category(categoryIndex: 8, categoryIcon: Icon(Icons.moving,color: PrimaryColor.colorWhite,size: 30,), categoryText: "Investment",categoryType: 2),
+    Category(categoryIndex: 9, categoryIcon: Icon(Icons.home_work,color: PrimaryColor.colorWhite,size: 30,), categoryText: "Rent",categoryType: 0),
+    Category(categoryIndex: 10, categoryIcon: Icon(Icons.content_paste_go,color: PrimaryColor.colorWhite,size: 30,), categoryText: "Taxes",categoryType: 0),
+    Category(categoryIndex: 11, categoryIcon: Icon(Icons.security,color: PrimaryColor.colorWhite,size: 30,), categoryText: "Insurances",categoryType: 2),
   ];
 
-  static List<Category> listofIncome=[
-    Category(categoryindex: 0, categoryIcon: Icon(Icons.more_horiz,color: PrimaryColor.color_white,size: 30,), categoryText: "Others",categorytype: 3),
-    Category(categoryindex: 1, categoryIcon: Icon(Icons.money,color: PrimaryColor.color_white,size: 30,), categoryText: "Salary",categorytype: 3),
-    Category(categoryindex: 2, categoryIcon: Icon(Icons.abc,color: PrimaryColor.color_white,size: 30,), categoryText: "Sold Items",categorytype: 3),
-    Category(categoryindex: 3, categoryIcon: Icon(Icons.access_time,color: PrimaryColor.color_white,size: 30,), categoryText: "Coupons",categorytype: 3),
-    
+  static List<Category> listOfIncome=[
+    Category(categoryIndex: 0, categoryIcon: Icon(Icons.more_horiz,color: PrimaryColor.colorWhite,size: 30,), categoryText: "Others",categoryType: 3),
+    Category(categoryIndex: 1, categoryIcon: Icon(Icons.money,color: PrimaryColor.colorWhite,size: 30,), categoryText: "Salary",categoryType: 3),
+    Category(categoryIndex: 2, categoryIcon: Icon(Icons.abc,color: PrimaryColor.colorWhite,size: 30,), categoryText: "Sold Items",categoryType: 3),
+    Category(categoryIndex: 3, categoryIcon: Icon(Icons.access_time,color: PrimaryColor.colorWhite,size: 30,), categoryText: "Coupons",categoryType: 3),    
   ];
 }

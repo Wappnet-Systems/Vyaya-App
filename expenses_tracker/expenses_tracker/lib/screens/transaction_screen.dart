@@ -1,32 +1,33 @@
+import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expenses_tracker/screens/home_screen.dart';
 import 'package:expenses_tracker/utils/validation.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
-
+import '../model/localtransaction.dart';
 import '../utils/const.dart';
-import '../widgets/custom_textstyle.dart';
+import '../widgets/custom_text_style.dart';
 import 'category_list.dart';
 
 class TransactionScreen extends StatefulWidget {
   final int? id;
-  String? transactionId, transactionNote, trasactionDate;
-  int? transactionAmount,
+  final String? transactionId, transactionNote, transactionDate;
+  final int? transactionAmount,
       transactionCategory,
-      tranactionsSubCategory,
-      tranactionsSubCategoryindex;
+      transactionSubcategory,
+      transactionSubcategoryIndex;
 
-  TransactionScreen(
+  const TransactionScreen(
       {super.key,
       required this.id,
       this.transactionId,
       this.transactionAmount,
       this.transactionNote,
-      this.tranactionsSubCategory,
+      this.transactionSubcategoryIndex,
       this.transactionCategory,
-      this.trasactionDate,
-      this.tranactionsSubCategoryindex});
+      this.transactionDate,
+      this.transactionSubcategory});
 
   @override
   State<TransactionScreen> createState() => _TransactionScreenState();
@@ -34,260 +35,75 @@ class TransactionScreen extends StatefulWidget {
 
 class _TransactionScreenState extends State<TransactionScreen> {
   int value = 0;
-  String? userid,
-      transactioncategory,
-      transactiondate,
-      transactionamount,
-      transactionsubcategory,
-      transactionpaymentmode,
-      transactionnote;
-  TextEditingController _amountController = TextEditingController();
-  TextEditingController _setdateController = TextEditingController();
-  TextEditingController _expensescategoryController = TextEditingController();
-  TextEditingController _incomecategoryController = TextEditingController();
-  TextEditingController _paymentModeController = TextEditingController();
-  TextEditingController _noteController = TextEditingController();
-  GlobalKey<FormState> transactionFormGloblaKey = GlobalKey<FormState>();
+  
+  String? userId,
+      transactionCategory,
+      transactionDate,
+      transactionAmount,
+      transactionSubcategory,
+      transactionPaymentMode,
+      transactionNote;
+  TextEditingController amountController = TextEditingController();
+  TextEditingController setDateController = TextEditingController();
+  TextEditingController expensesCategoryController = TextEditingController();
+  TextEditingController incomeCategoryController = TextEditingController();
+  TextEditingController paymentModeController = TextEditingController();
+  TextEditingController noteController = TextEditingController();
+  GlobalKey<FormState> transactionFormGlobalKey = GlobalKey<FormState>();
 
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   DateTime _dateTime = DateTime.now();
 
   Icon? prefixIcon;
-  int? subcategoryindex;
+  int? subcategoryIndex;
   int? subcategory;
-  int? categoryindex;
-  int? personal_finaance_cetegory;
+  int? categoryIndex;
+  int? personalFinanceCategory;
   bool _isChecked = true;
-
-  void updateTransaction() {
-    if (transactionFormGloblaKey.currentState!.validate()) {
-      String dateonly = _setdateController.text.substring(0, 12);
-      String timeonly = _setdateController.text.substring(13, 21);
-      
-      DateTime _dateTime =
-          DateFormat('MMM d, yyyy h:mm a').parse("$dateonly $timeonly");
-
-      DateTime currentdatetime = DateTime.now();
-      print(widget.transactionId);
-
-      if (value == 1) {
-        if (_isChecked == true) {
-          categoryindex = 3;
-        } else if (_isChecked == false) {
-          categoryindex = 0;
-        }
-      }
-      Timestamp timestamp = Timestamp.fromDate(_dateTime);
-      Timestamp currenttimestamp = Timestamp.fromDate(currentdatetime);
-
-      transactionnote = _noteController.text;
-
-      transactionamount = _amountController.text;
-      int amountOfmoney = int.parse(transactionamount!);
-      String tID = widget.transactionId.toString();
-      transactionpaymentmode = 'Cash';
-
-      final transactionRef = firestore
-          .collection('users')
-          .doc(userid)
-          .collection('transaction')
-          .doc(tID);
-
-      transactionRef.set({
-        'uId': userid,
-        'tID': tID,
-        'transactionCategory': categoryindex,
-        'transactionsubcategory': subcategory,
-        'transactionsubcategoryindex': subcategoryindex,
-        'transactionDate': timestamp,
-        'transactionAmount': amountOfmoney,
-        'transactionpaymentmode': transactionpaymentmode,
-        'transactionnote': transactionnote,
-        'transactionCreatedAt': currenttimestamp
-      });
-
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: ((context) => HomeScreen())));
-    }
-  }
-
-  void addTransaction() {
-    if (transactionFormGloblaKey.currentState!.validate()) {
-      String dateonly = _setdateController.text.substring(0, 12);
-      String timeonly = _setdateController.text.substring(13, 21);
-      print(dateonly);
-      print(timeonly);
-      DateTime _dateTime =
-          DateFormat('MMM d, yyyy h:mm a').parse("$dateonly $timeonly");
-      print(_dateTime);
-
-      DateTime currentdatetime = DateTime.now();
-
-      if (value == 1) {
-        if (_isChecked == true) {
-          categoryindex = 3;
-        } else if (_isChecked == false) {
-          categoryindex = 0;
-        }
-      }
-
-      final transactionRef = firestore
-          .collection('users')
-          .doc(userid)
-          .collection('transaction')
-          .doc(widget.transactionId);
-
-      transactioncategory = "Expenses";
-      transactiondate = _dateTime.toString();
-      transactionamount = _amountController.text;
-      transactionsubcategory = "medical";
-      transactionpaymentmode = 'Cash';
-
-      transactionnote = _noteController.text;
-      int amountOfmoney = int.parse(transactionamount!);
-      TabController _tabController;
-
-      Timestamp timestamp = Timestamp.fromDate(_dateTime);
-      Timestamp currenttimestamp = Timestamp.fromDate(currentdatetime);
-
-      print("timestamp $timestamp");
-
-      transactionRef.set({
-        'uId': userid,
-        'tID': transactionRef.id,
-        'transactionCategory': categoryindex,
-        'transactionsubcategory': subcategory,
-        'transactionsubcategoryindex': subcategoryindex,
-        'transactionDate': timestamp,
-        'transactionAmount': amountOfmoney,
-        'transactionpaymentmode': transactionpaymentmode,
-        'transactionnote': transactionnote,
-        'transactionCreatedAt': currenttimestamp
-      });
-
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: ((context) => HomeScreen())));
-    }
-  }
-
-  Future<void> _selectDateTime(BuildContext context) async {
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: _dateTime,
-      firstDate: DateTime(2023),
-      lastDate: DateTime.now(),
-      builder: (context, child) {
-          return Theme(
-              
-            data: Theme.of(context).copyWith(
-              colorScheme: ColorScheme.light(
-                
-                primary: Theme.of(context).colorScheme.onPrimary,
-                onPrimary: Theme.of(context).colorScheme.primary,
-                onSurface: PrimaryColor.color_black,
-              ),
-              primaryTextTheme: TextTheme(),
-              textButtonTheme: TextButtonThemeData(
-                style: TextButton.styleFrom(
-                  primary: PrimaryColor.color_bottle_green,
-                ),
-              ),
-              hintColor: Colors.black38
-            ),
-            child: child!,
-          );
-        }
-    );
-    if (picked != null) {
-      final time = await showTimePicker(
-        context: context,
-        initialTime: TimeOfDay.fromDateTime(_dateTime),
-        builder: (context, child) {
-          return Theme(
-              
-            data: Theme.of(context).copyWith(
-              colorScheme: ColorScheme.light(
-                
-                primary: Theme.of(context).colorScheme.onPrimary,
-                onPrimary: Theme.of(context).colorScheme.primary,
-                onSurface: PrimaryColor.color_black,
-              ),
-              primaryTextTheme: TextTheme(),
-              textButtonTheme: TextButtonThemeData(
-                style: TextButton.styleFrom(
-                  primary: PrimaryColor.color_bottle_green,
-                ),
-              ),
-              hintColor: Colors.black38
-            ),
-            child: child!,
-          );
-        }
-      );
-      if (time != null) {
-        setState(() {
-          _dateTime = DateTime(
-            picked.year,
-            picked.month,
-            picked.day,
-            time.hour,
-            time.minute,
-          );
-        });
-
-        _setdateController.text =
-            DateFormat('MMM dd, yyyy hh:mm a').format(_dateTime).toString();
-        print("_dateTime $_dateTime");
-      }
-    }
-  }
 
   @override
   void initState() {
     super.initState();
+    userId = UserData.currentUserId;
     if (widget.id == 1) {
-      userid = FirebaseAuth.instance.currentUser!.uid;
-      _setdateController.text =
+      setDateController.text =
           DateFormat('MMM dd, yyyy hh:mm a').format(DateTime.now()).toString();
-      print("in initstate  ${_setdateController.text}");
-      DateTime currentdatetime = DateTime.now();
-      _paymentModeController.text = "Cash";
-      _expensescategoryController.text = "others";
-      _incomecategoryController.text = "others";
+      paymentModeController.text = "Cash";
+      expensesCategoryController.text = "others";
+      incomeCategoryController.text = "others";
       prefixIcon = Icon(
         Icons.more_horiz,
-        color: PrimaryColor.color_white,
+        color: PrimaryColor.colorWhite,
         size: 30,
       );
-      subcategoryindex = 0;
-      categoryindex = 1;
+      subcategoryIndex = 0;
+      categoryIndex = 1;
       subcategory = 0;
-      personal_finaance_cetegory = 1;
+      personalFinanceCategory = 1;
     } else {
-      print(widget.transactionCategory);
-      userid = FirebaseAuth.instance.currentUser!.uid;
-      _amountController.text = widget.transactionAmount.toString();
-      _noteController.text = widget.transactionNote.toString();
-      _paymentModeController.text = "Cash";
-      _setdateController.text = widget.trasactionDate!;
-      subcategory = widget.tranactionsSubCategory;
-      personal_finaance_cetegory = 1;
-      categoryindex = widget.transactionCategory;
+      amountController.text = widget.transactionAmount.toString();
+      noteController.text = widget.transactionNote.toString();
+      paymentModeController.text = "Cash";
+      setDateController.text = widget.transactionDate!;
+      subcategory = widget.transactionSubcategory;
+      personalFinanceCategory = 1;
+      categoryIndex = widget.transactionCategory;
+            
       if (widget.transactionCategory == 1) {
         value = widget.transactionCategory! - 1;
-        _incomecategoryController.text = ListOfAppData
-            .listOfCategory[widget.tranactionsSubCategoryindex!].categoryText!;
+        incomeCategoryController.text = ListOfAppData
+            .listOfCategory[widget.transactionSubcategoryIndex!].categoryText!;
         prefixIcon = ListOfAppData
-            .listOfCategory[widget.tranactionsSubCategoryindex!].categoryIcon;
+            .listOfCategory[widget.transactionSubcategoryIndex!].categoryIcon;
       } else {
         value = widget.transactionCategory! - 2;
-        _expensescategoryController.text = ListOfAppData
-            .listofIncome[widget.tranactionsSubCategoryindex!].categoryText!;
+        expensesCategoryController.text = ListOfAppData
+            .listOfIncome[widget.transactionSubcategoryIndex!].categoryText!;
         prefixIcon = ListOfAppData
-            .listofIncome[widget.tranactionsSubCategoryindex!].categoryIcon;
+            .listOfIncome[widget.transactionSubcategoryIndex!].categoryIcon;
       }
-      subcategoryindex = widget.tranactionsSubCategoryindex;
+      subcategoryIndex = widget.transactionSubcategoryIndex;
     }
   }
 
@@ -297,18 +113,18 @@ class _TransactionScreenState extends State<TransactionScreen> {
       backgroundColor: Theme.of(context).colorScheme.primary,
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        iconTheme: IconThemeData(color: PrimaryColor.color_white),
+        backgroundColor: PrimaryColor.colorBottleGreen,
+        iconTheme: IconThemeData(color: PrimaryColor.colorWhite),
         title: widget.id == 1
             ? Text(
                 'Add Transaction',
-                style: TextStyle(color: PrimaryColor.color_white),
+                style: TextStyle(color: PrimaryColor.colorWhite),
               )
             : Text(
                 'Update Transaction',
-                style: TextStyle(color: PrimaryColor.color_white),
+                style: TextStyle(color: PrimaryColor.colorWhite),
               ),
         elevation: 5,
-        backgroundColor: PrimaryColor.color_bottle_green,
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -318,483 +134,450 @@ class _TransactionScreenState extends State<TransactionScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  OutlinedButton(
-                    onPressed: () {
-                      setState(() {
-                        value = 0;
-                      });
-                    },
-                    style: OutlinedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                      side: BorderSide(
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width/2.5,
+                    child: OutlinedButton(
+                      onPressed: () {
+                        setState(() {
+                          value = 0;
+                        });
+                      },
+                      style: OutlinedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                        side: BorderSide(
+                            color: (value == 0)
+                                ? Theme.of(context).colorScheme.onPrimary
+                                : Theme.of(context).colorScheme.secondary),
+                      ),
+                      child: Text(
+                        "Expenses",
+                        style: TextStyle(
                           color: (value == 0)
                               ? Theme.of(context).colorScheme.onPrimary
-                              : Theme.of(context).colorScheme.secondary),
-                    ),
-                    child: Text(
-                      "Expenses",
-                      style: TextStyle(
-                        color: (value == 0)
-                            ? Theme.of(context).colorScheme.onPrimary
-                            : Theme.of(context).colorScheme.secondary,
+                              : Theme.of(context).colorScheme.secondary,
+                        ),
                       ),
                     ),
                   ),
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 0.02,
                   ),
-                  OutlinedButton(
-                    onPressed: () {
-                      setState(() {
-                        value = 1;
-                      });
-                    },
-                    style: OutlinedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                      side: BorderSide(
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width/2.5,
+                    child: OutlinedButton(
+                      onPressed: () {
+                        setState(() {
+                          value = 1;
+                        });
+                      },
+                      style: OutlinedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                        side: BorderSide(
+                            color: (value == 1)
+                                ? Theme.of(context).colorScheme.onPrimary
+                                : Theme.of(context).colorScheme.secondary),
+                      ),
+                      child: Text(
+                        "Income",
+                        style: TextStyle(
                           color: (value == 1)
                               ? Theme.of(context).colorScheme.onPrimary
-                              : Theme.of(context).colorScheme.secondary),
-                    ),
-                    child: Text(
-                      "Income",
-                      style: TextStyle(
-                        color: (value == 1)
-                            ? Theme.of(context).colorScheme.onPrimary
-                            : Theme.of(context).colorScheme.secondary,
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.02,
-                  ),
-                  OutlinedButton(
-                    onPressed: () {
-                      setState(() {
-                        value = 2;
-                      });
-                    },
-                    style: OutlinedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                      side: BorderSide(
-                          color: (value == 2)
-                              ? Theme.of(context).colorScheme.onPrimary
-                              : Theme.of(context).colorScheme.secondary),
-                    ),
-                    child: Text(
-                      "Transfer",
-                      style: TextStyle(
-                        color: (value == 2)
-                            ? Theme.of(context).colorScheme.onPrimary
-                            : Theme.of(context).colorScheme.secondary,
+                              : Theme.of(context).colorScheme.secondary,
+                        ),
                       ),
                     ),
                   ),
                 ],
               ),
             ),
-            value == 2
-                ? Container()
-                : Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Form(
-                      key: transactionFormGloblaKey,
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              Card(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(50)),
-                                  color: PrimaryColor.color_bottle_green,
-                                  child: Container(
-                                      padding: EdgeInsets.all(6),
-                                      child: Icon(
-                                        Icons.calendar_month,
-                                        color: PrimaryColor.color_white,
-                                        size: 20,
-                                      ))),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Flexible(
-                                child: TextFormField(
-                                  readOnly: true,
-                                  onTap: () {
-                                    _selectDateTime(context);
-                                  },
-                                  controller: _setdateController,
-                                  validator: textFormFieldValidator,
-                                  style: TextStyle(color: Theme.of(context).colorScheme.secondary),
-                                  decoration: InputDecoration(
-                                    hintStyle: TextStyle(color: Theme.of(context).hintColor),
-                                    hintText: "Enter Date",
-                                    prefixIconConstraints:
-                                        BoxConstraints.tightFor(
-                                            height: 05, width: 35),
-                                    enabledBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .secondary, // Change this to your desired border color
-                                      ),
-                                    ),
-                                    focusedBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onPrimary, // Change this to your desired border color
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Card(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(50)),
-                                  color: PrimaryColor.color_bottle_green,
-                                  child: Container(
-                                      padding: EdgeInsets.all(6),
-                                      child: Icon(
-                                        Icons.calculate,
-                                        color: PrimaryColor.color_white,
-                                        size: 20,
-                                      ))),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Flexible(
-                                child: TextFormField(
-                                  keyboardType: TextInputType.number,
-                                  cursorColor: Theme.of(context).colorScheme.onPrimary,
-                                  style: TextStyle(color: Theme.of(context).colorScheme.secondary),
-                                  enableInteractiveSelection: false,
-                                  controller: _amountController,
-                                  validator: amountvalidator,
-                                  decoration: InputDecoration(
-                                    hintText: "Enter Amount",
-                                    prefixIconConstraints:
-                                        BoxConstraints.tightFor(
-                                            height: 05, width: 35),
-                                    enabledBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .secondary, // Change this to your desired border color
-                                      ),
-                                    ),
-                                    focusedBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onPrimary, // Change this to your desired border color
-                                      ),
-                                    ),
-                                  ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Form(
+                key: transactionFormGlobalKey,
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Card(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50)),
+                            color: PrimaryColor.colorBottleGreen,
+                            child: Container(
+                                padding: const EdgeInsets.all(6),
+                                child: Icon(
+                                  Icons.calendar_month,
+                                  color: PrimaryColor.colorWhite,
+                                  size: 20,
+                                ))),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Flexible(
+                          child: TextFormField(
+                            readOnly: true,
+                            onTap: () {
+                              _selectDateTime(context);
+                            },
+                            controller: setDateController,
+                            validator: textFormFieldValidator,
+                            style: TextStyle(
+                                color: Theme.of(context).colorScheme.secondary),
+                            decoration: InputDecoration(
+                              hintStyle:
+                                  TextStyle(color: Theme.of(context).hintColor),
+                              hintText: "Enter Date",
+                              prefixIconConstraints:
+                                  const BoxConstraints.tightFor(
+                                      height: 05, width: 35),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .secondary, // Change this to your desired border color
                                 ),
                               ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Row(
-                            children: [
-                              Card(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(50)),
-                                color: PrimaryColor.color_bottle_green,
-                                child: Container(child: prefixIcon),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onPrimary, // Change this to your desired border color
+                                ),
                               ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              value == 1
-                                  ? Flexible(
-                                      child: InkWell(
-                                        onTap: () {
-                                          print('print');
-                                        },
-                                        child: Column(
-                                          children: [
-                                            Container(
-                                              child: TextFormField(
-                                                validator:
-                                                    textFormFieldValidator,
-                                                onTap: () {
-                                                  navigate(context, 0);
-                                                },
-                                                readOnly: true,
-                                                controller:
-                                                    _expensescategoryController,
-                                                    style: TextStyle(color: Theme.of(context).colorScheme.secondary),
-                                                decoration: InputDecoration(
-                                                  suffixIcon:
-                                                      Icon(Icons.chevron_right),
-                                                  prefixIconConstraints:
-                                                      BoxConstraints.tightFor(
-                                                          height: 05,
-                                                          width: 35),
-                                                  enabledBorder:
-                                                      UnderlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                      color: Theme.of(context)
-                                                          .colorScheme
-                                                          .secondary, // Change this to your desired border color
-                                                    ),
-                                                  ),
-                                                  focusedBorder:
-                                                      UnderlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                      color: Theme.of(context)
-                                                          .colorScheme
-                                                          .onPrimary, // Change this to your desired border color
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    )
-                                  : Flexible(
-                                      child: InkWell(
-                                        onTap: () {
-                                          print('print');
-                                        },
-                                        child: Container(
-                                          child: TextFormField(
-                                            validator: textFormFieldValidator,
-                                            onTap: () {
-                                              navigate(context, 1);
-                                            },
-                                            readOnly: true,
-                                            controller:
-                                                _incomecategoryController,
-                                                style: TextStyle(color: Theme.of(context).colorScheme.secondary),
-                                            decoration: InputDecoration(
-                                              suffixIcon:
-                                                  Icon(Icons.chevron_right),
-                                              prefixIconConstraints:
-                                                  BoxConstraints.tightFor(
-                                                      height: 05, width: 35),
-                                              enabledBorder:
-                                                  UnderlineInputBorder(
-                                                borderSide: BorderSide(
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .secondary, // Change this to your desired border color
-                                                ),
-                                              ),
-                                              focusedBorder:
-                                                  UnderlineInputBorder(
-                                                borderSide: BorderSide(
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .onPrimary, // Change this to your desired border color
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                            ],
+                            ),
                           ),
-
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Row(
-                            children: [
-                              Card(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(50)),
-                                  color: PrimaryColor.color_bottle_green,
-                                  child: Container(
-                                      padding: EdgeInsets.all(6),
-                                      child: Icon(
-                                        Icons.money,
-                                        color: PrimaryColor.color_white,
-                                        size: 20,
-                                      ))),
-                              SizedBox(
-                                width: 10,
+                        )
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Card(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50)),
+                            color: PrimaryColor.colorBottleGreen,
+                            child: Container(
+                                padding: const EdgeInsets.all(6),
+                                child: Icon(
+                                  Icons.calculate,
+                                  color: PrimaryColor.colorWhite,
+                                  size: 20,
+                                ))),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Flexible(
+                          child: TextFormField(
+                            keyboardType: TextInputType.number,
+                            cursorColor:
+                                Theme.of(context).colorScheme.onPrimary,
+                            style: TextStyle(
+                                color: Theme.of(context).colorScheme.secondary),
+                            enableInteractiveSelection: false,
+                            controller: amountController,
+                            
+                            validator: amountValidator,
+                            decoration: InputDecoration(
+                              hintText: "Enter Amount",
+                              prefixIconConstraints:
+                                  const BoxConstraints.tightFor(
+                                      height: 05, width: 35),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color:
+                                      Theme.of(context).colorScheme.secondary,
+                                ),
                               ),
-                              Flexible(
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color:
+                                      Theme.of(context).colorScheme.onPrimary,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      children: [
+                        Card(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(50)),
+                          color: PrimaryColor.colorBottleGreen,
+                          child: Container(child: prefixIcon),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        value == 1
+                            ? Flexible(
                                 child: InkWell(
-                                  onTap: () {
-                                    print('print');
-                                  },
-                                  child: Container(
-                                    child: TextFormField(
-                                      readOnly: true,
-                                      style: TextStyle(color: Theme.of(context).colorScheme.secondary),
-                                      validator: textFormFieldValidator,
-                                      keyboardType: TextInputType.number,
-                                      controller: _paymentModeController,
-                                      decoration: InputDecoration(
-                                        suffixIcon: Icon(Icons.chevron_right),
-                                        prefixIconConstraints:
-                                            BoxConstraints.tightFor(
-                                                height: 05, width: 35),
-                                        enabledBorder: UnderlineInputBorder(
-                                          borderSide: BorderSide(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .secondary, 
-                                          ),
-                                        ),
-                                        focusedBorder: UnderlineInputBorder(
-                                          borderSide: BorderSide(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .onPrimary, 
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          value == 1
-                              ? Padding(
-                                padding: const EdgeInsets.only(top :8.0,left: 8.0),
-                                child: Row(
+                                  onTap: () {},
+                                  child: Column(
                                     children: [
-                                      Container(
-                                        height: MediaQuery.of(context).size.height*0.025,
-                                        width: MediaQuery.of(context).size.width*0.056,
-                                        decoration: BoxDecoration(
-                                  border: _isChecked
-                                      ? Border.all(
-                                        
-                                          color: Theme.of(context).colorScheme.secondary, // Change this to your desired border color
-                                        )
-                                      : null,
-                                ),
-                                
-                                        child: Checkbox(
-                                          shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.secondary),),
-                                          side: BorderSide(color: Theme.of(context).colorScheme.secondary),
-                                          checkColor: Theme.of(context).colorScheme.secondary,
-                                          value: _isChecked,
-                                          onChanged: (bool? newValue) {
-                                            _isChecked = newValue!;
-                                            print("_isChecked : $_isChecked");
-                                      
-                                            setState(() {});
-                                          },
+                                      TextFormField(
+                                        validator: textFormFieldValidator,
+                                        onTap: () {
+                                          navigate(context, 0);
+                                        },
+                                        readOnly: true,
+                                        controller: expensesCategoryController,
+                                        style: TextStyle(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .secondary),
+                                        decoration: InputDecoration(
+                                          suffixIcon:
+                                              const Icon(Icons.chevron_right),
+                                          prefixIconConstraints:
+                                              const BoxConstraints.tightFor(
+                                                  height: 05, width: 35),
+                                          enabledBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .secondary,
+                                            ),
+                                          ),
+                                          focusedBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onPrimary,
+                                            ),
+                                          ),
                                         ),
                                       ),
-                                      SizedBox(width: 8.0,),
-                                      Text(
-                                          'Add to Personal Finance Portion',style: TextStyle(color: Theme.of(context).colorScheme.secondary),),
                                     ],
                                   ),
-                              )
-                              : SizedBox(
-                                  height: 0,
                                 ),
-
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Row(
-                            children: [
-                              CustomTextStyle(
-                                  customtextstyletext: "Other Details",
-                                  customtextcolor: Theme.of(context).colorScheme.secondary,
-                                  customtextfontweight: FontWeight.bold,
-                                  customtextstyle: null,
-                                  customtextsize: 18.00),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Card(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(50)),
-                                  color: PrimaryColor.color_bottle_green,
-                                  child: Container(
-                                      padding: EdgeInsets.all(6),
-                                      child: Icon(
-                                        Icons.note,
-                                        color: PrimaryColor.color_white,
-                                        size: 20,
-                                      ))),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Flexible(
-                                child: TextFormField(
-                                  readOnly: false,
-                                  cursorColor: Theme.of(context).colorScheme.onPrimary,
-                                  style: TextStyle(color: Theme.of(context).colorScheme.secondary),
-                                  keyboardType: TextInputType.text,
-                                  validator: noteValidator,
-                                  enableInteractiveSelection: false,
-                                  controller: _noteController,
-                                  decoration: InputDecoration(
-                                    hintText: "Note",
-                                    prefixIconConstraints:
-                                        BoxConstraints.tightFor(
-                                            height: 05, width: 35),
-                                    enabledBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
+                              )
+                            : Flexible(
+                                child: InkWell(
+                                  onTap: () {},
+                                  child: TextFormField(
+                                    validator: textFormFieldValidator,
+                                    onTap: () {
+                                      navigate(context, 1);
+                                    },
+                                    readOnly: true,
+                                    controller: incomeCategoryController,
+                                    style: TextStyle(
                                         color: Theme.of(context)
                                             .colorScheme
-                                            .secondary, 
+                                            .secondary),
+                                    decoration: InputDecoration(
+                                      suffixIcon:
+                                          const Icon(Icons.chevron_right),
+                                      prefixIconConstraints:
+                                          const BoxConstraints.tightFor(
+                                              height: 05, width: 35),
+                                      enabledBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .secondary,
+                                        ),
                                       ),
-                                    ),
-                                    focusedBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onPrimary, 
+                                      focusedBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onPrimary,
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
-                        ],
-                      ),
+                      ],
                     ),
-                  ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      children: [
+                        Card(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50)),
+                            color: PrimaryColor.colorBottleGreen,
+                            child: Container(
+                                padding: const EdgeInsets.all(6),
+                                child: Icon(
+                                  Icons.money,
+                                  color: PrimaryColor.colorWhite,
+                                  size: 20,
+                                ))),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Flexible(
+                          child: InkWell(
+                            onTap: () {},
+                            child: TextFormField(
+                              readOnly: true,
+                              style: TextStyle(
+                                  color:
+                                      Theme.of(context).colorScheme.secondary),
+                              validator: textFormFieldValidator,
+                              keyboardType: TextInputType.number,
+                              controller: paymentModeController,
+                              decoration: InputDecoration(
+                                suffixIcon: const Icon(Icons.chevron_right),
+                                prefixIconConstraints:
+                                    const BoxConstraints.tightFor(
+                                        height: 05, width: 35),
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color:
+                                        Theme.of(context).colorScheme.secondary,
+                                  ),
+                                ),
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color:
+                                        Theme.of(context).colorScheme.onPrimary,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    value == 1
+                        ? Padding(
+                            padding: const EdgeInsets.only(top: 8.0, left: 8.0),
+                            child: Row(
+                              children: [
+                                Checkbox(
+                                  shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary),
+                                  ),
+                                  side: BorderSide(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary),
+                                          activeColor: PrimaryColor.colorBottleGreen,
+                                  checkColor:
+                                      Theme.of(context).colorScheme.primary,
+                                  value: _isChecked,
+                                  onChanged: (bool? newValue) {
+                                    _isChecked = newValue!;
+
+                                    setState(() {});
+                                  },
+                                ),
+                                
+                                Text(
+                                  'Add to Personal Finance Portion',
+                                  style: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary),
+                                ),
+                              ],
+                            ),
+                          )
+                        : const SizedBox(
+                            height: 0,
+                          ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Row(
+                      children: [
+                        CustomTextStyle(
+                            customTextStyleText: "Other Details",
+                            customTextColor:
+                                Theme.of(context).colorScheme.secondary,
+                            customTextFontWeight: FontWeight.bold,
+                            customtextstyle: null,
+                            customTextSize: 18.00),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Card(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50)),
+                            color: PrimaryColor.colorBottleGreen,
+                            child: Container(
+                                padding: const EdgeInsets.all(6),
+                                child: Icon(
+                                  Icons.note,
+                                  color: PrimaryColor.colorWhite,
+                                  size: 20,
+                                ))),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Flexible(
+                          child: TextFormField(
+                            readOnly: false,
+                            cursorColor:
+                                Theme.of(context).colorScheme.onPrimary,
+                            style: TextStyle(
+                                color: Theme.of(context).colorScheme.secondary),
+                            keyboardType: TextInputType.text,
+                            maxLength: 20,
+                            enableInteractiveSelection: false,
+                            controller: noteController,
+                            decoration: InputDecoration(
+                              hintText: "Description",
+                              prefixIconConstraints:
+                                  const BoxConstraints.tightFor(
+                                      height: 05, width: 35),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color:
+                                      Theme.of(context).colorScheme.secondary,
+                                ),
+                              ),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color:
+                                      Theme.of(context).colorScheme.onPrimary,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ),
       floatingActionButton: widget.id == 1
           ? FloatingActionButton(
-              backgroundColor: PrimaryColor.color_bottle_green,
+              backgroundColor: PrimaryColor.colorBottleGreen,
+              onPressed: addTransaction,
               child: Icon(
                 Icons.save,
-                color: PrimaryColor.color_white,
-              ),
-              onPressed: addTransaction)
+                color: PrimaryColor.colorWhite,
+              ))
           : FloatingActionButton(
-              backgroundColor: PrimaryColor.color_bottle_green,
+              backgroundColor: PrimaryColor.colorBottleGreen,
+              onPressed: updateTransaction,
               child: Icon(
                 Icons.save,
-                color: PrimaryColor.color_white,
-              ),
-              onPressed: updateTransaction),
+                color: PrimaryColor.colorWhite,
+              )),
     );
   }
 
@@ -805,47 +588,215 @@ class _TransactionScreenState extends State<TransactionScreen> {
     );
     if (!mounted) return;
     int index = int.parse(result);
-    int indexforicon = index;
-    print("$result");
+    int indexForIcon = index;
     setState(() {
       if (id == 0) {
-        _expensescategoryController.text =
-            ListOfAppData.listofIncome[index].categoryText!;
-        prefixIcon = ListOfAppData.listofIncome[index].categoryIcon;
-        subcategoryindex = ListOfAppData.listofIncome[index].categoryindex;
-        subcategory = ListOfAppData.listofIncome[index].categorytype;
-        print("subcategory $subcategory");
-        print("_isChecked : $_isChecked");
-        // if(_isChecked==true){
-
-        //             categoryindex = 3;
-
-        // }
-        // else if(_isChecked==false){
-        //             categoryindex = 0;
-
-        // }
+        expensesCategoryController.text =
+            ListOfAppData.listOfIncome[index].categoryText!;
+        prefixIcon = ListOfAppData.listOfIncome[index].categoryIcon;
+        subcategoryIndex = ListOfAppData.listOfIncome[index].categoryIndex;
+        subcategory = ListOfAppData.listOfIncome[index].categoryType;
       } else if (id == 1) {
-        _incomecategoryController.text =
+        incomeCategoryController.text =
             ListOfAppData.listOfCategory[index].categoryText!;
         prefixIcon = ListOfAppData.listOfCategory[index].categoryIcon;
-        subcategoryindex =
-            ListOfAppData.listOfCategory[indexforicon].categoryindex;
-        subcategory = ListOfAppData.listOfCategory[index].categorytype;
-        print("subcategory $subcategory");
-        print('Income');
-        categoryindex = 1;
+        subcategoryIndex =
+            ListOfAppData.listOfCategory[indexForIcon].categoryIndex;
+        subcategory = ListOfAppData.listOfCategory[index].categoryType;
+        categoryIndex = 1;
       } else {
-        _incomecategoryController.text =
+        incomeCategoryController.text =
             ListOfAppData.listOfCategory[index].categoryText!;
         prefixIcon = ListOfAppData.listOfCategory[index].categoryIcon;
-        subcategoryindex =
-            ListOfAppData.listOfCategory[indexforicon].categoryindex;
-        subcategory = ListOfAppData.listOfCategory[index].categorytype;
-        print("subcategory $subcategory");
-      }
+        subcategoryIndex =
+            ListOfAppData.listOfCategory[indexForIcon].categoryIndex;
+        subcategory = ListOfAppData.listOfCategory[index].categoryType;
 
-      print('subcategoryindex $subcategoryindex');
+      }
     });
+  }
+
+  Future<void> _selectDateTime(BuildContext context) async {
+    final picked = await showDatePicker(
+        context: context,
+        initialDate: _dateTime,
+        firstDate: DateTime(2023),
+        lastDate: DateTime.now(),
+        builder: (context, child) {
+          return Theme(
+            data: Theme.of(context).copyWith(
+                colorScheme: ColorScheme.light(
+                  primary: Theme.of(context).colorScheme.onPrimary,
+                  onPrimary: Theme.of(context).colorScheme.primary,
+                  onSurface: PrimaryColor.colorBlack,
+                ),
+                primaryTextTheme: const TextTheme(),
+                textButtonTheme: TextButtonThemeData(
+                  style: TextButton.styleFrom(
+                    foregroundColor: PrimaryColor.colorBottleGreen,
+                  ),
+                ),
+                hintColor: Colors.black38),
+            child: child!,
+          );
+        });
+    if (picked != null) {
+      final time = await showTimePicker(
+          context: context,
+          initialTime: TimeOfDay.fromDateTime(_dateTime),
+          builder: (context, child) {
+            return Theme(
+              data: Theme.of(context).copyWith(
+                  colorScheme: ColorScheme.light(
+                    primary: Theme.of(context).colorScheme.onPrimary,
+                    onPrimary: Theme.of(context).colorScheme.primary,
+                    onSurface: PrimaryColor.colorBlack,
+                  ),
+                  primaryTextTheme: const TextTheme(),
+                  textButtonTheme: TextButtonThemeData(
+                    style: TextButton.styleFrom(
+                      foregroundColor: PrimaryColor.colorBottleGreen,
+                    ),
+                  ),
+                  hintColor: Colors.black38),
+              child: child!,
+            );
+          });
+      if (time != null) {
+        setState(() {
+          _dateTime = DateTime(
+            picked.year,
+            picked.month,
+            picked.day,
+            time.hour,
+            time.minute,
+          );
+        });
+        setDateController.text =
+            DateFormat('MMM dd, yyyy hh:mm a').format(_dateTime).toString();
+      }
+    }
+  }
+
+  Future<LocalTransaction> getSingleTransaction(String transactionId) async {
+  final box = await Hive.openBox<LocalTransaction>('local_transactions');
+  final transaction = box.values
+      .firstWhere((transaction) => transaction.tID == transactionId);
+  return transaction;
+}
+
+Future<void> updateLocalTransaction(LocalTransaction updatedTransaction) async {
+  final box = await Hive.openBox<LocalTransaction>('local_transactions');
+  final index = box.values.toList().indexWhere((transaction) =>
+      transaction.tID == updatedTransaction.tID);
+  if (index != -1) {
+    await box.putAt(index, updatedTransaction);
+  }
+}
+
+  void updateTransaction() {
+    if (transactionFormGlobalKey.currentState!.validate()) {
+      DateTime currentDateTime = DateTime.now();
+
+      if (value == 1) {
+        if (_isChecked == true) {
+          categoryIndex = 3;
+        } else if (_isChecked == false) {
+          categoryIndex = 0;
+        }
+      }
+      if(noteController.text.isEmpty){
+        noteController.text="-";
+      }
+      String noteDetail=noteController.text;
+      String capitalizedNote=noteDetail[0].toUpperCase() + noteDetail.substring(1);
+      transactionNote = capitalizedNote;
+      transactionAmount = amountController.text;
+      int amountOfMoney = int.parse(transactionAmount!);
+      String tID = widget.transactionId.toString();
+      transactionPaymentMode = 'Cash';
+
+      // For Local Database
+      final localTransaction = LocalTransaction(
+          userId: userId!,
+          tID: tID,
+          tNote: transactionNote!,
+          tPaymentMode: transactionPaymentMode!,
+          tAmount: amountOfMoney,
+          tCategory: categoryIndex!,
+          tSubcategory: subcategory!,
+          tSubcategoryIndex: subcategoryIndex!,
+          tDateTime: _dateTime,
+          tCreatedAt: currentDateTime);
+
+      updateLocalTransaction(localTransaction);
+      getAllLocalTransactions();
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: ((context) => const HomeScreen())));
+    }  
+  }
+
+  Future<void> createLocalTransaction(LocalTransaction transaction) async {
+    final box = await Hive.openBox<LocalTransaction>('local_transactions');
+    await box.add(transaction);
+  }
+
+  Future<List<LocalTransaction>> getAllLocalTransactions() async {
+    final box = await Hive.openBox<LocalTransaction>('local_transactions');
+    final transactions = box.values.toList();
+    return transactions;
+  }
+
+  void addTransaction() {
+    // For Local DB Function
+    if (transactionFormGlobalKey.currentState!.validate()) {
+      DateTime currentDateTime = DateTime.now();
+      if (value == 1) {
+        if (_isChecked == true) {
+          categoryIndex = 3;
+        } else if (_isChecked == false) {
+          categoryIndex = 0;
+        }
+      }
+      if(noteController.text.isEmpty){
+        noteController.text="-";
+      }
+      String noteDetail=noteController.text;
+      String capitalizedNote=noteDetail[0].toUpperCase() + noteDetail.substring(1);
+      transactionAmount = amountController.text;
+      transactionPaymentMode = 'Cash';
+      transactionNote =capitalizedNote; 
+      int amountOfMoney = int.parse(transactionAmount!);
+      String tId = generateRandomString(20);
+
+
+      final localTransaction = LocalTransaction(
+          userId: userId!,
+          tID: tId,
+          tNote: transactionNote!,
+          tPaymentMode: transactionPaymentMode!,
+          tAmount: amountOfMoney,
+          tCategory: categoryIndex!,
+          tSubcategory: subcategory!,
+          tSubcategoryIndex: subcategoryIndex!,
+          tDateTime: _dateTime,
+          tCreatedAt: currentDateTime);
+
+      createLocalTransaction(localTransaction);
+      getAllLocalTransactions();
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: ((context) => const HomeScreen())));
+    }
+  }
+
+  String generateRandomString(int length) {
+    final random = Random();
+    const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    final StringBuffer buffer = StringBuffer();
+    for (int i = 0; i < length; i++) {
+      final int randomIndex = random.nextInt(characters.length);
+      buffer.write(characters[randomIndex]);
+    }
+    return buffer.toString();
   }
 }

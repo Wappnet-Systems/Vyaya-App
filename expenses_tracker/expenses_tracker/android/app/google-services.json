@@ -14,7 +14,31 @@
       },
       "oauth_client": [
         {
-          "client_id": "96136354904-0trbls095lrcgqevlvocbpupf20tmqa0.apps.googleusercontent.com",
+          "client_id": "96136354904-2kfr74mnje1aaep1g6nkeao66u3it1l0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.expenses_tracker",
+            "certificate_hash": "287da35503e96d728a7dda4f051c53627b5fad91"
+          }
+        },
+        {
+          "client_id": "96136354904-3qo35kkhiqsl2le7jv2cvuo1ev8ond5g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.expenses_tracker",
+            "certificate_hash": "ef647131fb43ea3020d32a46b4403633a1816c5e"
+          }
+        },
+        {
+          "client_id": "96136354904-ei189l9u08udc1ppu8qknjimijtgad13.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.expenses_tracker",
+            "certificate_hash": "b2df1e5dc93ec9f0ee39072ff4978f4e380a1790"
+          }
+        },
+        {
+          "client_id": "96136354904-784v35q933mc2od7p5g7pbha4p80aobe.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -27,7 +51,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "96136354904-0trbls095lrcgqevlvocbpupf20tmqa0.apps.googleusercontent.com",
+              "client_id": "109081127354933570434",
               "client_type": 3
             }
           ]

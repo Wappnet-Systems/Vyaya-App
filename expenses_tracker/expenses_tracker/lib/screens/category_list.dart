@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-
-import '../model/category.dart';
 import '../utils/const.dart';
 
 class CategoryList extends StatefulWidget {
-  int? id;
-  CategoryList({super.key,this.id});
+  final int? id;
+  const CategoryList({super.key,this.id});
 
   @override
   State<CategoryList> createState() => _CategoryListState();
@@ -17,40 +15,40 @@ class _CategoryListState extends State<CategoryList> {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primary,
       appBar: AppBar(
-        iconTheme: IconThemeData(color: PrimaryColor.color_white),
+        iconTheme: IconThemeData(color: PrimaryColor.colorWhite),
         title: Text(
           'Categories',
-          style: TextStyle(color: PrimaryColor.color_white),
+          style: TextStyle(color: PrimaryColor.colorWhite),
         ),
         elevation: 5,
-        backgroundColor: PrimaryColor.color_bottle_green,
+        backgroundColor: PrimaryColor.colorBottleGreen,
       ),
       body: widget.id ==0 
       ?ListView.builder(
-        itemCount: ListOfAppData.listofIncome.length,itemBuilder:(BuildContext context, int index){
+        itemCount: ListOfAppData.listOfIncome.length,itemBuilder:(BuildContext context, int index){
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: InkWell(
             onTap: (){
               Navigator.pop(context,"$index");
             },
-            child: Container(
+            child: SizedBox(
               height: MediaQuery.of(context).size.height*0.0748,
               width: 200,
               child: Row(
                 children: [
-                  Container(
+                  SizedBox(
                     height: 55,
                     width: 55,
                     child: Card(
-                      color: PrimaryColor.color_bottle_green,
+                      color: PrimaryColor.colorBottleGreen,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-                      child: ListOfAppData.listofIncome[index].categoryIcon,
+                      child: ListOfAppData.listOfIncome[index].categoryIcon,
                     ),
                   ),
-                  SizedBox(width: 10,),
-                  Text("${ListOfAppData.listofIncome[index].categoryText}",style: TextStyle(color: Theme.of(context).colorScheme.secondary,fontSize: 15),),
-                  // Text('${ListOfAppData.listOfCategory[index].categoryText}',style: TextStyle(color: PrimaryColor.color_black,fontSize: 15),),
+                  const SizedBox(width: 10,),
+                  Text("${ListOfAppData.listOfIncome[index].categoryText}",style: TextStyle(color: Theme.of(context).colorScheme.secondary,fontSize: 15),),
+                  // Text('${ListOfAppData.listOfCategory[index].categoryText}',style: TextStyle(color: PrimaryColor.colorBlack,fontSize: 15),),
                 ],
               ),
             ),
@@ -65,23 +63,22 @@ class _CategoryListState extends State<CategoryList> {
             onTap: (){
               Navigator.pop(context,"$index");
             },
-            child: Container(
+            child: SizedBox(
               height: MediaQuery.of(context).size.height*0.0748,
               width: 200,
               child: Row(
                 children: [
-                  Container(
+                  SizedBox(
                     height: 55,
                     width: 55,
                     child: Card(
-                      color: PrimaryColor.color_bottle_green,
+                      color: PrimaryColor.colorBottleGreen,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
                       child: ListOfAppData.listOfCategory[index].categoryIcon,
                     ),
                   ),
-                  SizedBox(width: 10,),
+                  const SizedBox(width: 10,),
                   Text("${ListOfAppData.listOfCategory[index].categoryText}",style: TextStyle(color: Theme.of(context).colorScheme.secondary,fontSize: 15),),
-                  // Text('${ListOfAppData.listOfCategory[index].categoryText}',style: TextStyle(color: PrimaryColor.color_black,fontSize: 15),),
                 ],
               ),
             ),

@@ -1,13 +1,18 @@
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import '../api/pdf_api.dart';
 import '../api/pdf_transaction_api.dart';
+import '../model/localtransaction.dart';
 import '../model/transaction.dart';
 import '../utils/const.dart';
-import '../widgets/custom_textstyle.dart';
+import '../utils/functions.dart';
+import '../widgets/custom_no_data.dart';
+import '../widgets/custom_text_style.dart';
 
 class AnalyticsScreen extends StatefulWidget {
   const AnalyticsScreen({super.key});
@@ -22,358 +27,270 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
   DateTime? endDate;
   String? uid;
 
-  DateTime? analytics_yearly = DateTime.now();
-  DateTime? analytics_monthly = DateTime.now();
-  DateTime? analytics_weekly = DateTime.now();
+  DateTime? analyticsYearly = DateTime.now();
+  DateTime? analyticsMonthly = DateTime.now();
+  DateTime? analyticsWeekly = DateTime.now();
 
-  String? analytics_monthly_text;
-  String? analytics_start_week_text, analytics_end_week_text;
-  String? analytics_yearly_text;
+  String? analyticsMonthlyText;
+  String? analyticsStartWeekText;
+  String? analyticsYearlyText;
 
-  static List<AllTransactionDetails> curentpagetransactions = [];
-  static List<AllTransactionDetails> curentpageIncometransactions = [];
-  static List<AllTransactionDetails> curentpagespendingtransactions = [];
+  static List<LocalTransaction> recentTransaction = [];
+  static List<AllTransactionDetails> currentPageTransactions = [];
 
-  static List<int> income_of_the_curentpagetransactions = [];
-  static List<int> spending_of_the_curentpagetransactions = [];
-  static int? len_of_all_transactions,
-      len_of_all_income_transactions,
-      len_of_all_spending_transactions;
-  static int? income_of_the_curentpagetransactions_value = 00;
-  static double? average_income = 00;
-  static double? average_spending_per_day = 00;
-  static double? average_income_per_day = 00;
-  static double? average_spending = 00;
-  static int? spending_of_the_curentpagetransactions_value = 00;
-  static int? balance_of_the_curentpagetransactions_value = 00;
-  bool _isloading = false;
+  static List<AllTransactionDetails> currentPageIncomeTransactions = [];
+  static List<AllTransactionDetails> currentPageSpendingTransactions = [];
+
+  static List<int> incomeOfTheCurrentPageTransactions = [];
+  static List<int> spendingOfTheCurrentPageTransactions = [];
+
+  static int? incomeOfTheCurrentPageTransactionsValue = 00;
+  static double? averageIncome = 00;
+  static double? averageSpending = 00;
+  static int? spendingOfCurrentPageTransactionsValue = 00;
+  static int? balanceOfCurrentPageTransactionsValue = 00;
+  bool isLoading = false;
+
+  Future<List<LocalTransaction>> getAllLocalTransactions() async {
+    final box = await Hive.openBox<LocalTransaction>('local_transactions');
+    final transactions = box.values.toList();
+    return transactions;
+  }
+
+  Future<List<LocalTransaction>> getTransactionsBetweenDates() async {
+    startDate = DateTime(startDate!.year, startDate!.month, startDate!.day);
+    endDate = DateTime(endDate!.year, endDate!.month, endDate!.day, 23, 59, 59);
+    final transactions = await getAllLocalTransactions();
+
+    final filteredTransactions = transactions
+        .where((transaction) =>
+            transaction.tDateTime.isAfter(startDate!) &&
+            transaction.tDateTime.isBefore(endDate!) &&
+            UserData.currentUserId == transaction.userId)
+        .toList();
+
+    filteredTransactions.sort((a, b) => a.tDateTime.compareTo(b.tDateTime));
+    return filteredTransactions;
+  }
 
   Future<void> getAllTransaction() async {
-    curentpageIncometransactions.clear();
-    curentpagespendingtransactions.clear();
-    income_of_the_curentpagetransactions.clear();
-    spending_of_the_curentpagetransactions.clear();
-    income_of_the_curentpagetransactions_value = 00;
-    spending_of_the_curentpagetransactions_value = 00;
-    balance_of_the_curentpagetransactions_value = 00;
-    average_spending_per_day = 00;
-    average_income_per_day = 00;
-    average_income = 00;
-    average_spending = 00;
+    currentPageIncomeTransactions.clear();
+    currentPageSpendingTransactions.clear();
+    incomeOfTheCurrentPageTransactions.clear();
+    spendingOfTheCurrentPageTransactions.clear();
+    incomeOfTheCurrentPageTransactionsValue = 00;
+    spendingOfCurrentPageTransactionsValue = 00;
+    balanceOfCurrentPageTransactionsValue = 00;
+    averageIncome = 00;
+    averageSpending = 00;
     setState(() {
-      _isloading = true;
+      isLoading = true;
     });
-    print("Satrt Date: $startDate");
-    print("End Date: $endDate");
+
     try {
-      final snapshot = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(uid)
-          .collection('transaction')
-          .orderBy('transactionDate', descending: true)
-          .where('transactionDate', isGreaterThanOrEqualTo: startDate)
-          .where('transactionDate', isLessThanOrEqualTo: endDate)
-          .get();
-
-      final transactionData = snapshot.docs
-          .map((doc) => AllTransactionDetails(
-              uId: doc["uId"],
-              tID: doc['tID'],
-              transactionsubcategoryindex: doc['transactionsubcategoryindex'],
-              transactionAmount: doc['transactionAmount'],
-              transactioncategory: doc['transactionCategory'],
-              transactionDate: doc['transactionDate'],
-              transactionnote: doc['transactionnote'],
-              transactionpaymentmode: doc['transactionpaymentmode'],
-              transactionsubcategory: doc['transactionsubcategory'],
-              transactionCreatedAt: doc['transactionCreatedAt']))
-          .toList();
-
+      recentTransaction = await getTransactionsBetweenDates();
       setState(() {
-        curentpagetransactions = transactionData;
-        print(transactionData.length);
-        len_of_all_transactions = curentpagetransactions.length;
-        _isloading = false;
+        currentPageTransactions = recentTransaction
+            .map((e) => AllTransactionDetails(
+                uId: e.userId,
+                tID: e.tID,
+                transactionDate: Timestamp.fromDate(e.tDateTime),
+                transactionAmount: e.tAmount,
+                transactionCategory: e.tCategory,
+                transactionSubcategory: e.tSubcategory,
+                transactionSubcategoryIndex: e.tSubcategoryIndex,
+                transactionNote: e.tNote,
+                transactionPaymentMode: e.tPaymentMode,
+                transactionCreatedAt: Timestamp.fromDate(e.tCreatedAt)))
+            .toList();
+        isLoading = false;
         findIncomeSpending();
       });
     } catch (e) {
       setState(() {
-        _isloading = false;
+        isLoading = false;
       });
-      print(e);
     }
   }
 
   static void findIncomeSpending() {
-    for (int i = 0, j = 0, k = 0; i < curentpagetransactions.length; i++) {
-      if (curentpagetransactions[i].transactioncategory == 0 || curentpagetransactions[i].transactioncategory == 3) {
-        income_of_the_curentpagetransactions
-            .add(curentpagetransactions[i].transactionAmount!);
-
-        curentpageIncometransactions.insert(
+    for (int i = 0, j = 0, k = 0; i < currentPageTransactions.length; i++) {
+      if (currentPageTransactions[i].transactionCategory == 0 ||
+          currentPageTransactions[i].transactionCategory == 3) {
+        incomeOfTheCurrentPageTransactions
+            .add(currentPageTransactions[i].transactionAmount!);
+        currentPageIncomeTransactions.insert(
             j,
             AllTransactionDetails(
-                uId: curentpagetransactions[i].uId,
-                tID: curentpagetransactions[i].tID,
-                transactionDate: curentpagetransactions[i].transactionDate,
-                transactionAmount: curentpagetransactions[i].transactionAmount,
-                transactioncategory:
-                    curentpagetransactions[i].transactioncategory,
-                transactionsubcategory:
-                    curentpagetransactions[i].transactionsubcategory,
-                transactionsubcategoryindex:
-                    curentpagetransactions[i].transactionsubcategoryindex,
-                transactionnote: curentpagetransactions[i].transactionnote,
-                transactionpaymentmode:
-                    curentpagetransactions[i].transactionpaymentmode,
+                uId: currentPageTransactions[i].uId,
+                tID: currentPageTransactions[i].tID,
+                transactionDate: currentPageTransactions[i].transactionDate,
+                transactionAmount: currentPageTransactions[i].transactionAmount,
+                transactionCategory:
+                    currentPageTransactions[i].transactionCategory,
+                transactionSubcategory:
+                    currentPageTransactions[i].transactionSubcategory,
+                transactionSubcategoryIndex:
+                    currentPageTransactions[i].transactionSubcategoryIndex,
+                transactionNote: currentPageTransactions[i].transactionNote,
+                transactionPaymentMode:
+                    currentPageTransactions[i].transactionPaymentMode,
                 transactionCreatedAt:
-                    curentpagetransactions[i].transactionCreatedAt));
+                    currentPageTransactions[i].transactionCreatedAt));
         j++;
-        print(
-            "curentpageIncometransactions ${curentpageIncometransactions.length}");
-      } else if (curentpagetransactions[i].transactioncategory == 1) {
-        spending_of_the_curentpagetransactions
-            .add(curentpagetransactions[i].transactionAmount!);
-        curentpagespendingtransactions.insert(
+      } else if (currentPageTransactions[i].transactionCategory == 1) {
+        spendingOfTheCurrentPageTransactions
+            .add(currentPageTransactions[i].transactionAmount!);
+        currentPageSpendingTransactions.insert(
             k,
             AllTransactionDetails(
-                uId: curentpagetransactions[i].uId,
-                tID: curentpagetransactions[i].tID,
-                transactionDate: curentpagetransactions[i].transactionDate,
-                transactionAmount: curentpagetransactions[i].transactionAmount,
-                transactioncategory:
-                    curentpagetransactions[i].transactioncategory,
-                transactionsubcategory:
-                    curentpagetransactions[i].transactionsubcategory,
-                transactionsubcategoryindex:
-                    curentpagetransactions[i].transactionsubcategoryindex,
-                transactionnote: curentpagetransactions[i].transactionnote,
-                transactionpaymentmode:
-                    curentpagetransactions[i].transactionpaymentmode,
+                uId: currentPageTransactions[i].uId,
+                tID: currentPageTransactions[i].tID,
+                transactionDate: currentPageTransactions[i].transactionDate,
+                transactionAmount: currentPageTransactions[i].transactionAmount,
+                transactionCategory:
+                    currentPageTransactions[i].transactionCategory,
+                transactionSubcategory:
+                    currentPageTransactions[i].transactionSubcategory,
+                transactionSubcategoryIndex:
+                    currentPageTransactions[i].transactionSubcategoryIndex,
+                transactionNote: currentPageTransactions[i].transactionNote,
+                transactionPaymentMode:
+                    currentPageTransactions[i].transactionPaymentMode,
                 transactionCreatedAt:
-                    curentpagetransactions[i].transactionCreatedAt));
-                    k++;
-      } else {}
+                    currentPageTransactions[i].transactionCreatedAt));
+        k++;
+      }
     }
-    print(
-        "spending_of_the_month.length ${spending_of_the_curentpagetransactions.length}");
-    print(
-        "income_of_the_month.length ${income_of_the_curentpagetransactions.length}");
-    len_of_all_income_transactions =
-        income_of_the_curentpagetransactions.length;
-    len_of_all_spending_transactions =
-        spending_of_the_curentpagetransactions.length;
-    totlaIncomOfTheMonth();
-    totlaExpensesOfTheMonth();
+    totalIncomeOfTheMonth();
+    totalExpensesOfTheMonth();
     getBalance();
   }
 
-  static void totlaIncomOfTheMonth() {
-    for (int i = 0; i < income_of_the_curentpagetransactions.length; i++) {
-      income_of_the_curentpagetransactions_value =
-          income_of_the_curentpagetransactions[i] +
-              income_of_the_curentpagetransactions_value!;
+  static void totalIncomeOfTheMonth() {
+    for (int i = 0; i < incomeOfTheCurrentPageTransactions.length; i++) {
+      incomeOfTheCurrentPageTransactionsValue =
+          incomeOfTheCurrentPageTransactions[i] +
+              incomeOfTheCurrentPageTransactionsValue!;
     }
   }
 
-  static void totlaExpensesOfTheMonth() {
-    for (int i = 0; i < spending_of_the_curentpagetransactions.length; i++) {
-      spending_of_the_curentpagetransactions_value =
-          spending_of_the_curentpagetransactions[i] +
-              spending_of_the_curentpagetransactions_value!;
+  static void totalExpensesOfTheMonth() {
+    for (int i = 0; i < spendingOfTheCurrentPageTransactions.length; i++) {
+      spendingOfCurrentPageTransactionsValue =
+          spendingOfTheCurrentPageTransactions[i] +
+              spendingOfCurrentPageTransactionsValue!;
     }
-    print(
-        "income_of_the_month_value : $income_of_the_curentpagetransactions_value");
-    print(
-        "expenses_of_the_month_value : $spending_of_the_curentpagetransactions_value");
   }
 
   static getBalance() {
-    balance_of_the_curentpagetransactions_value =
-        (income_of_the_curentpagetransactions_value! -
-            spending_of_the_curentpagetransactions_value!);
+    balanceOfCurrentPageTransactionsValue =
+        (incomeOfTheCurrentPageTransactionsValue! -
+            spendingOfCurrentPageTransactionsValue!);
 
-    average_income = (income_of_the_curentpagetransactions_value! /
-        len_of_all_income_transactions!) as double?;
-    average_spending = (spending_of_the_curentpagetransactions_value! /
-        len_of_all_spending_transactions!) as double?;
+    averageIncome = (incomeOfTheCurrentPageTransactionsValue! /
+        incomeOfTheCurrentPageTransactions.length);
+    averageSpending = (spendingOfCurrentPageTransactionsValue! /
+        spendingOfTheCurrentPageTransactions.length);
 
-    average_income = double.parse((average_income)!.toStringAsFixed(2));
-    average_spending = double.parse((average_spending)!.toStringAsFixed(2));
-
-    print(balance_of_the_curentpagetransactions_value);
+    averageIncome = double.parse((averageIncome)!.toStringAsFixed(2));
+    averageSpending = double.parse((averageSpending)!.toStringAsFixed(2));
   }
 
   void getWeekDates() {
     String currentWeekRange = _getWeekRange(DateTime.now());
-    print('$currentWeekRange');
-    analytics_start_week_text = currentWeekRange;
+    analyticsStartWeekText = currentWeekRange;
     getAllTransaction();
   }
 
   String _getWeekRange(DateTime date) {
     DateTime startOfWeek = date.subtract(Duration(days: date.weekday - 1));
-    DateTime endOfWeek = startOfWeek.add(Duration(days: 6));
+    DateTime endOfWeek = startOfWeek.add(const Duration(days: 6));
     String startOfWeekStr =
-        '${_getMonthName(startOfWeek.month)} ${startOfWeek.day}';
-    String endOfWeekStr = '${_getMonthName(endOfWeek.month)} ${endOfWeek.day}';
-    String year = '${startOfWeek.year}';
-    if (startOfWeek.year != endOfWeek.year) {
-      year = '${startOfWeek.year} - ${endOfWeek.year}';
-    }
+        '${CurrentValues.getMonthName(startOfWeek.month)} ${startOfWeek.day}';
+    String endOfWeekStr =
+        '${CurrentValues.getMonthName(endOfWeek.month)} ${endOfWeek.day}';
+    String year = startOfWeek.year != endOfWeek.year
+        ? '${startOfWeek.year} - ${endOfWeek.year}'
+        : '${startOfWeek.year}';
     startDate = DateTime(startOfWeek.year, startOfWeek.month, startOfWeek.day);
     endDate = DateTime(endOfWeek.year, endOfWeek.month, endOfWeek.day + 1);
     return '$startOfWeekStr - $endOfWeekStr, $year';
   }
 
   void updateWeek(int id) {
-    if (id == 1) {
-      DateTime currentWeek = analytics_weekly ??
-      DateTime.now().subtract(Duration(days: DateTime.now().weekday - 1));
-      DateTime nextWeek = currentWeek.add(Duration(days: 7));
-      print('Current week: ${_getWeekRange(currentWeek)}');
-      print('Next week: ${_getWeekRange(nextWeek)}');
-
-      analytics_weekly = nextWeek;
-      analytics_start_week_text = _getWeekRange(nextWeek);
-      getAllTransaction();
-    } else {
-      DateTime currentWeek = analytics_weekly ??
-          DateTime.now().subtract(Duration(days: DateTime.now().weekday - 1));
-      DateTime prevWeek = currentWeek.subtract(Duration(days: 7));
-      print('Current week: ${_getWeekRange(currentWeek)}');
-      analytics_weekly = prevWeek;
-      analytics_start_week_text = _getWeekRange(prevWeek);
-      getAllTransaction();
-    }
+    DateTime currentWeek = analyticsWeekly ??
+        DateTime.now().subtract(Duration(days: DateTime.now().weekday - 1));
+    DateTime nextWeek = id == 1
+        ? currentWeek.add(const Duration(days: 7))
+        : currentWeek.subtract(const Duration(days: 7));
+    analyticsWeekly = nextWeek;
+    analyticsStartWeekText = _getWeekRange(nextWeek);
+    getAllTransaction();
   }
 
   void updateMonth(int id) {
-    if (id == 0) {
-      DateTime currentMonth = analytics_monthly!;
-      print(currentMonth);
-      int nextMonth = currentMonth.month - 1;
-      int nextYear = currentMonth.year;
-      if (nextMonth < 1) {
-        nextMonth = 12;
-        nextYear--;
-      }
-      print(nextMonth);
-      // startDate=DateTime(nextMonth.year,,);
-      analytics_monthly_text = '${_getMonthName(nextMonth)} $nextYear';
-      startDate = DateTime(nextYear, nextMonth, 1);
-      endDate = DateTime(nextYear, nextMonth + 1, 1);
-      analytics_monthly = DateTime(nextYear, nextMonth, 1);
-      getAllTransaction();
-    } else {
-      DateTime currentMonth = analytics_monthly!;
-      print(currentMonth);
-      int nextMonth = currentMonth.month + 1;
-      int nextYear = currentMonth.year;
-      if (nextMonth > 12) {
-        nextMonth = 1;
-        nextYear++;
-      }
-      print(nextMonth);
-      analytics_monthly_text = '${_getMonthName(nextMonth)} $nextYear';
-      analytics_monthly = DateTime(nextYear, nextMonth, 1);
-      startDate = DateTime(nextYear, nextMonth, 1);
-      endDate = DateTime(nextYear, nextMonth + 1, 1);
-      getAllTransaction();
+    DateTime currentMonth = analyticsMonthly!;
+    int nextMonth = id == 0 ? currentMonth.month - 1 : currentMonth.month + 1;
+    int nextYear = currentMonth.year;
+    if (nextMonth < 1) {
+      nextMonth = 12;
+      nextYear--;
+    } else if (nextMonth > 12) {
+      nextMonth = 1;
+      nextYear++;
     }
-  }
-
-  String _getMonthName(int monthNumber) {
-    switch (monthNumber) {
-      case 1:
-        return 'Jan';
-      case 2:
-        return 'Feb';
-      case 3:
-        return 'Mar';
-      case 4:
-        return 'Apr';
-      case 5:
-        return 'May';
-      case 6:
-        return 'Jun';
-      case 7:
-        return 'Jul';
-      case 8:
-        return 'Aug';
-      case 9:
-        return 'Sep';
-      case 10:
-        return 'Oct';
-      case 11:
-        return 'Nov';
-      case 12:
-        return 'Dec';
-      default:
-        return '';
-    }
+    analyticsMonthlyText = '${CurrentValues.getMonthName(nextMonth)} $nextYear';
+    analyticsMonthly = DateTime(nextYear, nextMonth, 1);
+    startDate = DateTime(nextYear, nextMonth, 1);
+    endDate = DateTime(nextYear, nextMonth + 1, 1);
+    getAllTransaction();
   }
 
   void getCurrentYear() {
-    DateTime currenttime = DateTime.now();
-    startDate = DateTime(currenttime.year, 1, 1);
-    endDate = DateTime(currenttime.year + 1, 1, 1);
+    DateTime currentTime = DateTime.now();
+    startDate = DateTime(currentTime.year, 1, 1);
+    endDate = DateTime(currentTime.year + 1, 1, 1);
     getAllTransaction();
   }
 
   void getCurrentMonth() {
-    DateTime currenttime = DateTime.now();
-    startDate = DateTime(currenttime.year, currenttime.month, 1);
-    endDate = DateTime(currenttime.year, currenttime.month + 1, 1);
+    DateTime currentTime = DateTime.now();
+    startDate = DateTime(currentTime.year, currentTime.month, 1);
+    endDate = DateTime(currentTime.year, currentTime.month + 1, 1);
     getAllTransaction();
   }
 
   void updateYear(int id) {
-    if (id == 0) {
-      DateTime currentyear = analytics_yearly!;
+    DateTime currentYear = analyticsYearly!;
+    int nextYear = id == 0 ? currentYear.year - 1 : currentYear.year + 1;
 
-      int nextyear = currentyear.year - 1;
-
-      analytics_yearly_text = nextyear.toString();
-      analytics_yearly = DateTime(nextyear, 1, 1);
-      startDate = DateTime(nextyear, 1, 1);
-      endDate = DateTime(nextyear + 1, 1, 1);
-      getAllTransaction();
-    } else {
-      DateTime currentyear = analytics_yearly!;
-      print(currentyear);
-      int nextyear = currentyear.year + 1;
-      print(nextyear);
-      analytics_yearly_text = nextyear.toString();
-      analytics_yearly = DateTime(nextyear, 1, 1);
-      startDate = DateTime(nextyear, 1, 1);
-      endDate = DateTime(nextyear + 1, 1, 1);
-      getAllTransaction();
-    }
+    analyticsYearlyText = nextYear.toString();
+    analyticsYearly = DateTime(nextYear, 1, 1);
+    startDate = DateTime(nextYear, 1, 1);
+    endDate = DateTime(nextYear + 1, 1, 1);
+    getAllTransaction();
   }
 
   @override
   void initState() {
     super.initState();
-    uid = FirebaseAuth.instance.currentUser!.uid;
-    analytics_monthly_text = DateFormat.yMMM().format(analytics_monthly!);
-    analytics_yearly_text = DateFormat.y().format(analytics_yearly!);
+    uid = UserData.currentUserId;
+    analyticsMonthlyText = DateFormat.yMMM().format(analyticsMonthly!);
+    analyticsYearlyText = DateFormat.y().format(analyticsYearly!);
     getWeekDates();
   }
 
   @override
   Widget build(BuildContext context) {
-    final brightness = MediaQuery.of(context).platformBrightness;
-    bool isDarkMode = brightness == Brightness.dark;
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primary,
       body: SingleChildScrollView(
         child: Container(
-          padding: EdgeInsets.only(left: 10,right: 10,top: 15),
+          padding: const EdgeInsets.only(left: 10, right: 10, top: 15),
           child: Column(
             children: [
-              // Text('Transaction Analysis',style: TextStyle(color: PrimaryColor.color_bottle_green,fontSize: MediaQuery.of(context).size.height*0.03),),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               Row(
@@ -391,7 +308,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                           borderRadius: BorderRadius.circular(10)),
                       side: BorderSide(
                           color: (value == 0)
-                              ? PrimaryColor.color_bottle_green
+                              ? PrimaryColor.colorBottleGreen
                               : Theme.of(context).colorScheme.secondary),
                     ),
                     child: Padding(
@@ -399,22 +316,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                           horizontal: 1.0, vertical: 3.0),
                       child: Column(
                         children: [
-                          Text(
-                            "Weekly",
-                            style: TextStyle(
-                              color: (value == 0)
-                                  ? PrimaryColor.color_bottle_green
-                                  : Theme.of(context).colorScheme.secondary,
-                            ),
-                          ),
-                          Text(
-                            "Analysis",
-                            style: TextStyle(
-                              color: (value == 0)
-                                  ? PrimaryColor.color_bottle_green
-                                  : Theme.of(context).colorScheme.secondary,
-                            ),
-                          ),
+                          CustomTextStyle(customTextStyleText: 'Weekly\nAnalysis', customTextColor: (value == 0) ? PrimaryColor.colorBottleGreen : Theme.of(context).colorScheme.secondary, customTextFontWeight: FontWeight.w400, customtextstyle: null, customTextSize: ScreenUtil().setSp(15))
                         ],
                       ),
                     ),
@@ -434,7 +336,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                           borderRadius: BorderRadius.circular(10)),
                       side: BorderSide(
                           color: (value == 1)
-                              ? PrimaryColor.color_bottle_green
+                              ? PrimaryColor.colorBottleGreen
                               : Theme.of(context).colorScheme.secondary),
                     ),
                     child: Padding(
@@ -442,22 +344,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                           horizontal: 1.0, vertical: 3.0),
                       child: Column(
                         children: [
-                          Text(
-                            "Monthly",
-                            style: TextStyle(
-                              color: (value == 1)
-                                  ? PrimaryColor.color_bottle_green
-                                  : Theme.of(context).colorScheme.secondary,
-                            ),
-                          ),
-                          Text(
-                            "Analysis",
-                            style: TextStyle(
-                              color: (value == 1)
-                                  ? PrimaryColor.color_bottle_green
-                                  : Theme.of(context).colorScheme.secondary,
-                            ),
-                          ),
+                          CustomTextStyle(customTextStyleText: 'Monthly\nAnalysis', customTextColor: (value == 1) ? PrimaryColor.colorBottleGreen : Theme.of(context).colorScheme.secondary, customTextFontWeight: FontWeight.w400, customtextstyle: null, customTextSize: ScreenUtil().setSp(15)),                          
                         ],
                       ),
                     ),
@@ -477,7 +364,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                           borderRadius: BorderRadius.circular(10)),
                       side: BorderSide(
                           color: (value == 2)
-                              ? PrimaryColor.color_bottle_green
+                              ? PrimaryColor.colorBottleGreen
                               : Theme.of(context).colorScheme.secondary),
                     ),
                     child: Padding(
@@ -485,29 +372,14 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                           horizontal: 1.0, vertical: 3.0),
                       child: Column(
                         children: [
-                          Text(
-                            "Yearly",
-                            style: TextStyle(
-                              color: (value == 2)
-                                  ? PrimaryColor.color_bottle_green
-                                  : Theme.of(context).colorScheme.secondary,
-                            ),
-                          ),
-                          Text(
-                            "Analysis",
-                            style: TextStyle(
-                              color: (value == 2)
-                                  ? PrimaryColor.color_bottle_green
-                                  : Theme.of(context).colorScheme.secondary,
-                            ),
-                          ),
+                          CustomTextStyle(customTextStyleText: 'Yearly\nAnalysis', customTextColor: (value == 2) ? PrimaryColor.colorBottleGreen : Theme.of(context).colorScheme.secondary, customTextFontWeight: FontWeight.w400, customtextstyle: null, customTextSize: ScreenUtil().setSp(15)),                          
                         ],
                       ),
                     ),
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               Row(
@@ -527,30 +399,34 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                       Icons.chevron_left,
                       size: MediaQuery.of(context).size.height * 0.05,
                     ),
-                    color: PrimaryColor.color_bottle_green,
+                    color: PrimaryColor.colorBottleGreen,
                   ),
                   value == 0
                       ? Text(
-                          "$analytics_start_week_text",
+                          "$analyticsStartWeekText",
                           style: TextStyle(
-                            color: Theme.of(context).colorScheme.secondary,
+                              color: Theme.of(context).colorScheme.secondary,
                               fontSize:
                                   MediaQuery.of(context).size.height * 0.023),
                         )
                       : Container(
                           child: value == 1
                               ? Text(
-                                  '$analytics_monthly_text',
+                                  '$analyticsMonthlyText',
                                   style: TextStyle(
-                                    color: Theme.of(context).colorScheme.secondary,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary,
                                       fontSize:
                                           MediaQuery.of(context).size.height *
                                               0.023),
                                 )
                               : Text(
-                                  '$analytics_yearly_text',
+                                  '$analyticsYearlyText',
                                   style: TextStyle(
-                                    color: Theme.of(context).colorScheme.secondary,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary,
                                       fontSize:
                                           MediaQuery.of(context).size.height *
                                               0.023),
@@ -569,11 +445,11 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                       Icons.chevron_right,
                       size: MediaQuery.of(context).size.height * 0.05,
                     ),
-                    color: PrimaryColor.color_bottle_green,
+                    color: PrimaryColor.colorBottleGreen,
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               Row(
@@ -582,8 +458,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                   Card(
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20)),
-                      color: PrimaryColor.color_red,
-                      child: Container(
+                      color: PrimaryColor.colorRed,
+                      child: SizedBox(
                         width: MediaQuery.of(context).size.width * 0.43,
                         height: MediaQuery.of(context).size.height * 0.08,
                         child: Row(
@@ -593,13 +469,14 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                               child: Card(
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(60)),
-                                color: PrimaryColor.color_white,
-                                child: Container(
-                                  width: MediaQuery.of(context).size.width * 0.14,
+                                color: PrimaryColor.colorWhite,
+                                child: SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.14,
                                   height: MediaQuery.of(context).size.height,
                                   child: Icon(
                                     Icons.arrow_upward,
-                                    color: PrimaryColor.color_red,
+                                    color: PrimaryColor.colorRed,
                                     size: 32,
                                   ),
                                 ),
@@ -610,18 +487,18 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 CustomTextStyle(
-                                    customtextstyletext: "Spending",
-                                    customtextcolor: PrimaryColor.color_white,
-                                    customtextfontweight: FontWeight.normal,
+                                    customTextStyleText: "Spending",
+                                    customTextColor: PrimaryColor.colorWhite,
+                                    customTextFontWeight: FontWeight.normal,
                                     customtextstyle: null,
-                                    customtextsize: 16.0),
+                                    customTextSize: 16.0),
                                 CustomTextStyle(
-                                    customtextstyletext:
-                                        "₹${spending_of_the_curentpagetransactions_value}",
-                                    customtextcolor: PrimaryColor.color_white,
-                                    customtextfontweight: FontWeight.bold,
+                                    customTextStyleText:
+                                        "₹$spendingOfCurrentPageTransactionsValue",
+                                    customTextColor: PrimaryColor.colorWhite,
+                                    customTextFontWeight: FontWeight.w400,
                                     customtextstyle: null,
-                                    customtextsize: 14.5),
+                                    customTextSize: 14.5),
                               ],
                             )
                           ],
@@ -630,8 +507,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                   Card(
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20)),
-                      color: PrimaryColor.color_bottle_green,
-                      child: Container(
+                      color: PrimaryColor.colorBottleGreen,
+                      child: SizedBox(
                         width: MediaQuery.of(context).size.width * 0.43,
                         height: MediaQuery.of(context).size.height * 0.08,
                         child: Row(
@@ -641,13 +518,14 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                               child: Card(
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(60)),
-                                color: PrimaryColor.color_white,
-                                child: Container(
-                                  width: MediaQuery.of(context).size.width * 0.14,
+                                color: PrimaryColor.colorWhite,
+                                child: SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.14,
                                   height: MediaQuery.of(context).size.height,
                                   child: Icon(
                                     Icons.arrow_downward,
-                                    color: PrimaryColor.color_bottle_green,
+                                    color: PrimaryColor.colorBottleGreen,
                                     size: 32,
                                   ),
                                 ),
@@ -658,18 +536,18 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 CustomTextStyle(
-                                    customtextstyletext: "Income",
-                                    customtextcolor: PrimaryColor.color_white,
-                                    customtextfontweight: FontWeight.normal,
+                                    customTextStyleText: "Income",
+                                    customTextColor: PrimaryColor.colorWhite,
+                                    customTextFontWeight: FontWeight.normal,
                                     customtextstyle: null,
-                                    customtextsize: 16.0),
+                                    customTextSize: 16.0),
                                 CustomTextStyle(
-                                    customtextstyletext:
-                                        "₹${income_of_the_curentpagetransactions_value}",
-                                    customtextcolor: PrimaryColor.color_white,
-                                    customtextfontweight: FontWeight.bold,
+                                    customTextStyleText:
+                                        "₹$incomeOfTheCurrentPageTransactionsValue",
+                                    customTextColor: PrimaryColor.colorWhite,
+                                    customTextFontWeight: FontWeight.w400,
                                     customtextstyle: null,
-                                    customtextsize: 14.5),
+                                    customTextSize: 14.5),
                               ],
                             )
                           ],
@@ -681,35 +559,39 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 height: 10,
               ),
               Center(
-                child: Container(
+                child: SizedBox(
                     height: MediaQuery.of(context).size.height * 0.05,
                     width: MediaQuery.of(context).size.width * 0.45,
                     child: Card(
                       color: Theme.of(context).colorScheme.primary,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18),side: BorderSide(color: Theme.of(context).colorScheme.secondary)),
-                
-                      
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18),
+                          // side: BorderSide(
+                          //     color: Theme.of(context).colorScheme.secondary)
+                          ),
                       child: Center(
-                          child: balance_of_the_curentpagetransactions_value! > 0 ?CustomTextStyle(
-                                      customtextstyletext:
-                                          "Balance: ₹${balance_of_the_curentpagetransactions_value}",
-                                      customtextcolor: Theme.of(context).colorScheme.secondary,
-                                      customtextfontweight: FontWeight.normal,
-                                      customtextstyle: null,
-                                      customtextsize: 15.0)
-                                  :CustomTextStyle(
-                                      customtextstyletext:
-                                          "Balance: - ₹${balance_of_the_curentpagetransactions_value?.abs()}",
-                                      customtextcolor: Theme.of(context).colorScheme.secondary,
-                                      customtextfontweight: FontWeight.normal,
-                                      customtextstyle: null,
-                                      customtextsize: 15.0)),
+                          child: balanceOfCurrentPageTransactionsValue! > 0
+                              ? CustomTextStyle(
+                                  customTextStyleText:
+                                      "Balance: ₹$balanceOfCurrentPageTransactionsValue",
+                                  customTextColor:
+                                      Theme.of(context).colorScheme.secondary,
+                                  customTextFontWeight: FontWeight.normal,
+                                  customtextstyle: null,
+                                  customTextSize: 15.0)
+                              : CustomTextStyle(
+                                  customTextStyleText:
+                                      "Balance: - ₹${balanceOfCurrentPageTransactionsValue?.abs()}",
+                                  customTextColor:
+                                      Theme.of(context).colorScheme.secondary,
+                                  customTextFontWeight: FontWeight.normal,
+                                  customtextstyle: null,
+                                  customTextSize: 15.0)),
                     )),
               ),
               const SizedBox(
                 height: 10,
               ),
-        
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Row(
@@ -719,45 +601,57 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                       style: TextStyle(
                           color: Theme.of(context).colorScheme.secondary,
                           fontSize: MediaQuery.of(context).size.height * 0.024,
-                          fontWeight: FontWeight.bold),
+                          fontWeight: FontWeight.w400),
                     ),
                   ],
                 ),
               ),
               Card(
                 color: Theme.of(context).colorScheme.primary,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18),side: BorderSide(color: Theme.of(context).colorScheme.secondary)),
-                child: Container(
+                elevation: 5,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18),
+                    // side: BorderSide(
+                    //     color: Theme.of(context).colorScheme.secondary)
+                        ),
+                child: SizedBox(
                   height: MediaQuery.of(context).size.height * 0.30,
-                  child: 
-                  curentpagespendingtransactions.length==0 ?Center(child: Text('No Data',style: TextStyle(fontWeight: FontWeight.bold,fontSize: MediaQuery.of(context).size.height*0.025,color: Theme.of(context).hintColor),),)
-                      :SfCircularChart(series: <CircularSeries>[
-                    PieSeries<AllTransactionDetails, String>(
-                        dataSource: curentpagespendingtransactions,
-                        xValueMapper: (AllTransactionDetails data, _) =>
-                            data.transactionnote as String,
-                        yValueMapper: (AllTransactionDetails data, _) =>
-                            data.transactionAmount,
-                        dataLabelMapper: (AllTransactionDetails data, _) =>
-                            data.transactionnote!+ '\n' + (data.transactionAmount).toString() as String,
-                        radius: '55%',
-                        dataLabelSettings: DataLabelSettings(
-                          textStyle: TextStyle(color:Theme.of(context).hintColor),
-                            isVisible: true,
-                            margin: EdgeInsets.zero,
-                            labelIntersectAction: LabelIntersectAction.none,
-                            overflowMode: OverflowMode.shift,
-                            // groupMode: CircularChartGroupMode.value,
-                            showZeroValue: true,
-                            labelPosition: ChartDataLabelPosition.outside,
-                            connectorLineSettings: ConnectorLineSettings(
-                                length: '20%', type: ConnectorType.line)))
-                  ]),
+                  child: currentPageSpendingTransactions.isEmpty
+                      ? const Center(
+                          child: CustomNoData(),
+                        )
+                      : SfCircularChart(series: <CircularSeries>[
+                          PieSeries<AllTransactionDetails, String>(
+                              dataSource: currentPageSpendingTransactions,
+                              xValueMapper: (AllTransactionDetails data, _) =>
+                                  data.transactionNote as String,
+                              yValueMapper: (AllTransactionDetails data, _) =>
+                                  data.transactionAmount,
+                              dataLabelMapper: (AllTransactionDetails data,
+                                      _) =>
+                                  '${data.transactionNote!}\n${data.transactionAmount}',
+                              radius: '55%',
+                              dataLabelSettings: DataLabelSettings(
+                                  textStyle: TextStyle(
+                                      color: Theme.of(context).hintColor),
+                                  isVisible: true,
+                                  margin: EdgeInsets.zero,
+                                  labelIntersectAction:
+                                      LabelIntersectAction.none,
+                                  overflowMode: OverflowMode.shift,
+                                  // groupMode: CircularChartGroupMode.value,
+                                  showZeroValue: true,
+                                  labelPosition: ChartDataLabelPosition.outside,
+                                  connectorLineSettings:
+                                      const ConnectorLineSettings(
+                                          length: '20%',
+                                          type: ConnectorType.line)))
+                        ]),
                 ),
               ),
-        
-              const SizedBox(height: 10,),
-        
+              const SizedBox(
+                height: 10,
+              ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Row(
@@ -767,45 +661,55 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                       style: TextStyle(
                           color: Theme.of(context).colorScheme.secondary,
                           fontSize: MediaQuery.of(context).size.height * 0.024,
-                          fontWeight: FontWeight.bold),
+                          fontWeight: FontWeight.w400),
                     ),
                   ],
                 ),
               ),
               Card(
                 color: Theme.of(context).colorScheme.primary,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18),side: BorderSide(color: Theme.of(context).colorScheme.secondary)),
-                child: Container(
+                elevation: 5,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18),
+                    // side: BorderSide(
+                    //     color: Theme.of(context).colorScheme.secondary)
+                        ),
+                child: SizedBox(
                   height: MediaQuery.of(context).size.height * 0.30,
-                  child: 
-                      curentpageIncometransactions.length==0 ?Center(child: Text('No Data',style: TextStyle(fontWeight: FontWeight.bold,fontSize: MediaQuery.of(context).size.height*0.025,color: Theme.of(context).hintColor),),)
-                      :SfCircularChart(series: <CircularSeries>[
-                        PieSeries<AllTransactionDetails, String>(
-                            dataSource: curentpageIncometransactions,
-                            xValueMapper: (AllTransactionDetails data, _) =>
-                                data.transactionnote,
-                            yValueMapper: (AllTransactionDetails data, _) =>
-                                data.transactionAmount,
-                            dataLabelMapper: (AllTransactionDetails data, _) =>
-                            data.transactionnote!+ '\n' + (data.transactionAmount).toString() as String,
-                            radius: '55%',
-                            dataLabelSettings: DataLabelSettings(
-                                textStyle: TextStyle(color:Theme.of(context).hintColor),
-
-                                isVisible: true,
-                                margin: EdgeInsets.zero,
-                                labelIntersectAction: LabelIntersectAction.none,
-                                overflowMode: OverflowMode.shift,
-                                // groupMode: CircularChartGroupMode.value,
-                                showZeroValue: true,
-                                labelPosition: ChartDataLabelPosition.outside,
-                                connectorLineSettings: ConnectorLineSettings(
-                                    length: '20%', type: ConnectorType.line)))
-                      ]),
-                    
+                  child: currentPageIncomeTransactions.isEmpty
+                      ? const Center(
+                          child: CustomNoData(),
+                        )
+                      : SfCircularChart(series: <CircularSeries>[
+                          PieSeries<AllTransactionDetails, String>(
+                              dataSource: currentPageIncomeTransactions,
+                              xValueMapper: (AllTransactionDetails data, _) =>
+                                  data.transactionNote,
+                              yValueMapper: (AllTransactionDetails data, _) =>
+                                  data.transactionAmount,
+                              dataLabelMapper: (AllTransactionDetails data,
+                                      _) =>
+                                  '${data.transactionNote!}\n${data.transactionAmount}',
+                              radius: '55%',
+                              dataLabelSettings: DataLabelSettings(
+                                  textStyle: TextStyle(
+                                      color: Theme.of(context).hintColor),
+                                  isVisible: true,
+                                  margin: EdgeInsets.zero,
+                                  labelIntersectAction:
+                                      LabelIntersectAction.none,
+                                  overflowMode: OverflowMode.shift,
+                                  // groupMode: CircularChartGroupMode.value,
+                                  showZeroValue: true,
+                                  labelPosition: ChartDataLabelPosition.outside,
+                                  connectorLineSettings:
+                                      const ConnectorLineSettings(
+                                          length: '20%',
+                                          type: ConnectorType.line)))
+                        ]),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               Padding(
@@ -817,20 +721,25 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.secondary,
                         fontSize: MediaQuery.of(context).size.height * 0.024,
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w400,
                       ),
                       textAlign: TextAlign.left,
                     ),
                   ],
                 ),
               ),
-        
-              Container(
+              SizedBox(
                 height: MediaQuery.of(context).size.height * 0.150,
                 width: MediaQuery.of(context).size.width,
                 child: Card(
                   color: Theme.of(context).colorScheme.primary,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18),side: BorderSide(color:Theme.of(context).colorScheme.secondary,)),
+                  elevation: 5,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18),
+                      // side: BorderSide(
+                      //   color: Theme.of(context).colorScheme.secondary,
+                      // )
+                      ),
                   child: Padding(
                     padding: const EdgeInsets.all(15.0),
                     child: Column(
@@ -841,77 +750,89 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                             Text(
                               'Number of Transaction',
                               style: TextStyle(
-                                  fontSize:
-                                      MediaQuery.of(context).size.height * 0.022,color:Theme.of(context).hintColor),
+                                  fontSize: MediaQuery.of(context).size.height *
+                                      0.022,
+                                  color: Theme.of(context).colorScheme.secondary),
                             ),
                             Text(
-                              '$len_of_all_transactions',
+                              '${currentPageTransactions.length}',
                               style: TextStyle(
-                                  fontSize:
-                                      MediaQuery.of(context).size.height * 0.022,color:Theme.of(context).hintColor),
+                                  fontSize: MediaQuery.of(context).size.height *
+                                      0.022,
+                                  color: Theme.of(context).colorScheme.secondary),
                             )
                           ],
                         ),
-                        
                         Container(
-                          padding: EdgeInsets.fromLTRB(20, 0, 0, 5),
+                          padding: const EdgeInsets.only(left: 20, bottom: 5),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
                                 'Average Income',
                                 style: TextStyle(
-                                    fontSize: MediaQuery.of(context).size.height *
-                                        0.020,color:Theme.of(context).hintColor),
+                                    fontSize:
+                                        MediaQuery.of(context).size.height *
+                                            0.020,
+                                    color: Theme.of(context).colorScheme.secondary),
                               ),
-                              average_income!.isNaN
+                              averageIncome!.isNaN
                                   ? Text(
                                       '₹0.0',
                                       style: TextStyle(
-                                          fontSize:
-                                              MediaQuery.of(context).size.height *
-                                                  0.020,color:Theme.of(context).hintColor),
+                                          fontSize: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.020,
+                                          color: Theme.of(context).colorScheme.secondary),
                                     )
                                   : Text(
-                                      '₹$average_income',
+                                      '₹$averageIncome',
                                       style: TextStyle(
-                                          fontSize:
-                                              MediaQuery.of(context).size.height *
-                                                  0.020,color:Theme.of(context).hintColor),
+                                          fontSize: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.020,
+                                          color: Theme.of(context).colorScheme.secondary),
                                     ),
                             ],
                           ),
                         ),
                         Container(
-                          padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
+                          padding: const EdgeInsets.only(left: 20),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
                                 'Average Spending',
                                 style: TextStyle(
-                                    fontSize: MediaQuery.of(context).size.height *
-                                        0.020,color:Theme.of(context).hintColor),
+                                    fontSize:
+                                        MediaQuery.of(context).size.height *
+                                            0.020,
+                                    color: Theme.of(context).colorScheme.secondary),
                               ),
-                              average_spending!.isNaN
+                              averageSpending!.isNaN
                                   ? Text(
                                       '₹0.0',
                                       style: TextStyle(
-                                          fontSize:
-                                              MediaQuery.of(context).size.height *
-                                                  0.020,color:Theme.of(context).hintColor),
+                                          fontSize: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.020,
+                                          color: Theme.of(context).colorScheme.secondary),
                                     )
                                   : Text(
-                                      '₹$average_spending',
+                                      '₹$averageSpending',
                                       style: TextStyle(
-                                          fontSize:
-                                              MediaQuery.of(context).size.height *
-                                                  0.020,color:Theme.of(context).hintColor),
+                                          fontSize: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.020,
+                                          color: Theme.of(context).colorScheme.secondary),
                                     )
                             ],
                           ),
                         ),
-                        
                       ],
                     ),
                   ),
@@ -921,25 +842,49 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   GestureDetector(
-                    onTap: ()async{
-                      final pdfFile;
-                      value==0 ?pdfFile = await PdfInvoiceApi.generate(curentpagetransactions,analytics_start_week_text!,"Weekly Analysis",income_of_the_curentpagetransactions_value!,spending_of_the_curentpagetransactions_value!,balance_of_the_curentpagetransactions_value!) 
-                      :value==1 ?pdfFile = await PdfInvoiceApi.generate(curentpagetransactions,analytics_monthly_text!,"Monthly Analysis",income_of_the_curentpagetransactions_value!,spending_of_the_curentpagetransactions_value!,balance_of_the_curentpagetransactions_value!) 
-                      :pdfFile = await PdfInvoiceApi.generate(curentpagetransactions,analytics_yearly_text!,"Yearly Analysis",income_of_the_curentpagetransactions_value!,spending_of_the_curentpagetransactions_value!,balance_of_the_curentpagetransactions_value!);
-                      
-                              PdfApi.openFile(pdfFile);
+                    onTap: () async {
+                      final File pdfFile;
+                      value == 0
+                          ? pdfFile = await PdfInvoiceApi.generate(
+                              currentPageTransactions,
+                              analyticsStartWeekText!,
+                              "Weekly Analysis",
+                              incomeOfTheCurrentPageTransactionsValue!,
+                              spendingOfCurrentPageTransactionsValue!,
+                              balanceOfCurrentPageTransactionsValue!)
+                          : value == 1
+                              ? pdfFile = await PdfInvoiceApi.generate(
+                                  currentPageTransactions,
+                                  analyticsMonthlyText!,
+                                  "Monthly Analysis",
+                                  incomeOfTheCurrentPageTransactionsValue!,
+                                  spendingOfCurrentPageTransactionsValue!,
+                                  balanceOfCurrentPageTransactionsValue!)
+                              : pdfFile = await PdfInvoiceApi.generate(
+                                  currentPageTransactions,
+                                  analyticsYearlyText!,
+                                  "Yearly Analysis",
+                                  incomeOfTheCurrentPageTransactionsValue!,
+                                  spendingOfCurrentPageTransactionsValue!,
+                                  balanceOfCurrentPageTransactionsValue!);
+                      PdfApi.openFile(pdfFile);
                     },
                     child: Card(
-                                          color: PrimaryColor.color_bottle_green,
-                    
+                      color: PrimaryColor.colorBottleGreen,
                       child: Padding(
                         padding: const EdgeInsets.all(6.0),
                         child: Row(
                           children: [
-                            Icon(Icons.file_download,color: PrimaryColor.color_white,),
+                            Icon(
+                              Icons.file_download,
+                              color: PrimaryColor.colorWhite,
+                            ),
                             Text(
                               "Download stats",
-                              style: TextStyle(fontSize: MediaQuery.of(context).size.height*0.02, color: PrimaryColor.color_white),
+                              style: TextStyle(
+                                  fontSize:
+                                      MediaQuery.of(context).size.height * 0.02,
+                                  color: PrimaryColor.colorWhite),
                             ),
                           ],
                         ),

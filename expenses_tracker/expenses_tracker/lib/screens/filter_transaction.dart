@@ -1,12 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
-
+import '../model/localtransaction.dart';
 import '../model/transaction.dart';
 import '../utils/const.dart';
 import '../utils/validation.dart';
-import '../widgets/custom_textstyle.dart';
 import '../widgets/custom_transaction.dart';
 
 class FilterTransaction extends StatefulWidget {
@@ -21,134 +22,40 @@ class _FilterTransactionState extends State<FilterTransaction> {
   DateTime? startDate;
   DateTime? endDate;
   String? uid;
-  bool _isloading = false;
-  Color iconcolor = PrimaryColor.color_bottle_green;
-  static List<AllTransactionDetails> curentpagetransactions = [];
-  TextEditingController _startdateController = TextEditingController();
-  TextEditingController _enddateController = TextEditingController();
+  bool isLoading = false;
+  Color iconColor = PrimaryColor.colorBottleGreen;
+  static List<AllTransactionDetails> currentPageTransactions = [];
+  static List<LocalTransaction> betweenDatesTransaction=[];
+  final TextEditingController startDateController = TextEditingController();
+  final TextEditingController endDateController = TextEditingController();
   DateTime _dateTime = DateTime.now();
 
   @override
   void initState() {
     super.initState();
     uid = FirebaseAuth.instance.currentUser!.uid;
-    curentpagetransactions.clear();
-    _startdateController.text =
+    currentPageTransactions.clear();
+    startDateController.text =
         DateFormat('MMM dd, yyyy').format(DateTime.now()).toString();
-    _enddateController.text =
+    endDateController.text =
         DateFormat('MMM dd, yyyy').format(DateTime.now()).toString();
     startDate =
-        DateFormat('MMM d, yyyy').parse(_startdateController.text.toString());
+        DateFormat('MMM d, yyyy').parse(startDateController.text.toString());
     endDate =
-        DateFormat('MMM d, yyyy').parse(_enddateController.text.toString());
-    getFilterTransaction();
+        DateFormat('MMM d, yyyy').parse(endDateController.text.toString());
+    final tempTransaction= getTransactionsBetweenDates();
+    getDataFormated(tempTransaction);
+    // getFilterTransaction();
   }
-
-  Future<void> getFilterTransaction() async {
-    curentpagetransactions.clear();
-    setState(() {
-      _isloading = true;
-    });
-    try {
-      final snapshot = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(uid)
-          .collection('transaction')
-          .orderBy('transactionDate', descending: true)
-          .where('transactionDate', isGreaterThanOrEqualTo: startDate)
-          .where('transactionDate', isLessThanOrEqualTo: endDate)
-          .get();
-
-      final transactionData = snapshot.docs
-          .map((doc) => AllTransactionDetails(
-              uId: doc["uId"],
-              tID: doc['tID'],
-              transactionsubcategoryindex: doc['transactionsubcategoryindex'],
-              transactionAmount: doc['transactionAmount'],
-              transactioncategory: doc['transactionCategory'],
-              transactionDate: doc['transactionDate'],
-              transactionnote: doc['transactionnote'],
-              transactionpaymentmode: doc['transactionpaymentmode'],
-              transactionsubcategory: doc['transactionsubcategory'],
-              transactionCreatedAt: doc['transactionCreatedAt']))
-          .toList();
-
-      setState(() {
-        curentpagetransactions = transactionData;
-        _isloading = false;
-      });
-    } catch (e) {
-      setState(() {
-        _isloading = false;
-      });
-      print(e);
-    }
-  }
-
-  Future<void> _selectDateTime(BuildContext context, String option) async {
-    final picked = await showDatePicker(
-        context: context,
-        initialDate: _dateTime,
-        firstDate: DateTime(2023),
-        lastDate: DateTime.now(),
-        
-        builder: (context, child) {
-          return Theme(
-              
-            data: Theme.of(context).copyWith(
-              colorScheme: ColorScheme.light(
-                
-                primary: Theme.of(context).colorScheme.onPrimary,
-                onPrimary: Theme.of(context).colorScheme.primary,
-                onSurface: PrimaryColor.color_black,
-              ),
-              primaryTextTheme: TextTheme(),
-              textButtonTheme: TextButtonThemeData(
-                style: TextButton.styleFrom(
-                  primary: PrimaryColor.color_bottle_green,
-                ),
-              ),
-              hintColor: Colors.black38
-            ),
-            child: child!,
-          );
-        });
-    if (picked != null) {
-      if (option == "start") {
-        _dateTime = DateTime(picked.year, picked.month, picked.day, 00, 00);
-        _startdateController.text =
-            DateFormat('MMM dd, yyyy').format(_dateTime).toString();
-      } else {
-        _dateTime = DateTime(picked.year, picked.month, picked.day, 23, 59);
-        _enddateController.text =
-            DateFormat('MMM dd, yyyy').format(_dateTime).toString();
-      }
-      print("_dateTime $_dateTime");
-    }
-  }
-
-  void FilterTransaction() {
-    print("log");
-    String s_date = _startdateController.text;
-    String e_date = _enddateController.text;
-    startDate = DateFormat('MMM d, yyyy').parse(s_date);
-    endDate = DateFormat('MMM d, yyyy').parse(e_date);
-    if (endDate!.isBefore(startDate!)) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('End date must be after startDate'),
-      ));
-    }
-    getFilterTransaction();
-  }
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primary,
       body: Container(
-        height: MediaQuery.of(context).size.height,
+        height: MediaQuery.sizeOf(context).height,
         width: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.only(left: 10, right: 10, top: 10),
+        padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
         child: Column(
           children: [
             Text(
@@ -156,18 +63,18 @@ class _FilterTransactionState extends State<FilterTransaction> {
               style: TextStyle(
                   decorationColor: Theme.of(context).colorScheme.onPrimary,
                   color: Theme.of(context).colorScheme.onPrimary,
-                  fontSize: MediaQuery.of(context).size.height * 0.027),
+                  fontSize: MediaQuery.sizeOf(context).height * 0.027),
             ),
-            SizedBox(
+            const SizedBox(
               height: 05,
             ),
-            Container(
-              height: MediaQuery.of(context).size.height * 0.17,
+            SizedBox(
+              height: MediaQuery.sizeOf(context).height * 0.19,
               width: MediaQuery.of(context).size.width,
               child: Form(
                   child: Column(
                 children: [
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
                   Padding(
@@ -179,18 +86,18 @@ class _FilterTransactionState extends State<FilterTransaction> {
                           child: TextFormField(
                             style: TextStyle(
                               color: Theme.of(context).colorScheme.secondary,
-                              fontSize: MediaQuery.of(context).size.height*0.018,
+                              fontSize: ScreenUtil().setSp(15),
                             ),
                             readOnly: true,
                             onTap: () {
                               _selectDateTime(context, "start");
                             },
-                            controller: _startdateController,
+                            controller: startDateController,
                             validator: textFormFieldValidator,
                             decoration: InputDecoration(
-                                labelText: "Satrt Date",
+                                labelText: "Start Date",
                                 labelStyle: TextStyle(
-                                    fontSize: 13,
+                                    fontSize: ScreenUtil().setSp(13),
                                     color: Theme.of(context)
                                         .colorScheme
                                         .onPrimary), //label style
@@ -215,13 +122,13 @@ class _FilterTransactionState extends State<FilterTransaction> {
                                 hintText: "Select Start Date",
                                 hintStyle: TextStyle(
                                     color: Theme.of(context).hintColor),
-                                prefixIconConstraints: BoxConstraints.tightFor(
+                                prefixIconConstraints: const BoxConstraints.tightFor(
                                     height: 25, width: 50)),
                                     
                           ),
                         ),
                         SizedBox(
-                          width: 07,
+                          width: ScreenUtil().screenWidth/25,
                         ),
                         Flexible(
                           flex: 2,
@@ -230,18 +137,17 @@ class _FilterTransactionState extends State<FilterTransaction> {
                                 Theme.of(context).colorScheme.secondary,
                             style: TextStyle(
                                 color: Theme.of(context).colorScheme.secondary,                              
-                                fontSize: MediaQuery.of(context).size.height*0.018,
-),
+                                fontSize: ScreenUtil().setSp(15)),
                             readOnly: true,
                             onTap: () {
                               _selectDateTime(context, "end");
                             },
-                            controller: _enddateController,
+                            controller: endDateController,
                             validator: textFormFieldValidator,
                             decoration: InputDecoration(
                                 labelText: "End Date",
                                 labelStyle: TextStyle(
-                                    fontSize: 13,
+                                    fontSize: ScreenUtil().setSp(13),
                                     color: Theme.of(context)
                                         .colorScheme
                                         .onPrimary), //label style
@@ -265,7 +171,7 @@ class _FilterTransactionState extends State<FilterTransaction> {
                                 hintText: "Select End Date",
                                 hintStyle: TextStyle(
                                     color: Theme.of(context).hintColor),
-                                prefixIconConstraints: BoxConstraints.tightFor(
+                                prefixIconConstraints: const BoxConstraints.tightFor(
                                     height: 25, width: 50)),
                           ),
                         ),
@@ -275,21 +181,23 @@ class _FilterTransactionState extends State<FilterTransaction> {
                   
                   TextButton(
                       onPressed: () {
-                        FilterTransaction();
+                        final tempTransaction= getTransactionsBetweenDates();
+                        getDataFormated(tempTransaction);
+                        // filterTransaction();
                       },
-                      child: Container(
-                          height: MediaQuery.of(context).size.height * 0.06,
+                      child: SizedBox(
+                          height: MediaQuery.sizeOf(context).height * 0.06,
                           width: MediaQuery.of(context).size.width * 0.99,
                           child: Card(
-                              color: PrimaryColor.color_bottle_green,
+                              color: PrimaryColor.colorBottleGreen,
                               child: Center(
                                   child: Text(
                                 "Display Transactions",
                                 style: TextStyle(
-                                    color: PrimaryColor.color_white,
+                                    color: PrimaryColor.colorWhite,
                                     fontWeight: FontWeight.bold,
                                     fontSize:
-                                        MediaQuery.of(context).size.height *
+                                        MediaQuery.sizeOf(context).height *
                                             0.018),
                               )))))
                 ],
@@ -303,88 +211,84 @@ class _FilterTransactionState extends State<FilterTransaction> {
                     'Transactions',
                     style: TextStyle(
                         color: Theme.of(context).colorScheme.secondary,
-                        fontSize: MediaQuery.of(context).size.height * 0.020),
+                        fontSize: MediaQuery.sizeOf(context).height * 0.020),
                   ),
                 )
               ],
             ),
             Flexible(
-              child: Container(
-                height: MediaQuery.of(context).size.height,
+              child: SizedBox(
+                height: MediaQuery.sizeOf(context).height,
                 width: MediaQuery.of(context).size.width,
-                child: curentpagetransactions.length == 0
+                child: currentPageTransactions.isEmpty
                     ? Center(
                         child: Text(
                         "No Data",
                         style: TextStyle(
                           fontSize:
-                              MediaQuery.of(context).size.height * 0.03,
+                              MediaQuery.sizeOf(context).height * 0.03,
                           fontWeight: FontWeight.bold,
                           color: Theme.of(context).hintColor,
                         ),
                       ))
                     : SingleChildScrollView(
                       scrollDirection: Axis.vertical,
-                        physics: AlwaysScrollableScrollPhysics(),
+                        physics: const AlwaysScrollableScrollPhysics(),
                         child: Padding(
                           padding: const EdgeInsets.all(4.0),
                           child: ListView.builder(
                             scrollDirection: Axis.vertical,
                               shrinkWrap: true,
                               primary: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              itemCount: curentpagetransactions.length,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: currentPageTransactions.length,
                               itemBuilder:
                                   (BuildContext context, int index) {
-                                int? subcateid =
-                                    curentpagetransactions[index]
-                                        .transactionsubcategoryindex;
-                                int? categoryid =
-                                    curentpagetransactions[index]
-                                        .transactioncategory;
-                                if (categoryid == 0) {
-                                  iconcolor =
-                                      PrimaryColor.color_bottle_green;
+                                int? subCateId =
+                                    currentPageTransactions[index]
+                                        .transactionSubcategoryIndex;
+                                int? categoryId =
+                                    currentPageTransactions[index]
+                                        .transactionCategory;
+                                if (categoryId == 0) {
+                                  iconColor =
+                                      PrimaryColor.colorBottleGreen;
                                 }
-                                if (categoryid == 1) {
-                                  iconcolor = PrimaryColor.color_red;
+                                if (categoryId == 1) {
+                                  iconColor = PrimaryColor.colorRed;
                                 }
-                                if (categoryid == 2) {
-                                  iconcolor =
-                                      PrimaryColor.color_bottle_green;
-                                }
-
-                                String datetimeformat =
-                                    "${curentpagetransactions[index].transactionDate?.toDate().toString()}";
-                                DateTime transaction_datetime =
-                                    curentpagetransactions[index]
+                                if (categoryId == 2) {
+                                  iconColor =
+                                      PrimaryColor.colorBottleGreen;
+                                }                              
+                                DateTime transactionDateTime =
+                                    currentPageTransactions[index]
                                         .transactionDate!
                                         .toDate();
 
-                                String datestamp = DateFormat.yMMMd()
-                                    .format(transaction_datetime);
-                                String timestamp = DateFormat.jm()
-                                    .format(transaction_datetime);
-                                String transaction_date_string =
-                                    "$datestamp $timestamp";
+                                String dateStamp = DateFormat.yMMMd()
+                                    .format(transactionDateTime);
+                                String timeStamp = DateFormat.jm()
+                                    .format(transactionDateTime);
+                                
                                 return CustomTransaction(
-                                    theme_color: Theme.of(context)
+                                    themeColor: Theme.of(context)
                                         .colorScheme
                                         .primary,
-                                    icon_color: iconcolor,
-                                    categoryid: categoryid,
-                                    subcateid: subcateid,
-                                    text_theme: Theme.of(context)
+                                    iconColor: iconColor,
+                                    categoryId: categoryId,
+                                    subCateId: subCateId,
+                                    textTheme: Theme.of(context)
                                         .colorScheme
                                         .secondary,
-                                    transaction_amount:
-                                        curentpagetransactions[index]
+                                    transactionAmount:
+                                        currentPageTransactions[index]
                                             .transactionAmount,
-                                    transactionnote:
-                                        curentpagetransactions[index]
-                                            .transactionnote,
-                                    datestamp: datestamp,
-                                    timestamp: timestamp);
+                                    transactionNote:
+                                        currentPageTransactions[index]
+                                            .transactionNote,
+                                    dateStamp: dateStamp,
+                                    timeStamp: timeStamp);
                               }),
                         ),
                       ),
@@ -395,4 +299,131 @@ class _FilterTransactionState extends State<FilterTransaction> {
       ),
     );
   }
+  void getDataFormated(Future<List<LocalTransaction>> tempTransaction) async{
+    betweenDatesTransaction= await tempTransaction;
+    setState(() {
+      currentPageTransactions=betweenDatesTransaction.map((e) => AllTransactionDetails(uId: e.userId, tID: e.tID, transactionDate: Timestamp.fromDate(e.tDateTime), transactionAmount: e.tAmount, transactionCategory: e.tCategory, transactionSubcategory: e.tSubcategory, transactionSubcategoryIndex: e.tSubcategoryIndex, transactionNote: e.tNote, transactionPaymentMode: e.tPaymentMode, transactionCreatedAt: Timestamp.fromDate(e.tCreatedAt))).toList();  
+      isLoading = false;
+    });
+
+  }
+
+  Future<List<LocalTransaction>> getAllLocalTransactions() async {
+    final box = await Hive.openBox<LocalTransaction>('local_transactions');
+    final transactions = box.values.toList();
+    for (var transaction in transactions) {
+      
+    }
+    return transactions;
+  }
+
+  Future<List<LocalTransaction>> getTransactionsBetweenDates() async {
+      String sDate = startDateController.text;
+    String eDate = endDateController.text;
+    startDate = DateFormat('MMM d, yyyy').parse(sDate);
+    endDate = DateFormat('MMM d, yyyy').parse(eDate);
+    startDate= DateTime(startDate!.year, startDate!.month, startDate!.day);
+    endDate= DateTime(endDate!.year, endDate!.month, endDate!.day, 23, 59, 59);
+  final transactions = await getAllLocalTransactions();
+  
+  final filteredTransactions = transactions.where((transaction) {
+    final transactionDate = transaction.tDateTime;
+    return transactionDate.isAfter(startDate!) && transactionDate.isBefore(endDate!) && UserData.currentUserId == transaction.userId;
+  }).toList();
+
+  filteredTransactions.sort((a, b) => a.tDateTime.compareTo(b.tDateTime));
+
+  return filteredTransactions;
+}
+  Future<void> getFilterTransaction() async {
+    currentPageTransactions.clear();
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      final snapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .collection('transaction')
+          .orderBy('transactionDate', descending: true)
+          .where('transactionDate', isGreaterThanOrEqualTo: startDate)
+          .where('transactionDate', isLessThanOrEqualTo: endDate)
+          .get();
+
+      final transactionData = snapshot.docs
+          .map((doc) => AllTransactionDetails(
+              uId: doc["uId"],
+              tID: doc['tID'],
+              transactionSubcategoryIndex: doc['transactionSubcategoryIndex'],
+              transactionAmount: doc['transactionAmount'],
+              transactionCategory: doc['transactionCategory'],
+              transactionDate: doc['transactionDate'],
+              transactionNote: doc['transactionNote'],
+              transactionPaymentMode: doc['transactionPaymentMode'],
+              transactionSubcategory: doc['transactionSubcategory'],
+              transactionCreatedAt: doc['transactionCreatedAt']))
+          .toList();
+
+      setState(() {
+        currentPageTransactions = transactionData;
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _selectDateTime(BuildContext context, String option) async {
+    final picked = await showDatePicker(
+        context: context,
+        initialDate: _dateTime,
+        firstDate: DateTime(2023),
+        lastDate: DateTime.now(),        
+        builder: (context, child) {
+          return Theme(              
+            data: Theme.of(context).copyWith(
+              colorScheme: ColorScheme.light(                
+                primary: Theme.of(context).colorScheme.onPrimary,
+                onPrimary: Theme.of(context).colorScheme.primary,
+                onSurface: PrimaryColor.colorBlack,
+              ),
+              primaryTextTheme: const TextTheme(),
+              textButtonTheme: TextButtonThemeData(
+                style: TextButton.styleFrom(
+                  foregroundColor: PrimaryColor.colorBottleGreen,
+                ),
+              ),
+              hintColor: Colors.black38
+            ),
+            child: child!,
+          );
+        });
+    if (picked != null) {
+      if (option == "start") {
+        _dateTime = DateTime(picked.year, picked.month, picked.day, 00, 00);
+        startDateController.text =
+            DateFormat('MMM dd, yyyy').format(_dateTime).toString();
+      } else {
+        _dateTime = DateTime(picked.year, picked.month, picked.day, 23, 59);
+        endDateController.text =
+            DateFormat('MMM dd, yyyy').format(_dateTime).toString();
+      }
+    }
+  }
+
+  void filterTransaction() {
+    String sDate = startDateController.text;
+    String eDate = endDateController.text;
+    startDate = DateFormat('MMM d, yyyy').parse(sDate);
+    endDate = DateFormat('MMM d, yyyy').parse(eDate);
+    if (endDate!.isBefore(startDate!)) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('End date must be after startDate'),
+      ));
+    }
+    getFilterTransaction();
+  }
+
 }

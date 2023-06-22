@@ -1,11 +1,8 @@
 import 'package:expenses_tracker/utils/const.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
-
-import 'custom_balance_card.dart';
-import 'custom_card.dart';
 import 'custom_header.dart';
-import 'custom_textstyle.dart';
+import 'custom_text_style.dart';
 
 class HomeSkeleton extends StatelessWidget {
   const HomeSkeleton({super.key});
@@ -14,7 +11,7 @@ class HomeSkeleton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Container(
-        padding: EdgeInsets.only(left: 10, right: 10, top: 15),
+        padding: const EdgeInsets.only(left: 10, right: 10, top: 15),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -28,23 +25,23 @@ class HomeSkeleton extends StatelessWidget {
                   Colors.grey[100]!,
                   Colors.grey[300]!
                 ],
-                stops: [0.1, 0.5, 0.9],
+                stops: const [0.1, 0.5, 0.9],
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CustomHeader(
-                      initial_of_name: "...",
+                      initialOfName: "...",
                       username: "....",
-                      wishingtext: "...",
-                      textColor: PrimaryColor.color_black),
+                      wishingText: "...",
+                      textColor: PrimaryColor.colorBlack),
                   const SizedBox(height: 25),
                   CustomTextStyle(
-                      customtextstyletext: "Current Month",
-                      customtextcolor: PrimaryColor.color_black,
-                      customtextfontweight: FontWeight.normal,
+                      customTextStyleText: "Current Month",
+                      customTextColor: PrimaryColor.colorBlack,
+                      customTextFontWeight: FontWeight.normal,
                       customtextstyle: null,
-                      customtextsize: 25.0),
+                      customTextSize: 25.0),
                   const SizedBox(
                     height: 7,
                   ),
@@ -55,7 +52,7 @@ class HomeSkeleton extends StatelessWidget {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20)),
                         color: Colors.grey[100]!,
-                        child: Container(
+                        child: SizedBox(
                           width: MediaQuery.of(context).size.width * 0.43,
                           height: MediaQuery.of(context).size.height * 0.08,
                         ),
@@ -64,7 +61,7 @@ class HomeSkeleton extends StatelessWidget {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20)),
                         color: Colors.grey[100]!,
-                        child: Container(
+                        child: SizedBox(
                           width: MediaQuery.of(context).size.width * 0.43,
                           height: MediaQuery.of(context).size.height * 0.08,
                         ),
@@ -75,7 +72,7 @@ class HomeSkeleton extends StatelessWidget {
                     height: 10,
                   ),
                   Center(
-                      child: Container(
+                      child: SizedBox(
                           height: MediaQuery.of(context).size.height * 0.05,
                           width: MediaQuery.of(context).size.width * 0.45,
                           child: Card(
@@ -92,17 +89,17 @@ class HomeSkeleton extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         CustomTextStyle(
-                            customtextstyletext: "Personal Finance",
-                            customtextcolor: PrimaryColor.color_black,
-                            customtextfontweight: FontWeight.bold,
+                            customTextStyleText: "Personal Finance",
+                            customTextColor: PrimaryColor.colorBlack,
+                            customTextFontWeight: FontWeight.bold,
                             customtextstyle: null,
-                            customtextsize: 20),
-                        CustomTextStyle(
-                            customtextstyletext: "Set Manually",
-                            customtextcolor: Colors.blueAccent,
-                            customtextfontweight: FontWeight.bold,
+                            customTextSize: 20),
+                        const CustomTextStyle(
+                            customTextStyleText: "Set Manually",
+                            customTextColor: Colors.blueAccent,
+                            customTextFontWeight: FontWeight.bold,
                             customtextstyle: null,
-                            customtextsize: 14),
+                            customTextSize: 14),
                       ],
                     ),
                   ),
@@ -110,7 +107,7 @@ class HomeSkeleton extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20)),
                       color: Colors.grey[100]!,
-                      child: Container(
+                      child: SizedBox(
                         height: MediaQuery.of(context).size.height * 0.30,
                         width: MediaQuery.of(context).size.width,
                       )),
@@ -121,17 +118,17 @@ class HomeSkeleton extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         CustomTextStyle(
-                            customtextstyletext: "Recent Transaction",
-                            customtextcolor: PrimaryColor.color_black,
-                            customtextfontweight: FontWeight.bold,
+                            customTextStyleText: "Recent Transaction",
+                            customTextColor: PrimaryColor.colorBlack,
+                            customTextFontWeight: FontWeight.bold,
                             customtextstyle: null,
-                            customtextsize: 20),
-                        CustomTextStyle(
-                            customtextstyletext: "View all",
-                            customtextcolor: Colors.blueAccent,
-                            customtextfontweight: FontWeight.bold,
+                            customTextSize: 20),
+                        const CustomTextStyle(
+                            customTextStyleText: "View all",
+                            customTextColor: Colors.blueAccent,
+                            customTextFontWeight: FontWeight.bold,
                             customtextstyle: null,
-                            customtextsize: 14),
+                            customTextSize: 14),
                       ],
                     ),
                   ),
@@ -139,7 +136,7 @@ class HomeSkeleton extends StatelessWidget {
                     color: Colors.grey[100]!,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(18)),
-                    child: Container(
+                    child: SizedBox(
                       height: MediaQuery.of(context).size.height * 0.112,
                       width: MediaQuery.of(context).size.width,
                     ),
@@ -148,7 +145,7 @@ class HomeSkeleton extends StatelessWidget {
                     color: Colors.grey[100]!,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(18)),
-                    child: Container(
+                    child: SizedBox(
                       height: MediaQuery.of(context).size.height * 0.112,
                       width: MediaQuery.of(context).size.width,
                     ),

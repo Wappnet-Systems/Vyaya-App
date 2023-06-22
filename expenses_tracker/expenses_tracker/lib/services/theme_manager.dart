@@ -12,19 +12,19 @@ class ThemeManager {
     _darkTheme = ThemeData.dark();
   }
 
-  bool? get _isDarkMode => _isDarkMode;
+  // bool? get _isDarkMode => isDarkMode;
 
   ThemeData? get lightTheme => _lightTheme;
 
   ThemeData? get darkTheme => _darkTheme;
 
   Future<void> loadTheme() async {
-    final prefs = await SharedPreferences.getInstance();
-    isDarkMode = prefs.getBool(_themePreferenceKey) ?? false;
+    final sharedPreferences = await SharedPreferences.getInstance();
+    isDarkMode = sharedPreferences.getBool(_themePreferenceKey) ?? false;
   }
 
   Future<void> setTheme(bool isDarkMode) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_themePreferenceKey, isDarkMode);
+    final sharedPreferences = await SharedPreferences.getInstance();
+    await sharedPreferences.setBool(_themePreferenceKey, isDarkMode);
   }
 }

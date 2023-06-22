@@ -5,24 +5,27 @@ class AllTransactionDetails {
   final String? tID;
   final Timestamp? transactionDate;
   final int? transactionAmount;
-  final int? transactioncategory;
-  final int? transactionsubcategory;
-  final int? transactionsubcategoryindex;
-  final String? transactionnote;
-  final String? transactionpaymentmode;
+  final int? transactionCategory;
+  final int? transactionSubcategory;
+  final int? transactionSubcategoryIndex;
+  final String? transactionNote;
+  final String? transactionPaymentMode;
   final Timestamp? transactionCreatedAt;
 
+  
   AllTransactionDetails(
       {required this.uId,
       required this.tID,
       required this.transactionDate,
       required this.transactionAmount,
-      required this.transactioncategory,
-      required this.transactionsubcategory,
-      required this.transactionsubcategoryindex,
-      required this.transactionnote,
-      required this.transactionpaymentmode,
+      required this.transactionCategory,
+      required this.transactionSubcategory,
+      required this.transactionSubcategoryIndex,
+      required this.transactionNote,
+      required this.transactionPaymentMode,
       required this.transactionCreatedAt});
 
-  // AllTransactionDetails({required this.transactionAmount,required this.transactioncategory,required this.transactionDate,required this.transactionnote,required this.transactionpaymentmode,required this.transactionsubcategory,required this.uId});
+  static fromJson(Map<String, dynamic> data) {}
+
+  // AllTransactionDetails({required this.transactionAmount,required this.transactionCategory,required this.transactionDate,required this.transactionNote,required this.transactionPaymentMode,required this.transactionSubcategory,required this.uId});
 }

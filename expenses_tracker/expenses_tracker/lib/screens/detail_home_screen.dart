@@ -1,26 +1,28 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:expenses_tracker/screens/pf_screen.dart';
 import 'package:expenses_tracker/screens/transaction_screen.dart';
 import 'package:expenses_tracker/screens/transactions_of_month.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import '../model/localtransaction.dart';
 import '../model/transaction.dart';
+import '../model/userlogin.dart';
 import '../model/users.dart';
 import '../utils/const.dart';
+import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 import '../utils/functions.dart';
 import '../widgets/build_skeleton.dart';
 import '../widgets/custom_balance_card.dart';
 import '../widgets/custom_card.dart';
 import '../widgets/custom_header.dart';
-import '../widgets/custom_linear_process_indicator.dart';
 import '../widgets/custom_no_data.dart';
-import '../widgets/custom_textstyle.dart';
+import '../widgets/custom_pf_row.dart';
+import '../widgets/custom_text_style.dart';
 import '../widgets/custom_transaction.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'home_screen.dart';
 
 class DetailHomeScreen extends StatefulWidget {
@@ -31,437 +33,888 @@ class DetailHomeScreen extends StatefulWidget {
 }
 
 class _DetailHomeScreenState extends State<DetailHomeScreen> {
-  static int needs_percentage = 50;
-  static int wants_percentage = 30;
-  static int saving_percentage = 20;
+  static int needsPercentage = 50;
+  static int wantsPercentage = 30;
+  static int savingPercentage = 20;
 
-  bool _isloading = false;
+  bool isLoading = false;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
-  String? wishingtext, curentmonth;
+  String? wishingText, currentMonth;
   List<AllTransactionDetails> transactions = [];
-  List<AllTransactionDetails> currentMonthtransactions = [];
-  String _savingtext = "";
-  String _needtext = "";
-  String _wanttext = "";
 
-  final TextEditingController _needscontroller = TextEditingController();
-  final TextEditingController _wantscontroller = TextEditingController();
-  final TextEditingController _savingcontroller = TextEditingController();
+  final TextEditingController needsController = TextEditingController();
+  final TextEditingController wantsController = TextEditingController();
+  final TextEditingController savingController = TextEditingController();
 
-  static double? _userScore = 0.0;
-  static String? pf_score;
-  static double? _needprogressValue = 0.0;
-  static double? _wantprogressValue = 0.0;
-  static double? _savingprogressValue = 0.0;
+  static double? userScore = 0.0;
+  static String? pfScore;
+  static double? needProgressValue = 0.0;
+  static double? wantProgressValue = 0.0;
+  static double? savingProgressValue = 0.0;
 
-  List<Users> listofUsers = [];
-  int _selectedIndex = 0;
-  Color iconcolor = PrimaryColor.color_bottle_green;
-  static String? username, initial_of_name, userId;
+  List<Users> listOfUsers = [];
+  Color iconColor = PrimaryColor.colorBottleGreen;
+  static String? username, initialOfName;
 
-  static List<AllTransactionDetails> curentmonthtransactions = [];
+  static List<AllTransactionDetails> currentMonthTransactions = [];
+  static List<AllTransactionDetails> currentMonthIncomeTransactions = [];
+  static List<AllTransactionDetails> currentMonthSpendingTransactions = [];
+  static List<AllTransactionDetails> currentMonthNeedsTransaction = [];
+  static List<AllTransactionDetails> currentMonthWantsTransaction = [];
+  static List<AllTransactionDetails> currentMonthSavingTransaction = [];
 
-  static List<AllTransactionDetails> curentmonthincometransactions = [];
-  static List<AllTransactionDetails> curentmonthspendingtransactions = [];
+  static List<LocalTransaction> recentTransaction = [];
 
-  static List<AllTransactionDetails> currentmonthneedstransaction = [];
-  static List<AllTransactionDetails> currentmonthwantstransaction = [];
-  static List<AllTransactionDetails> currentmonthsavingtransaction = [];
+  static List<int> incomeOfTheMonth = [];
+  static List<int> incomeOfTheMonthPf = [];
+  static List<int> spendingOfTheMonth = [];
+  static int? incomeOfTheMonthValue = 00;
+  static int? incomeForPersonalFinance = 00;
+  static int? spendingOfTheMonthValue = 00;
+  static int? balanceOfTheMonthValue = 00;
+  static int? balanceOfTheMonthPfValue = 00;
+  static double? needsOfTheMonthValue = 00;
+  static double? wantsOfTheMonthValue = 00;
+  static double? savingOfTheMonthValue = 00;
 
-  static List<int> income_of_the_month = [];
-  static List<int> income_of_the_month_pf = [];
-  static List<int> spending_of_the_month = [];
-  static int? income_of_the_month_value = 00;
-  static int? income_for_personal_finance = 00;
-  static int? spending_of_the_month_value = 00;
-  static int? balance_of_the_month_value = 00;
-  static int? balance_of_the_month_pf_value = 00;
-  static double? needs_of_the_month_value = 00;
-  static double? wants_of_the_month_value = 00;
-  static double? saving_of_the_month_value = 00;
+  static double? expenseNeedsOfTheValue = 00;
+  static double? expenseWantsOfTheValue = 00;
+  static double? expenseSavingOfTheValue = 00;
 
-  static double? expense_needs_of_the_value = 00;
-  static double? expense_wants_of_the_value = 00;
-  static double? expense_saving_of_the_value = 00;
-
-  String? uid;
-
-  Future<void> getBlanceOfMonth() async {
-    income_of_the_month.clear();
-    spending_of_the_month.clear();
-    income_of_the_month_pf.clear();
-    curentmonthspendingtransactions.clear();
-    currentmonthsavingtransaction.clear();
-    curentmonthincometransactions.clear();
-    currentmonthwantstransaction.clear();
-    currentmonthneedstransaction.clear();
-
-    income_of_the_month_value = 00;
-    balance_of_the_month_pf_value = 00;
-    income_for_personal_finance = 00;
-    spending_of_the_month_value = 00;
-    balance_of_the_month_value = 00;
-
-    needs_of_the_month_value = 00;
-    wants_of_the_month_value = 00;
-    saving_of_the_month_value = 00;
-
-    expense_needs_of_the_value = 00;
-    expense_wants_of_the_value = 00;
-    expense_saving_of_the_value = 00;
-
-    DateTime startDate = DateTime(
-        CurrentValues.getCurrentYear(), CurrentValues.getCurrentMonth(), 1);
-    DateTime endDate = DateTime(
-        CurrentValues.getCurrentYear(), CurrentValues.getCurrentMonth() + 1, 1);
-
-    setState(() {
-      _isloading = true;
-    });
-    try {
-      final snapshot = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(uid)
-          .collection('transaction')
-          .orderBy('transactionDate', descending: true)
-          .where('transactionDate', isGreaterThanOrEqualTo: startDate)
-          .where('transactionDate', isLessThanOrEqualTo: endDate)
-          .get();
-
-      final transactionData = snapshot.docs
-          .map((doc) => AllTransactionDetails(
-              uId: doc["uId"],
-              tID: doc['tID'],
-              transactionsubcategoryindex: doc['transactionsubcategoryindex'],
-              transactionAmount: doc['transactionAmount'],
-              transactioncategory: doc['transactionCategory'],
-              transactionDate: doc['transactionDate'],
-              transactionnote: doc['transactionnote'],
-              transactionpaymentmode: doc['transactionpaymentmode'],
-              transactionsubcategory: doc['transactionsubcategory'],
-              transactionCreatedAt: doc['transactionCreatedAt']))
-          .toList();
-
-      setState(() {
-        curentmonthtransactions = transactionData;
-        print(curentmonthtransactions.length);
-        print(transactionData.length);
-        findIncomeSpending();
-        _isloading = false;
-      });
-    } catch (e) {
-      setState(() {
-        _isloading = false;
-      });
-      print(e);
-    }
-  }
-
-  static void findIncomeSpending() {
-    for (int i = 0, j = 0, k = 0; i < curentmonthtransactions.length; i++) {
-      if (curentmonthtransactions[i].transactioncategory == 0 ||
-          curentmonthtransactions[i].transactioncategory == 3) {
-        if (curentmonthtransactions[i].transactioncategory == 0) {
-          income_of_the_month
-              .add(curentmonthtransactions[i].transactionAmount!);
-        } else {
-          print('Not to add in Personal Finance');
-          income_of_the_month
-              .add(curentmonthtransactions[i].transactionAmount!);
-          income_of_the_month_pf
-              .add(curentmonthtransactions[i].transactionAmount!);
-          curentmonthincometransactions.insert(
-              j,
-              AllTransactionDetails(
-                  uId: curentmonthtransactions[i].uId,
-                  tID: curentmonthtransactions[i].tID,
-                  transactionDate: curentmonthtransactions[i].transactionDate,
-                  transactionAmount:
-                      curentmonthtransactions[i].transactionAmount,
-                  transactioncategory:
-                      curentmonthtransactions[i].transactioncategory,
-                  transactionsubcategory:
-                      curentmonthtransactions[i].transactionsubcategory,
-                  transactionsubcategoryindex:
-                      curentmonthtransactions[i].transactionsubcategoryindex,
-                  transactionnote: curentmonthtransactions[i].transactionnote,
-                  transactionpaymentmode:
-                      curentmonthtransactions[i].transactionpaymentmode,
-                  transactionCreatedAt:
-                      curentmonthtransactions[i].transactionCreatedAt));
-          j++;
-        }
-      } else if (curentmonthtransactions[i].transactioncategory == 1) {
-        spending_of_the_month
-            .add(curentmonthtransactions[i].transactionAmount!);
-        curentmonthspendingtransactions.insert(
-            k,
-            AllTransactionDetails(
-                uId: curentmonthtransactions[i].uId,
-                tID: curentmonthtransactions[i].tID,
-                transactionDate: curentmonthtransactions[i].transactionDate,
-                transactionAmount: curentmonthtransactions[i].transactionAmount,
-                transactioncategory:
-                    curentmonthtransactions[i].transactioncategory,
-                transactionsubcategory:
-                    curentmonthtransactions[i].transactionsubcategory,
-                transactionsubcategoryindex:
-                    curentmonthtransactions[i].transactionsubcategoryindex,
-                transactionnote: curentmonthtransactions[i].transactionnote,
-                transactionpaymentmode:
-                    curentmonthtransactions[i].transactionpaymentmode,
-                transactionCreatedAt:
-                    curentmonthtransactions[i].transactionCreatedAt));
-
-        k++;
-      } else {}
-    }
-    print(
-        "spending_of_the_month.length ${curentmonthspendingtransactions.length}");
-    print("income_of_the_month.length ${income_of_the_month.length}");
-
-    totlaIncomOfTheMonth();
-    totlaExpensesOfTheMonth();
-    getBalance();
-  }
-
-  static void totlaIncomOfTheMonth() {
-    for (int i = 0; i < income_of_the_month.length; i++) {
-      income_of_the_month_value =
-          income_of_the_month[i] + income_of_the_month_value!;
-    }
-    for (int i = 0; i < income_of_the_month_pf.length; i++) {
-      income_for_personal_finance =
-          income_of_the_month_pf[i] + income_for_personal_finance!;
-    }
-  }
-
-  static void totlaExpensesOfTheMonth() {
-    for (int i = 0; i < spending_of_the_month.length; i++) {
-      spending_of_the_month_value =
-          spending_of_the_month[i] + spending_of_the_month_value!;
-    }
-  }
-
-  static void getBalance() {
-    balance_of_the_month_value =
-        (income_of_the_month_value! - spending_of_the_month_value!);
-    print(balance_of_the_month_value);
-
-    balance_of_the_month_pf_value =
-        (income_for_personal_finance! - spending_of_the_month_value!);
-
-    // curentmonthincometransactions[]
-    needs_of_the_month_value =
-        (income_for_personal_finance! * needs_percentage / 100) as double?;
-    wants_of_the_month_value =
-        (income_for_personal_finance! * wants_percentage / 100) as double?;
-    saving_of_the_month_value =
-        (income_for_personal_finance! * saving_percentage / 100) as double?;
-
-    getPersonalFinance();
-  }
-
-  static getPersonalFinance() {
-    for (int i = 0, j = 0, k = 0, x = 0;
-        i < curentmonthspendingtransactions.length;
-        i++) {
-      if (curentmonthspendingtransactions[i].transactionsubcategory == 0) {
-        currentmonthneedstransaction.insert(
-            j,
-            AllTransactionDetails(
-                uId: curentmonthspendingtransactions[i].uId,
-                tID: curentmonthspendingtransactions[i].tID,
-                transactionDate:
-                    curentmonthspendingtransactions[i].transactionDate,
-                transactionAmount:
-                    curentmonthspendingtransactions[i].transactionAmount,
-                transactioncategory:
-                    curentmonthspendingtransactions[i].transactioncategory,
-                transactionsubcategory:
-                    curentmonthspendingtransactions[i].transactionsubcategory,
-                transactionsubcategoryindex: curentmonthspendingtransactions[i]
-                    .transactionsubcategoryindex,
-                transactionnote:
-                    curentmonthspendingtransactions[i].transactionnote,
-                transactionpaymentmode:
-                    curentmonthspendingtransactions[i].transactionpaymentmode,
-                transactionCreatedAt:
-                    curentmonthspendingtransactions[i].transactionCreatedAt));
-        j++;
-      } else if (curentmonthspendingtransactions[i].transactionsubcategory ==
-          1) {
-        currentmonthwantstransaction.insert(
-            k,
-            AllTransactionDetails(
-                uId: curentmonthspendingtransactions[i].uId,
-                tID: curentmonthspendingtransactions[i].tID,
-                transactionDate:
-                    curentmonthspendingtransactions[i].transactionDate,
-                transactionAmount:
-                    curentmonthspendingtransactions[i].transactionAmount,
-                transactioncategory:
-                    curentmonthspendingtransactions[i].transactioncategory,
-                transactionsubcategory:
-                    curentmonthspendingtransactions[i].transactionsubcategory,
-                transactionsubcategoryindex: curentmonthspendingtransactions[i]
-                    .transactionsubcategoryindex,
-                transactionnote:
-                    curentmonthspendingtransactions[i].transactionnote,
-                transactionpaymentmode:
-                    curentmonthspendingtransactions[i].transactionpaymentmode,
-                transactionCreatedAt:
-                    curentmonthspendingtransactions[i].transactionCreatedAt));
-        k++;
-      } else if (curentmonthspendingtransactions[i].transactionsubcategory ==
-          2) {
-        currentmonthsavingtransaction.insert(
-            x,
-            AllTransactionDetails(
-                uId: curentmonthspendingtransactions[i].uId,
-                tID: curentmonthspendingtransactions[i].tID,
-                transactionDate:
-                    curentmonthspendingtransactions[i].transactionDate,
-                transactionAmount:
-                    curentmonthspendingtransactions[i].transactionAmount,
-                transactioncategory:
-                    curentmonthspendingtransactions[i].transactioncategory,
-                transactionsubcategory:
-                    curentmonthspendingtransactions[i].transactionsubcategory,
-                transactionsubcategoryindex: curentmonthspendingtransactions[i]
-                    .transactionsubcategoryindex,
-                transactionnote:
-                    curentmonthspendingtransactions[i].transactionnote,
-                transactionpaymentmode:
-                    curentmonthspendingtransactions[i].transactionpaymentmode,
-                transactionCreatedAt:
-                    curentmonthspendingtransactions[i].transactionCreatedAt));
-        x++;
-      } else {}
-    }
-    getAmountOfPersonalFinaance();
-  }
-
-  static void getAmountOfPersonalFinaance() {
-    for (int i = 0; i < currentmonthneedstransaction.length; i++) {
-      expense_needs_of_the_value =
-          (currentmonthneedstransaction[i].transactionAmount! +
-              expense_needs_of_the_value!);
-    }
-    for (int i = 0; i < currentmonthwantstransaction.length; i++) {
-      expense_wants_of_the_value =
-          (currentmonthwantstransaction[i].transactionAmount! +
-              expense_wants_of_the_value!);
-    }
-    for (int i = 0; i < currentmonthsavingtransaction.length; i++) {
-      expense_saving_of_the_value =
-          (currentmonthsavingtransaction[i].transactionAmount! +
-              expense_saving_of_the_value!);
-    }
-    _savingprogressValue =
-        ((1.0 * expense_saving_of_the_value!) / saving_of_the_month_value!);
-    _needprogressValue =
-        ((1.0 * expense_needs_of_the_value!) / needs_of_the_month_value!);
-    _wantprogressValue =
-        ((1.0 * expense_wants_of_the_value!) / wants_of_the_month_value!);
-
-    _userScore =
-        (_savingprogressValue! + _needprogressValue! + _wantprogressValue!) / 3;
-    _userScore = (_userScore! * 100);
-    _userScore = 100.00 - _userScore!;
-    if (_userScore! < 0) {
-      _userScore = 0.00;
-    }
-
-    if (_userScore! <= 0) {
-      pf_score = "Bad";
-    } else if (_userScore! >= 1 && _userScore! <= 60) {
-      pf_score = "Good";
-    } else if (_userScore! >= 61 && _userScore! <= 100) {
-      pf_score = "Excellent";
-    }
-
-    print("Value check: $_savingprogressValue");
-    print("Value check: $_needprogressValue");
-    print("Value check: $_wantprogressValue");
-
-    FirebaseFirestore firestore = FirebaseFirestore.instance;
-    String pf_name = DateFormat('MMM yyyy').format(DateTime.now()).toString();
-    ;
-
-    Timestamp createdAt = Timestamp.now();
-    final personal_finance_data = firestore
-        .collection('users')
-        .doc(userId)
-        .collection('personal_finance')
-        .doc(pf_name);
-    personal_finance_data.set({
-      'uId': userId,
-      'incomeForPF': income_for_personal_finance,
-      'balanceLeftOnPF': balance_of_the_month_pf_value,
-      'needAlocatedAmoount': needs_of_the_month_value,
-      'wantAlocatedAmoount': wants_of_the_month_value,
-      'savingAlocatedAmoount': saving_of_the_month_value,
-      'expenseOnNeed': expense_needs_of_the_value,
-      'expenseOnWant': expense_wants_of_the_value,
-      'expenseOnSaving': expense_saving_of_the_value,
-      'pfScore': _userScore,
-      'lastUpdated': createdAt
-    });
-  }
-
-  void loadVariableFromPrefs() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      needs_percentage = prefs.getInt('needs_percent') ?? needs_percentage;
-      wants_percentage = prefs.getInt('wants_percent') ?? wants_percentage;
-      saving_percentage = prefs.getInt('saving_percent') ?? saving_percentage;
-      _needscontroller.text = "$needs_of_the_month_value";
-      _wantscontroller.text = "$wants_of_the_month_value";
-      _savingcontroller.text = "$saving_of_the_month_value";
-    });
-  }
-
-  void saveNeedToPrefs(int need_value) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('needs_percent', need_value);
-  }
-
-  void savewantToPrefs(int want_value) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('wants_percent', want_value);
-  }
-
-  void saveSavingToPref(int saving_value) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    await prefs.setInt('saving_percent', saving_value);
-  }
-
-  var maskFormatter = new MaskTextInputFormatter(
-    mask: '##',
-    filter: {"#": RegExp(r'[0-9]')},
-  );
+  String? uId;
 
   @override
   void initState() {
-    uid = FirebaseAuth.instance.currentUser!.uid;
-    wishingtext = getCurrentHour();
-    curentmonth = getCurrentMonth();
-
+    wishingText = getCurrentHour();
+    currentMonth = DateFormat.yMMM().format(DateTime.now());
     getSingleUserData();
-    loadVariableFromPrefs();
+    loadVariableFromSharedPreferences();
     getAllTransaction();
     scheduleNotification();
     scheduleWeeklyNotification();
-    getBlanceOfMonth();
+    getBalanceOfMonth();
     super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+    double sliderWidth = screenWidth / 4;
+    double sliderHeight = screenHeight / 10;
+
+    return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.primary,
+      body: isLoading == true
+          ? const HomeSkeleton()
+          : SingleChildScrollView(
+              child: Container(
+                padding: const EdgeInsets.only(left: 10, right: 10, top: 15),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CustomHeader(
+                          initialOfName: initialOfName,
+                          username: username,
+                          wishingText: wishingText,
+                          textColor: Theme.of(context).colorScheme.secondary),
+                      const SizedBox(
+                        height: 25,
+                      ),
+                      CustomTextStyle(
+                          customTextStyleText: "$currentMonth",
+                          customTextColor:
+                              Theme.of(context).colorScheme.secondary,
+                          customTextFontWeight: FontWeight.normal,
+                          customtextstyle: null,
+                          customTextSize: 25.0),
+                      const SizedBox(
+                        height: 7,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const TransactionOfMonth(
+                                            id: 3,
+                                          )));
+                            },
+                            child: CustomCard(
+                                color: PrimaryColor.colorRed,
+                                icon: Icon(
+                                  Icons.arrow_upward,
+                                  color: PrimaryColor.colorRed,
+                                  size: 32,
+                                ),
+                                themeColor: PrimaryColor.colorWhite,
+                                speOrIncMonthValue: spendingOfTheMonthValue,
+                                title: "Spending"),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const TransactionOfMonth(
+                                            id: 2,
+                                          )));
+                            },
+                            child: CustomCard(
+                                color: PrimaryColor.colorBottleGreen,
+                                icon: Icon(
+                                  Icons.arrow_downward,
+                                  color: PrimaryColor.colorBottleGreen,
+                                  size: 32,
+                                ),
+                                themeColor: PrimaryColor.colorWhite,
+                                speOrIncMonthValue: incomeOfTheMonthValue,
+                                title: "Income"),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      CustomBalanceCard(
+                          balanceOfTheMonthValue: balanceOfTheMonthValue!,
+                          themeColor: Theme.of(context).cardColor,
+                          textThemeColor:
+                              Theme.of(context).colorScheme.secondary),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            CustomTextStyle(
+                                customTextStyleText: "Personal Finance",
+                                customTextColor:
+                                    Theme.of(context).colorScheme.secondary,
+                                customTextFontWeight: FontWeight.w400,
+                                customtextstyle: null,
+                                customTextSize: 20),
+                            GestureDetector(
+                              onTap: () {
+                                needsController.text = "$needsPercentage";
+                                wantsController.text = "$wantsPercentage";
+                                savingController.text = "$savingPercentage";
+
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    int needs = int.parse(needsController.text);
+                                    int wants = int.parse(wantsController.text);
+                                    int saving =
+                                        int.parse(savingController.text);
+                                    int? finalTotal;
+                                    finalTotal = needs + wants + saving;
+                                    return AlertDialog(
+                                      backgroundColor:
+                                          Theme.of(context).colorScheme.primary,
+                                      shape: RoundedRectangleBorder(
+                                          side: BorderSide(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .secondary),
+                                          borderRadius:
+                                              BorderRadius.circular(8)),
+                                      title: CustomTextStyle(
+                                          customTextStyleText:
+                                              "Set Personal Finance",
+                                          customTextColor: Theme.of(context)
+                                              .colorScheme
+                                              .secondary,
+                                          customTextFontWeight:
+                                              FontWeight.normal,
+                                          customtextstyle: null,
+                                          customTextSize: screenHeight * 0.025),
+                                      content: SizedBox(
+                                        height: screenHeight * 0.23,
+                                        child: Column(
+                                          children: [
+                                            CustomPfRow(
+                                                labelText: "Needs:",
+                                                hintText:
+                                                    "Set Needs Percentage",
+                                                textEditingController:
+                                                    needsController,
+                                                maskTextInputFormatter:
+                                                    maskFormatter),
+                                            CustomPfRow(
+                                                labelText: "Wants:",
+                                                hintText:
+                                                    "Set Wants Percentage",
+                                                textEditingController:
+                                                    wantsController,
+                                                maskTextInputFormatter:
+                                                    maskFormatter),
+                                            CustomPfRow(
+                                                labelText: "Saving:",
+                                                hintText:
+                                                    "Set Saving Percentage",
+                                                textEditingController:
+                                                    savingController,
+                                                maskTextInputFormatter:
+                                                    maskFormatter),
+                                            const SizedBox(
+                                              height: 07,
+                                            ),
+                                            finalTotal == 100
+                                                ? const Text('')
+                                                : Row(
+                                                    children: [
+                                                      Text(
+                                                        "Please Enter possible values",
+                                                        style: TextStyle(
+                                                            color: PrimaryColor
+                                                                .colorRed),
+                                                      ),
+                                                    ],
+                                                  ),
+                                          ],
+                                        ),
+                                      ),
+                                      actions: <Widget>[
+                                        GestureDetector(
+                                            onTap: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: Text(
+                                              "Cancel",
+                                              style: TextStyle(
+                                                  color: PrimaryColor.colorRed),
+                                            )),
+                                        const SizedBox(
+                                          width: 07,
+                                        ),
+                                        GestureDetector(
+                                            onTap: () {
+                                              finalTotal = int.parse(
+                                                      needsController.text) +
+                                                  int.parse(
+                                                      wantsController.text) +
+                                                  int.parse(
+                                                      savingController.text);
+
+                                              if (finalTotal == 100) {
+                                                pfManager(
+                                                    int.parse(
+                                                        wantsController.text),
+                                                    "wants_percent",
+                                                    int.parse(
+                                                        needsController.text),
+                                                    "needs_percent",
+                                                    int.parse(
+                                                        savingController.text),
+                                                    "saving_percent");
+                                                Navigator.pushReplacement(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            const HomeScreen()));
+                                              } else {}
+                                            },
+                                            child: Text(
+                                              "Save",
+                                              style: TextStyle(
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .onPrimary),
+                                            )),
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
+                              child: const CustomTextStyle(
+                                  customTextStyleText: "Set Manually",
+                                  customTextColor: Colors.blueAccent,
+                                  customTextFontWeight: FontWeight.w400,
+                                  customtextstyle: null,
+                                  customTextSize: 14),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: screenHeight * 0.44,
+                        width: MediaQuery.of(context).size.width,
+                        child: Card(
+                          elevation: 5,
+                          color: Theme.of(context).colorScheme.primary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18),
+                            
+                          ),
+                          child: incomeForPersonalFinance! <= 0
+                              ? const Center(
+                                  child: CustomNoData(),
+                                )
+                              : Column(
+                                  children: [
+                                    const SizedBox(height: 07,),
+                                    Row(
+                                      children: [
+                                        SizedBox(
+                                          width: screenWidth/2.201, child: Column(
+                                          children: [
+                                            Text("Amount Left",style: TextStyle(
+                                              color: Theme.of(context).hintColor,
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: screenHeight * 0.022,
+                                            ),),
+                                          Text(
+                                            formatCurrencyForBalance(balanceOfTheMonthPfValue),
+                                            style: TextStyle(
+                                              color: pfScore=='Excellent' ?PrimaryColor.colorBottleGreen :pfScore=='Good' ?PrimaryColor.colorBlue :PrimaryColor.colorRed,
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: screenHeight * 0.022,
+                                            ),
+                                          ),
+                                          ],
+                                        )),
+                                        SizedBox(
+                                          width: screenWidth/2.201, child: Column(
+                                          children : [
+                                            Text(
+                                            'Performance',
+                                            style: TextStyle(
+                                              color: Theme.of(context).hintColor,
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: screenHeight * 0.022,
+                                            ),),
+                                          Text(
+                                            '$pfScore',
+                                            style: TextStyle(
+                                              color: pfScore=='Excellent' ?PrimaryColor.colorBottleGreen :pfScore=='Good' ?PrimaryColor.colorBlue :PrimaryColor.colorRed,
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: screenHeight * 0.022,
+                                            ),
+                                          ),
+                                          ]
+                                          
+                                        ))                                        
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        Container(
+                                          padding: const EdgeInsets.all(12),
+                                          width: sliderWidth,
+                                          height: sliderHeight,
+                                          child: SleekCircularSlider(
+                                            appearance:
+                                                CircularSliderAppearance(
+                                              startAngle: 0,
+                                              angleRange: 360,
+                                              customColors: CustomSliderColors(
+                                                trackColor:
+                                                    Theme.of(context).hintColor,
+                                                progressBarColor: PrimaryColor
+                                                    .colorBottleGreen,
+                                                dotColor: PrimaryColor
+                                                    .colorBottleGreen,
+                                              ),
+                                              customWidths: CustomSliderWidths(
+                                                trackWidth: 1.5,
+                                                progressBarWidth: 2.5,
+                                                handlerSize: 4,
+                                              ),
+                                              infoProperties: InfoProperties(
+                                                modifier: (double value) {
+                                                  final roundedValue = value
+                                                      .ceil()
+                                                      .toInt()
+                                                      .toString();
+                                                  return '$roundedValue%';
+                                                },
+                                                mainLabelStyle: TextStyle(
+                                                    fontSize: 13.0,
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .secondary),
+                                              ),
+                                            ),
+                                            min: 0,
+                                            max: 100,
+                                            initialValue: (expenseNeedsOfTheValue! *
+                                                        100 /
+                                                        needsOfTheMonthValue!) <=
+                                                    0
+                                                ? 0
+                                                : (expenseNeedsOfTheValue! *
+                                                            100 /
+                                                            needsOfTheMonthValue!) >=
+                                                        100
+                                                    ? 100
+                                                    : (expenseNeedsOfTheValue! *
+                                                        100 /
+                                                        needsOfTheMonthValue!),
+                                          ),
+                                        ),
+                                        Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Container(
+                                              width: screenWidth / 1.7,
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 8.0),
+                                              child: Text(
+                                                'Needs',
+                                                style: TextStyle(
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .secondary,
+                                                    fontSize:
+                                                        screenHeight / 45),
+                                                textAlign: TextAlign.left,
+                                              ),
+                                            ),
+                                            Container(
+                                              width: screenWidth / 1.7,
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 8.0),
+                                              child: Row(
+                                                children: [
+                                                  Text(
+                                                    '${formatCurrency(expenseNeedsOfTheValue)} / ${formatCurrency(needsOfTheMonthValue)}',
+                                                    style: TextStyle(
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .secondary,
+                                                      fontSize:
+                                                          screenHeight / 55,
+                                                    ),
+                                                    textAlign: TextAlign.left,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        GestureDetector(
+                                            onTap: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          PfScreen(
+                                                            id: 0,
+                                                            transactions:
+                                                                currentMonthNeedsTransaction,
+                                                          )));
+                                            },
+                                            child: Icon(
+                                              Icons.arrow_forward_ios_outlined,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .secondary,
+                                              size: screenWidth / 20,
+                                            )),
+                                      ],
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 16.0),
+                                      child: Divider(color: Colors.grey[400]),
+                                    ),
+                                    Row(
+                                      children: [
+                                        Container(
+                                          padding: const EdgeInsets.all(12),
+                                          width: sliderWidth,
+                                          height: sliderHeight,
+                                          child: SleekCircularSlider(
+                                            appearance:
+                                                CircularSliderAppearance(
+                                              startAngle: 0,
+                                              angleRange: 360,
+                                              customColors: CustomSliderColors(
+                                                trackColor:
+                                                    Theme.of(context).hintColor,
+                                                progressBarColor:
+                                                    PrimaryColor.colorRed,
+                                                dotColor: PrimaryColor.colorRed,
+                                              ),
+                                              customWidths: CustomSliderWidths(
+                                                trackWidth: 1.5,
+                                                progressBarWidth: 2.5,
+                                                handlerSize: 4,
+                                              ),
+                                              infoProperties: InfoProperties(
+                                                modifier: (double value) {
+                                                  final roundedValue = value
+                                                      .ceil()
+                                                      .toInt()
+                                                      .toString();
+                                                  return '$roundedValue%';
+                                                },
+                                                mainLabelStyle: TextStyle(
+                                                    fontSize: 13.0,
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .secondary),
+                                              ),
+                                            ),
+                                            min: 0,
+                                            max: 100,
+                                            initialValue: (expenseWantsOfTheValue! *
+                                                        100 /
+                                                        wantsOfTheMonthValue!) <=
+                                                    0
+                                                ? 0
+                                                : (expenseWantsOfTheValue! *
+                                                            100 /
+                                                            wantsOfTheMonthValue!) >=
+                                                        100
+                                                    ? 100
+                                                    : (expenseWantsOfTheValue! *
+                                                        100 /
+                                                        wantsOfTheMonthValue!),
+                                          ),
+                                        ),
+                                        Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Container(
+                                              width: screenWidth / 1.7,
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 8.0),
+                                              child: Text(
+                                                'Wants',
+                                                style: TextStyle(
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .secondary,
+                                                    fontSize:
+                                                        screenHeight / 45),
+                                                textAlign: TextAlign.left,
+                                              ),
+                                            ),
+                                            Container(
+                                              width: screenWidth / 1.7,
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 8.0),
+                                              child: Text(
+                                                    '${formatCurrency(expenseWantsOfTheValue)} / ${formatCurrency(wantsOfTheMonthValue)}',
+                                                    style: TextStyle(
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .secondary,
+                                                      fontSize:
+                                                          screenHeight / 55,
+                                                    ),
+                                                    textAlign: TextAlign.left,
+                                                  ),
+                                            ),
+                                          ],
+                                        ),
+                                        GestureDetector(
+                                            onTap: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          PfScreen(
+                                                            id: 1,
+                                                            transactions:
+                                                                currentMonthWantsTransaction,
+                                                          )));
+                                            },
+                                            child: Icon(
+                                              Icons.arrow_forward_ios_outlined,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .secondary,
+                                              size: screenWidth / 20,
+                                            )),
+                                      ],
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 16.0),
+                                      child: Divider(color: Colors.grey[400]),
+                                    ),
+                                    Row(
+                                      children: [
+                                        Container(
+                                          padding: const EdgeInsets.all(12),
+                                          width: sliderWidth,
+                                          height: sliderHeight,
+                                          child: SleekCircularSlider(
+                                            appearance:
+                                                CircularSliderAppearance(
+                                              startAngle: 0,
+                                              angleRange: 360,
+                                              customColors: CustomSliderColors(
+                                                trackColor:
+                                                    Theme.of(context).hintColor,
+                                                progressBarColor:
+                                                    PrimaryColor.colorBlue,
+                                                dotColor:
+                                                    PrimaryColor.colorBlue,
+                                              ),
+                                              customWidths: CustomSliderWidths(
+                                                trackWidth: 1.5,
+                                                progressBarWidth: 2.5,
+                                                handlerSize: 4,
+                                              ),
+                                              infoProperties: InfoProperties(
+                                                modifier: (double value) {
+                                                  final roundedValue = value
+                                                      .ceil()
+                                                      .toInt()
+                                                      .toString();
+                                                  return '$roundedValue%';
+                                                },
+                                                mainLabelStyle: TextStyle(
+                                                    fontSize: 13.0,
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .secondary),
+                                              ),
+                                            ),
+                                            min: 0,
+                                            max: 100,
+                                            initialValue: (expenseSavingOfTheValue! *
+                                                        100 /
+                                                        savingOfTheMonthValue!) <=
+                                                    0
+                                                ? 0
+                                                : (expenseSavingOfTheValue! *
+                                                            100 /
+                                                            savingOfTheMonthValue!) >=
+                                                        100
+                                                    ? 100
+                                                    : (expenseSavingOfTheValue! *
+                                                        100 /
+                                                        savingOfTheMonthValue!),
+                                          ),
+                                        ),
+                                        Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Container(
+                                              width: screenWidth / 1.7,
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 8.0),
+                                              child: Text(
+                                                'Saving',
+                                                style: TextStyle(
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .secondary,
+                                                    fontSize:
+                                                        screenHeight / 45),
+                                                textAlign: TextAlign.left,
+                                              ),
+                                            ),
+                                            Container(
+                                              width: screenWidth / 1.7,
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 8.0),
+                                              child:
+                                              Text(
+                                                    '${formatCurrency(expenseSavingOfTheValue)} / ${formatCurrency(savingOfTheMonthValue)}',
+                                                    style: TextStyle(
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .secondary,
+                                                      fontSize:
+                                                          screenHeight / 55,
+                                                    ),
+                                                    textAlign: TextAlign.left,
+                                                  ), 
+                                              
+                                            ),
+                                          ],
+                                        ),
+                                        GestureDetector(
+                                            onTap: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          PfScreen(
+                                                            id: 2,
+                                                            transactions:
+                                                                currentMonthSavingTransaction,
+                                                          )));
+                                            },
+                                            child: Icon(
+                                              Icons.arrow_forward_ios_outlined,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .secondary,
+                                              size: screenWidth / 20,
+                                            )),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8.0, vertical: 6.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            CustomTextStyle(
+                                customTextStyleText: "Recent Transaction",
+                                customTextColor:
+                                    Theme.of(context).colorScheme.secondary,
+                                customTextFontWeight: FontWeight.w400,
+                                customtextstyle: null,
+                                customTextSize: 20),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const TransactionOfMonth(
+                                              id: 1,
+                                            )));
+                              },
+                              child: const CustomTextStyle(
+                                  customTextStyleText: "View all",
+                                  customTextColor: Colors.blueAccent,
+                                  customTextFontWeight: FontWeight.w400,
+                                  customtextstyle: null,
+                                  customTextSize: 14),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        color: Theme.of(context).colorScheme.primary,
+                        height: transactions.length == 4
+                            ? screenHeight * 0.450
+                            : transactions.length == 3
+                                ? screenHeight * 0.340
+                                : transactions.length == 2
+                                    ? screenHeight * 0.225
+                                    : transactions.length == 1
+                                        ? screenHeight * 0.115
+                                        : screenHeight * 0.225,
+                        width: MediaQuery.of(context).size.width,
+                        child: transactions.isEmpty
+                            ? const Center(child: CustomNoData())
+                            : ListView.builder(
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: transactions.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  if (transactions[index].transactionCategory ==
+                                      0) {
+                                    iconColor = PrimaryColor.colorBottleGreen;
+                                  }
+                                  if (transactions[index].transactionCategory ==
+                                      1) {
+                                    iconColor = PrimaryColor.colorRed;
+                                  }
+                                  if (transactions[index].transactionCategory ==
+                                      2) {
+                                    iconColor = PrimaryColor.colorBottleGreen;
+                                  }
+                                  return transactions.isEmpty
+                                      ? const Center(child: CustomNoData())
+                                      : GestureDetector(
+                                          onTap: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        TransactionScreen(
+                                                          id: 2,
+                                                          transactionId:
+                                                              transactions[
+                                                                      index]
+                                                                  .tID,
+                                                          transactionNote:
+                                                              transactions[
+                                                                      index]
+                                                                  .transactionNote,
+                                                          transactionAmount:
+                                                              transactions[
+                                                                      index]
+                                                                  .transactionAmount,
+                                                          transactionSubcategoryIndex:
+                                                              transactions[
+                                                                      index]
+                                                                  .transactionSubcategoryIndex,
+                                                          transactionDate:
+                                                              "${DateFormat.yMMMd().format(transactions[index].transactionDate!.toDate())} ${DateFormat.jm().format(transactions[index].transactionDate!.toDate())}",
+                                                          transactionSubcategory:
+                                                              transactions[
+                                                                      index]
+                                                                  .transactionSubcategory,
+                                                          transactionCategory:
+                                                              transactions[
+                                                                      index]
+                                                                  .transactionCategory,
+                                                        )));
+                                          },
+                                          child: CustomTransaction(
+                                              themeColor: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary,
+                                              textTheme: Theme.of(context)
+                                                  .colorScheme
+                                                  .secondary,
+                                              iconColor: iconColor,
+                                              categoryId: transactions[index]
+                                                  .transactionCategory,
+                                              subCateId: transactions[index]
+                                                  .transactionSubcategoryIndex,
+                                              transactionAmount:
+                                                  transactions[index]
+                                                      .transactionAmount,
+                                              transactionNote:
+                                                  transactions[index]
+                                                      .transactionNote,
+                                              dateStamp: DateFormat.yMMMd()
+                                                  .format(transactions[index]
+                                                      .transactionDate!
+                                                      .toDate()),
+                                              timeStamp: DateFormat.jm().format(
+                                                  transactions[index]
+                                                      .transactionDate!
+                                                      .toDate())));
+                                }),
+                      ),
+                    ]),
+              ),
+            ),
+    );
   }
 
   void scheduleWeeklyNotification() async {
     DateTime now = DateTime.now();
     int timestamp = now.millisecondsSinceEpoch ~/ 1000;
-
     await AwesomeNotifications().createNotification(
       content: NotificationContent(
         id: timestamp,
@@ -485,7 +938,6 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
   void scheduleNotification() async {
     DateTime now = DateTime.now();
     int timestamp = now.millisecondsSinceEpoch ~/ 1000;
-
     await AwesomeNotifications().createNotification(
       content: NotificationContent(
         id: timestamp,
@@ -505,750 +957,392 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
     );
   }
 
-  Future<void> getSingleUserData() async {
+  Future<void> getBalanceOfMonth() async {
+    incomeOfTheMonth.clear();
+    spendingOfTheMonth.clear();
+    incomeOfTheMonthPf.clear();
+    currentMonthSpendingTransactions.clear();
+    currentMonthSavingTransaction.clear();
+    currentMonthIncomeTransactions.clear();
+    currentMonthWantsTransaction.clear();
+    currentMonthNeedsTransaction.clear();
+
+    incomeOfTheMonthValue = 00;
+    balanceOfTheMonthPfValue = 00;
+    incomeForPersonalFinance = 00;
+    spendingOfTheMonthValue = 00;
+    balanceOfTheMonthValue = 00;
+
+    needsOfTheMonthValue = 00;
+    wantsOfTheMonthValue = 00;
+    savingOfTheMonthValue = 00;
+
+    expenseNeedsOfTheValue = 00;
+    expenseWantsOfTheValue = 00;
+    expenseSavingOfTheValue = 00;
+
     setState(() {
-      _isloading = true;
-      print(UserData.CurrentUserId);
+      isLoading = true;
     });
     try {
-      final snapshot = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(uid)
-          .collection('user_details')
-          .get();
-      final userData = snapshot.docs
-          .map((e) => Users(
-              Useremail: e['Useremail'],
-              userIdfrommobile: e['userIdfrommobile'],
-              userMobile: e['userMobile'],
-              userName: e['userName'],
-              userToken: e['UserToken']))
-          .toList();
+      final tempTransactionData = getTransactionsThisMonth();
+      recentTransaction = await tempTransactionData;
       setState(() {
-        listofUsers = userData;
-        username = listofUsers[0].userName;
-        initial_of_name = username!.substring(0, 1).toUpperCase();
-        userId = listofUsers[0].userIdfrommobile;
-        UserData.CurentUserToken = listofUsers[0].userToken;
-        UserData.CurentUserName = listofUsers[0].userName;
-        UserData.CurentUserPhone = listofUsers[0].userMobile;
-        UserData.CurrentUserEmail = listofUsers[0].Useremail;
-        _isloading = false;
+        currentMonthTransactions = recentTransaction
+            .map((e) => AllTransactionDetails(
+                uId: e.userId,
+                tID: e.tID,
+                transactionDate: Timestamp.fromDate(e.tDateTime),
+                transactionAmount: e.tAmount,
+                transactionCategory: e.tCategory,
+                transactionSubcategory: e.tSubcategory,
+                transactionSubcategoryIndex: e.tSubcategoryIndex,
+                transactionNote: e.tNote,
+                transactionPaymentMode: e.tPaymentMode,
+                transactionCreatedAt: Timestamp.fromDate(e.tCreatedAt)))
+            .toList();
+        findIncomeSpending();
+        isLoading = false;
       });
     } catch (e) {
       setState(() {
-        _isloading = false;
+        isLoading = false;
       });
-      print(e);
     }
-
-    print(listofUsers.length);
   }
 
-  Future<void> getAllTransaction() async {
-    print(UserData.CurrentUserId);
-    final snapshot = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(uid)
-        .collection('transaction')
-        .limit(4)
-        .orderBy('transactionDate', descending: true)
-        .get();
+  static void findIncomeSpending() {
+    for (int i = 0, j = 0, k = 0; i < currentMonthTransactions.length; i++) {
+      if (currentMonthTransactions[i].transactionCategory == 0 ||
+          currentMonthTransactions[i].transactionCategory == 3) {
+        if (currentMonthTransactions[i].transactionCategory == 0) {
+          // incomeOfTheMonthValue = (incomeOfTheMonthValue! + currentMonthTransactions[i].transactionAmount!);
+          incomeOfTheMonth.add(currentMonthTransactions[i].transactionAmount!);
+        } else {
+          // incomeOfTheMonthValue = (incomeOfTheMonthValue! + currentMonthTransactions[i].transactionAmount!);
+          incomeOfTheMonth.add(currentMonthTransactions[i].transactionAmount!);
+          incomeOfTheMonthPf
+              .add(currentMonthTransactions[i].transactionAmount!);
+          currentMonthIncomeTransactions.insert(
+              j,
+              AllTransactionDetails(
+                  uId: currentMonthTransactions[i].uId,
+                  tID: currentMonthTransactions[i].tID,
+                  transactionDate: currentMonthTransactions[i].transactionDate,
+                  transactionAmount:
+                      currentMonthTransactions[i].transactionAmount,
+                  transactionCategory:
+                      currentMonthTransactions[i].transactionCategory,
+                  transactionSubcategory:
+                      currentMonthTransactions[i].transactionSubcategory,
+                  transactionSubcategoryIndex:
+                      currentMonthTransactions[i].transactionSubcategoryIndex,
+                  transactionNote: currentMonthTransactions[i].transactionNote,
+                  transactionPaymentMode:
+                      currentMonthTransactions[i].transactionPaymentMode,
+                  transactionCreatedAt:
+                      currentMonthTransactions[i].transactionCreatedAt));
+          j++;
+        }
+      } else if (currentMonthTransactions[i].transactionCategory == 1) {
+        // spendingOfTheMonthValue = (spendingOfTheMonthValue! +
+        //     currentMonthTransactions[i].transactionAmount!);
+        spendingOfTheMonth.add(currentMonthTransactions[i].transactionAmount!);
+        currentMonthSpendingTransactions.insert(
+            k,
+            AllTransactionDetails(
+                uId: currentMonthTransactions[i].uId,
+                tID: currentMonthTransactions[i].tID,
+                transactionDate: currentMonthTransactions[i].transactionDate,
+                transactionAmount:
+                    currentMonthTransactions[i].transactionAmount,
+                transactionCategory:
+                    currentMonthTransactions[i].transactionCategory,
+                transactionSubcategory:
+                    currentMonthTransactions[i].transactionSubcategory,
+                transactionSubcategoryIndex:
+                    currentMonthTransactions[i].transactionSubcategoryIndex,
+                transactionNote: currentMonthTransactions[i].transactionNote,
+                transactionPaymentMode:
+                    currentMonthTransactions[i].transactionPaymentMode,
+                transactionCreatedAt:
+                    currentMonthTransactions[i].transactionCreatedAt));
+        k++;
+      }
+    }
+    totalIncomeOfTheMonth();
+    totalExpensesOfTheMonth();
+    getBalance();
+  }
 
-    final transactionData = snapshot.docs
-        .map((doc) => AllTransactionDetails(
-            uId: doc["uId"],
-            tID: doc['tID'],
-            transactionAmount: doc['transactionAmount'],
-            transactioncategory: doc['transactionCategory'],
-            transactionDate: doc['transactionDate'],
-            transactionnote: doc['transactionnote'],
-            transactionpaymentmode: doc['transactionpaymentmode'],
-            transactionsubcategory: doc['transactionsubcategory'],
-            transactionsubcategoryindex: doc['transactionsubcategoryindex'],
-            transactionCreatedAt: doc['transactionCreatedAt']))
-        .toList();
+  static void totalIncomeOfTheMonth() {
+    for (int i = 0; i < incomeOfTheMonth.length; i++) {
+      incomeOfTheMonthValue = incomeOfTheMonth[i] + incomeOfTheMonthValue!;
+    }
+    for (int i = 0; i < incomeOfTheMonthPf.length; i++) {
+      incomeForPersonalFinance =
+          incomeOfTheMonthPf[i] + incomeForPersonalFinance!;
+    }
+  }
 
+  static void totalExpensesOfTheMonth() {
+    for (int i = 0; i < spendingOfTheMonth.length; i++) {
+      spendingOfTheMonthValue =
+          spendingOfTheMonth[i] + spendingOfTheMonthValue!;
+    }
+  }
+
+  String formatCurrencyForBalance(int? value) {
+    NumberFormat currencyFormat = NumberFormat.currency(
+      symbol: '₹',
+      locale: "HI",
+      decimalDigits: 0,
+    );
+    return currencyFormat.format(value);
+  }
+
+
+  String formatCurrency(double? value) {
+    NumberFormat currencyFormat = NumberFormat.currency(
+      symbol: '₹',
+      locale: "HI",
+      decimalDigits: 0,
+    );
+    return currencyFormat.format(value);
+  }
+
+  static void getBalance() {
+    balanceOfTheMonthValue =
+        (incomeOfTheMonthValue! - spendingOfTheMonthValue!);
+
+    balanceOfTheMonthPfValue =
+        (incomeForPersonalFinance! - spendingOfTheMonthValue!);
+
+    needsOfTheMonthValue = (incomeForPersonalFinance! * needsPercentage / 100);
+    wantsOfTheMonthValue = (incomeForPersonalFinance! * wantsPercentage / 100);
+    savingOfTheMonthValue =
+        (incomeForPersonalFinance! * savingPercentage / 100);
+
+    getPersonalFinance();
+  }
+
+  static getPersonalFinance() {
+    for (int i = 0, j = 0, k = 0, x = 0;
+        i < currentMonthSpendingTransactions.length;
+        i++) {
+      if (currentMonthSpendingTransactions[i].transactionSubcategory == 0) {
+        currentMonthNeedsTransaction.insert(
+            j,
+            AllTransactionDetails(
+                uId: currentMonthSpendingTransactions[i].uId,
+                tID: currentMonthSpendingTransactions[i].tID,
+                transactionDate:
+                    currentMonthSpendingTransactions[i].transactionDate,
+                transactionAmount:
+                    currentMonthSpendingTransactions[i].transactionAmount,
+                transactionCategory:
+                    currentMonthSpendingTransactions[i].transactionCategory,
+                transactionSubcategory:
+                    currentMonthSpendingTransactions[i].transactionSubcategory,
+                transactionSubcategoryIndex: currentMonthSpendingTransactions[i]
+                    .transactionSubcategoryIndex,
+                transactionNote:
+                    currentMonthSpendingTransactions[i].transactionNote,
+                transactionPaymentMode:
+                    currentMonthSpendingTransactions[i].transactionPaymentMode,
+                transactionCreatedAt:
+                    currentMonthSpendingTransactions[i].transactionCreatedAt));
+        j++;
+      } else if (currentMonthSpendingTransactions[i].transactionSubcategory ==
+          1) {
+        currentMonthWantsTransaction.insert(
+            k,
+            AllTransactionDetails(
+                uId: currentMonthSpendingTransactions[i].uId,
+                tID: currentMonthSpendingTransactions[i].tID,
+                transactionDate:
+                    currentMonthSpendingTransactions[i].transactionDate,
+                transactionAmount:
+                    currentMonthSpendingTransactions[i].transactionAmount,
+                transactionCategory:
+                    currentMonthSpendingTransactions[i].transactionCategory,
+                transactionSubcategory:
+                    currentMonthSpendingTransactions[i].transactionSubcategory,
+                transactionSubcategoryIndex: currentMonthSpendingTransactions[i]
+                    .transactionSubcategoryIndex,
+                transactionNote:
+                    currentMonthSpendingTransactions[i].transactionNote,
+                transactionPaymentMode:
+                    currentMonthSpendingTransactions[i].transactionPaymentMode,
+                transactionCreatedAt:
+                    currentMonthSpendingTransactions[i].transactionCreatedAt));
+        k++;
+      } else if (currentMonthSpendingTransactions[i].transactionSubcategory ==
+          2) {
+        currentMonthSavingTransaction.insert(
+            x,
+            AllTransactionDetails(
+                uId: currentMonthSpendingTransactions[i].uId,
+                tID: currentMonthSpendingTransactions[i].tID,
+                transactionDate:
+                    currentMonthSpendingTransactions[i].transactionDate,
+                transactionAmount:
+                    currentMonthSpendingTransactions[i].transactionAmount,
+                transactionCategory:
+                    currentMonthSpendingTransactions[i].transactionCategory,
+                transactionSubcategory:
+                    currentMonthSpendingTransactions[i].transactionSubcategory,
+                transactionSubcategoryIndex: currentMonthSpendingTransactions[i]
+                    .transactionSubcategoryIndex,
+                transactionNote:
+                    currentMonthSpendingTransactions[i].transactionNote,
+                transactionPaymentMode:
+                    currentMonthSpendingTransactions[i].transactionPaymentMode,
+                transactionCreatedAt:
+                    currentMonthSpendingTransactions[i].transactionCreatedAt));
+        x++;
+      } else {}
+    }
+    getAmountOfPersonalFinance();
+  }
+
+  static void getAmountOfPersonalFinance() {
+    expenseNeedsOfTheValue = currentMonthNeedsTransaction
+        .map((transaction) => transaction.transactionAmount!)
+        .fold(0, (sum, amount) => sum! + amount);
+
+    expenseWantsOfTheValue = currentMonthWantsTransaction
+        .map((transaction) => transaction.transactionAmount!)
+        .fold(0, (sum, amount) => sum! + amount);
+
+    expenseSavingOfTheValue = currentMonthSavingTransaction
+        .map((transaction) => transaction.transactionAmount!)
+        .fold(0, (sum, amount) => sum! + amount);
+
+    savingProgressValue = (expenseSavingOfTheValue!) / savingOfTheMonthValue!;
+    needProgressValue = (expenseNeedsOfTheValue!) / needsOfTheMonthValue!;
+    wantProgressValue = (expenseWantsOfTheValue!) / wantsOfTheMonthValue!;
+
+    userScore =
+        (savingProgressValue! + needProgressValue! + wantProgressValue!) / 3;
+    userScore = (userScore! * 100);
+    userScore = 100.00 - userScore!;
+    userScore = userScore! < 0 ? 0.00 : userScore!;
+
+    if (userScore! < 0) {
+      userScore = 0.00;
+    }
+    if (userScore! <= 0) {
+      pfScore = "Bad";
+    } else if (userScore! >= 1 && userScore! <= 60) {
+      pfScore = "Good";
+    } else if (userScore! >= 61 && userScore! <= 100) {
+      pfScore = "Excellent";
+    }
+  }
+
+  void loadVariableFromSharedPreferences() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     setState(() {
-      transactions = transactionData;
+      needsPercentage =
+          sharedPreferences.getInt('needs_percent') ?? needsPercentage;
+      wantsPercentage =
+          sharedPreferences.getInt('wants_percent') ?? wantsPercentage;
+      savingPercentage =
+          sharedPreferences.getInt('saving_percent') ?? savingPercentage;
+      needsController.text = "$needsOfTheMonthValue";
+      wantsController.text = "$wantsOfTheMonthValue";
+      savingController.text = "$savingOfTheMonthValue";
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final brightness = MediaQuery.of(context).platformBrightness;
-    bool isDarkMode = brightness == Brightness.dark;
-    return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.primary,
-      body: _isloading == true
-          ? HomeSkeleton()
-          // ? Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              child: Container(
-                padding: EdgeInsets.only(left: 10, right: 10, top: 15),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CustomHeader(
-                          initial_of_name: initial_of_name,
-                          username: username,
-                          wishingtext: wishingtext,
-                          textColor: Theme.of(context).colorScheme.secondary),
-                      const SizedBox(
-                        height: 25,
-                      ),
-                      CustomTextStyle(
-                          customtextstyletext: "$curentmonth",
-                          customtextcolor:
-                              Theme.of(context).colorScheme.secondary,
-                          customtextfontweight: FontWeight.normal,
-                          customtextstyle: null,
-                          customtextsize: 25.0),
-                      const SizedBox(
-                        height: 7,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          CustomCard(
-                              color: PrimaryColor.color_red,
-                              icon: Icon(
-                                Icons.arrow_upward,
-                                color: PrimaryColor.color_red,
-                                size: 32,
-                              ),
-                              themecolor: PrimaryColor.color_white,
-                              spe_or_inc_month_value:
-                                  spending_of_the_month_value,
-                              title: "Spending"),
-                          CustomCard(
-                              color: PrimaryColor.color_bottle_green,
-                              icon: Icon(
-                                Icons.arrow_downward,
-                                color: PrimaryColor.color_bottle_green,
-                                size: 32,
-                              ),
-                              themecolor: PrimaryColor.color_white,
-                              spe_or_inc_month_value: income_of_the_month_value,
-                              title: "Income"),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      CustomBalanceCard(
-                          balance_of_the_month_value:
-                              balance_of_the_month_value,
-                          theme_color: Theme.of(context).cardColor,
-                          text_theme_color:
-                              Theme.of(context).colorScheme.secondary),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            CustomTextStyle(
-                                customtextstyletext: "Personal Finance",
-                                customtextcolor:
-                                    Theme.of(context).colorScheme.secondary,
-                                customtextfontweight: FontWeight.bold,
-                                customtextstyle: null,
-                                customtextsize: 20),
-                            GestureDetector(
-                              onTap: () {
-                                _needscontroller.text = "$needs_percentage";
-                                _wantscontroller.text = "$wants_percentage";
-                                _savingcontroller.text = "$saving_percentage";
+  void pfManager(
+      int wantsPfManagerValue,
+      String wantsPfName,
+      int needsPfManagerValue,
+      String needsPfName,
+      int savingPfManagerValue,
+      String savingPfName) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    await sharedPreferences.setInt(wantsPfName, wantsPfManagerValue);
+    await sharedPreferences.setInt(needsPfName, needsPfManagerValue);
+    await sharedPreferences.setInt(savingPfName, savingPfManagerValue);
+  }
 
-                                showDialog(
-                                  
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    int needs =
-                                        int.parse(_needscontroller.text);
-                                    int wants =
-                                        int.parse(_wantscontroller.text);
-                                    int saving =
-                                        int.parse(_savingcontroller.text);
-                                    int? finaltotal;
-                                    finaltotal = needs + wants + saving;
-                                    return AlertDialog(
-                                      backgroundColor:
-                                Theme.of(context).colorScheme.primary,
-                                      shape: RoundedRectangleBorder(
-                                side: BorderSide(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .secondary),
-                                borderRadius: BorderRadius.circular(8)),
-                                      title: CustomTextStyle(
-                                          customtextstyletext:
-                                              "Set Personal Finance",
-                                          customtextcolor: Theme.of(context)
-                                              .colorScheme
-                                              .secondary,
-                                          customtextfontweight:
-                                              FontWeight.normal,
-                                          customtextstyle: null,
-                                          customtextsize: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.025),
-                                      content: Container(
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.23,
-                                        child: Column(
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Flexible(
-                                                    child: Text(
-                                                  "Needs:",
-                                                  style: TextStyle(
-                                                      fontSize:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .height *
-                                                              0.020,
-                                                      color: Theme.of(context)
-                                                          .colorScheme
-                                                          .secondary),
-                                                )),
-                                                SizedBox(
-                                                  width: 10,
-                                                ),
-                                                Flexible(
-                                                  flex: 3,
-                                                  child: TextField(
-                                                    enableInteractiveSelection: false,
-                                                    cursorColor:
-                                                        Theme.of(context)
-                                                            .colorScheme
-                                                            .onPrimary,
-                                                    style: TextStyle(
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .secondary),
-                                                    inputFormatters: [
-                                                      maskFormatter
-                                                    ],
-                                                    keyboardType:
-                                                        TextInputType.phone,
-                                                    controller:
-                                                        _needscontroller,
-                                                    decoration: InputDecoration(
-                                                        focusedBorder:
-                                                            UnderlineInputBorder(
-                                                          borderSide: BorderSide(
-                                                              color: Theme.of(
-                                                                      context)
-                                                                  .colorScheme
-                                                                  .onPrimary),
-                                                        ),
-                                                        border:
-                                                            UnderlineInputBorder(
-                                                          borderSide: BorderSide(
-                                                              color: Theme.of(
-                                                                      context)
-                                                                  .colorScheme
-                                                                  .secondary),
-                                                        ),
-                                                        hintText:
-                                                            "Set Needs Percentage"),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            Row(
-                                              children: [
-                                                Flexible(
-                                                    child: Text(
-                                                  "Wants:",
-                                                  style: TextStyle(
-                                                      fontSize:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .height *
-                                                                0.020,
-                                                      color: Theme.of(context)
-                                                          .colorScheme
-                                                          .secondary),
-                                                )),
-                                                SizedBox(
-                                                  width: 10,
-                                                ),
-                                                Flexible(
-                                                  flex: 3,
-                                                  child: TextField(
-                                                    enableInteractiveSelection: false,
-                                                    cursorColor:
-                                                        Theme.of(context)
-                                                            .colorScheme
-                                                            .onPrimary,
-                                                    style: TextStyle(
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .secondary),
-                                                    inputFormatters: [
-                                                      maskFormatter
-                                                    ],
-                                                    keyboardType:
-                                                        TextInputType.phone,
-                                                    controller:
-                                                        _wantscontroller,
-                                                    decoration: InputDecoration(
-                                                        focusedBorder:
-                                                            UnderlineInputBorder(
-                                                          borderSide: BorderSide(
-                                                              color: Theme.of(
-                                                                      context)
-                                                                  .colorScheme
-                                                                  .onPrimary),
-                                                        ),
-                                                        border:
-                                                            UnderlineInputBorder(
-                                                          borderSide: BorderSide(
-                                                              color: Theme.of(
-                                                                      context)
-                                                                  .colorScheme
-                                                                  .secondary),
-                                                        ),
-                                                        hintText:
-                                                            "Set Wants Percentage"),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            Row(
-                                              children: [
-                                                Flexible(
-                                                    child: Text(
-                                                  "Saving:",
-                                                  style: TextStyle(
-                                                      fontSize:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .height *
-                                                              0.020,
-                                                      color: Theme.of(context)
-                                                          .colorScheme
-                                                          .secondary),
-                                                )),
-                                                SizedBox(
-                                                  width: 10,
-                                                ),
-                                                Flexible(
-                                                  flex: 3,
-                                                  child: TextField(
-                                                    enableInteractiveSelection: false,
-                                                    style: TextStyle(
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .secondary),
-                                                    cursorColor:
-                                                        Theme.of(context)
-                                                            .colorScheme
-                                                            .onPrimary,
-                                                    keyboardType:
-                                                        TextInputType.phone,
-                                                    inputFormatters: [
-                                                      maskFormatter
-                                                    ],
-                                                    controller:
-                                                        _savingcontroller,
-                                                    decoration: InputDecoration(
-                                                        focusedBorder:
-                                                            UnderlineInputBorder(
-                                                          borderSide: BorderSide(
-                                                              color: Theme.of(
-                                                                      context)
-                                                                  .colorScheme
-                                                                  .onPrimary),
-                                                        ),
-                                                        border:
-                                                            UnderlineInputBorder(
-                                                          borderSide: BorderSide(
-                                                              color: Theme.of(
-                                                                      context)
-                                                                  .colorScheme
-                                                                  .secondary),
-                                                        ),
-                                                        hintStyle: TextStyle(
-                                                            color: Theme.of(
-                                                                    context)
-                                                                .hintColor),
-                                                        hintText:
-                                                            "Set Saving Percentage"),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            SizedBox(
-                                              height: 07,
-                                            ),
-                                            finaltotal == 100
-                                                ? Text('')
-                                                : Row(
-                                                    children: [
-                                                      Text(
-                                                        "Please Enter possible values",
-                                                        style: TextStyle(
-                                                            color: PrimaryColor
-                                                                .color_red),
-                                                      ),
-                                                    ],
-                                                  ),
-                                          ],
-                                        ),
-                                      ),
-                                      actions: <Widget>[
-                                        GestureDetector(
-                                            onTap: () {
-                                              Navigator.pop(context);
-                                            },
-                                            child: Text(
-                                              "Cancel",
-                                              style: TextStyle(
-                                                  color:
-                                                      PrimaryColor.color_red),
-                                            )),
-                                        SizedBox(
-                                          width: 07,
-                                        ),
-                                        GestureDetector(
-                                            onTap: () {
-                                              needs = int.parse(
-                                                  _needscontroller.text);
-                                              wants = int.parse(
-                                                  _wantscontroller.text);
-                                              saving = int.parse(
-                                                  _savingcontroller.text);
-                                              finaltotal =
-                                                  needs + wants + saving;
+  var maskFormatter = MaskTextInputFormatter(
+    mask: '##',
+    filter: {"#": RegExp(r'[0-9]')},
+  );
 
-                                              if (finaltotal == 100) {
-                                                saveNeedToPrefs(needs);
-                                                savewantToPrefs(wants);
-                                                saveSavingToPref(saving);
+  Future<UserLogin> getSingleUser(String currentUserID) async {
+    final box = await Hive.openBox<UserLogin>('userlogin');
+    final users = box.values.firstWhere((user) => user.userId == currentUserID);
+    UserData.currentUserId = users.userId;
+    UserData.currentUserName = users.userName;
+    UserData.currentUserEmail = users.userEmail;
+    UserData.currentUserPhone = users.userPhone;
+    username = UserData.currentUserName;
+    uId = UserData.currentUserId;
+    initialOfName = username!.substring(0, 1).toUpperCase();
+    return users;
+  }
 
-                                                Navigator.pushReplacement(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            HomeScreen()));
-                                              } else {}
-                                            },
-                                            child: Text(
-                                              "Save",
-                                              style: TextStyle(
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .onPrimary),
-                                            )),
-                                      ],
-                                    );
-                                  },
-                                );
-                              },
-                              child: CustomTextStyle(
-                                  customtextstyletext: "Set Manually",
-                                  customtextcolor: Colors.blueAccent,
-                                  customtextfontweight: FontWeight.bold,
-                                  customtextstyle: null,
-                                  customtextsize: 14),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                          height: needs_of_the_month_value! <
-                                  expense_needs_of_the_value!
-                              ? wants_of_the_month_value! <
-                                      expense_wants_of_the_value!
-                                  ? saving_of_the_month_value! <
-                                          expense_saving_of_the_value!
-                                      ? MediaQuery.of(context).size.height *
-                                          0.34
-                                      : MediaQuery.of(context).size.height *
-                                          0.32
-                                  : saving_of_the_month_value! <
-                                          expense_saving_of_the_value!
-                                      ? MediaQuery.of(context).size.height *
-                                          0.32
-                                      : MediaQuery.of(context).size.height *
-                                          0.30
-                              : wants_of_the_month_value! <
-                                      expense_wants_of_the_value!
-                                  ? saving_of_the_month_value! <
-                                          expense_saving_of_the_value!
-                                      ? MediaQuery.of(context).size.height *
-                                          0.30
-                                      : MediaQuery.of(context).size.height *
-                                          0.30
-                                  : MediaQuery.of(context).size.height * 0.30,
-                          width: MediaQuery.of(context).size.width,
-                          child: Card(
-                            shape: RoundedRectangleBorder(
-                                side:
-                                    BorderSide(color: PrimaryColor.color_white),
-                                borderRadius: BorderRadius.circular(18)),
-                            color: Theme.of(context).cardColor,
-                            child: income_for_personal_finance! <= 0
-                                ? Center(child: CustomNoData())
-                                : Column(
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 10.0, vertical: 6),
-                                            child: Text(
-                                              'Amount Left',
-                                              style: TextStyle(
-                                                color:
-                                                    Theme.of(context).hintColor,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.025,
-                                              ),
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 10.0, vertical: 6),
-                                            child: Text(
-                                              'Performance',
-                                              style: TextStyle(
-                                                color:
-                                                    Theme.of(context).hintColor,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.025,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 10.0),
-                                            child: Text(
-                                              '₹$balance_of_the_month_pf_value',
-                                              style: TextStyle(
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .secondary,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.025,
-                                              ),
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 10.0),
-                                            child: Text(
-                                              '${pf_score}',
-                                              style: TextStyle(
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .secondary,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.025,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Container(
-                                        child: CustomLinearProcessIndicator(
-                                            title: "Needs ",
-                                            theme_color: Theme.of(context)
-                                                .colorScheme
-                                                .secondary,
-                                            needprogressValue:
-                                                _needprogressValue,
-                                            expense_needs_of_the_value:
-                                                expense_needs_of_the_value,
-                                            needs_of_the_month_value:
-                                                needs_of_the_month_value,
-                                            color_name: PrimaryColor
-                                                .color_bottle_green),
-                                      ),
-                                      CustomLinearProcessIndicator(
-                                          title: "Wants ",
-                                          theme_color: Theme.of(context)
-                                              .colorScheme
-                                              .secondary,
-                                          needprogressValue: _wantprogressValue,
-                                          expense_needs_of_the_value:
-                                              expense_wants_of_the_value,
-                                          needs_of_the_month_value:
-                                              wants_of_the_month_value,
-                                          color_name: PrimaryColor.color_red),
-                                      CustomLinearProcessIndicator(
-                                          title: "Saving",
-                                          theme_color: Theme.of(context)
-                                              .colorScheme
-                                              .secondary,
-                                          needprogressValue:
-                                              _savingprogressValue,
-                                          expense_needs_of_the_value:
-                                              expense_saving_of_the_value,
-                                          needs_of_the_month_value:
-                                              saving_of_the_month_value,
-                                          color_name: PrimaryColor.color_blue),
-                                    ],
-                                  ),
-                          )),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8.0, vertical: 6.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            CustomTextStyle(
-                                customtextstyletext: "Recent Transaction",
-                                customtextcolor:
-                                    Theme.of(context).colorScheme.secondary,
-                                customtextfontweight: FontWeight.bold,
-                                customtextstyle: null,
-                                customtextsize: 20),
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            TransactonOfMonth()));
-                              },
-                              child: CustomTextStyle(
-                                  customtextstyletext: "View all",
-                                  customtextcolor: Colors.blueAccent,
-                                  customtextfontweight: FontWeight.bold,
-                                  customtextstyle: null,
-                                  customtextsize: 14),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        color: Theme.of(context).colorScheme.primary,
-                        height: MediaQuery.of(context).size.height * 0.479,
-                        width: MediaQuery.of(context).size.width,
-                        child: transactions.length <= 0
-                            ? Center(child: CustomNoData())
-                            : ListView.builder(
-                                physics: NeverScrollableScrollPhysics(),
-                                itemCount: transactions.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  int? subcateid = transactions[index]
-                                      .transactionsubcategoryindex;
-                                  int? categoryid =
-                                      transactions[index].transactioncategory;
-                                  if (categoryid == 0) {
-                                    iconcolor = PrimaryColor.color_bottle_green;
-                                  }
-                                  if (categoryid == 1) {
-                                    iconcolor = PrimaryColor.color_red;
-                                  }
-                                  if (categoryid == 2) {
-                                    iconcolor = PrimaryColor.color_bottle_green;
-                                  }
+  Future<void> getSingleUserData() async {
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      SharedPreferences sharedPreferences =
+          await SharedPreferences.getInstance();
+      UserData.currentUserId = sharedPreferences.getString('userId');
+      getSingleUser("${UserData.currentUserId}");
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
-                                  String datetimeformat =
-                                      "${transactions[index].transactionDate?.toDate().toString()}";
-                                  DateTime transaction_datetime =
-                                      transactions[index]
-                                          .transactionDate!
-                                          .toDate();
+  Future<List<LocalTransaction>> getLatestTransactions() async {
+    final transactions = await getAllLocalTransactions();
+    final currentUserTransactions = transactions.where((transaction) {
+      return UserData.currentUserId == transaction.userId;
+    }).toList();
+    currentUserTransactions.sort((a, b) => b.tDateTime.compareTo(a.tDateTime));
+    final latestTransactions = currentUserTransactions.take(4).toList();
+    return latestTransactions;
+  }
 
-                                  String datestamp = DateFormat.yMMMd()
-                                      .format(transaction_datetime);
-                                  String timestamp = DateFormat.jm()
-                                      .format(transaction_datetime);
-                                  String transaction_date_string =
-                                      "$datestamp $timestamp";
-                                  return transactions.length == 0
-                                      ? Center(child: CustomNoData())
-                                      : GestureDetector(
-                                          onTap: () {
-                                            int? amount = transactions[index]
-                                                .transactionAmount;
-                                            int? category = transactions[index]
-                                                .transactioncategory;
-                                            int? subcategory =
-                                                transactions[index]
-                                                    .transactionsubcategory;
-                                            int? subcategoryindex =
-                                                transactions[index]
-                                                    .transactionsubcategoryindex;
-                                            String? id =
-                                                transactions[index].tID;
-                                            String? note = transactions[index]
-                                                .transactionnote;
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        TransactionScreen(
-                                                          id: 2,
-                                                          transactionId: id,
-                                                          transactionNote: note,
-                                                          transactionAmount:
-                                                              amount,
-                                                          tranactionsSubCategoryindex:
-                                                              subcategoryindex,
-                                                          trasactionDate:
-                                                              transaction_date_string,
-                                                          tranactionsSubCategory:
-                                                              subcategory,
-                                                          transactionCategory:
-                                                              category,
-                                                        )));
-                                          },
-                                          child: CustomTransaction(
-                                              theme_color: Theme.of(context)
-                                                  .colorScheme
-                                                  .primary,
-                                              text_theme: Theme.of(context)
-                                                  .colorScheme
-                                                  .secondary,
-                                              icon_color: iconcolor,
-                                              categoryid: categoryid,
-                                              subcateid: subcateid,
-                                              transaction_amount:
-                                                  transactions[index]
-                                                      .transactionAmount,
-                                              transactionnote:
-                                                  transactions[index]
-                                                      .transactionnote,
-                                              datestamp: datestamp,
-                                              timestamp: timestamp));
-                                }),
-                      ),
-                    ]),
-              ),
-            ),
-    );
+  Future<void> getAllTransaction() async {
+    final tempTransactions = getLatestTransactions();
+    recentTransaction = await tempTransactions;
+    transactions = recentTransaction
+        .map((e) => AllTransactionDetails(
+            uId: e.userId,
+            tID: e.tID,
+            transactionDate: Timestamp.fromDate(e.tDateTime),
+            transactionAmount: e.tAmount,
+            transactionCategory: e.tCategory,
+            transactionSubcategory: e.tSubcategory,
+            transactionSubcategoryIndex: e.tSubcategoryIndex,
+            transactionNote: e.tNote,
+            transactionPaymentMode: e.tPaymentMode,
+            transactionCreatedAt: Timestamp.fromDate(e.tCreatedAt)))
+        .toList();
+  }
+
+  Future<List<LocalTransaction>> getTransactionsThisMonth() async {
+    final transactions = await getAllLocalTransactions();
+    final now = DateTime.now();
+    final currentMonth = now.month;
+    final currentYear = now.year;
+    final transactionsThisMonth = transactions.where((transaction) {
+      final transactionDate = transaction.tDateTime;
+      return transactionDate.month == currentMonth &&
+          transactionDate.year == currentYear &&
+          UserData.currentUserId == transaction.userId;
+    }).toList();
+    transactionsThisMonth.sort((a, b) => b.tDateTime.compareTo(a.tDateTime));
+    return transactionsThisMonth;
   }
 }

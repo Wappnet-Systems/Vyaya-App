@@ -1,9 +1,7 @@
+import 'dart:developer';
 import 'dart:io';
-
-import 'package:flutter/services.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
 
 class PdfApi {
@@ -12,18 +10,21 @@ class PdfApi {
     required Document pdf,
   }) async {
     final bytes = await pdf.save();
-
-    final dir = await getApplicationDocumentsDirectory();
-    final file = File('${dir.path}/$name');
-
+    final dir = await getExternalStorageDirectory();
+    final file = File('${dir!.path}/$name');
     await file.writeAsBytes(bytes);
-
     return file;
   }
 
   static Future openFile(File file) async {
-    final url = file.path;
-
-    await OpenFile.open(url);
+   if (await file.exists()) {
+    log(file.path);
+    await OpenFile.open(file.path);
+  } else {
+    log("error");
+    throw 'File not found';
   }
+  }
+
+  static loadFont() {}
 }

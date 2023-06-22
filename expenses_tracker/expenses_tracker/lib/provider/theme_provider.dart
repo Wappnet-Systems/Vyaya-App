@@ -4,39 +4,36 @@ import '../utils/const.dart';
 
 class MyTheme {
   static final lightTheme = ThemeData(
-    colorScheme: ColorScheme.fromSeed(seedColor: PrimaryColor.color_bottle_green).copyWith(
-
-        primary: PrimaryColor.color_white,
-        onPrimary: PrimaryColor.color_bottle_green,
-        secondary: PrimaryColor.color_black,
-        background: PrimaryColor.color_white,
-        onBackground: PrimaryColor.color_bottle_green,        
-        ),
-        
-        cardColor: PrimaryColor.color_white,
-        bottomAppBarColor: PrimaryColor.color_white,
+    colorScheme: ColorScheme.fromSeed(seedColor: PrimaryColor.colorBottleGreen).copyWith(
+        primary: PrimaryColor.colorWhite,
+        onPrimary: PrimaryColor.colorBottleGreen,
+        secondary: PrimaryColor.colorBlack,
+        background: PrimaryColor.colorWhite,
+        onBackground: PrimaryColor.colorBottleGreen,        
+        ),        
+        cardColor: PrimaryColor.colorWhite,
         hintColor: Colors.black38,    
-        dialogBackgroundColor: PrimaryColor.color_white,
-        useMaterial3: true,  
+        dialogBackgroundColor: PrimaryColor.colorWhite,
+        useMaterial3: true, 
+        bottomAppBarTheme: BottomAppBarTheme(color: PrimaryColor.colorWhite),  
   );
   
   static final darkTheme = ThemeData(
-     primaryColor: PrimaryColor.color_bottle_green,   
+     primaryColor: PrimaryColor.colorBottleGreen,   
           
-        colorScheme: ColorScheme.fromSeed(seedColor: PrimaryColor.color_bottle_green).copyWith(
-
-        primary: PrimaryColor.color_black,
-        onPrimary: PrimaryColor.color_bottle_green,
-        secondary: PrimaryColor.color_white,
-        onSecondary: PrimaryColor.color_bottle_green,
-        background: PrimaryColor.color_white,
-        onBackground: PrimaryColor.color_bottle_green,
+        colorScheme: ColorScheme.fromSeed(seedColor: PrimaryColor.colorBottleGreen).copyWith(
+        primary: Colors.black,
+        onPrimary: PrimaryColor.colorBottleGreen,
+        secondary: PrimaryColor.colorWhite,
+        onSecondary: PrimaryColor.colorBottleGreen,
+        background: PrimaryColor.colorWhite,
+        onBackground: PrimaryColor.colorBottleGreen,
       ),
-      cardColor: PrimaryColor.color_black,
+      cardColor: Color.fromARGB(150, 25, 15, 20),
       hintColor: Colors.white60,
-      dialogBackgroundColor: PrimaryColor.color_black,
-      bottomAppBarColor: Color.fromARGB(154, 33, 25, 25),
-      useMaterial3: true,
+      dialogBackgroundColor: PrimaryColor.colorBlack,
+      useMaterial3: true, 
+      bottomAppBarTheme:  const BottomAppBarTheme(color:Color.fromARGB(150, 25, 15, 20)),
   );
 }
 
@@ -53,21 +50,20 @@ class ThemeProvider extends ChangeNotifier {
       }
       else{
         return _themeMode!;
-      }
-      
+      }     
     } 
 
   void setThemeMode(ThemeMode mode) async {
     _themeMode = mode;
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('theme_mode', mode.index);
+    final sharedPreferences = await SharedPreferences.getInstance();
+    await sharedPreferences.setInt('theme_mode', mode.index);
     notifyListeners();
   }
    
   void loadThemeMode() async {
-    final prefs = await SharedPreferences.getInstance();
-    final index = prefs.getInt('theme_mode');
-    _themeMode = index != null ? ThemeMode.values[index] : ThemeMode.system;
+    final sharedPreferences = await SharedPreferences.getInstance();
+    final index = sharedPreferences.getInt('theme_mode');
+    _themeMode = index != null ? ThemeMode.values[index] : ThemeMode.light;
     notifyListeners();
   }   
 }

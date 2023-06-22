@@ -1,165 +1,176 @@
 import 'package:flutter/material.dart';
-
+import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import '../utils/const.dart';
 
 class CustomTransaction extends StatelessWidget {
-  final Color? icon_color, theme_color, text_theme;
-  final int? categoryid, subcateid, transaction_amount;
-  final String? transactionnote, datestamp, timestamp;
-  CustomTransaction(
+  final Color? iconColor, themeColor, textTheme;
+  final int? categoryId, subCateId, transactionAmount;
+  final String? transactionNote, dateStamp, timeStamp;
+  const CustomTransaction(
       {super.key,
-      required this.icon_color,
-      required this.categoryid,
-      required this.subcateid,
-      required this.transaction_amount,
-      required this.transactionnote,
-      required this.datestamp,
-      required this.timestamp,
-      required this.theme_color,
-      required this.text_theme});
+      required this.iconColor,
+      required this.categoryId,
+      required this.subCateId,
+      required this.transactionAmount,
+      required this.transactionNote,
+      required this.dateStamp,
+      required this.timeStamp,
+      required this.themeColor,
+      required this.textTheme});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: theme_color,
-      height: MediaQuery.of(context).size.height * 0.112,
-      width: MediaQuery.of(context).size.width,
+    final indianRupeesFormat = NumberFormat.currency(
+      name: "INR",
+      locale: 'en_IN',
+      decimalDigits: 0, // change it to get decimal places
+      symbol: '₹ ',
+    );
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 2.0),
       child: Card(
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-            side: BorderSide(color: text_theme!)),
-        color: theme_color,
-        child: Column(children: [
-          Padding(
-            padding: const EdgeInsets.all(4.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Container(
-                      height: MediaQuery.of(context).size.height * 0.08,
-                      width: MediaQuery.of(context).size.width * 0.18,
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          Container(
-                            height: MediaQuery.of(context).size.height * 0.08,
-                            width: MediaQuery.of(context).size.width * 0.18,
-                            child: Card(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(60)),
-                              color: categoryid == 0 || categoryid == 3
-                                  ? PrimaryColor.color_bottle_green
-                                  : PrimaryColor.color_red,
-                              child: categoryid == 0 || categoryid == 3
-                                  ? ListOfAppData
-                                      .listofIncome[subcateid!].categoryIcon
-                                  : ListOfAppData
-                                      .listOfCategory[subcateid!].categoryIcon,
-                            ),
-                          ),
-                          Positioned(
-                              bottom: 2,
-                              right: 0,
-                              child: Container(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.032,
-                                width:
-                                    MediaQuery.of(context).size.width * 0.072,
-                                child: Card(
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(60)),
-                                    elevation: 5,
-                                    child: categoryid == 0 || categoryid == 3
-                                        ? Icon(
-                                            Icons.arrow_downward,
-                                            color:
-                                                PrimaryColor.color_bottle_green,
-                                            size: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.02,
-                                          )
-                                        : Icon(
-                                            Icons.arrow_upward,
-                                            color: PrimaryColor.color_red,
-                                            size: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.02,
-                                          )),
-                              )),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "₹${transaction_amount}",
-                          style: TextStyle(
-                              color: text_theme,
-                              fontSize:
-                                  MediaQuery.of(context).size.height * 0.025,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        Row(
+        color: Theme.of(context).colorScheme.primary,
+        elevation: 2,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height * 0.095,
+          width: MediaQuery.of(context).size.width,
+          child: Column(children: [
+            Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.08,
+                        width: MediaQuery.of(context).size.width * 0.18,
+                        child: Stack(
+                          alignment: Alignment.center,
                           children: [
-                            Text(
-                              '${transactionnote}',
-                              style: TextStyle(
-                                  color: text_theme,
-                                  fontSize: MediaQuery.of(context).size.height *
-                                      0.019),
-                            ),
-                          ],
-                        ),
-                        Divider(
-                          height: 0.1,
-                          color: Colors.grey,
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              '$datestamp \t$timestamp',
-                              style: TextStyle(
-                                color: text_theme,
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.07,
+                              width: MediaQuery.of(context).size.width * 0.16,
+                              child: Card(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(60)),
+                                color: categoryId == 0 || categoryId == 3
+                                    ? PrimaryColor.colorBottleGreen
+                                    : PrimaryColor.colorRed,
+                                child: categoryId == 0 || categoryId == 3
+                                    ? ListOfAppData
+                                        .listOfIncome[subCateId!].categoryIcon
+                                    : ListOfAppData.listOfCategory[subCateId!]
+                                        .categoryIcon,
                               ),
                             ),
+                            Positioned(
+                                bottom: 5,
+                                right: 2,
+                                child: SizedBox(
+                                  height: MediaQuery.of(context).size.height *
+                                      0.028,
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.062,
+                                  child: Card(
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(60)),
+                                      elevation: 5,
+                                      child: categoryId == 0 || categoryId == 3
+                                          ? Icon(
+                                              Icons.arrow_downward,
+                                              color:
+                                                  PrimaryColor.colorBottleGreen,
+                                              size: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.015,
+                                            )
+                                          : Icon(
+                                              Icons.arrow_upward,
+                                              color: PrimaryColor.colorRed,
+                                              size: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.015,
+                                            )),
+                                )),
                           ],
-                        )
-                      ],
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  width: 10,
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.059,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                      child: Icon(
-                        Icons.money,
-                        color: PrimaryColor.color_bottle_green,
+                        ),
                       ),
-                    ),
-                  ],
-                )
-              ],
+                      const SizedBox(
+                        width: 03,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "$transactionNote",
+                            style: GoogleFonts.roboto(
+                                color: textTheme,
+                                fontSize:
+                                    MediaQuery.of(context).size.height * 0.021,
+                                fontWeight: FontWeight.w400),
+                          ),
+                          // Row(
+                          //   children: [
+                          //     Text(
+                          //       'Cash',
+                          //       style: TextStyle(
+                          //           color: textTheme,
+                          //           fontSize: MediaQuery.of(context).size.height *
+                          //               0.016),
+                          //     ),
+                          //   ],
+                          // ),
+                          Row(
+                            children: [
+                              Text(
+                                '$dateStamp \t$timeStamp',
+                                style: TextStyle(
+                                    color: textTheme,
+                                    fontSize:
+                                        MediaQuery.of(context).size.height *
+                                            0.016),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                  // const SizedBox(
+                  //   width: 05,
+                  // ),
+                  Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Text(
+                          NumberFormat.currency(
+                            symbol: '₹',
+                            locale: "HI",
+                            decimalDigits: 0,
+                          ).format(transactionAmount),
+                          style: GoogleFonts.roboto(
+                              color: textTheme,
+                              fontSize:
+                                  MediaQuery.of(context).size.height * 0.020,
+                              fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
             ),
-          ),
-        ]),
+          ]),
+        ),
       ),
     );
   }

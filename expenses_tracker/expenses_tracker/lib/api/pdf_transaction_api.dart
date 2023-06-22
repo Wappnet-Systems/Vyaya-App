@@ -14,14 +14,14 @@ class PdfInvoiceApi {
       int income,
       int spending,
       int balance) async {
+
     final pdf = Document();
-    String len = transaction.length.toString();
-    print(transaction.length);
+
     pdf.addPage(MultiPage(
       build: (context) => [
         buildTitle(title: title),
         SizedBox(height: 20),
-        buildSimpleText(title: "$duration", value: "Duration"),
+        buildSimpleText(title: duration, value: "Duration"),
         SizedBox(height: 10),
         buildTransaction(transaction),
         Divider(),
@@ -38,8 +38,9 @@ class PdfInvoiceApi {
   }) {
     return Center(
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-      Text('$title',
-          style: TextStyle(
+      Text(title,
+          style:
+          TextStyle(
               color: PdfColors.black,
               fontSize: 25,
               fontWeight: FontWeight.bold),
@@ -58,7 +59,7 @@ class PdfInvoiceApi {
         children: [
           Text("Username:"),
           SizedBox(width: 2 * PdfPageFormat.mm),
-          Text(UserData.CurentUserName!, style: style),
+          Text(UserData.currentUserName!, style: style),
         ],
       ),
       SizedBox(height: 5),
@@ -66,7 +67,7 @@ class PdfInvoiceApi {
         children: [
           Text("Phone No.:"),
           SizedBox(width: 2 * PdfPageFormat.mm),
-          Text(UserData.CurentUserPhone!, style: style),
+          Text(UserData.currentUserPhone!, style: style),
         ],
       ),
       SizedBox(height: 5),
@@ -74,7 +75,7 @@ class PdfInvoiceApi {
         children: [
           Text("Email:"),
           SizedBox(width: 2 * PdfPageFormat.mm),
-          Text(UserData.CurrentUserEmail!, style: style),
+          Text(UserData.currentUserEmail!, style: style),
         ],
       ),
       SizedBox(height: 5),
@@ -90,10 +91,9 @@ class PdfInvoiceApi {
   }
 
   static Widget buildFooter() {
-    String datetime;
-    DateTime transaction_datetime = DateTime.now();
-    String datestamp = DateFormat.yMMMd().format(transaction_datetime);
-    String timestamp = DateFormat.jm().format(transaction_datetime);
+    DateTime transactionDateTime = DateTime.now();
+    String dateStamp = DateFormat.yMMMd().format(transactionDateTime);
+    String timeStamp = DateFormat.jm().format(transactionDateTime);
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
@@ -108,7 +108,7 @@ class PdfInvoiceApi {
       Row(
                 mainAxisAlignment: MainAxisAlignment.end,
 
-        children: [Text("Created on :"),Text(" $datestamp $timestamp", style: TextStyle(fontWeight: FontWeight.bold))])
+        children: [Text("Created on :"),Text(" $dateStamp $timeStamp", style: TextStyle(fontWeight: FontWeight.bold))])
     ]);
   }
 
@@ -123,29 +123,29 @@ class PdfInvoiceApi {
       'Amount',
     ];
     final data = transaction.map((item) {
-      DateTime transaction_datetime = item.transactionDate!.toDate();
+      DateTime transactionDateTime = item.transactionDate!.toDate();
 
-      String transaction_category;
+      String transactionCategory;
       String subcategory;
-      if (item.transactioncategory == 1) {
-        transaction_category = "Expense";
+      if (item.transactionCategory == 1) {
+        transactionCategory = "Expense";
         subcategory = ListOfAppData
-            .listOfCategory[item.transactionsubcategoryindex!].categoryText!;
+            .listOfCategory[item.transactionSubcategoryIndex!].categoryText!;
       } else {
-        transaction_category = "Income";
+        transactionCategory = "Income";
         subcategory = ListOfAppData
-            .listofIncome[item.transactionsubcategoryindex!].categoryText!;
+            .listOfIncome[item.transactionSubcategoryIndex!].categoryText!;
       }
 
-      String datestamp = DateFormat.yMMMd().format(transaction_datetime);
-      String timestamp = DateFormat.jm().format(transaction_datetime);
+      String dateStamp = DateFormat.yMMMd().format(transactionDateTime);
+      String timeStamp = DateFormat.jm().format(transactionDateTime);
 
       return [
         id++,
-        "$datestamp $timestamp",
-        '$transaction_category',
-        '$subcategory',
-        '${item.transactionnote}',
+        "$dateStamp $timeStamp",
+        transactionCategory,
+        subcategory,
+        '${item.transactionNote}',
         '${item.transactionAmount}',
       ];
     }).toList();
@@ -155,7 +155,7 @@ class PdfInvoiceApi {
       data: data,
       border: null,
       headerStyle: TextStyle(fontWeight: FontWeight.bold),
-      headerDecoration: BoxDecoration(color: PdfColors.green300),
+      headerDecoration: const BoxDecoration(color: PdfColors.green300),
       cellHeight: 30,
       cellAlignments: {
         0: Alignment.center,
@@ -170,11 +170,10 @@ class PdfInvoiceApi {
   }
 
   static Widget buildTotal(int income, int spending, int balance) {
-    final income_amount = income;
-    final spending_amount = spending;
-    final balance_amount = balance;
-    // final total = netTotal + vat;
-
+    final incomeAmount = income;
+    final spendingAmount = spending;
+    final balanceAmount = balance;
+    
     return Container(
       alignment: Alignment.centerRight,
       child: Row(
@@ -187,13 +186,13 @@ class PdfInvoiceApi {
               children: [
                 buildText(
                   title: 'Total Income',
-                  value: income_amount.toString(),
+                  value: incomeAmount.toString(),
                   unite: true,
                 ),
                 SizedBox(height: 5),
                 buildText(
                   title: 'Total Spending',
-                  value: "- $spending_amount",
+                  value: "- $spendingAmount",
                   unite: true,
                 ),
                 Divider(),
@@ -203,7 +202,7 @@ class PdfInvoiceApi {
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
                   ),
-                  value: balance_amount.toString(),
+                  value: balanceAmount.toString(),
                   unite: true,
                 ),
                 SizedBox(height: 2 * PdfPageFormat.mm),
@@ -233,7 +232,7 @@ class PdfInvoiceApi {
         children: [
           Expanded(child: Text(title, style: style)),
           Container(
-            padding: EdgeInsets.only(right: 20),
+            padding: const EdgeInsets.only(right: 20),
             child: Text(value, style: unite ? style : null),
           )
         ],
