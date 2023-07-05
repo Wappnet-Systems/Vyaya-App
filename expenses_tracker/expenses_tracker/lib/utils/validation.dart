@@ -7,8 +7,11 @@ String? textFormFieldValidator(String? value) {
 
 String? nameValidator(String? value){
   if (value!.isNotEmpty) {
-    if(value.length >20){
+    if(value.length >20){      
       return 'Please Enter Name Which contain 20 Characters';
+    }
+    if (value.contains(' ')) {
+      return 'Input cannot contain blank spaces.';
     }
     else if(value.isEmpty){
     return 'Please this field must be filled';
@@ -29,19 +32,51 @@ String noteValidator(String value){
 }
 
 String? amountValidator(String? value){
-  int amount;
-    if(value!.isNotEmpty){
-      amount=int.parse(value);
-      if(amount<=0){
-    return 'Please enter certain amount of Money';
-  } 
+  if (value == null || value.isEmpty) {
+      return 'Please enter a number';
     }
-    else{
-      return 'Please this field must be filled';
+    if (value.contains(RegExp(r'[!@#$%^&*(),?":{}|<>-]'))) {
+      return 'Symbols are not allowed';
     }
-    
+    if (value.contains('.')) {
+      return 'Dot is not allowed';
+    }
+    if (value.trim() == '') {
+      return 'Blank spaces are not allowed';
+    }
+    try {
+      if (int.parse(value) == 0) {
+        return 'Value cannot be 0';
+      }
+    } catch (error) {
+      return 'Invalid number format';
+    }
   return null;
 }
+
+String? personalFinanceValidator(String? value){
+  if (value == null || value.isEmpty) {
+      return 'Please enter a number';
+    }
+    if (value.contains(RegExp(r'[!@#$%^&*(),?":{}|<>-]'))) {
+      return 'Symbols are not allowed';
+    }
+    if (value.contains('.')) {
+      return 'Dot is not allowed';
+    }
+    if (value.trim() == '') {
+      return 'Blank spaces are not allowed';
+    }
+    if (int.parse(value) == 0) {
+      return 'Value cannot be 0';
+    }
+    if(value.length<2){
+      return 'Please Enter Possible Value';
+    }
+  
+  return null;
+}
+
 
 String? emailValidator(String? value) {
   String pattern =

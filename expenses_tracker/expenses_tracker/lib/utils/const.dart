@@ -13,8 +13,6 @@ class UserData{
   static String? currentUserId;
   static String? currentUserName;
   static String? currentUserEmail;
-  static String? currentUserPhone;
-  static String? currentUserToken;
   static String? userIdForLocal;
 }
 

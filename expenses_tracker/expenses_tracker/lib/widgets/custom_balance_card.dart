@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../utils/const.dart';
-import 'custom_text_style.dart';
 
 class CustomBalanceCard extends StatelessWidget {
   final int balanceOfTheMonthValue;
@@ -17,7 +16,7 @@ class CustomBalanceCard extends StatelessWidget {
     return Center(
       child: SizedBox(
           height: MediaQuery.of(context).size.height * 0.05,
-          width: MediaQuery.of(context).size.width * 0.45,
+          width: MediaQuery.of(context).size.width * 0.50,
           child: Card(
             color: themeColor,
             shape: RoundedRectangleBorder(
@@ -25,21 +24,22 @@ class CustomBalanceCard extends StatelessWidget {
               side: BorderSide(color: PrimaryColor.colorWhite),
             ),
             child: Center(
-                child: balanceOfTheMonthValue > 0
-                    ? CustomTextStyle(
-                        customTextStyleText:
-                            "Balance: ₹$balanceOfTheMonthValue",
-                        customTextColor: textThemeColor,
-                        customTextFontWeight: FontWeight.normal,
-                        customtextstyle: null,
-                        customTextSize: 15.0)
-                    : CustomTextStyle(
-                        customTextStyleText:
-                            "Balance: - ₹${balanceOfTheMonthValue.abs()}",
-                        customTextColor: textThemeColor,
-                        customTextFontWeight: FontWeight.normal,
-                        customtextstyle: null,
-                        customTextSize: 15.0)),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                  child: balanceOfTheMonthValue > 0
+                      ? SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.50,
+                        child: Center(
+                          child: Text("Balance: ₹$balanceOfTheMonthValue",style: TextStyle(color: textThemeColor,fontWeight: FontWeight.normal,fontSize: MediaQuery.of(context).size.width/25),textAlign: TextAlign.left,maxLines: 1,  overflow: TextOverflow.clip,),
+                        ),
+                      )
+                      : SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.50,
+                        child: Center(
+                          child: Text("Balance: -₹${balanceOfTheMonthValue.abs()}",style: TextStyle(color: textThemeColor,fontWeight: FontWeight.normal,fontSize: MediaQuery.of(context).size.width/25),textAlign: TextAlign.left,maxLines: 1,  overflow: TextOverflow.ellipsis),
+                        ),
+                      ),
+                )),
           )),
     );
   }

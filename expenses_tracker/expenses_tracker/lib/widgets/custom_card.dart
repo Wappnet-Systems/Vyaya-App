@@ -30,7 +30,7 @@ class CustomCard extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         color: color,
         child: SizedBox(
-          width: MediaQuery.of(context).size.width * 0.43,
+          width: MediaQuery.of(context).size.width * 0.45,
           height: MediaQuery.of(context).size.height * 0.08,
           child: Row(
             children: [
@@ -42,7 +42,7 @@ class CustomCard extends StatelessWidget {
                   color: themeColor,
                   child: SizedBox(
                       width: MediaQuery.of(context).size.width * 0.14,
-                      height: MediaQuery.of(context).size.height,
+                      height: MediaQuery.of(context).size.width*0.14,
                       child: icon),
                 ),
               ),
@@ -55,13 +55,17 @@ class CustomCard extends StatelessWidget {
                       customTextColor: themeColor,
                       customTextFontWeight: FontWeight.normal,
                       customtextstyle: null,
-                      customTextSize: 16.0),
-                  CustomTextStyle(
-                      customTextStyleText: formatCurrency(speOrIncMonthValue),
-                      customTextColor: themeColor,
-                      customTextFontWeight: FontWeight.normal,
-                      customtextstyle: null,
-                      customTextSize: 14.5),
+                      customTextSize: MediaQuery.of(context).size.width/25), 
+                  SizedBox(
+                    width: MediaQuery.sizeOf(context).width/4,
+                    child: Text(formatCurrency(speOrIncMonthValue),style: TextStyle(color: themeColor,fontSize: MediaQuery.of(context).size.width/25),overflow: TextOverflow.fade,maxLines: 1,)),
+                                        
+                  // CustomTextStyle(
+                  //     customTextStyleText: formatCurrency(speOrIncMonthValue),
+                  //     customTextColor: themeColor,
+                  //     customTextFontWeight: FontWeight.normal,
+                  //     customtextstyle: null,
+                  //     customTextSize: MediaQuery.of(context).size.width/25),
                 ],
               )
             ],

@@ -31,7 +31,7 @@ class CustomTransaction extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 2.0),
       child: Card(
-        color: Theme.of(context).colorScheme.primary,
+        color: Theme.of(context).cardColor,
         elevation: 2,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
         child: SizedBox(
@@ -53,7 +53,7 @@ class CustomTransaction extends StatelessWidget {
                           alignment: Alignment.center,
                           children: [
                             SizedBox(
-                              height: MediaQuery.of(context).size.height * 0.07,
+                              height: MediaQuery.of(context).size.width * 0.16,
                               width: MediaQuery.of(context).size.width * 0.16,
                               child: Card(
                                 shape: RoundedRectangleBorder(
@@ -109,25 +109,19 @@ class CustomTransaction extends StatelessWidget {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            "$transactionNote",
-                            style: GoogleFonts.roboto(
-                                color: textTheme,
-                                fontSize:
-                                    MediaQuery.of(context).size.height * 0.021,
-                                fontWeight: FontWeight.w400),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width/2.5,
+                            child: Text(
+                              "$transactionNote",
+                              maxLines: 1,
+                              overflow: TextOverflow.fade,
+                              style: GoogleFonts.roboto(
+                                  color: textTheme,
+                                  fontSize:
+                                      MediaQuery.of(context).size.height * 0.021,
+                                  fontWeight: FontWeight.w400),
+                            ),
                           ),
-                          // Row(
-                          //   children: [
-                          //     Text(
-                          //       'Cash',
-                          //       style: TextStyle(
-                          //           color: textTheme,
-                          //           fontSize: MediaQuery.of(context).size.height *
-                          //               0.016),
-                          //     ),
-                          //   ],
-                          // ),
                           Row(
                             children: [
                               Text(
@@ -144,24 +138,30 @@ class CustomTransaction extends StatelessWidget {
                       ),
                     ],
                   ),
-                  // const SizedBox(
-                  //   width: 05,
-                  // ),
                   Column(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text(
-                          NumberFormat.currency(
-                            symbol: '₹',
-                            locale: "HI",
-                            decimalDigits: 0,
-                          ).format(transactionAmount),
-                          style: GoogleFonts.roboto(
-                              color: textTheme,
-                              fontSize:
-                                  MediaQuery.of(context).size.height * 0.020,
-                              fontWeight: FontWeight.w500),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width/3.5,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Text(                                                      
+                            NumberFormat.currency(
+                              symbol: categoryId == 0 || categoryId == 3 ?'+ ₹' :"- ₹",
+                              locale: "HI",
+                              decimalDigits: 0,
+                            ).format(transactionAmount),
+                          
+                            style: GoogleFonts.roboto(
+                                color: categoryId == 0 || categoryId == 3
+                                      ? PrimaryColor.colorBottleGreen
+                                      : PrimaryColor.colorRed,
+                                fontSize:
+                                    MediaQuery.of(context).size.height * 0.020,
+                                fontWeight: FontWeight.w500),
+                                maxLines: 1,
+                                overflow: TextOverflow.fade,
+                                textAlign: TextAlign.end,
+                          ),
                         ),
                       ),
                     ],

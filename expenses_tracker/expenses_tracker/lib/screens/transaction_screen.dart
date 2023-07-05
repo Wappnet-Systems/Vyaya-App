@@ -1,18 +1,22 @@
 import 'dart:math';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expenses_tracker/screens/home_screen.dart';
 import 'package:expenses_tracker/utils/validation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import '../model/localtransaction.dart';
 import '../utils/const.dart';
 import '../widgets/custom_text_style.dart';
+import '../widgets/fade_transition.dart';
 import 'category_list.dart';
 
 class TransactionScreen extends StatefulWidget {
   final int? id;
-  final String? transactionId, transactionNote, transactionDate;
+  final String? transactionId,
+      transactionPaymentMode,
+      transactionNote,
+      transactionDate;
   final int? transactionAmount,
       transactionCategory,
       transactionSubcategory,
@@ -21,6 +25,7 @@ class TransactionScreen extends StatefulWidget {
   const TransactionScreen(
       {super.key,
       required this.id,
+      this.transactionPaymentMode,
       this.transactionId,
       this.transactionAmount,
       this.transactionNote,
@@ -35,7 +40,7 @@ class TransactionScreen extends StatefulWidget {
 
 class _TransactionScreenState extends State<TransactionScreen> {
   int value = 0;
-  
+
   String? userId,
       transactionCategory,
       transactionDate,
@@ -43,16 +48,27 @@ class _TransactionScreenState extends State<TransactionScreen> {
       transactionSubcategory,
       transactionPaymentMode,
       transactionNote;
+
+  //drop down values for insurance type
+  String dropdownvalue = 'Cash';
+  var items = [
+    'Cash',
+    'Bank',
+    'Credit / Debit Card',
+    'UPI',
+  ];
+
+  String? selectedValue;
+  // Controller which are used
   TextEditingController amountController = TextEditingController();
   TextEditingController setDateController = TextEditingController();
   TextEditingController expensesCategoryController = TextEditingController();
   TextEditingController incomeCategoryController = TextEditingController();
   TextEditingController paymentModeController = TextEditingController();
   TextEditingController noteController = TextEditingController();
+
+  // form for add or Update Transaction
   GlobalKey<FormState> transactionFormGlobalKey = GlobalKey<FormState>();
-
-  FirebaseFirestore firestore = FirebaseFirestore.instance;
-
   DateTime _dateTime = DateTime.now();
 
   Icon? prefixIcon;
@@ -69,7 +85,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
     if (widget.id == 1) {
       setDateController.text =
           DateFormat('MMM dd, yyyy hh:mm a').format(DateTime.now()).toString();
-      paymentModeController.text = "Cash";
+      paymentModeController.text = dropdownvalue;
       expensesCategoryController.text = "others";
       incomeCategoryController.text = "others";
       prefixIcon = Icon(
@@ -79,17 +95,18 @@ class _TransactionScreenState extends State<TransactionScreen> {
       );
       subcategoryIndex = 0;
       categoryIndex = 1;
-      subcategory = 0;
+      subcategory = 1;
       personalFinanceCategory = 1;
     } else {
       amountController.text = widget.transactionAmount.toString();
       noteController.text = widget.transactionNote.toString();
-      paymentModeController.text = "Cash";
+      paymentModeController.text = widget.transactionPaymentMode!;
       setDateController.text = widget.transactionDate!;
+      dropdownvalue = paymentModeController.text;
       subcategory = widget.transactionSubcategory;
       personalFinanceCategory = 1;
       categoryIndex = widget.transactionCategory;
-            
+
       if (widget.transactionCategory == 1) {
         value = widget.transactionCategory! - 1;
         incomeCategoryController.text = ListOfAppData
@@ -135,7 +152,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SizedBox(
-                    width: MediaQuery.of(context).size.width/2.5,
+                    width: MediaQuery.of(context).size.width / 2.5,
                     child: OutlinedButton(
                       onPressed: () {
                         setState(() {
@@ -164,7 +181,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                     width: MediaQuery.of(context).size.width * 0.02,
                   ),
                   SizedBox(
-                    width: MediaQuery.of(context).size.width/2.5,
+                    width: MediaQuery.of(context).size.width / 2.5,
                     child: OutlinedButton(
                       onPressed: () {
                         setState(() {
@@ -273,13 +290,15 @@ class _TransactionScreenState extends State<TransactionScreen> {
                         Flexible(
                           child: TextFormField(
                             keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                              LengthLimitingTextInputFormatter(17),
+                            ],
                             cursorColor:
                                 Theme.of(context).colorScheme.onPrimary,
                             style: TextStyle(
                                 color: Theme.of(context).colorScheme.secondary),
-                            enableInteractiveSelection: false,
                             controller: amountController,
-                            
                             validator: amountValidator,
                             decoration: InputDecoration(
                               hintText: "Enter Amount",
@@ -335,8 +354,14 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                                 .colorScheme
                                                 .secondary),
                                         decoration: InputDecoration(
-                                          suffixIcon:
-                                              const Icon(Icons.chevron_right),
+                                          suffixIcon: Padding(
+                                            padding: EdgeInsets.only(
+                                                left: MediaQuery.sizeOf(context)
+                                                        .width *
+                                                    0.07),
+                                            child:
+                                                const Icon(Icons.chevron_right),
+                                          ),
                                           prefixIconConstraints:
                                               const BoxConstraints.tightFor(
                                                   height: 05, width: 35),
@@ -361,38 +386,40 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                 ),
                               )
                             : Flexible(
-                                child: InkWell(
-                                  onTap: () {},
-                                  child: TextFormField(
-                                    validator: textFormFieldValidator,
-                                    onTap: () {
-                                      navigate(context, 1);
-                                    },
-                                    readOnly: true,
-                                    controller: incomeCategoryController,
-                                    style: TextStyle(
+                                child: TextFormField(
+                                  validator: textFormFieldValidator,
+                                  onTap: () {
+                                    navigate(context, 1);
+                                  },
+                                  readOnly: true,
+                                  controller: incomeCategoryController,
+                                  style: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary),
+                                  decoration: InputDecoration(
+                                    suffixIcon: Padding(
+                                      padding: EdgeInsets.only(
+                                          left:
+                                              MediaQuery.sizeOf(context).width *
+                                                  0.07),
+                                      child: const Icon(Icons.chevron_right),
+                                    ),
+                                    prefixIconConstraints:
+                                        const BoxConstraints.tightFor(
+                                            height: 05, width: 35),
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
                                         color: Theme.of(context)
                                             .colorScheme
-                                            .secondary),
-                                    decoration: InputDecoration(
-                                      suffixIcon:
-                                          const Icon(Icons.chevron_right),
-                                      prefixIconConstraints:
-                                          const BoxConstraints.tightFor(
-                                              height: 05, width: 35),
-                                      enabledBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .secondary,
-                                        ),
+                                            .secondary,
                                       ),
-                                      focusedBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onPrimary,
-                                        ),
+                                    ),
+                                    focusedBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onPrimary,
                                       ),
                                     ),
                                   ),
@@ -419,36 +446,59 @@ class _TransactionScreenState extends State<TransactionScreen> {
                         const SizedBox(
                           width: 10,
                         ),
-                        Flexible(
-                          child: InkWell(
-                            onTap: () {},
-                            child: TextFormField(
-                              readOnly: true,
-                              style: TextStyle(
-                                  color:
-                                      Theme.of(context).colorScheme.secondary),
-                              validator: textFormFieldValidator,
-                              keyboardType: TextInputType.number,
-                              controller: paymentModeController,
-                              decoration: InputDecoration(
-                                suffixIcon: const Icon(Icons.chevron_right),
-                                prefixIconConstraints:
-                                    const BoxConstraints.tightFor(
-                                        height: 05, width: 35),
-                                enabledBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
+                        Expanded(
+                          child: DropdownButtonFormField(
+                            decoration: InputDecoration(
+                              disabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondary),
+                              ),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondary),
+                              ),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondary),
+                              ),
+                              border: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondary),
+                              ),
+                            ),
+                            value: dropdownvalue,
+                            dropdownColor:
+                                Theme.of(context).colorScheme.primary,
+                            iconDisabledColor:
+                                Theme.of(context).colorScheme.secondary,
+                            icon: const Icon(Icons.chevron_right),
+                            items: items.map((String items) {
+                              return DropdownMenuItem(
+                                value: items,
+                                child: Text(
+                                  items,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w400,
                                     color:
                                         Theme.of(context).colorScheme.secondary,
                                   ),
                                 ),
-                                focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color:
-                                        Theme.of(context).colorScheme.onPrimary,
-                                  ),
-                                ),
-                              ),
-                            ),
+                              );
+                            }).toList(),
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                dropdownvalue = newValue!;
+                                paymentModeController.text = dropdownvalue;
+                              });
+                            },
                           ),
                         ),
                       ],
@@ -469,7 +519,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                       color: Theme.of(context)
                                           .colorScheme
                                           .secondary),
-                                          activeColor: PrimaryColor.colorBottleGreen,
+                                  activeColor: PrimaryColor.colorBottleGreen,
                                   checkColor:
                                       Theme.of(context).colorScheme.primary,
                                   value: _isChecked,
@@ -479,7 +529,6 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                     setState(() {});
                                   },
                                 ),
-                                
                                 Text(
                                   'Add to Personal Finance Portion',
                                   style: TextStyle(
@@ -532,7 +581,6 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                 color: Theme.of(context).colorScheme.secondary),
                             keyboardType: TextInputType.text,
                             maxLength: 20,
-                            enableInteractiveSelection: false,
                             controller: noteController,
                             decoration: InputDecoration(
                               hintText: "Description",
@@ -582,10 +630,10 @@ class _TransactionScreenState extends State<TransactionScreen> {
   }
 
   Future<void> navigate(BuildContext context, int id) async {
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => CategoryList(id: id)),
-    );
+    final result = await Navigator.of(context).push(
+                              FadeSlideTransitionRoute(
+                                  page: CategoryList(id: id)),);
+    
     if (!mounted) return;
     int index = int.parse(result);
     int indexForIcon = index;
@@ -611,7 +659,6 @@ class _TransactionScreenState extends State<TransactionScreen> {
         subcategoryIndex =
             ListOfAppData.listOfCategory[indexForIcon].categoryIndex;
         subcategory = ListOfAppData.listOfCategory[index].categoryType;
-
       }
     });
   }
@@ -679,20 +726,22 @@ class _TransactionScreenState extends State<TransactionScreen> {
   }
 
   Future<LocalTransaction> getSingleTransaction(String transactionId) async {
-  final box = await Hive.openBox<LocalTransaction>('local_transactions');
-  final transaction = box.values
-      .firstWhere((transaction) => transaction.tID == transactionId);
-  return transaction;
-}
-
-Future<void> updateLocalTransaction(LocalTransaction updatedTransaction) async {
-  final box = await Hive.openBox<LocalTransaction>('local_transactions');
-  final index = box.values.toList().indexWhere((transaction) =>
-      transaction.tID == updatedTransaction.tID);
-  if (index != -1) {
-    await box.putAt(index, updatedTransaction);
+    final box = await Hive.openBox<LocalTransaction>('local_transactions');
+    final transaction = box.values
+        .firstWhere((transaction) => transaction.tID == transactionId);
+    return transaction;
   }
-}
+
+  Future<void> updateLocalTransaction(
+      LocalTransaction updatedTransaction) async {
+    final box = await Hive.openBox<LocalTransaction>('local_transactions');
+    final index = box.values
+        .toList()
+        .indexWhere((transaction) => transaction.tID == updatedTransaction.tID);
+    if (index != -1) {
+      await box.putAt(index, updatedTransaction);
+    }
+  }
 
   void updateTransaction() {
     if (transactionFormGlobalKey.currentState!.validate()) {
@@ -705,16 +754,17 @@ Future<void> updateLocalTransaction(LocalTransaction updatedTransaction) async {
           categoryIndex = 0;
         }
       }
-      if(noteController.text.isEmpty){
-        noteController.text="-";
+      if (noteController.text.isEmpty) {
+        noteController.text = "-";
       }
-      String noteDetail=noteController.text;
-      String capitalizedNote=noteDetail[0].toUpperCase() + noteDetail.substring(1);
+      String noteDetail = noteController.text;
+      String capitalizedNote =
+          noteDetail[0].toUpperCase() + noteDetail.substring(1);
       transactionNote = capitalizedNote;
       transactionAmount = amountController.text;
       int amountOfMoney = int.parse(transactionAmount!);
       String tID = widget.transactionId.toString();
-      transactionPaymentMode = 'Cash';
+      transactionPaymentMode = paymentModeController.text;
 
       // For Local Database
       final localTransaction = LocalTransaction(
@@ -731,9 +781,11 @@ Future<void> updateLocalTransaction(LocalTransaction updatedTransaction) async {
 
       updateLocalTransaction(localTransaction);
       getAllLocalTransactions();
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: ((context) => const HomeScreen())));
-    }  
+      Navigator.of(context).push(
+                              FadeSlideTransitionRoute(
+                                  page:  const HomeScreen()),);
+      
+    }
   }
 
   Future<void> createLocalTransaction(LocalTransaction transaction) async {
@@ -758,17 +810,24 @@ Future<void> updateLocalTransaction(LocalTransaction updatedTransaction) async {
           categoryIndex = 0;
         }
       }
-      if(noteController.text.isEmpty){
-        noteController.text="-";
+      if (noteController.text.isEmpty) {
+        if (categoryIndex == 0 || categoryIndex==3) {
+          noteController.text =
+              ListOfAppData.listOfIncome[subcategoryIndex!].categoryText!;
+        }
+        if (categoryIndex == 1) {
+          noteController.text =
+              ListOfAppData.listOfCategory[subcategoryIndex!].categoryText!;
+        }
       }
-      String noteDetail=noteController.text;
-      String capitalizedNote=noteDetail[0].toUpperCase() + noteDetail.substring(1);
+      String noteDetail = noteController.text;
+      String capitalizedNote =
+          noteDetail[0].toUpperCase() + noteDetail.substring(1);
       transactionAmount = amountController.text;
-      transactionPaymentMode = 'Cash';
-      transactionNote =capitalizedNote; 
+      transactionPaymentMode = paymentModeController.text;
+      transactionNote = capitalizedNote;
       int amountOfMoney = int.parse(transactionAmount!);
       String tId = generateRandomString(20);
-
 
       final localTransaction = LocalTransaction(
           userId: userId!,
@@ -784,8 +843,10 @@ Future<void> updateLocalTransaction(LocalTransaction updatedTransaction) async {
 
       createLocalTransaction(localTransaction);
       getAllLocalTransactions();
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: ((context) => const HomeScreen())));
+      Navigator.of(context).push(
+                              FadeSlideTransitionRoute(
+                                  page: const HomeScreen()),);
+      
     }
   }
 

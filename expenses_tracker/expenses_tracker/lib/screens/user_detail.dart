@@ -1,26 +1,23 @@
-
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:expenses_tracker/model/userlogin.dart';
+import 'dart:convert';
+import 'package:encrypt/encrypt.dart' as encrypt;
+import 'package:encrypt/encrypt.dart';
 import 'package:expenses_tracker/screens/auth_user.dart';
 import 'package:expenses_tracker/screens/home_screen.dart';
 import 'package:expenses_tracker/utils/const.dart';
-import 'package:expenses_tracker/utils/validation.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:developer' as dev;
+import '../model/localuser.dart';
 import '../model/users.dart';
+import '../utils/validation.dart';
 import '../widgets/custom_text_form_field.dart';
 import '../widgets/custom_text_style.dart';
+import '../widgets/fade_transition.dart';
 
 class UserDetail extends StatefulWidget {
-  final String? uid, uname, uMobile, uEmail;
+  final String? uid, uname, uEmail;
   final int? id;
-  const UserDetail(
-      {super.key, this.uid, this.uMobile, this.id, this.uname, this.uEmail});
+  const UserDetail({super.key, this.uid, this.id, this.uname, this.uEmail});
 
   @override
   State<UserDetail> createState() => _UserDetailState();
@@ -35,416 +32,322 @@ class _UserDetailState extends State<UserDetail> {
   TextEditingController lastNameController = TextEditingController();
   GlobalKey<FormState> userDetailFormGlobalKey = GlobalKey<FormState>();
 
-  FirebaseFirestore firestore = FirebaseFirestore.instance;
   List<Users> listOfUsers = [];
   Map<String, Users> usersList = {};
+  final RegExp _noWhitespaceRegex = RegExp(r'^\S*$');
 
-  late UserLogin userlogin;
-  late Box<UserLogin> _userLoginBox;
+  late Box<LocalUser> _localUserLoginBox;
 
   @override
   void initState() {
     super.initState();
     openBox();
-    getFcmToken();
-    uid = FirebaseAuth.instance.currentUser!.uid;
-    uMobile = FirebaseAuth.instance.currentUser!.phoneNumber;
     getSingleUserData();
 
     if (UserData.currentUserName == null || UserData.currentUserEmail == null) {
       userEmailController.text = "";
       firstNameController.text = "";
-      lastNameController.text="";
+      lastNameController.text = "";
     } else {
       List<String> nameParts = UserData.currentUserName!.split(' ');
-      dev.log("${UserData.currentUserPhone}");
       String firstName = nameParts[0];
       String lastName = nameParts[1];
       firstNameController.text = firstName;
-      lastNameController.text=lastName;
+      lastNameController.text = lastName;
       userEmailController.text = UserData.currentUserEmail!;
     }
   }
 
   Future<void> openBox() async {
-    _userLoginBox = await Hive.openBox<UserLogin>('userlogin');
+    _localUserLoginBox = await Hive.openBox<LocalUser>('local_user');
   }
 
-  void addUserLogin(UserLogin userLogin) async {
-    var userLoginList = _userLoginBox.values.toList();
+  void addUserLogin(LocalUser localUser) async {
+    var userLoginList = _localUserLoginBox.values.toList();
     var existingUserIndex = userLoginList
-        .indexWhere((element) => element.userId == userLogin.userId);
+        .indexWhere((element) => element.userId == localUser.userId);
 
     if (existingUserIndex != -1) {
-      updateUserLogin(existingUserIndex, userLogin);
+      updateUserLogin(existingUserIndex, localUser);
     } else {
-      await _userLoginBox.add(userLogin);
+      await _localUserLoginBox.add(localUser);
     }
     getUserLogin();
   }
 
-  List<UserLogin> getUserLogin() {
-    final userLogins = _userLoginBox.values.toList();
-    for (final userLogin in userLogins) {
-      dev.log(
-          'User ID: ${userLogin.userId} & User Name: ${userLogin.userName} & User Email: ${userLogin.userEmail} & User Phone: ${userLogin.userPhone} & User Token: ${userLogin.userToken}');
-    }
-    return _userLoginBox.values.toList();
+  List<LocalUser> getUserLogin() {
+    final userLogins = _localUserLoginBox.values.toList();
+    return _localUserLoginBox.values.toList();
   }
 
-  void updateUserLogin(int index, UserLogin userLogin) async {
-    await _userLoginBox.putAt(index, userLogin);
-  }
-
-  void deleteUserLogin(int index) async {
-    await _userLoginBox.deleteAt(index);
+  void updateUserLogin(int index, LocalUser userLogin) async {
+    await _localUserLoginBox.putAt(index, userLogin);
   }
 
   @override
   Widget build(BuildContext context) {
+
     return SafeArea(
       child: Scaffold(
-        resizeToAvoidBottomInset: true,
+        resizeToAvoidBottomInset: false,
         backgroundColor: Theme.of(context).colorScheme.primary,
-        
-        body: ListView(
-
-          physics: const AlwaysScrollableScrollPhysics(),
-          primary: true,
+        body: 
+        ListView(
+          padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.03,horizontal: MediaQuery.of(context).size.width*0.03),
+          physics: const BouncingScrollPhysics(),
           children: [
-             Container(
-
-              
+            SizedBox(
               height: MediaQuery.of(context).size.height,
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                SizedBox(
-                 
-                  height: MediaQuery.of(context).size.height/2.2,
-                  width: MediaQuery.of(context).size.width,
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: widget.id ==1 ?const SizedBox.shrink() :Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              const SizedBox(height: 20,),
-                              GestureDetector(
-                                onTap: skipUser,
-                                child: CustomTextStyle(customTextStyleText: "Skip", customTextColor: PrimaryColor.colorBlue, customTextFontWeight: FontWeight.normal, customtextstyle: null, customTextSize: MediaQuery.of(context).size.height*0.020)),
-                            ],
-                          ),
-                      ),
-                      Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          widget.id == 1?CustomTextStyle(customTextStyleText: "Update your Profile", customTextColor: PrimaryColor.colorBottleGreen, customTextFontWeight: FontWeight.normal, customtextstyle: null, customTextSize: MediaQuery.of(context).size.height*0.030)
-                          :CustomTextStyle(customTextStyleText: "Complete your Profile", customTextColor: PrimaryColor.colorBottleGreen, customTextFontWeight: FontWeight.normal, customtextstyle: null, customTextSize: MediaQuery.of(context).size.height*0.030),
-                        ],
-                      ),
-                      const SizedBox(height: 20,),
-                      Expanded(child: Image.asset("assets/userprofilepage.png")),
-                    ],
-                  )
-                ),
-              
-                SizedBox(height: MediaQuery.of(context).size.height/12,),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height/2.5,
-                  width: MediaQuery.of(context).size.width,
-                  child: Form(
-                    key: userDetailFormGlobalKey,
-                    child: Column(
+              width: MediaQuery.of(context).size.width,
+              child: Form(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                key: userDetailFormGlobalKey,                      
+                child: Column(
+                  children: [                                      
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        SizedBox(
+                    child: Image.asset("assets/splashimage.png",height: MediaQuery.of(context).size.height/3.5,width: MediaQuery.of(context).size.width/2.5,)),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        
-                        const SizedBox(height: 10,),
-                        TextFormField(
-                          style:
-                              TextStyle(color: Theme.of(context).colorScheme.secondary),
-                          inputFormatters: <TextInputFormatter>[
-                            FilteringTextInputFormatter.allow(RegExp('[a-zA-Z]')),
-                          ],
-                          keyboardType: TextInputType.name,
-                          mouseCursor: null,
-                          cursorColor: Theme.of(context).colorScheme.onPrimary,
-                          controller: firstNameController,
-                          enableInteractiveSelection: false,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                             
-                              borderSide: BorderSide(color: Theme.of(context).hintColor),
-                              borderRadius: BorderRadius.circular(18.0)
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Theme.of(context).colorScheme.onPrimary),
-                              borderRadius: BorderRadius.circular(18.0)
-                            ),
-                            contentPadding:
-                                const EdgeInsets.symmetric(horizontal: 13, vertical: 12),
-                            hintText: "First Name",
-                            hintStyle: TextStyle(
-                              color: Theme.of(context).hintColor,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 14,
-                            ),
-                            prefixIcon: Icon(Icons.person,color: Theme.of(context).colorScheme.secondary),
-                            suffixIcon: null,
-                          ),
-                          validator: nameValidator,
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: widget.id == 1
+                              ? CustomTextStyle(
+                                  customTextStyleText: "Update your Profile",
+                                  customTextColor:
+                                      PrimaryColor.colorBottleGreen,
+                                  customTextFontWeight: FontWeight.normal,
+                                  customtextstyle: null,
+                                  textAlign: TextAlign.left,
+                                  customTextSize:
+                                      MediaQuery.of(context).size.height *
+                                          0.030)
+                              : CustomTextStyle(
+                                  customTextStyleText: "Login / Registration",
+                                  customTextColor:
+                                      PrimaryColor.colorBottleGreen,
+                                  customTextFontWeight: FontWeight.normal,
+                                  customtextstyle: null,
+                                  customTextSize:
+                                      MediaQuery.of(context).size.height *
+                                          0.030,
+                                          textAlign: TextAlign.left,),
                         ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        TextFormField(
-                          style:
-                              TextStyle(color: Theme.of(context).colorScheme.secondary),
-                          inputFormatters: <TextInputFormatter>[
-                            FilteringTextInputFormatter.allow(RegExp('[a-zA-Z]')),
-                          ],
-                          keyboardType: TextInputType.name,
-                          mouseCursor: null,
-                          cursorColor: Theme.of(context).colorScheme.onPrimary,
-                          controller: lastNameController,
-                          enableInteractiveSelection: false,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(                     
-                              borderSide: BorderSide(color: Theme.of(context).hintColor),
-                              borderRadius: BorderRadius.circular(18.0)
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Theme.of(context).colorScheme.onPrimary),
-                              borderRadius: BorderRadius.circular(18.0)
-                            ),
-                            contentPadding:
-                                const EdgeInsets.symmetric(horizontal: 13, vertical: 12),
-                            hintText: "Last Name",
-                            hintStyle: TextStyle(
-                              color: Theme.of(context).hintColor,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 14,
-                            ),
-                            prefixIcon: Icon(Icons.person,color: Theme.of(context).colorScheme.secondary),
-                            suffixIcon: null,
-                          ),
-                          validator: nameValidator,
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        CustomTextFormField(
-                            textInputType: TextInputType.emailAddress,
-                            textEditingController: userEmailController,
-                            textEditingHintText: "Email",
-                            customPreFixIcon: Icon(Icons.email,color: Theme.of(context).colorScheme.secondary),
-                            customObscureText: true,
-                            validationFunction: emailValidator,
-                            customInkwell: null),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        GestureDetector(
-                          onTap: addUser,
-                          child: Container(
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(18),
-                              color: PrimaryColor.colorBottleGreen,
-                            ),
-                            width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).size.height/18,
-                            padding: const EdgeInsets.all(12),
-                            child: widget.id == 1
-                                  ? CustomTextStyle(customTextStyleText: "Update", customTextColor: PrimaryColor.colorWhite, customTextFontWeight: FontWeight.w400, customtextstyle: null, customTextSize: MediaQuery.of(context).size.height/50) 
-                                  : CustomTextStyle(customTextStyleText: "save", customTextColor: PrimaryColor.colorWhite, customTextFontWeight: FontWeight.w400, customtextstyle: null, customTextSize: MediaQuery.of(context).size.height/50))
-                        ),
-                        
                       ],
                     ),
-                  ),
+                    const SizedBox(height: 10,),                                    
+                    CustomTextFormField(
+                    textInputAction: TextInputAction.next,
+                    textCapitalization: TextCapitalization.words,
+                    textInputType: TextInputType.name,
+                    textEditingController: firstNameController,
+                    textEditingHintText: "First Name",
+                    customPreFixIcon: Icon(Icons.person,
+                    color: Theme.of(context).colorScheme.secondary),
+                    customObscureText: true,
+                    validationFunction: nameValidator,
+                    customInkwell: null),              
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    CustomTextFormField(
+                    textInputAction: TextInputAction.next,
+                    textInputType: TextInputType.name,
+                    textEditingController: lastNameController,
+                    textEditingHintText: "Last Name",
+                    customPreFixIcon: Icon(Icons.person,
+                        color: Theme.of(context).colorScheme.secondary),
+                    customObscureText: true,
+                    validationFunction: nameValidator,
+                    customInkwell: null,
+                    textCapitalization: TextCapitalization.words),
+                    
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    CustomTextFormField(
+                    textInputAction: TextInputAction.done,
+                    textCapitalization: TextCapitalization.none,
+                    readOnly: widget.id == 1 ? true : false,
+                    textInputType: TextInputType.emailAddress,
+                    textEditingController: userEmailController,
+                    textEditingHintText: "Email",
+                    customPreFixIcon: Icon(Icons.email,
+                        color: Theme.of(context).colorScheme.secondary),
+                    customObscureText: true,
+                    validationFunction: emailValidator,
+                    customInkwell: null),
+                    Padding(
+                padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom)),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    GestureDetector(
+                    onTap: addUser,
+                    child: Container(
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(18),
+                          color: PrimaryColor.colorBottleGreen,
+                        ),
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height / 18,
+                        padding: const EdgeInsets.all(12),
+                        child: widget.id == 1
+                            ? Text(
+                                "Update",
+                                style: TextStyle(
+                                    color: PrimaryColor.colorWhite,
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: MediaQuery.of(context)
+                                            .size
+                                            .height /
+                                        50),
+                              )
+                            : Text(
+                                "Save",
+                                style: TextStyle(
+                                    color: PrimaryColor.colorWhite,
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: MediaQuery.of(context)
+                                            .size
+                                            .height /
+                                        50),
+                              ))),
+                    
+                    
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
-        
           ],
-      ),)
+        ),
+      ),
     );
+  } 
+    
+  Future<String> encryptData(String? email, String key) async {
+    final plainText = utf8.encode(email!);
+    final encryptionKey = encrypt.Key.fromUtf8(key);
+    final iv = IV.fromLength(16);
+    final encrypter = Encrypter(AES(encryptionKey));
+    final encrypted = encrypter.encryptBytes(plainText, iv: iv);
+    uid = base64Encode(encrypted.bytes);
+    return base64Encode(encrypted.bytes);
   }
-
-  void skipUser() async{
-    String firstName="userFirst";
-      String capitalizedFirstName = firstName[0].toUpperCase() + firstName.substring(1);
-      String lastName="userLast";
-      String capitalizedLastName = lastName[0].toUpperCase() + lastName.substring(1);
-      uname = "$capitalizedFirstName $capitalizedLastName";
-      uEmail = userEmailController.text;
-      UserData.currentUserId = uid;
-      String uToken = UserData.currentUserToken!;
-
-      final userlogin = UserLogin(
-          userId: uid!,
-          userName: uname!,
-          userEmail: uEmail!,
-          userPhone: uMobile!,
-          userToken: uToken);
-
-      addUserLogin(userlogin);
-
-      UserData.currentUserEmail = uEmail;
-      UserData.currentUserName = uname;
-      UserData.currentUserPhone = uMobile;
-      UserData.currentUserToken = uToken;
-
-      SharedPreferences sharedPreferences =
-          await SharedPreferences.getInstance();
-      await sharedPreferences.setString('userId', uid!);
-
-      dev.log("User Id: ${UserData.currentUserId}");
-
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => const HomeScreen()));
-  }
-
-  // void _showFaceIdDialog(BuildContext context) async {
-  //   bool? enableFaceId = await showDialog<bool>(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return const FaceIdDialog();
-  //     },
-  //   );
-
-  //   if (enableFaceId != null && enableFaceId) {
-  //     Navigator.pushReplacement(
-  //         context, MaterialPageRoute(builder: (context) => const HomeScreen()));
-  //     dev.log('Face ID authentication enabled.');
-  //   } else {
-  //     Navigator.pushReplacement(
-  //         context, MaterialPageRoute(builder: (context) => const HomeScreen()));
-  //     dev.log('Face ID authentication not enabled.');
-  //   }
-  // }
 
   void addUser() async {
-    final sharedPreferences = await SharedPreferences.getInstance();
     if (userDetailFormGlobalKey.currentState!.validate()) {
-      String firstName=firstNameController.text;
-      String capitalizedFirstName = firstName[0].toUpperCase() + firstName.substring(1);
-      String lastName=lastNameController.text;
-      String capitalizedLastName = lastName[0].toUpperCase() + lastName.substring(1);
-      uname = "$capitalizedFirstName $capitalizedLastName";
+      uname = "${firstNameController.text} ${lastNameController.text}";
       uEmail = userEmailController.text;
+      encryptData(uEmail, "5a7b3c1eab9fd67032b164fae0c9d8b2");
       UserData.currentUserId = uid;
-      String uToken = UserData.currentUserToken!;
 
-      final userlogin = UserLogin(
-          userId: uid!,
-          userName: uname!,
-          userEmail: uEmail!,
-          userPhone: uMobile!,
-          userToken: uToken);
+      final userlogin = LocalUser(
+        userId: uid!,
+        userName: uname!,
+        userEmail: uEmail!,
+      );
 
       addUserLogin(userlogin);
-
       UserData.currentUserEmail = uEmail;
       UserData.currentUserName = uname;
-      UserData.currentUserPhone = uMobile;
-      UserData.currentUserToken = uToken;
 
       SharedPreferences sharedPreferences =
           await SharedPreferences.getInstance();
       await sharedPreferences.setString('userId', uid!);
 
-      dev.log("User Id: ${UserData.currentUserId}");
-
-      // ignore: use_build_context_synchronously
-      await showDialog(
-  context: context,
-  builder: (BuildContext context) {
-    return AlertDialog(
-      shape: RoundedRectangleBorder(
-        side: BorderSide(
-          color: Theme.of(context).colorScheme.secondary,
-        ),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      backgroundColor: Theme.of(context).colorScheme.primary,
-      title: Text(
-        "User Authentication",
-        style: TextStyle(
-          color: PrimaryColor.colorRed,
-        ),
-      ),
-      content: Text(
-        "Authentication using FaceId, Fingerprint, or Password?",
-        style: TextStyle(
-          color: Theme.of(context).colorScheme.secondary,
-        ),
-      ),
-      actions: <Widget>[
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            GestureDetector(
-              onTap: () {
-                sharedPreferences.setInt('user_auth_biometric', 0);
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => const HomeScreen()),
+      widget.id == 1
+          ? Navigator.of(context).pushReplacement(
+                              FadeSlideTransitionRoute(
+                                  page: const HomeScreen()),)
+          
+            
+          // ignore: use_build_context_synchronously
+          : await showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  shape: RoundedRectangleBorder(
+                    side: BorderSide(
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  title: Text(
+                    "User Authentication",
+                    style: TextStyle(
+                      color: PrimaryColor.colorRed,
+                    ),
+                  ),
+                  content: Text(
+                    "Authentication using FaceId, Fingerprint, or Password?",
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
+                  ),
+                  actions: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            sharedPreferences.setInt('user_auth_biometric', 0);
+                            Navigator.of(context).pushReplacement(
+                              FadeSlideTransitionRoute(
+                                  page: const HomeScreen()),);
+                            
+                          },
+                          child: Text(
+                            "No",
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.secondary,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 15,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            sharedPreferences.setInt('user_auth_biometric', 1);                            
+                            Navigator.of(context).pushReplacement(
+                              FadeSlideTransitionRoute(
+                                  page: const AuthUser()),);
+                            
+                          },
+                          child: Text(
+                            "Yes",
+                            style: TextStyle(
+                              color: PrimaryColor.colorRed,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 );
               },
-              child: Text(
-                "No",
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
-              ),
-            ),
-            const SizedBox(
-              width: 15,
-            ),
-            GestureDetector(
-              onTap: () {
-                sharedPreferences.setInt('user_auth_biometric', 1);
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => const AuthUser()),
-                );
-              },
-              child: Text(
-                "Yes",
-                style: TextStyle(
-                  color: PrimaryColor.colorRed,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  },
-);
-
-        
-
+            );
     }
   }
 
-  Future<UserLogin> getSingleUser(String currentUserID) async {
-    final box = await Hive.openBox<UserLogin>('userlogin');
+  Future<LocalUser> getSingleUser(String currentUserID) async {
+    final box = await Hive.openBox<LocalUser>('local_user');
     final users = box.values.firstWhere((user) => user.userId == currentUserID);
+
     UserData.currentUserId = users.userId;
     UserData.currentUserName = users.userName;
     UserData.currentUserEmail = users.userEmail;
-    UserData.currentUserPhone = users.userPhone;
-    UserData.currentUserToken = users.userToken;
     return users;
   }
 
@@ -463,14 +366,5 @@ class _UserDetailState extends State<UserDetail> {
         isLoading = false;
       });
     }
-  }
-
-  void getFcmToken() async {
-    await FirebaseMessaging.instance.getToken().then((token) {
-      setState(() {
-        UserData.currentUserToken = token;
-            dev.log("${UserData.currentUserToken}");
-      });
-    });
   }
 }

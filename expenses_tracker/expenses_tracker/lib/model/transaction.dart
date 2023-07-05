@@ -25,7 +25,4 @@ class AllTransactionDetails {
       required this.transactionPaymentMode,
       required this.transactionCreatedAt});
 
-  static fromJson(Map<String, dynamic> data) {}
-
-  // AllTransactionDetails({required this.transactionAmount,required this.transactionCategory,required this.transactionDate,required this.transactionNote,required this.transactionPaymentMode,required this.transactionSubcategory,required this.uId});
-}
+  }

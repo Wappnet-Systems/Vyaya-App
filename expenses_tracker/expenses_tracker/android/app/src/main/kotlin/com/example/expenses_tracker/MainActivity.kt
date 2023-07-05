@@ -1,4 +1,4 @@
-package com.example.expenses_tracker
+package com.wappnet.vyaya
 
 import io.flutter.embedding.android.FlutterFragmentActivity
 

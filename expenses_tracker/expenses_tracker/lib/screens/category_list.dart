@@ -16,7 +16,12 @@ class _CategoryListState extends State<CategoryList> {
       backgroundColor: Theme.of(context).colorScheme.primary,
       appBar: AppBar(
         iconTheme: IconThemeData(color: PrimaryColor.colorWhite),
-        title: Text(
+        title: widget.id ==2
+        ?Text(
+          'Mode of Payment',
+          style: TextStyle(color: PrimaryColor.colorWhite),
+        )
+        :Text(
           'Categories',
           style: TextStyle(color: PrimaryColor.colorWhite),
         ),
@@ -48,7 +53,6 @@ class _CategoryListState extends State<CategoryList> {
                   ),
                   const SizedBox(width: 10,),
                   Text("${ListOfAppData.listOfIncome[index].categoryText}",style: TextStyle(color: Theme.of(context).colorScheme.secondary,fontSize: 15),),
-                  // Text('${ListOfAppData.listOfCategory[index].categoryText}',style: TextStyle(color: PrimaryColor.colorBlack,fontSize: 15),),
                 ],
               ),
             ),
@@ -84,7 +88,7 @@ class _CategoryListState extends State<CategoryList> {
             ),
           ),
         );
-      }),
+      })      
     );
   }
 }

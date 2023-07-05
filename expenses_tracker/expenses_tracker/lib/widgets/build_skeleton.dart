@@ -94,7 +94,7 @@ class HomeSkeleton extends StatelessWidget {
                             customTextFontWeight: FontWeight.bold,
                             customtextstyle: null,
                             customTextSize: 20),
-                        const CustomTextStyle(
+                         CustomTextStyle(
                             customTextStyleText: "Set Manually",
                             customTextColor: Colors.blueAccent,
                             customTextFontWeight: FontWeight.bold,
@@ -123,7 +123,7 @@ class HomeSkeleton extends StatelessWidget {
                             customTextFontWeight: FontWeight.bold,
                             customtextstyle: null,
                             customTextSize: 20),
-                        const CustomTextStyle(
+                        CustomTextStyle(
                             customTextStyleText: "View all",
                             customTextColor: Colors.blueAccent,
                             customTextFontWeight: FontWeight.bold,

@@ -4,6 +4,7 @@ import '../utils/const.dart';
 
 class MyTheme {
   static final lightTheme = ThemeData(
+    textSelectionTheme: TextSelectionThemeData(selectionHandleColor: PrimaryColor.colorBottleGreen),  
     colorScheme: ColorScheme.fromSeed(seedColor: PrimaryColor.colorBottleGreen).copyWith(
         primary: PrimaryColor.colorWhite,
         onPrimary: PrimaryColor.colorBottleGreen,
@@ -19,17 +20,20 @@ class MyTheme {
   );
   
   static final darkTheme = ThemeData(
-     primaryColor: PrimaryColor.colorBottleGreen,   
+     primaryColor: PrimaryColor.colorBottleGreen, 
+     textSelectionTheme: TextSelectionThemeData(selectionHandleColor: PrimaryColor.colorBottleGreen),  
           
         colorScheme: ColorScheme.fromSeed(seedColor: PrimaryColor.colorBottleGreen).copyWith(
         primary: Colors.black,
+        
         onPrimary: PrimaryColor.colorBottleGreen,
         secondary: PrimaryColor.colorWhite,
         onSecondary: PrimaryColor.colorBottleGreen,
         background: PrimaryColor.colorWhite,
         onBackground: PrimaryColor.colorBottleGreen,
+        
       ),
-      cardColor: Color.fromARGB(150, 25, 15, 20),
+      cardColor: const Color.fromARGB(150, 25, 15, 20),
       hintColor: Colors.white60,
       dialogBackgroundColor: PrimaryColor.colorBlack,
       useMaterial3: true, 

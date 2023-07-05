@@ -1,13 +1,15 @@
+import 'dart:convert';
 import 'dart:io';
+import 'package:encrypt/encrypt.dart';
 import 'package:expenses_tracker/model/localtransaction.dart';
-import 'package:expenses_tracker/screens/phone_auth.dart';
+import 'package:expenses_tracker/screens/privacy_policy.dart';
 import 'package:expenses_tracker/screens/user_detail.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis_auth/auth_io.dart';
 import 'package:hive/hive.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../utils/const.dart';
 import '../utils/functions.dart';
 import '../widgets/change_theme_button_widget.dart';
@@ -17,6 +19,8 @@ import '../widgets/custom_header.dart';
 import 'dart:convert' as convert;
 import 'package:googleapis/drive/v3.dart' as googleDrive;
 
+import '../widgets/custom_text_style.dart';
+import '../widgets/fade_transition.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -27,11 +31,16 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   String? username, initialOfName, wishingText;
   bool _darkMode = false;
+  String? masterPassword;
+  final TextEditingController masterPasswordController =
+      TextEditingController();
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  bool isLoading = false;
 
-  FirebaseAuth auth = FirebaseAuth.instance;
   late Box<LocalTransaction> localTransactionBox;
   final fileName = 'Vyaya_tracker (Data backup).txt';
   final encryptionDecryptionKey = '5a7b3c1eab9fd67032b164fae0c9d8b2';
+  final masterPasswordKey = "5a7b3c1eab9fd67032b164fae0c9d8b2";
 
   @override
   void initState() {
@@ -47,227 +56,381 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primary,
-      body: SingleChildScrollView(
-        child: Container(
-            padding: const EdgeInsets.only(left: 10, right: 10, top: 15),
-            child:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              CustomHeader(
-                initialOfName: initialOfName,
-                username: username,
-                wishingText: wishingText,
-                textColor: Theme.of(context).colorScheme.secondary,
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              ListTile(
-                leading: Icon(
-                  Icons.edit,
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
-                title: Text(
-                  'Edit Profile',
-                  style:
-                      TextStyle(color: Theme.of(context).colorScheme.secondary),
-                ),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
-                visualDensity: const VisualDensity(vertical: -4),
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const UserDetail(
-                                id: 1,
-                              )));
-                },
-              ),
-              const Divider(),
-              ListTile(
-                leading: Icon(
-                  Icons.backup_outlined,
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
-                title: Text(
-                  'Upload backup',
-                  style:
-                      TextStyle(color: Theme.of(context).colorScheme.secondary),
-                ),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
-                visualDensity: const VisualDensity(vertical: -4),
-                onTap: () {
-                  Box<LocalTransaction> transactionBox =
-                      Hive.box<LocalTransaction>('local_transactions');
-                  List<Map<String, dynamic>> jsonData =
-                      transactionBox.values.map((e) {
-                    return {
-                      'Transaction Id': e.tID,
-                      'User Id': e.userId,
-                      'Transaction Category': e.tCategory,
-                      'Transaction Subcategory': e.tCategory,
-                      'Transaction Subcategory Index': e.tSubcategoryIndex,
-                      'Transaction Amount': e.tAmount,
-                      'Transaction Note': e.tNote,
-                      'Transaction Time': e.tDateTime.toString(),
-                      'Transaction PaymentMode': e.tPaymentMode,
-                      'Transaction Created At': e.tCreatedAt.toString(),
-                    };
-                  }).toList();
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            child: Container(
+                padding: const EdgeInsets.only(left: 10, right: 10, top: 15),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CustomHeader(
+                        initialOfName: initialOfName,
+                        username: username,
+                        wishingText: wishingText,
+                        textColor: Theme.of(context).colorScheme.secondary,
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      ListTile(
+                        leading: Icon(
+                          Icons.edit,
+                          color: Theme.of(context).colorScheme.secondary,
+                        ),
+                        title: Text(
+                          'Edit Profile',
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.secondary),
+                        ),
+                        contentPadding:
+                            const EdgeInsets.symmetric(horizontal: 12.0),
+                        visualDensity: const VisualDensity(vertical: -4),
+                        onTap: () {
+                          Navigator.of(context).push(
+                              FadeSlideTransitionRoute(
+                                  page: const UserDetail(
+                                        id: 1,
+                                      )),);
+                          
+                        },
+                      ),
+                      const Divider(),
+                      ListTile(
+                        leading: Icon(
+                          Icons.backup_outlined,
+                          color: Theme.of(context).colorScheme.secondary,
+                        ),
+                        title: Text(
+                          'Upload backup',
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.secondary),
+                        ),
+                        contentPadding:
+                            const EdgeInsets.symmetric(horizontal: 12.0),
+                        visualDensity: const VisualDensity(vertical: -4),
+                        onTap: () {
+                          showCustomDialog(
+                              "Set Master Password",
+                              "Set a Master Password for your Backup file.\nIt will ask at the time of importing backup so it is important to Remember.",
+                              0);
+                        },
+                      ),
+                      const Divider(),
+                      ListTile(
+                        leading: Icon(
+                          Icons.restore,
+                          color: Theme.of(context).colorScheme.secondary,
+                        ),
+                        title: Text(
+                          'Restore backup',
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.secondary),
+                        ),
+                        contentPadding:
+                            const EdgeInsets.symmetric(horizontal: 12.0),
+                        visualDensity: const VisualDensity(vertical: -4),
+                        onTap: () {
+                          showCustomDialog(
+                              "Enter Master Password",
+                              "Please make sure to enter correct Password which you have entered at the time of Backup otherwise you won't be able to restore Restore backup",
+                              1);
+                        },
+                      ),
+                      const Divider(),
+                      ListTile(
+                        leading: Icon(
+                          Icons.brightness_4,
+                          color: Theme.of(context).colorScheme.secondary,
+                        ),
+                        title: Text(
+                          'Dark Mode',
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.secondary),
+                        ),
+                        contentPadding:
+                            const EdgeInsets.symmetric(horizontal: 12.0),
+                        visualDensity: const VisualDensity(vertical: -4),
+                        trailing: const ChangeThemeButtonWidget(),
+                      ),
+                      const Divider(),
 
-                  createFile(fileName, jsonData);
-                },
-              ),
-              const Divider(),
-              ListTile(
-                leading: Icon(
-                  Icons.restore,
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
-                title: Text(
-                  'Restore backup',
-                  style:
-                      TextStyle(color: Theme.of(context).colorScheme.secondary),
-                ),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
-                visualDensity: const VisualDensity(vertical: -4),
-                onTap: () {
-                  importDatabase();
-                },
-              ),
-              const Divider(),
-              ListTile(
-                leading: Icon(
-                  Icons.info,
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
-                title: Text(
-                  'About App',
-                  style:
-                      TextStyle(color: Theme.of(context).colorScheme.secondary),
-                ),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
-                visualDensity: const VisualDensity(vertical: -4),
-                onTap: () {},
-              ),
-              const Divider(),
-              ListTile(
-                leading: Icon(
-                  Icons.brightness_4,
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
-                title: Text(
-                  'Dark Mode',
-                  style:
-                      TextStyle(color: Theme.of(context).colorScheme.secondary),
-                ),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
-                visualDensity: const VisualDensity(vertical: -4),
-                trailing: const ChangeThemeButtonWidget(),
-              ),
-              const Divider(),
-              ListTile(
-                leading: Icon(
-                  Icons.star,
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
-                title: Text(
-                  'Rate Us',
-                  style:
-                      TextStyle(color: Theme.of(context).colorScheme.secondary),
-                ),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
-                visualDensity: const VisualDensity(vertical: -4),
-                onTap: () {},
-              ),
-              const Divider(),
-              Center(
-                child: ElevatedButton(
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            shape: RoundedRectangleBorder(
-                                side: BorderSide(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .secondary),
-                                borderRadius: BorderRadius.circular(8)),
-                            backgroundColor:
-                                Theme.of(context).colorScheme.primary,
-                            title: Text(
-                              "Logout",
-                              style: TextStyle(
-                                color: PrimaryColor.colorRed,
-                              ),
-                            ),
-                            content: Text(
-                              "Are you sure you want to logout?",
-                              style: TextStyle(
-                                color: Theme.of(context).colorScheme.secondary,
-                              ),
-                            ),
-                            actions: <Widget>[
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: Text(
-                                      "Close",
+                      ListTile(
+                        leading: Icon(
+                          Icons.privacy_tip,
+                          color: Theme.of(context).colorScheme.secondary,
+                        ),
+                        title: Text(
+                          'Privacy policy',
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.secondary),
+                        ),
+                        contentPadding:
+                            const EdgeInsets.symmetric(horizontal: 12.0),
+                        visualDensity: const VisualDensity(vertical: -4),
+                        onTap: () {
+                          Navigator.of(context).push(
+                              FadeSlideTransitionRoute(
+                                  page: const PrivacyPolicy()),);
+                          
+                        },
+                      ),
+                      const Divider(),
+                      Center(
+                        child: ElevatedButton(
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    shape: RoundedRectangleBorder(
+                                        side: BorderSide(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .secondary),
+                                        borderRadius: BorderRadius.circular(8)),
+                                    backgroundColor:
+                                        Theme.of(context).colorScheme.primary,
+                                    title: Text(
+                                      "Logout",
+                                      style: TextStyle(
+                                        color: PrimaryColor.colorRed,
+                                      ),
+                                    ),
+                                    content: Text(
+                                      "Are you sure you want to logout?",
                                       style: TextStyle(
                                         color: Theme.of(context)
                                             .colorScheme
                                             .secondary,
                                       ),
                                     ),
-                                  ),
-                                  const SizedBox(
-                                    width: 15,
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      signOutFunction();
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: Text(
-                                      "Logout",
-                                      style: TextStyle(
-                                          color: PrimaryColor.colorRed,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: PrimaryColor.colorRed,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10))),
-                    child: Text(
-                      "Logout",
-                      style: TextStyle(color: PrimaryColor.colorWhite),
-                    )),
-              )
-            ])),
+                                    actions: <Widget>[
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: Text(
+                                              "Close",
+                                              style: TextStyle(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .secondary,
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            width: 15,
+                                          ),
+                                          GestureDetector(
+                                            onTap: () {
+                                              signOutFunction();
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: Text(
+                                              "Logout",
+                                              style: TextStyle(
+                                                  color: PrimaryColor.colorRed,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: PrimaryColor.colorRed,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10))),
+                            child: Text(
+                              "Logout",
+                              style: TextStyle(color: PrimaryColor.colorWhite),
+                            )),
+                      )
+                    ])),
+          ),
+          if (isLoading)
+            Container(
+              color: Colors.black.withOpacity(0.5),
+              child: const Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+        ],
       ),
     );
   }
 
   void signOutFunction() async {
-    await auth.signOut();
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => const PhoneAuth()));
+    final sharedPreferences = await SharedPreferences.getInstance();
+    await sharedPreferences.setString('userId', "");
+    Navigator.of(context).pushReplacement(
+                              FadeSlideTransitionRoute(
+                                  page: const UserDetail(
+                                        
+                                      )),);
+    
   }
 
-  Future<void> createFile(
-      String fileName, List<Map<String, dynamic>> jsonData) async {
+  void showCustomDialog(String titleText, String warningText, int id) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          scrollable: true,          
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          shape: RoundedRectangleBorder(
+              side: BorderSide(color: Theme.of(context).colorScheme.secondary),
+              borderRadius: BorderRadius.circular(8)),
+          title: CustomTextStyle(
+              customTextStyleText: titleText,
+              customTextColor: Theme.of(context).colorScheme.secondary,
+              customTextFontWeight: FontWeight.normal,
+              customtextstyle: null,
+              customTextSize: MediaQuery.sizeOf(context).height * 0.022),
+          content: SizedBox(                        
+            height: MediaQuery.sizeOf(context).height * 0.7 / 3,
+            child: Form(
+              autovalidateMode: AutovalidateMode.always,
+              key: formKey,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          'Important',
+                          style: TextStyle(
+                              color: Theme.of(context).hintColor,
+                              fontWeight: FontWeight.w500),
+                          textAlign: TextAlign.start,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      warningText,
+                      style: TextStyle(color: Theme.of(context).hintColor,fontWeight: FontWeight.w400,fontSize: MediaQuery.of(context).size.height*0.015),
+                      overflow: TextOverflow.visible,
+                      textAlign: TextAlign.justify,
+                      
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    TextFormField(
+                      validator: (value) {
+                        if (value!.length < 8) {
+                          return "Please enter at least 8 character";
+                        }
+                        return null;
+                      },
+                      maxLength: 8,
+                      controller: masterPasswordController,
+                      cursorColor: Theme.of(context).colorScheme.onPrimary,
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.secondary),
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: InputDecoration(
+                          contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Theme.of(context).colorScheme.onPrimary),
+                          ),
+                          labelText: "Master Password",
+                  labelStyle: const TextStyle(
+                        color: Colors.grey, // Change color based on focus
+                        fontSize: 16,
+                      ),
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Theme.of(context).colorScheme.secondary),
+                          ),
+                          hintText: "8 digit password"),
+                    ),
+                    
+                  ],
+                ),
+              ),
+            ),
+          ),
+          actions: <Widget>[
+            GestureDetector(
+                onTap: () {
+                  masterPasswordController.clear();
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  "Cancel",
+                  style: TextStyle(color: PrimaryColor.colorRed),
+                )),
+            const SizedBox(
+              width: 07,
+            ),
+            GestureDetector(
+                onTap: () {
+                  if (formKey.currentState!.validate()) {
+                    if (id == 0) {
+                      masterPassword = masterPasswordController.text;
+                      masterPassword = encryptMasterKey(
+                          masterPassword!, "5a7b3c1eab9fd67032b164fae0c9d8b2");
+
+                      masterPasswordController.clear();
+                      Navigator.pop(context);
+                      startLoading();
+                      Box<LocalTransaction> transactionBox =
+                          Hive.box<LocalTransaction>('local_transactions');
+                      List<Map<String, dynamic>> jsonData =
+                          transactionBox.values.map((e) {
+                        return {
+                          'Transaction Id': e.tID,
+                          'User Id': e.userId,
+                          'Transaction Category': e.tCategory,
+                          'Transaction Subcategory': e.tSubcategory,
+                          'Transaction Subcategory Index': e.tSubcategoryIndex,
+                          'Transaction Amount': e.tAmount,
+                          'Transaction Note': e.tNote,
+                          'Transaction Time': e.tDateTime.toString(),
+                          'Transaction PaymentMode': e.tPaymentMode,
+                          'Transaction Created At': e.tCreatedAt.toString(),
+                        };
+                      }).toList();
+
+                      createFile(fileName, jsonData, masterPassword!);
+                    } else {
+                      masterPassword = masterPasswordController.text;
+                      masterPassword = encryptMasterKey(
+                          masterPassword!, "5a7b3c1eab9fd67032b164fae0c9d8b2");
+                      Navigator.pop(context);
+                      masterPasswordController.clear();
+                      importDatabase(masterPassword!);
+                    }
+                  } else {
+                    masterPasswordController.clear();
+                  }
+                },
+                child: Text(
+                  "Save",
+                  style:
+                      TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+                )),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> createFile(String fileName, List<Map<String, dynamic>> jsonData,
+      String masterKeyOfFile) async {
     final GoogleSignIn googleSignIn = GoogleSignIn(
       scopes: ['https://www.googleapis.com/auth/drive.file'],
     );
@@ -289,17 +452,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
       if (response.statusCode == 200) {
         final fileId = convert.jsonDecode(response.body)['id'];
-        await writeFileContent(fileId, jsonData);
+        await writeFileContent(fileId, jsonData, masterKeyOfFile);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text('Failed to create file'),
         ));
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Upload failed'),
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Upload failed $e'),
       ));
     }
+  }
+
+  String encryptMasterKey(String data, String key) {
+    final plainText = utf8.encode(data);
+    final encryptionKey = encrypt.Key.fromUtf8(key);
+    final iv = IV.fromLength(16);
+    final encrypter = Encrypter(AES(encryptionKey));
+    final encrypted = encrypter.encryptBytes(plainText, iv: iv);
+
+    return base64Encode(encrypted.bytes);
+  }
+
+  String decryptMasterKey(String encryptedData, String key) {
+    final encryptedBytes = base64Decode(encryptedData);
+    final encryptionKey = encrypt.Key.fromUtf8(key);
+    final iv = IV.fromLength(16);
+    final encrypter = Encrypter(AES(encryptionKey));
+    final decrypted = encrypter.decryptBytes(Encrypted(encryptedBytes), iv: iv);
+    final decryptedData = utf8.decode(decrypted);
+    return decryptedData;
   }
 
   Future<String> encryptData(
@@ -320,6 +503,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
+  void startLoading() {
+    setState(() {
+      isLoading = true;
+    });
+    Future.delayed(const Duration(seconds: 5), () {
+      setState(() {
+        isLoading = false;
+      });
+    });
+  }
+
   List<Map<String, dynamic>> decryptData(String encryptedData, String key) {
     final decryptionKey = encrypt.Key.fromUtf8(key);
     final iv = encrypt.IV.fromLength(16);
@@ -333,8 +527,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return List<Map<String, dynamic>>.from(jsonData);
   }
 
-  Future<void> writeFileContent(
-      String fileId, List<Map<String, dynamic>> jsonData) async {
+  Future<void> writeFileContent(String fileId,
+      List<Map<String, dynamic>> jsonData, String masterKeyOfFile) async {
+    String fileContent;
     final GoogleSignIn googleSignIn = GoogleSignIn(
       scopes: ['https://www.googleapis.com/auth/drive.file'],
     );
@@ -344,6 +539,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           await encryptData(jsonData, encryptionDecryptionKey);
       final googleSignInAccount = await googleSignIn.signIn();
       final googleSignInAuth = await googleSignInAccount!.authentication;
+      fileContent = "$masterKeyOfFile${convert.jsonEncode(encryptedData)}";
       final response = await http.patch(
         Uri.parse(
             'https://www.googleapis.com/upload/drive/v3/files/$fileId?uploadType=media'),
@@ -351,44 +547,46 @@ class _ProfileScreenState extends State<ProfileScreen> {
           'Authorization': 'Bearer ${googleSignInAuth.accessToken}',
           'Content-Type': 'application/json',
         },
-        body: convert.jsonEncode(encryptedData),
+        body: fileContent,
       );
 
       if (response.statusCode == 200) {
-    
-
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Row(
-    children: [
-      Icon(Icons.check_circle, color: Colors.green),
-      SizedBox(width: 10),
-      Text('File Uploaded successfully',style: TextStyle(color: Colors.green),),
-    ],
-  ),
+            children: [
+              Icon(Icons.check_circle, color: Colors.green),
+              SizedBox(width: 10),
+              Text(
+                'File Uploaded successfully',
+                style: TextStyle(color: Colors.green),
+              ),
+            ],
+          ),
         ));
       } else {
-
-    
-
-
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Row(
-    children: [
-      Icon(Icons.warning, color: Colors.orange),
-      SizedBox(width: 10),
-      Text('Empty File is Created',style: TextStyle(color: Colors.orange),),
-    ],
-  ),
+            children: [
+              Icon(Icons.warning, color: Colors.orange),
+              SizedBox(width: 10),
+              Text(
+                'Empty File is Created',
+                style: TextStyle(color: Colors.orange),
+              ),
+            ],
+          ),
         ));
       }
     } catch (e) {
-      
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Row(
           children: [
-        Icon(Icons.error, color: Colors.red),
-        SizedBox(width: 10),
-        Text('Upload failed',style: TextStyle(color: Colors.red),),
+            Icon(Icons.error, color: Colors.red),
+            SizedBox(width: 10),
+            Text(
+              'Upload failed',
+              style: TextStyle(color: Colors.red),
+            ),
           ],
         ),
       ));
@@ -398,16 +596,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<ServiceAccountCredentials> obtainCredentials() async {
     return ServiceAccountCredentials.fromJson({
       "type": "service_account",
-      "private_key_id": "ccbb4f0477c9a9b4e6cd828612d4243a1bb8b9dc",
-      "client_id": "109081127354933570434",
+      "private_key_id": "dad84515f328ab52287029feb1bedc9295b7ad65",
+      "client_id": "106102519109678367429",
       "private_key":
-          "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDLIK39TPQTt9on\ntVZrWGXh++vzoljGZbWkl9ZiO8M4mtyPiuZpe3gniON/HWx71p1LLmmmuLBSSrXw\ntePJaEaV653WOkDtXqb4ZrFU/EYh67GyBM2eoKxqPRbIh0XCEnuFaQdaz1zNiX7f\nwBmKs38YdFWJpFp0B9EBaBEcgZ55AtQbExWYS7j/R6T5jNwrxpaGi9HYWC4lj4ue\nTmCA4jtH97gdu2E34reDdv2iz0ENBElfUQ/t+C0ub+wyOiEpGnkIsI4sdqiZ1Wxw\nmLLnyCNMXANwByQgyj8aqPZoNeC2ozz2DeH41Momh4XwfZXR05lpYF5JBZqFewem\ndz7du2kXAgMBAAECggEAR0WBJvZgUabZucMLvoB2xxMQmBynj31SfZz1EOStO+hC\naW8wJ2S2JREH2asmTFFiQWXYljIJU+Z47iuz8BBRa/sPF4K7E055wYCuygX2SaKc\nZ7z9tKHlvSUQIG4uUMkRZB8VAIzvoAKVbMbHb35Jovf2p2PuhPXVJOwxzNHCG+z8\nuKYpjCq3w48yJyznJ4c6vt4cjxI1+ZWg0k1w0KPKxhIepZQSLsTRG3TJiUb6Wf+f\nIuYnDvDLMW+cxNcb+bjDn4uozXNlkgdyKqiJfbBtExx7e9DPr9gsGjypV09kNPLd\ng4yr/eRdaVebw4/5QdUECCPQgxfIFHtYLljvLO23GQKBgQD0uMJj7VdDRS7nwq09\nYkiw2Y26tzm1rMWlmLgsScTytI3pBVXnqELL2jutNVOncXcD13isLZG/OItTswhi\ndZCcQVfXp0Dh4irV6XYI7UPNk3LmYmYKL09GdWnjhofAb06fW0GNPeTFcyybj7Hu\ncVZE1grZ6fNVCkrFT3KHwYWQFQKBgQDUfTDzufs34X8KyLDnM5VoHksO45cd6IiW\ns3TtMqpmIpVApISEEn3Mux+VEndLthfGIa/d1VqSUV+we619GOf0FmL8Fp0zQg8G\nxKXRh/X1mzw/PSnOpPzyrHlnSoskEjcCG4OgndrGA8dWVN0wqIb5Eqat8Uaglu1G\nyQ0MRy8zewKBgCirB4rpp0XDmn7jSDzaN3BERxxPVKTPWG0jiv+5JqSawraFr3f2\n61rLIn2vTf6WiYu25BPg4safU/AN4YfTN7vv0/Q/lDW1ix7PVFE5dLoWFdMZaRGq\nOQdhfb5U3fxpwuwSkzswnPL/J9uWLqCMbySzWUxLZ6erNS/C+yp6S4LdAoGAIprU\nywyBxiL6HpZ6gNycu10bmiwkYyGIhQpqw2pZ59I//kwMrLmaNSpQRWXBedoI2yKH\nUpg5bNTFwacSpOnWdKDks+s25K8gZVjHLG149+u1DxN16IpkC11dVB4GtPQmczhp\n4lFy3IanAv9FGnSHrq6D6JX/i42ozLtXXaWGIVsCgYEAsz1bkpmxIsZDJFIiPeMM\nXY+aztnZlcnL3hVTLFPXS1tAIDnCv4EkW/Qxo/J2vKPoBXMvrLsRYG8KCmUJ8dvW\ngtc1tSR5WdhEm6aKc7GOx5euR7QGNlTZpHH4/8C/ialEMNHmH269hOzt9Tb2iYpL\njqyjmAZ9lmtjtNDgXhzxKSc=\n-----END PRIVATE KEY-----\n",
-      "client_email":
-          "vyaya-manage-your-expenses@expenses-tracker-56eb0.iam.gserviceaccount.com",
+          "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCm8A1grDLc4z7+\npoH3ovZvpywwt9zx/JPOgQZFPz4RcMyL/i0XQGDLYddpcejk47lGLjtKdCzvioPV\nFORnCYpS1Bva6K3/E+jK3dcAj/CEEoaHxYUXfvFrl00T9KMi42AbQUzT1+dB1W4Y\nuAKw3KA06cX9eZQrf+qcJOxs3zQ2vYOTpaQiQxANNj+6FLTOrLGp11A+XMT7mFqJ\nmgx81Xa+qYxeCNzSRS3eQ9AnjsH09x73KSmAf2/r+1FxikXpplMIPJUGt5Cza7V5\nCqXGwjBjZWR1qYzfuTK0aEaUMOz0lB4H3fqaAOMRr0udHPN34C0bmOz5vLHm8fCR\njhLlmD5XAgMBAAECggEALQHJSYgDioQF5tfzcFVSRZX3lwbrHZ6wJtuoWiEL1d3o\nd9HGTF+B+TNexUH9vUAcImyydYdO2iIpGtiwH4t17JDdFa7nwj6W46LdpXwpJyJr\nfM1m7Ye/BPfcwwWQugY9UfvP/8lUwu4M6cMqjo5c7wcb5xPRO80X7pMR3uRqilss\nUeFJ6ycx4rMVfh8b5vr1hoqQJY8UdLCsxxFUCqjymSHGGJa0FKYRMlc6MgQ/K0Yv\npiL5j4k11yz2gBFTMZmTkgV1+RAGPI2lAVoSbUO/k9TI/YyWqQCUiwd04j9I81zW\n0Gymr2bBJsvpeOzp0q3cPCjdJIJLSSPAwpni4k/0yQKBgQDSmRhlrAT2fvNqJgsD\nXMq0h/OCbt9fGn7j/s/vtdkJlJJLtJc+mDBhx/HkWYglOddxi7pRp3YLlE5ixudJ\nho6nc6NYWMOdtzkbGqLHKUe3pEiGk45T7n1CHeD4+ifa+AkdDOZiA3Iel85CTdCB\nm6vlpqqSXuk31wkJOTLS/1mPRQKBgQDK7VgASOCAqJKp+pvatQ3eGtyQa5oOaiVO\n2NLnyt6A7QBUByjJ1SaxZKds5ShlpuvhsKaV2+xZ62eYI87LuIVYzFJM+L5Ozkyh\nimvQT1phr8sCKHC7PqS+KJ4cClHuSqPOS5NGaGBAOuzIY3Jdfrpfcx5ZtzBD3kkc\nG5EyxRFy6wKBgCPM/NXD4XAZ8r1XzEV9D8SS2/WPbY+YTHvrxGOGsWeshxYxlAiD\nDK6Cs/9SrQ9O/u4Bh+H7qtibFJw8HfNk2Xlj8h/Brzdvf1i5NXTP8q4oUl/2U5q3\nDzofJDCPLhlOUxZKLBv7Y/oJannhCpIN6bH3nEWXtuPUPWgA/j/aQtpVAoGBAKCq\nKfKPwLAcx4ItGRigIMqpGdh+WQrwn3k90j4TMPeCra/Zu0GRsYDh4G0nQkS5VCjs\nY/hil07aQrsCHsjM30be/opSptpeG+4KWjIjobuWI3Uh759Qib7FCenJgfTYw7ih\nvYkROqOgA7jkg7fijkzkKDOABoa1h8zpRpybyqThAoGAM5vKF5R0bRZeXVEfC5/y\nvHkSzezSKRmrUVfunkAWeOFilATDVBmIGX5n3HIScR3Tnc+or5PqXJeXIbETVvts\nAlNsxQLZp6PZ5JpXv6B6EQcIzpCNtJ7Cqs44KjR8aBmZrteOwGsGBfhGKfpC2dWV\n76zkBvCQJmNKd5M1naNGNWg=\n-----END PRIVATE KEY-----\n",
+      "client_email": "support-vyaya@vyayatracker.iam.gserviceaccount.com",
     });
   }
 
-  Future<void> importDatabase() async {
+  Future<void> importDatabase(String masterKeyToCheck) async {
     final filePath = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['txt'],
@@ -417,34 +614,43 @@ class _ProfileScreenState extends State<ProfileScreen> {
       return;
     }
     final file = File(filePath.files.single.path!);
-    final fileContent = await file.readAsString();
+    final fileContentWithMasterKey = await file.readAsString();
+    String masterKeyFromFile = fileContentWithMasterKey.substring(0, 24);
+    final fileContent = fileContentWithMasterKey.substring(24);
 
-    final fileDecryptedData = decryptData(fileContent, encryptionDecryptionKey);
-    setState(() {
-      final jsonData = convertListToMap(fileDecryptedData);
-      Box<LocalTransaction> transactionBox =
-          Hive.box<LocalTransaction>('local_transactions');
-      transactionBox.clear();
-      jsonData.forEach((key, data) {
-        LocalTransaction transaction = LocalTransaction(
-          tID: data['Transaction Id'],
-          userId: data['User Id'],
-          tCategory: data['Transaction Category'],
-          tSubcategory: data['Transaction Subcategory'],
-          tSubcategoryIndex: data['Transaction Subcategory Index'],
-          tAmount: data['Transaction Amount'],
-          tNote: data['Transaction Note'],
-          tDateTime: DateTime.parse(data['Transaction Time']),
-          tPaymentMode: data['Transaction PaymentMode'],
-          tCreatedAt: DateTime.parse(data['Transaction Created At']),
-        );
-        transactionBox.add(transaction);
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text(
-              'Imported Data Successfully\nyou just need to Re-open an App'),
-        ));
+    if (masterKeyToCheck == masterKeyFromFile) {
+      final fileDecryptedData =
+          decryptData(fileContent, encryptionDecryptionKey);
+      setState(() {
+        final jsonData = convertListToMap(fileDecryptedData);
+        Box<LocalTransaction> transactionBox =
+            Hive.box<LocalTransaction>('local_transactions');
+        transactionBox.clear();
+        jsonData.forEach((key, data) {
+          LocalTransaction transaction = LocalTransaction(
+            tID: data['Transaction Id'],
+            userId: data['User Id'],
+            tCategory: data['Transaction Category'],
+            tSubcategory: data['Transaction Subcategory'],
+            tSubcategoryIndex: data['Transaction Subcategory Index'],
+            tAmount: data['Transaction Amount'],
+            tNote: data['Transaction Note'],
+            tDateTime: DateTime.parse(data['Transaction Time']),
+            tPaymentMode: data['Transaction PaymentMode'],
+            tCreatedAt: DateTime.parse(data['Transaction Created At']),
+          );
+          transactionBox.add(transaction);
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text(
+                'Imported Data Successfully\nyou just need to Re-open an App'),
+          ));
+        });
       });
-    });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Your Master Password for Restoring backup is Wrong'),
+      ));
+    }
   }
 
   Map<String, dynamic> convertListToMap(List<dynamic> list) {
@@ -460,5 +666,5 @@ class _ProfileScreenState extends State<ProfileScreen> {
     setState(() {
       _darkMode = !_darkMode;
     });
-  }  
+  }
 }

@@ -33,6 +33,8 @@ class PdfInvoiceApi {
     return PdfApi.saveDocument(name: '$title ($duration).pdf', pdf: pdf);
   }
 
+  
+
   static buildTitle({
     required String title,
   }) {
@@ -60,14 +62,6 @@ class PdfInvoiceApi {
           Text("Username:"),
           SizedBox(width: 2 * PdfPageFormat.mm),
           Text(UserData.currentUserName!, style: style),
-        ],
-      ),
-      SizedBox(height: 5),
-      Row(
-        children: [
-          Text("Phone No.:"),
-          SizedBox(width: 2 * PdfPageFormat.mm),
-          Text(UserData.currentUserPhone!, style: style),
         ],
       ),
       SizedBox(height: 5),

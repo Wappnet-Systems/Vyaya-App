@@ -20,27 +20,7 @@ class NotificationService {
           criticalAlerts: true,
         )
       ],
-      channelGroups: [
-        NotificationChannelGroup(
-          channelGroupkey: 'high_importance_channel_group',
-          channelGroupName: 'Group 1',
-        )
-      ],
       debug: true,
-    );
-
-    // await AwesomeNotifications().isNotificationAllowed().then(
-    //   (isAllowed) async {
-    //     if (!isAllowed) {
-    //       await AwesomeNotifications().requestPermissionToSendNotifications();
-    //     }
-    //   },
-    // );
-
-    // AwesomeNotifications().createdStream.listen((notification) {
-    //       debugPrint('onNotificationCreatedMethod');
-
-    // });
-    
+    );   
   } 
 }

@@ -4,6 +4,7 @@ import 'package:expenses_tracker/screens/transaction_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../utils/const.dart';
+import '../widgets/fade_transition.dart';
 import 'analytics_screen.dart';
 import 'detail_home_screen.dart';
 import 'filter_transaction.dart';
@@ -190,11 +191,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> navigationForTransaction() async {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => const TransactionScreen(
+    Navigator.of(context).pushReplacement(
+                              FadeSlideTransitionRoute(
+                                  page: const TransactionScreen(
                   id: 1,
-                )));
+                )),);
+    
   }
 }

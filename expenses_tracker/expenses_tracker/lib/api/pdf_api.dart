@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
@@ -18,10 +17,8 @@ class PdfApi {
 
   static Future openFile(File file) async {
    if (await file.exists()) {
-    log(file.path);
     await OpenFile.open(file.path);
   } else {
-    log("error");
     throw 'File not found';
   }
   }

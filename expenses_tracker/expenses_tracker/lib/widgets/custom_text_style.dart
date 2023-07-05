@@ -7,7 +7,8 @@ class CustomTextStyle extends StatelessWidget {
   final FontWeight? customTextFontWeight;
   final FontStyle? customtextstyle;
   final double? customTextSize;
-  const CustomTextStyle({super.key, required this.customTextStyleText,required this.customTextColor,required this.customTextFontWeight,required this.customtextstyle,required this.customTextSize});
+  TextAlign? textAlign;
+  CustomTextStyle({super.key, required this.customTextStyleText,required this.customTextColor,required this.customTextFontWeight,required this.customtextstyle,required this.customTextSize,this.textAlign});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +17,9 @@ class CustomTextStyle extends StatelessWidget {
     fontSize: customTextSize,
     fontWeight: customTextFontWeight,
   ),
-  // textAlign: TextAlign.center,
+  overflow: TextOverflow.fade,
+  maxLines: 1,
+  textAlign: textAlign ?? TextAlign.left,
   );
     
   }

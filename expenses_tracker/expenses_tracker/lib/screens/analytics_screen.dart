@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:expenses_tracker/screens/transactions_of_month.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive/hive.dart';
@@ -11,8 +12,11 @@ import '../model/localtransaction.dart';
 import '../model/transaction.dart';
 import '../utils/const.dart';
 import '../utils/functions.dart';
+import '../widgets/custom_balance_card.dart';
+import '../widgets/custom_card.dart';
 import '../widgets/custom_no_data.dart';
 import '../widgets/custom_text_style.dart';
+import '../widgets/fade_transition.dart';
 
 class AnalyticsScreen extends StatefulWidget {
   const AnalyticsScreen({super.key});
@@ -50,6 +54,598 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
   static int? spendingOfCurrentPageTransactionsValue = 00;
   static int? balanceOfCurrentPageTransactionsValue = 00;
   bool isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    uid = UserData.currentUserId;
+    analyticsMonthlyText = DateFormat.yMMM().format(analyticsMonthly!);
+    analyticsYearlyText = DateFormat.y().format(analyticsYearly!);
+    getWeekDates();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.primary,
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.only(left: 10, right: 10, top: 15),
+        child: Column(
+          children: [
+            const SizedBox(
+              height: 10,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                OutlinedButton(
+                  onPressed: () {
+                    setState(() {
+                      value = 0;
+                      getWeekDates();
+                    });
+                  },
+                  style: OutlinedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    side: BorderSide(
+                        color: (value == 0)
+                            ? PrimaryColor.colorBottleGreen
+                            : Theme.of(context).colorScheme.secondary),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 1.0, vertical: 3.0),
+                    child: Text(
+                      "Weekly\nAnalysis",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: value == 0
+                              ? PrimaryColor.colorBottleGreen
+                              : Theme.of(context).colorScheme.secondary,
+                          fontWeight: FontWeight.w400,
+                          fontSize: ScreenUtil().setSp(15)),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.02,
+                ),
+                OutlinedButton(
+                  onPressed: () {
+                    setState(() {
+                      value = 1;
+                      getCurrentMonth();
+                    });
+                  },
+                  style: OutlinedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    side: BorderSide(
+                        color: (value == 1)
+                            ? PrimaryColor.colorBottleGreen
+                            : Theme.of(context).colorScheme.secondary),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 1.0, vertical: 3.0),
+                    child: Text(
+                      "Monthly\nAnalysis",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: value == 1
+                              ? PrimaryColor.colorBottleGreen
+                              : Theme.of(context).colorScheme.secondary,
+                          fontWeight: FontWeight.w400,
+                          fontSize: ScreenUtil().setSp(15)),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.02,
+                ),
+                OutlinedButton(
+                  onPressed: () {
+                    setState(() {
+                      value = 2;
+                      getCurrentYear();
+                    });
+                  },
+                  style: OutlinedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    side: BorderSide(
+                        color: (value == 2)
+                            ? PrimaryColor.colorBottleGreen
+                            : Theme.of(context).colorScheme.secondary),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 1.0, vertical: 3.0),
+                    child: Text(
+                      "Yearly\nAnalysis",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: value == 2
+                              ? PrimaryColor.colorBottleGreen
+                              : Theme.of(context).colorScheme.secondary,
+                          fontWeight: FontWeight.w400,
+                          fontSize: ScreenUtil().setSp(15)),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  onPressed: () {
+                    setState(() {
+                      value == 0
+                          ? updateWeek(0)
+                          : value == 1
+                              ? updateMonth(0)
+                              : updateYear(0);
+                    });
+                  },
+                  icon: Icon(
+                    Icons.chevron_left,
+                    size: MediaQuery.of(context).size.height * 0.05,
+                  ),
+                  color: PrimaryColor.colorBottleGreen,
+                ),
+                value == 0
+                    ? CustomTextStyle(
+                        customTextStyleText: "$analyticsStartWeekText",
+                        customTextColor:
+                            Theme.of(context).colorScheme.secondary,
+                        customTextFontWeight: FontWeight.normal,
+                        customtextstyle: null,
+                        customTextSize:
+                            MediaQuery.of(context).size.height * 0.023)
+                    : Container(
+                        child: value == 1
+                            ? CustomTextStyle(
+                                customTextStyleText: "$analyticsMonthlyText",
+                                customTextColor:
+                                    Theme.of(context).colorScheme.secondary,
+                                customTextFontWeight: FontWeight.normal,
+                                customtextstyle: null,
+                                customTextSize:
+                                    MediaQuery.of(context).size.height * 0.023)
+                            : CustomTextStyle(
+                                customTextStyleText: "$analyticsYearlyText",
+                                customTextColor:
+                                    Theme.of(context).colorScheme.secondary,
+                                customTextFontWeight: FontWeight.normal,
+                                customtextstyle: null,
+                                customTextSize:
+                                    MediaQuery.of(context).size.height *
+                                        0.023)),
+                IconButton(
+                  onPressed: () {
+                    setState(() {
+                      value == 0
+                          ? updateWeek(1)
+                          : value == 1
+                              ? updateMonth(1)
+                              : updateYear(1);
+                    });
+                  },
+                  icon: Icon(
+                    Icons.chevron_right,
+                    size: MediaQuery.of(context).size.height * 0.05,
+                  ),
+                  color: PrimaryColor.colorBottleGreen,
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                GestureDetector(
+                  onTap: (){
+                    Navigator.of(context).push(
+                              FadeSlideTransitionRoute(
+                                  page: TransactionOfMonth(id: 4,titleText: value == 0 ?'Weekly Expenses Analysis':value == 1 ?"Monthly Expenses Analysis" :"Yearly Expenses Analysis",amount: incomeOfTheCurrentPageTransactionsValue!,subtitleText: value == 0 ?'$analyticsStartWeekText':value == 1 ?"$analyticsMonthlyText" :"$analyticsYearlyText",currentPageTransaction: currentPageSpendingTransactions,)),);
+                    
+                  },
+                  child: CustomCard(
+                      color: PrimaryColor.colorRed,
+                      icon: Icon(
+                        Icons.arrow_upward,
+                        color: PrimaryColor.colorRed,
+                        size: 32,
+                      ),
+                      themeColor: PrimaryColor.colorWhite,
+                      speOrIncMonthValue: spendingOfCurrentPageTransactionsValue,
+                      title: "Spending"),
+                ),
+                GestureDetector(
+                  onTap: (){
+                    Navigator.of(context).push(
+                              FadeSlideTransitionRoute(
+                                  page: TransactionOfMonth(id: 5,titleText:value == 0 ?'Weekly Income Analysis':value == 1 ?"Monthly Income Analysis" :"Yearly Income Analysis", amount: incomeOfTheCurrentPageTransactionsValue!,subtitleText: value == 0 ?'$analyticsStartWeekText':value == 1 ?"$analyticsMonthlyText" :"$analyticsYearlyText",currentPageTransaction: currentPageIncomeTransactions,)),);
+                    
+                  },
+                  child: CustomCard(
+                      color: PrimaryColor.colorBottleGreen,
+                      icon: Icon(
+                        Icons.arrow_downward,
+                        color: PrimaryColor.colorBottleGreen,
+                        size: 32,
+                      ),
+                      themeColor: PrimaryColor.colorWhite,
+                      speOrIncMonthValue: incomeOfTheCurrentPageTransactionsValue,
+                      title: "Income"),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            CustomBalanceCard(
+                balanceOfTheMonthValue: balanceOfCurrentPageTransactionsValue!,
+                themeColor: Theme.of(context).cardColor,
+                textThemeColor: Theme.of(context).colorScheme.secondary),
+            const SizedBox(
+              height: 10,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Row(
+                children: [
+                  CustomTextStyle(
+                      customTextStyleText: "Category-wise Spending",
+                      customTextColor: Theme.of(context).colorScheme.secondary,
+                      customTextFontWeight: FontWeight.w400,
+                      customtextstyle: null,
+                      customTextSize:
+                          MediaQuery.of(context).size.height * 0.024),
+                ],
+              ),
+            ),
+            Card(
+              color: Theme.of(context).cardColor,
+              elevation: 5,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(18),
+              ),
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height * 0.30,
+                child: currentPageSpendingTransactions.isEmpty
+                    ? const Center(
+                        child: CustomNoData(),
+                      )
+                    : SfCircularChart(series: <CircularSeries>[
+                        PieSeries<AllTransactionDetails, String>(
+                            dataSource: currentPageSpendingTransactions,
+                            xValueMapper: (AllTransactionDetails data, _) =>
+                                data.transactionNote as String,
+                            yValueMapper: (AllTransactionDetails data, _) =>
+                                data.transactionAmount,
+                            dataLabelMapper: (AllTransactionDetails data, _) =>
+                                '${data.transactionNote!}\n₹${data.transactionAmount}',
+                            radius: '55%',
+                            dataLabelSettings: DataLabelSettings(
+                                textStyle: TextStyle(
+                                    color: Theme.of(context).hintColor),
+                                isVisible: true,
+                                margin: EdgeInsets.zero,
+                                labelIntersectAction:
+                                    LabelIntersectAction.shift,
+                                overflowMode: OverflowMode.shift,
+                                labelAlignment: ChartDataLabelAlignment.auto,
+                                showZeroValue: true,
+                                labelPosition: ChartDataLabelPosition.outside,
+                                connectorLineSettings:
+                                    const ConnectorLineSettings(
+                                        length: '20%',
+                                        type: ConnectorType.line)))
+                      ]),
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Row(
+                children: [
+                  CustomTextStyle(
+                      textAlign: TextAlign.left,
+                      customTextStyleText: "Category-wise Income",
+                      customTextColor: Theme.of(context).colorScheme.secondary,
+                      customTextFontWeight: FontWeight.w400,
+                      customtextstyle: null,
+                      customTextSize:
+                          MediaQuery.of(context).size.height * 0.024),
+                ],
+              ),
+            ),
+            Card(
+              color: Theme.of(context).cardColor,
+              elevation: 5,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(18),
+              ),
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height * 0.30,
+                child: currentPageIncomeTransactions.isEmpty
+                    ? const Center(
+                        child: CustomNoData(),
+                      )
+                    : SfCircularChart(series: <CircularSeries>[
+                        PieSeries<AllTransactionDetails, String>(
+                            dataSource: currentPageIncomeTransactions,
+                            xValueMapper: (AllTransactionDetails data, _) =>
+                                data.transactionNote,
+                            yValueMapper: (AllTransactionDetails data, _) =>
+                                data.transactionAmount,
+                            dataLabelMapper: (AllTransactionDetails data, _) =>
+                                '${data.transactionNote!}\n₹${data.transactionAmount}',
+                            radius: '55%',
+                            dataLabelSettings: DataLabelSettings(
+                                textStyle: TextStyle(
+                                    color: Theme.of(context).hintColor),
+                                isVisible: true,
+                                labelIntersectAction:
+                                    LabelIntersectAction.shift,
+                                labelAlignment: ChartDataLabelAlignment.auto,
+                                margin: EdgeInsets.zero,
+                                overflowMode: OverflowMode.shift,
+                                // groupMode: CircularChartGroupMode.value,
+                                showZeroValue: true,
+                                labelPosition: ChartDataLabelPosition.outside,
+                                connectorLineSettings:
+                                    const ConnectorLineSettings(
+                                        length: '20%',
+                                        type: ConnectorType.line)))
+                      ]),
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: CustomTextStyle(
+                      textAlign: TextAlign.left,
+                      customTextStyleText: "Stats",
+                      customTextColor: Theme.of(context).colorScheme.secondary,
+                      customTextFontWeight: FontWeight.w400,
+                      customtextstyle: null,
+                      customTextSize:
+                          MediaQuery.of(context).size.height * 0.024),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.150,
+              width: MediaQuery.of(context).size.width,
+              child: Card(
+                color: Theme.of(context).cardColor,
+                elevation: 5,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(18),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width / 1.8,
+                            child: CustomTextStyle(
+                                customTextStyleText: "Number of Transaction",
+                                customTextColor:
+                                    Theme.of(context).colorScheme.secondary,
+                                customTextFontWeight: FontWeight.normal,
+                                customtextstyle: null,
+                                customTextSize:
+                                    MediaQuery.of(context).size.height * 0.022),
+                          ),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width / 3.6,
+                            child: CustomTextStyle(
+                                textAlign: TextAlign.right,
+                                customTextStyleText:
+                                    "${currentPageTransactions.length}",
+                                customTextColor:
+                                    Theme.of(context).colorScheme.secondary,
+                                customTextFontWeight: FontWeight.normal,
+                                customtextstyle: null,
+                                customTextSize:
+                                    MediaQuery.of(context).size.height * 0.022),
+                          ),
+                        ],
+                      ),
+                      Container(
+                        padding: const EdgeInsets.only(left: 20, bottom: 5),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width / 2.6,
+                              child: CustomTextStyle(
+                                
+                                  customTextStyleText: "Average Income",
+                                  customTextColor:
+                                      Theme.of(context).colorScheme.secondary,
+                                  customTextFontWeight: FontWeight.normal,
+                                  customtextstyle: null,
+                                  customTextSize:
+                                      MediaQuery.of(context).size.height *
+                                          0.020),
+                            ),
+                            averageIncome!.isNaN
+                                ? CustomTextStyle(
+                                  textAlign: TextAlign.right,
+                                    customTextStyleText: "₹0.0",
+                                    customTextColor:
+                                        Theme.of(context).colorScheme.secondary,
+                                    customTextFontWeight: FontWeight.normal,
+                                    customtextstyle: null,
+                                    customTextSize:
+                                        MediaQuery.of(context).size.height *
+                                            0.020)
+                                : SizedBox(
+                                    width:
+                                        MediaQuery.of(context).size.width / 2.6,
+                                    child: CustomTextStyle(
+                                      textAlign: TextAlign.right,
+                                        customTextStyleText: "₹$averageIncome",
+                                        customTextColor: Theme.of(context)
+                                            .colorScheme
+                                            .secondary,
+                                        customTextFontWeight: FontWeight.normal,
+                                        customtextstyle: null,
+                                        customTextSize:
+                                            MediaQuery.of(context).size.height *
+                                                0.020),
+                                  )
+                          ],
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.only(left: 20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width / 2.6,
+                              child: CustomTextStyle(
+                                  customTextStyleText: "Average Spending",
+                                  customTextColor:
+                                      Theme.of(context).colorScheme.secondary,
+                                  customTextFontWeight: FontWeight.normal,
+                                  customtextstyle: null,
+                                  customTextSize:
+                                      MediaQuery.of(context).size.height *
+                                          0.020),
+                            ),
+                            averageSpending!.isNaN
+                                ? CustomTextStyle(
+                                  textAlign: TextAlign.right,
+                                    customTextStyleText: "₹0.0",
+                                    customTextColor:
+                                        Theme.of(context).colorScheme.secondary,
+                                    customTextFontWeight: FontWeight.normal,
+                                    customtextstyle: null,
+                                    customTextSize:
+                                        MediaQuery.of(context).size.height *
+                                            0.020)
+                                : SizedBox(
+                                    width:
+                                        MediaQuery.of(context).size.width / 2.6,
+                                    child: CustomTextStyle(
+                                      textAlign: TextAlign.right,
+                                        customTextStyleText:
+                                            "₹$averageSpending",
+                                        customTextColor: Theme.of(context)
+                                            .colorScheme
+                                            .secondary,
+                                        customTextFontWeight: FontWeight.normal,
+                                        customtextstyle: null,
+                                        customTextSize:
+                                            MediaQuery.of(context).size.height *
+                                                0.020),
+                                  )
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                GestureDetector(
+                  onTap: () async {
+                    if (currentPageTransactions.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Row(
+                          children: [
+                            Icon(Icons.warning, color: Colors.orange),
+                            SizedBox(width: 05),
+                            Text(
+                              'No Transactions between this time duration',
+                              style: TextStyle(color: Colors.orange),
+                            ),
+                          ],
+                        ),
+                      ));
+                    } else {
+                      final File pdfFile;
+                      value == 0
+                          ? pdfFile = await PdfInvoiceApi.generate(
+                              currentPageTransactions,
+                              analyticsStartWeekText!,
+                              "Weekly Analysis",
+                              incomeOfTheCurrentPageTransactionsValue!,
+                              spendingOfCurrentPageTransactionsValue!,
+                              balanceOfCurrentPageTransactionsValue!)
+                          : value == 1
+                              ? pdfFile = await PdfInvoiceApi.generate(
+                                  currentPageTransactions,
+                                  analyticsMonthlyText!,
+                                  "Monthly Analysis",
+                                  incomeOfTheCurrentPageTransactionsValue!,
+                                  spendingOfCurrentPageTransactionsValue!,
+                                  balanceOfCurrentPageTransactionsValue!)
+                              : pdfFile = await PdfInvoiceApi.generate(
+                                  currentPageTransactions,
+                                  analyticsYearlyText!,
+                                  "Yearly Analysis",
+                                  incomeOfTheCurrentPageTransactionsValue!,
+                                  spendingOfCurrentPageTransactionsValue!,
+                                  balanceOfCurrentPageTransactionsValue!);
+                      PdfApi.openFile(pdfFile);
+                    }
+                  },
+                  child: Card(
+                    color: PrimaryColor.colorBottleGreen,
+                    child: Padding(
+                      padding: const EdgeInsets.all(6.0),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.file_download,
+                            color: PrimaryColor.colorWhite,
+                          ),
+                          CustomTextStyle(
+                              customTextStyleText: "Download stats",
+                              customTextColor: PrimaryColor.colorWhite,
+                              customTextFontWeight: FontWeight.normal,
+                              customtextstyle: null,
+                              customTextSize:
+                                  MediaQuery.of(context).size.height * 0.02)
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            )
+          ],
+        ),
+      ),
+    );
+  }
 
   Future<List<LocalTransaction>> getAllLocalTransactions() async {
     final box = await Hive.openBox<LocalTransaction>('local_transactions');
@@ -264,639 +860,10 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
   void updateYear(int id) {
     DateTime currentYear = analyticsYearly!;
     int nextYear = id == 0 ? currentYear.year - 1 : currentYear.year + 1;
-
     analyticsYearlyText = nextYear.toString();
     analyticsYearly = DateTime(nextYear, 1, 1);
     startDate = DateTime(nextYear, 1, 1);
     endDate = DateTime(nextYear + 1, 1, 1);
     getAllTransaction();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    uid = UserData.currentUserId;
-    analyticsMonthlyText = DateFormat.yMMM().format(analyticsMonthly!);
-    analyticsYearlyText = DateFormat.y().format(analyticsYearly!);
-    getWeekDates();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.primary,
-      body: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.only(left: 10, right: 10, top: 15),
-          child: Column(
-            children: [
-              const SizedBox(
-                height: 10,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  OutlinedButton(
-                    onPressed: () {
-                      setState(() {
-                        value = 0;
-                        getWeekDates();
-                      });
-                    },
-                    style: OutlinedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                      side: BorderSide(
-                          color: (value == 0)
-                              ? PrimaryColor.colorBottleGreen
-                              : Theme.of(context).colorScheme.secondary),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 1.0, vertical: 3.0),
-                      child: Column(
-                        children: [
-                          CustomTextStyle(customTextStyleText: 'Weekly\nAnalysis', customTextColor: (value == 0) ? PrimaryColor.colorBottleGreen : Theme.of(context).colorScheme.secondary, customTextFontWeight: FontWeight.w400, customtextstyle: null, customTextSize: ScreenUtil().setSp(15))
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.02,
-                  ),
-                  OutlinedButton(
-                    onPressed: () {
-                      setState(() {
-                        value = 1;
-                        getCurrentMonth();
-                      });
-                    },
-                    style: OutlinedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                      side: BorderSide(
-                          color: (value == 1)
-                              ? PrimaryColor.colorBottleGreen
-                              : Theme.of(context).colorScheme.secondary),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 1.0, vertical: 3.0),
-                      child: Column(
-                        children: [
-                          CustomTextStyle(customTextStyleText: 'Monthly\nAnalysis', customTextColor: (value == 1) ? PrimaryColor.colorBottleGreen : Theme.of(context).colorScheme.secondary, customTextFontWeight: FontWeight.w400, customtextstyle: null, customTextSize: ScreenUtil().setSp(15)),                          
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.02,
-                  ),
-                  OutlinedButton(
-                    onPressed: () {
-                      setState(() {
-                        value = 2;
-                        getCurrentYear();
-                      });
-                    },
-                    style: OutlinedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                      side: BorderSide(
-                          color: (value == 2)
-                              ? PrimaryColor.colorBottleGreen
-                              : Theme.of(context).colorScheme.secondary),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 1.0, vertical: 3.0),
-                      child: Column(
-                        children: [
-                          CustomTextStyle(customTextStyleText: 'Yearly\nAnalysis', customTextColor: (value == 2) ? PrimaryColor.colorBottleGreen : Theme.of(context).colorScheme.secondary, customTextFontWeight: FontWeight.w400, customtextstyle: null, customTextSize: ScreenUtil().setSp(15)),                          
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton(
-                    onPressed: () {
-                      setState(() {
-                        value == 0
-                            ? updateWeek(0)
-                            : value == 1
-                                ? updateMonth(0)
-                                : updateYear(0);
-                      });
-                    },
-                    icon: Icon(
-                      Icons.chevron_left,
-                      size: MediaQuery.of(context).size.height * 0.05,
-                    ),
-                    color: PrimaryColor.colorBottleGreen,
-                  ),
-                  value == 0
-                      ? Text(
-                          "$analyticsStartWeekText",
-                          style: TextStyle(
-                              color: Theme.of(context).colorScheme.secondary,
-                              fontSize:
-                                  MediaQuery.of(context).size.height * 0.023),
-                        )
-                      : Container(
-                          child: value == 1
-                              ? Text(
-                                  '$analyticsMonthlyText',
-                                  style: TextStyle(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .secondary,
-                                      fontSize:
-                                          MediaQuery.of(context).size.height *
-                                              0.023),
-                                )
-                              : Text(
-                                  '$analyticsYearlyText',
-                                  style: TextStyle(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .secondary,
-                                      fontSize:
-                                          MediaQuery.of(context).size.height *
-                                              0.023),
-                                )),
-                  IconButton(
-                    onPressed: () {
-                      setState(() {
-                        value == 0
-                            ? updateWeek(1)
-                            : value == 1
-                                ? updateMonth(1)
-                                : updateYear(1);
-                      });
-                    },
-                    icon: Icon(
-                      Icons.chevron_right,
-                      size: MediaQuery.of(context).size.height * 0.05,
-                    ),
-                    color: PrimaryColor.colorBottleGreen,
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Card(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20)),
-                      color: PrimaryColor.colorRed,
-                      child: SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.43,
-                        height: MediaQuery.of(context).size.height * 0.08,
-                        child: Row(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: Card(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(60)),
-                                color: PrimaryColor.colorWhite,
-                                child: SizedBox(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.14,
-                                  height: MediaQuery.of(context).size.height,
-                                  child: Icon(
-                                    Icons.arrow_upward,
-                                    color: PrimaryColor.colorRed,
-                                    size: 32,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                CustomTextStyle(
-                                    customTextStyleText: "Spending",
-                                    customTextColor: PrimaryColor.colorWhite,
-                                    customTextFontWeight: FontWeight.normal,
-                                    customtextstyle: null,
-                                    customTextSize: 16.0),
-                                CustomTextStyle(
-                                    customTextStyleText:
-                                        "₹$spendingOfCurrentPageTransactionsValue",
-                                    customTextColor: PrimaryColor.colorWhite,
-                                    customTextFontWeight: FontWeight.w400,
-                                    customtextstyle: null,
-                                    customTextSize: 14.5),
-                              ],
-                            )
-                          ],
-                        ),
-                      )),
-                  Card(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20)),
-                      color: PrimaryColor.colorBottleGreen,
-                      child: SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.43,
-                        height: MediaQuery.of(context).size.height * 0.08,
-                        child: Row(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: Card(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(60)),
-                                color: PrimaryColor.colorWhite,
-                                child: SizedBox(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.14,
-                                  height: MediaQuery.of(context).size.height,
-                                  child: Icon(
-                                    Icons.arrow_downward,
-                                    color: PrimaryColor.colorBottleGreen,
-                                    size: 32,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                CustomTextStyle(
-                                    customTextStyleText: "Income",
-                                    customTextColor: PrimaryColor.colorWhite,
-                                    customTextFontWeight: FontWeight.normal,
-                                    customtextstyle: null,
-                                    customTextSize: 16.0),
-                                CustomTextStyle(
-                                    customTextStyleText:
-                                        "₹$incomeOfTheCurrentPageTransactionsValue",
-                                    customTextColor: PrimaryColor.colorWhite,
-                                    customTextFontWeight: FontWeight.w400,
-                                    customtextstyle: null,
-                                    customTextSize: 14.5),
-                              ],
-                            )
-                          ],
-                        ),
-                      )),
-                ],
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Center(
-                child: SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.05,
-                    width: MediaQuery.of(context).size.width * 0.45,
-                    child: Card(
-                      color: Theme.of(context).colorScheme.primary,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(18),
-                          // side: BorderSide(
-                          //     color: Theme.of(context).colorScheme.secondary)
-                          ),
-                      child: Center(
-                          child: balanceOfCurrentPageTransactionsValue! > 0
-                              ? CustomTextStyle(
-                                  customTextStyleText:
-                                      "Balance: ₹$balanceOfCurrentPageTransactionsValue",
-                                  customTextColor:
-                                      Theme.of(context).colorScheme.secondary,
-                                  customTextFontWeight: FontWeight.normal,
-                                  customtextstyle: null,
-                                  customTextSize: 15.0)
-                              : CustomTextStyle(
-                                  customTextStyleText:
-                                      "Balance: - ₹${balanceOfCurrentPageTransactionsValue?.abs()}",
-                                  customTextColor:
-                                      Theme.of(context).colorScheme.secondary,
-                                  customTextFontWeight: FontWeight.normal,
-                                  customtextstyle: null,
-                                  customTextSize: 15.0)),
-                    )),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Row(
-                  children: [
-                    Text(
-                      'Category-wise Spending',
-                      style: TextStyle(
-                          color: Theme.of(context).colorScheme.secondary,
-                          fontSize: MediaQuery.of(context).size.height * 0.024,
-                          fontWeight: FontWeight.w400),
-                    ),
-                  ],
-                ),
-              ),
-              Card(
-                color: Theme.of(context).colorScheme.primary,
-                elevation: 5,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(18),
-                    // side: BorderSide(
-                    //     color: Theme.of(context).colorScheme.secondary)
-                        ),
-                child: SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.30,
-                  child: currentPageSpendingTransactions.isEmpty
-                      ? const Center(
-                          child: CustomNoData(),
-                        )
-                      : SfCircularChart(series: <CircularSeries>[
-                          PieSeries<AllTransactionDetails, String>(
-                              dataSource: currentPageSpendingTransactions,
-                              xValueMapper: (AllTransactionDetails data, _) =>
-                                  data.transactionNote as String,
-                              yValueMapper: (AllTransactionDetails data, _) =>
-                                  data.transactionAmount,
-                              dataLabelMapper: (AllTransactionDetails data,
-                                      _) =>
-                                  '${data.transactionNote!}\n${data.transactionAmount}',
-                              radius: '55%',
-                              dataLabelSettings: DataLabelSettings(
-                                  textStyle: TextStyle(
-                                      color: Theme.of(context).hintColor),
-                                  isVisible: true,
-                                  margin: EdgeInsets.zero,
-                                  labelIntersectAction:
-                                      LabelIntersectAction.none,
-                                  overflowMode: OverflowMode.shift,
-                                  // groupMode: CircularChartGroupMode.value,
-                                  showZeroValue: true,
-                                  labelPosition: ChartDataLabelPosition.outside,
-                                  connectorLineSettings:
-                                      const ConnectorLineSettings(
-                                          length: '20%',
-                                          type: ConnectorType.line)))
-                        ]),
-                ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Row(
-                  children: [
-                    Text(
-                      'Category-wise Income',
-                      style: TextStyle(
-                          color: Theme.of(context).colorScheme.secondary,
-                          fontSize: MediaQuery.of(context).size.height * 0.024,
-                          fontWeight: FontWeight.w400),
-                    ),
-                  ],
-                ),
-              ),
-              Card(
-                color: Theme.of(context).colorScheme.primary,
-                elevation: 5,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(18),
-                    // side: BorderSide(
-                    //     color: Theme.of(context).colorScheme.secondary)
-                        ),
-                child: SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.30,
-                  child: currentPageIncomeTransactions.isEmpty
-                      ? const Center(
-                          child: CustomNoData(),
-                        )
-                      : SfCircularChart(series: <CircularSeries>[
-                          PieSeries<AllTransactionDetails, String>(
-                              dataSource: currentPageIncomeTransactions,
-                              xValueMapper: (AllTransactionDetails data, _) =>
-                                  data.transactionNote,
-                              yValueMapper: (AllTransactionDetails data, _) =>
-                                  data.transactionAmount,
-                              dataLabelMapper: (AllTransactionDetails data,
-                                      _) =>
-                                  '${data.transactionNote!}\n${data.transactionAmount}',
-                              radius: '55%',
-                              dataLabelSettings: DataLabelSettings(
-                                  textStyle: TextStyle(
-                                      color: Theme.of(context).hintColor),
-                                  isVisible: true,
-                                  margin: EdgeInsets.zero,
-                                  labelIntersectAction:
-                                      LabelIntersectAction.none,
-                                  overflowMode: OverflowMode.shift,
-                                  // groupMode: CircularChartGroupMode.value,
-                                  showZeroValue: true,
-                                  labelPosition: ChartDataLabelPosition.outside,
-                                  connectorLineSettings:
-                                      const ConnectorLineSettings(
-                                          length: '20%',
-                                          type: ConnectorType.line)))
-                        ]),
-                ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Row(
-                  children: [
-                    Text(
-                      'Stats',
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.secondary,
-                        fontSize: MediaQuery.of(context).size.height * 0.024,
-                        fontWeight: FontWeight.w400,
-                      ),
-                      textAlign: TextAlign.left,
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.150,
-                width: MediaQuery.of(context).size.width,
-                child: Card(
-                  color: Theme.of(context).colorScheme.primary,
-                  elevation: 5,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18),
-                      // side: BorderSide(
-                      //   color: Theme.of(context).colorScheme.secondary,
-                      // )
-                      ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Number of Transaction',
-                              style: TextStyle(
-                                  fontSize: MediaQuery.of(context).size.height *
-                                      0.022,
-                                  color: Theme.of(context).colorScheme.secondary),
-                            ),
-                            Text(
-                              '${currentPageTransactions.length}',
-                              style: TextStyle(
-                                  fontSize: MediaQuery.of(context).size.height *
-                                      0.022,
-                                  color: Theme.of(context).colorScheme.secondary),
-                            )
-                          ],
-                        ),
-                        Container(
-                          padding: const EdgeInsets.only(left: 20, bottom: 5),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'Average Income',
-                                style: TextStyle(
-                                    fontSize:
-                                        MediaQuery.of(context).size.height *
-                                            0.020,
-                                    color: Theme.of(context).colorScheme.secondary),
-                              ),
-                              averageIncome!.isNaN
-                                  ? Text(
-                                      '₹0.0',
-                                      style: TextStyle(
-                                          fontSize: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.020,
-                                          color: Theme.of(context).colorScheme.secondary),
-                                    )
-                                  : Text(
-                                      '₹$averageIncome',
-                                      style: TextStyle(
-                                          fontSize: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.020,
-                                          color: Theme.of(context).colorScheme.secondary),
-                                    ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.only(left: 20),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'Average Spending',
-                                style: TextStyle(
-                                    fontSize:
-                                        MediaQuery.of(context).size.height *
-                                            0.020,
-                                    color: Theme.of(context).colorScheme.secondary),
-                              ),
-                              averageSpending!.isNaN
-                                  ? Text(
-                                      '₹0.0',
-                                      style: TextStyle(
-                                          fontSize: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.020,
-                                          color: Theme.of(context).colorScheme.secondary),
-                                    )
-                                  : Text(
-                                      '₹$averageSpending',
-                                      style: TextStyle(
-                                          fontSize: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.020,
-                                          color: Theme.of(context).colorScheme.secondary),
-                                    )
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  GestureDetector(
-                    onTap: () async {
-                      final File pdfFile;
-                      value == 0
-                          ? pdfFile = await PdfInvoiceApi.generate(
-                              currentPageTransactions,
-                              analyticsStartWeekText!,
-                              "Weekly Analysis",
-                              incomeOfTheCurrentPageTransactionsValue!,
-                              spendingOfCurrentPageTransactionsValue!,
-                              balanceOfCurrentPageTransactionsValue!)
-                          : value == 1
-                              ? pdfFile = await PdfInvoiceApi.generate(
-                                  currentPageTransactions,
-                                  analyticsMonthlyText!,
-                                  "Monthly Analysis",
-                                  incomeOfTheCurrentPageTransactionsValue!,
-                                  spendingOfCurrentPageTransactionsValue!,
-                                  balanceOfCurrentPageTransactionsValue!)
-                              : pdfFile = await PdfInvoiceApi.generate(
-                                  currentPageTransactions,
-                                  analyticsYearlyText!,
-                                  "Yearly Analysis",
-                                  incomeOfTheCurrentPageTransactionsValue!,
-                                  spendingOfCurrentPageTransactionsValue!,
-                                  balanceOfCurrentPageTransactionsValue!);
-                      PdfApi.openFile(pdfFile);
-                    },
-                    child: Card(
-                      color: PrimaryColor.colorBottleGreen,
-                      child: Padding(
-                        padding: const EdgeInsets.all(6.0),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.file_download,
-                              color: PrimaryColor.colorWhite,
-                            ),
-                            Text(
-                              "Download stats",
-                              style: TextStyle(
-                                  fontSize:
-                                      MediaQuery.of(context).size.height * 0.02,
-                                  color: PrimaryColor.colorWhite),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              )
-            ],
-          ),
-        ),
-      ),
-    );
   }
 }

@@ -13,38 +13,32 @@ class CustomHeader extends StatelessWidget {
     return Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  CustomTextStyle(
-                                    customTextStyleText: "$wishingText",
-                                    customTextColor: textColor,
-                                    customTextFontWeight: FontWeight.normal,
-                                    customTextSize: 17.0,
-                                    customtextstyle: null,
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  CustomTextStyle(
-                                    customTextStyleText: "$username",
-                                    customTextColor: textColor,
-                                    customTextFontWeight: FontWeight.w400,
-                                    customTextSize: 22.0,
-                                    customtextstyle: null,
-                                  ),
-                                ],
-                              ),
-                            ],
+                          SizedBox(
+                            width:MediaQuery.of(context).size.width/1.8,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                CustomTextStyle(
+                                  customTextStyleText: "$wishingText",
+                                  customTextColor: textColor,
+                                  customTextFontWeight: FontWeight.normal,
+                                  customTextSize: 17.0,
+                                  customtextstyle: null,
+                                ),
+                                CustomTextStyle(
+                                      customTextStyleText: "$username",
+                                      customTextColor: textColor,
+                                      customTextFontWeight: FontWeight.w400,
+                                      customTextSize: 22.0,
+                                      customtextstyle: null,
+                                    ),
+                                  
+                              ],
+                            ),
                           ),
                           SizedBox(
                             width: MediaQuery.of(context).size.width * 0.15,
-                            height: MediaQuery.of(context).size.height * 0.065,
+                            height: MediaQuery.of(context).size.width * 0.15,
                             child: Card(
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(50)),
