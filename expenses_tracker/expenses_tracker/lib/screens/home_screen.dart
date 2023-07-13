@@ -191,7 +191,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> navigationForTransaction() async {
-    Navigator.of(context).pushReplacement(
+    Navigator.of(context).push(
                               FadeSlideTransitionRoute(
                                   page: const TransactionScreen(
                   id: 1,

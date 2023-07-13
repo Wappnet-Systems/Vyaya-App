@@ -38,4 +38,26 @@ class ListOfAppData{
     Category(categoryIndex: 2, categoryIcon: Icon(Icons.abc,color: PrimaryColor.colorWhite,size: 30,), categoryText: "Sold Items",categoryType: 3),
     Category(categoryIndex: 3, categoryIcon: Icon(Icons.access_time,color: PrimaryColor.colorWhite,size: 30,), categoryText: "Coupons",categoryType: 3),    
   ];
+
+  static List<Category> listOfCategoryForAutoRead=[
+    Category(categoryIndex: 0, categoryIcon: Icon(Icons.more_horiz,color: PrimaryColor.colorWhite,size: 20,), categoryText: "Others",categoryType: 1),
+    Category(categoryIndex: 1, categoryIcon: Icon(Icons.food_bank,color: PrimaryColor.colorWhite,size: 20,), categoryText: "Food & Dinning",categoryType: 1),
+    Category(categoryIndex: 2, categoryIcon: Icon(Icons.shopping_cart,color: PrimaryColor.colorWhite,size: 20,), categoryText: "Shopping",categoryType: 1),
+    Category(categoryIndex: 3, categoryIcon: Icon(Icons.travel_explore,color: PrimaryColor.colorWhite,size: 20,), categoryText: "Traveling",categoryType: 1),
+    Category(categoryIndex: 4, categoryIcon: Icon(Icons.live_tv,color: PrimaryColor.colorWhite,size: 20,), categoryText: "Entertainment",categoryType: 1),
+    Category(categoryIndex: 5, categoryIcon: Icon(Icons.personal_injury,color: PrimaryColor.colorWhite,size: 20,), categoryText: "Personal care",categoryType: 0),
+    Category(categoryIndex: 6, categoryIcon: Icon(Icons.book,color: PrimaryColor.colorWhite,size: 20,), categoryText: "Education",categoryType: 0),
+    Category(categoryIndex: 7, categoryIcon: Icon(Icons.receipt,color: PrimaryColor.colorWhite,size: 20,), categoryText: "Bills & Utilities",categoryType: 0),
+    Category(categoryIndex: 8, categoryIcon: Icon(Icons.moving,color: PrimaryColor.colorWhite,size: 20,), categoryText: "Investment",categoryType: 2),
+    Category(categoryIndex: 9, categoryIcon: Icon(Icons.home_work,color: PrimaryColor.colorWhite,size: 20,), categoryText: "Rent",categoryType: 0),
+    Category(categoryIndex: 10, categoryIcon: Icon(Icons.content_paste_go,color: PrimaryColor.colorWhite,size: 20,), categoryText: "Taxes",categoryType: 0),
+    Category(categoryIndex: 11, categoryIcon: Icon(Icons.security,color: PrimaryColor.colorWhite,size: 20,), categoryText: "Insurances",categoryType: 2),
+  ];
+
+  static List<Category> listOfIncomeForAutoRead=[
+    Category(categoryIndex: 0, categoryIcon: Icon(Icons.more_horiz,color: PrimaryColor.colorWhite,size: 20,), categoryText: "Others",categoryType: 3),
+    Category(categoryIndex: 1, categoryIcon: Icon(Icons.money,color: PrimaryColor.colorWhite,size: 20,), categoryText: "Salary",categoryType: 3),
+    Category(categoryIndex: 2, categoryIcon: Icon(Icons.abc,color: PrimaryColor.colorWhite,size: 20,), categoryText: "Sold Items",categoryType: 3),
+    Category(categoryIndex: 3, categoryIcon: Icon(Icons.access_time,color: PrimaryColor.colorWhite,size: 20,), categoryText: "Coupons",categoryType: 3),    
+  ];
 }

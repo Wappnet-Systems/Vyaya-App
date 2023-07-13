@@ -49,7 +49,6 @@ class _TransactionScreenState extends State<TransactionScreen> {
       transactionPaymentMode,
       transactionNote;
 
-  //drop down values for insurance type
   String dropdownvalue = 'Cash';
   var items = [
     'Cash',

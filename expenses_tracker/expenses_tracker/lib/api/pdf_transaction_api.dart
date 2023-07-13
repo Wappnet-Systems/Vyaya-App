@@ -2,9 +2,11 @@ import 'dart:io';
 import 'package:expenses_tracker/api/pdf_api.dart';
 import 'package:expenses_tracker/model/transaction.dart';
 import 'package:expenses_tracker/utils/const.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
+import 'package:pdf/widgets.dart' as pw;
 
 class PdfInvoiceApi {
   static Future<File> generate(
@@ -14,10 +16,11 @@ class PdfInvoiceApi {
       int income,
       int spending,
       int balance) async {
-
     final pdf = Document();
+    final pageTheme = await _myPageTheme();
 
     pdf.addPage(MultiPage(
+      pageTheme: pageTheme,
       build: (context) => [
         buildTitle(title: title),
         SizedBox(height: 20),
@@ -29,11 +32,8 @@ class PdfInvoiceApi {
       ],
       footer: (context) => buildFooter(),
     ));
-
     return PdfApi.saveDocument(name: '$title ($duration).pdf', pdf: pdf);
   }
-
-  
 
   static buildTitle({
     required String title,
@@ -41,8 +41,7 @@ class PdfInvoiceApi {
     return Center(
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
       Text(title,
-          style:
-          TextStyle(
+          style: TextStyle(
               color: PdfColors.black,
               fontSize: 25,
               fontWeight: FontWeight.bold),
@@ -89,20 +88,17 @@ class PdfInvoiceApi {
     String dateStamp = DateFormat.yMMMd().format(transactionDateTime);
     String timeStamp = DateFormat.jm().format(transactionDateTime);
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-      Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
+    return Column(mainAxisAlignment: MainAxisAlignment.end, children: [
+      Row(mainAxisAlignment: MainAxisAlignment.end, children: [
         Text("Created by :"),
         Text(" Team Vyaya", style: TextStyle(fontWeight: FontWeight.bold))
       ]),
       SizedBox(height: 7),
-      Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-
-        children: [Text("Created on :"),Text(" $dateStamp $timeStamp", style: TextStyle(fontWeight: FontWeight.bold))])
+      Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+        Text("Created on :"),
+        Text(" $dateStamp $timeStamp",
+            style: TextStyle(fontWeight: FontWeight.bold))
+      ])
     ]);
   }
 
@@ -130,17 +126,20 @@ class PdfInvoiceApi {
         subcategory = ListOfAppData
             .listOfIncome[item.transactionSubcategoryIndex!].categoryText!;
       }
-
       String dateStamp = DateFormat.yMMMd().format(transactionDateTime);
       String timeStamp = DateFormat.jm().format(transactionDateTime);
-
+      String transactionAmountInString = NumberFormat.currency(
+        symbol: transactionCategory == 'Income' ? '+ ' : "- ",
+        locale: "HI",
+        decimalDigits: 2,
+      ).format(item.transactionAmount);
       return [
         id++,
         "$dateStamp $timeStamp",
         transactionCategory,
         subcategory,
         '${item.transactionNote}',
-        '${item.transactionAmount}',
+        transactionAmountInString,
       ];
     }).toList();
 
@@ -167,7 +166,7 @@ class PdfInvoiceApi {
     final incomeAmount = income;
     final spendingAmount = spending;
     final balanceAmount = balance;
-    
+
     return Container(
       alignment: Alignment.centerRight,
       child: Row(
@@ -180,13 +179,21 @@ class PdfInvoiceApi {
               children: [
                 buildText(
                   title: 'Total Income',
-                  value: incomeAmount.toString(),
+                  value: NumberFormat.currency(
+                    symbol: "",
+                    locale: "HI",
+                    decimalDigits: 2,
+                  ).format(incomeAmount),
                   unite: true,
                 ),
                 SizedBox(height: 5),
                 buildText(
                   title: 'Total Spending',
-                  value: "- $spendingAmount",
+                  value: NumberFormat.currency(
+                    symbol: "",
+                    locale: "HI",
+                    decimalDigits: 2,
+                  ).format(spendingAmount),
                   unite: true,
                 ),
                 Divider(),
@@ -196,7 +203,11 @@ class PdfInvoiceApi {
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
                   ),
-                  value: balanceAmount.toString(),
+                  value: NumberFormat.currency(
+                    symbol: "",
+                    locale: "HI",
+                    decimalDigits: 2,
+                  ).format(balanceAmount),
                   unite: true,
                 ),
                 SizedBox(height: 2 * PdfPageFormat.mm),
@@ -233,4 +244,25 @@ class PdfInvoiceApi {
       ),
     );
   }
+}
+
+Future<pw.PageTheme> _myPageTheme() async {
+  final logoImage = pw.MemoryImage(
+      (await rootBundle.load('assets/watermark.png')).buffer.asUint8List());
+  return pw.PageTheme(
+    margin: const pw.EdgeInsets.all(1 * PdfPageFormat.cm),
+    orientation: pw.PageOrientation.portrait,
+    buildBackground: (final context) => pw.FullPage(
+        child: pw.Watermark(
+            angle: 0,
+            child: pw.Opacity(
+                opacity: 0.5,
+                child: pw.Image(
+                    height: 5 * PdfPageFormat.cm,
+                    width: 5 * PdfPageFormat.cm,
+                    alignment: pw.Alignment.center,
+                    logoImage,
+                    fit: pw.BoxFit.contain))),
+        ignoreMargins: false),
+  );
 }

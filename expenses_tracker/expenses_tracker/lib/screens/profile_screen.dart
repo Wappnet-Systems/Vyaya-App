@@ -3,12 +3,14 @@ import 'dart:io';
 import 'package:encrypt/encrypt.dart';
 import 'package:expenses_tracker/model/localtransaction.dart';
 import 'package:expenses_tracker/screens/privacy_policy.dart';
+import 'package:expenses_tracker/screens/sms_list.dart';
 import 'package:expenses_tracker/screens/user_detail.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis_auth/auth_io.dart';
 import 'package:hive/hive.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../utils/const.dart';
 import '../utils/functions.dart';
@@ -31,19 +33,22 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   String? username, initialOfName, wishingText;
   bool _darkMode = false;
-  String? masterPassword;
+  bool? syncCheck;
+  String? masterPassword, lastBackupTime;
   final TextEditingController masterPasswordController =
       TextEditingController();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   bool isLoading = false;
+  GoogleSignIn googleSignIn = GoogleSignIn();
 
   late Box<LocalTransaction> localTransactionBox;
-  final fileName = 'Vyaya_tracker (Data backup).txt';
+  // final fileName = 'Vyaya (backup).txt';
   final encryptionDecryptionKey = '5a7b3c1eab9fd67032b164fae0c9d8b2';
   final masterPasswordKey = "5a7b3c1eab9fd67032b164fae0c9d8b2";
 
   @override
   void initState() {
+    checkForSync();
     username = UserData.currentUserName;
     localTransactionBox = Hive.box<LocalTransaction>('local_transactions');
     wishingText = getCurrentHour();
@@ -52,9 +57,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.initState();
   }
 
+  void checkForSync() async {
+    final sharedPreferences = await SharedPreferences.getInstance();
+
+    setState(() {
+      syncCheck = sharedPreferences.getBool('sync') ?? false;
+      if (syncCheck == true) {
+        setState(() {
+          lastBackupTime = sharedPreferences.getString('lastUpdated') ?? "";
+        });
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Theme.of(context).colorScheme.primary,
       body: Stack(
         children: [
@@ -88,11 +107,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         visualDensity: const VisualDensity(vertical: -4),
                         onTap: () {
                           Navigator.of(context).push(
-                              FadeSlideTransitionRoute(
-                                  page: const UserDetail(
-                                        id: 1,
-                                      )),);
-                          
+                            FadeSlideTransitionRoute(
+                                page: const UserDetail(
+                              id: 1,
+                            )),
+                          );
                         },
                       ),
                       const Divider(),
@@ -101,19 +120,94 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           Icons.backup_outlined,
                           color: Theme.of(context).colorScheme.secondary,
                         ),
-                        title: Text(
-                          'Upload backup',
-                          style: TextStyle(
-                              color: Theme.of(context).colorScheme.secondary),
-                        ),
+                        trailing: syncCheck == true
+                            ? GestureDetector(
+                                onTap: () async {
+                                  final sharedPreferences =
+                                      await SharedPreferences.getInstance();
+                                  String masterPasswordForSync =
+                                      sharedPreferences
+                                              .getString('masterPassword') ??
+                                          "";
+                                  String fileIdForSync =
+                                      sharedPreferences.getString('fileId') ??
+                                          "";
+
+                                  Box<LocalTransaction> transactionBox =
+                                      Hive.box<LocalTransaction>(
+                                          'local_transactions');
+                                  List<Map<String, dynamic>> jsonData =
+                                      transactionBox.values.map((e) {
+                                    return {
+                                      'Transaction Id': e.tID,
+                                      'User Id': e.userId,
+                                      'Transaction Category': e.tCategory,
+                                      'Transaction Subcategory': e.tSubcategory,
+                                      'Transaction Subcategory Index':
+                                          e.tSubcategoryIndex,
+                                      'Transaction Amount': e.tAmount,
+                                      'Transaction Note': e.tNote,
+                                      'Transaction Time':
+                                          e.tDateTime.toString(),
+                                      'Transaction PaymentMode': e.tPaymentMode,
+                                      'Transaction Created At':
+                                          e.tCreatedAt.toString(),
+                                    };
+                                  }).toList();
+                                  setState(() {
+                                    isLoading = true;
+                                  });
+                                  removeTextFromFile(fileIdForSync, jsonData,
+                                          masterPasswordForSync)
+                                      .then((_) {});
+                                },
+                                child: Text(
+                                  "Sync Now",
+                                  style:
+                                      TextStyle(color: PrimaryColor.colorBlue),
+                                ))
+                            : const SizedBox.shrink(),
+                        title: syncCheck == false
+                            ? Text(
+                                'Upload backup',
+                                style: TextStyle(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondary),
+                              )
+                            : Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Upload backup',
+                                    style: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary),
+                                  ),
+                                  Text(
+                                    'Last Backup : $lastBackupTime',
+                                    style: TextStyle(
+                                        fontSize:
+                                            MediaQuery.of(context).size.height *
+                                                0.012,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary),
+                                  ),
+                                ],
+                              ),
                         contentPadding:
                             const EdgeInsets.symmetric(horizontal: 12.0),
                         visualDensity: const VisualDensity(vertical: -4),
-                        onTap: () {
-                          showCustomDialog(
-                              "Set Master Password",
-                              "Set a Master Password for your Backup file.\nIt will ask at the time of importing backup so it is important to Remember.",
-                              0);
+                        onTap: () async {
+                          if (syncCheck == false) {
+                            showCustomDialog(
+                                "Set Master Password",
+                                "Set a Master Password for your Backup file.\nIt will ask at the time of importing backup so it is important to Remember.",
+                                0);
+                          }
                         },
                       ),
                       const Divider(),
@@ -140,6 +234,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       const Divider(),
                       ListTile(
                         leading: Icon(
+                          Icons.messenger_outline_outlined,
+                          color: Theme.of(context).colorScheme.secondary,
+                        ),
+                        onTap: (){
+                          Navigator.of(context).push(
+                            FadeSlideTransitionRouteForList(
+                                page: const TextMessageList()),
+                          );
+                        },
+                        title: Text(
+                          'Auto Read Transaction',
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.secondary),
+                        ),
+                        contentPadding:
+                            const EdgeInsets.symmetric(horizontal: 12.0),
+                        visualDensity: const VisualDensity(vertical: -4),
+                        // trailing: const ChangeThemeButtonWidget(),
+                      ),
+                      const Divider(),
+                      
+                      ListTile(
+                        leading: Icon(
                           Icons.brightness_4,
                           color: Theme.of(context).colorScheme.secondary,
                         ),
@@ -154,7 +271,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         trailing: const ChangeThemeButtonWidget(),
                       ),
                       const Divider(),
-
                       ListTile(
                         leading: Icon(
                           Icons.privacy_tip,
@@ -170,9 +286,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         visualDensity: const VisualDensity(vertical: -4),
                         onTap: () {
                           Navigator.of(context).push(
-                              FadeSlideTransitionRoute(
-                                  page: const PrivacyPolicy()),);
-                          
+                            FadeSlideTransitionRouteForList(
+                                page: const PrivacyPolicy()),
+                          );
                         },
                       ),
                       const Divider(),
@@ -271,167 +387,179 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void signOutFunction() async {
     final sharedPreferences = await SharedPreferences.getInstance();
     await sharedPreferences.setString('userId', "");
+    await sharedPreferences.setBool('sync', false);
+    await googleSignIn.signOut();
     Navigator.of(context).pushReplacement(
-                              FadeSlideTransitionRoute(
-                                  page: const UserDetail(
-                                        
-                                      )),);
-    
-  }
-
-  void showCustomDialog(String titleText, String warningText, int id) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          scrollable: true,          
-          backgroundColor: Theme.of(context).colorScheme.primary,
-          shape: RoundedRectangleBorder(
-              side: BorderSide(color: Theme.of(context).colorScheme.secondary),
-              borderRadius: BorderRadius.circular(8)),
-          title: CustomTextStyle(
-              customTextStyleText: titleText,
-              customTextColor: Theme.of(context).colorScheme.secondary,
-              customTextFontWeight: FontWeight.normal,
-              customtextstyle: null,
-              customTextSize: MediaQuery.sizeOf(context).height * 0.022),
-          content: SizedBox(                        
-            height: MediaQuery.sizeOf(context).height * 0.7 / 3,
-            child: Form(
-              autovalidateMode: AutovalidateMode.always,
-              key: formKey,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          'Important',
-                          style: TextStyle(
-                              color: Theme.of(context).hintColor,
-                              fontWeight: FontWeight.w500),
-                          textAlign: TextAlign.start,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    Text(
-                      warningText,
-                      style: TextStyle(color: Theme.of(context).hintColor,fontWeight: FontWeight.w400,fontSize: MediaQuery.of(context).size.height*0.015),
-                      overflow: TextOverflow.visible,
-                      textAlign: TextAlign.justify,
-                      
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    TextFormField(
-                      validator: (value) {
-                        if (value!.length < 8) {
-                          return "Please enter at least 8 character";
-                        }
-                        return null;
-                      },
-                      maxLength: 8,
-                      controller: masterPasswordController,
-                      cursorColor: Theme.of(context).colorScheme.onPrimary,
-                      style: TextStyle(
-                          color: Theme.of(context).colorScheme.secondary),
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Theme.of(context).colorScheme.onPrimary),
-                          ),
-                          labelText: "Master Password",
-                  labelStyle: const TextStyle(
-                        color: Colors.grey, // Change color based on focus
-                        fontSize: 16,
-                      ),
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Theme.of(context).colorScheme.secondary),
-                          ),
-                          hintText: "8 digit password"),
-                    ),
-                    
-                  ],
-                ),
-              ),
-            ),
-          ),
-          actions: <Widget>[
-            GestureDetector(
-                onTap: () {
-                  masterPasswordController.clear();
-                  Navigator.pop(context);
-                },
-                child: Text(
-                  "Cancel",
-                  style: TextStyle(color: PrimaryColor.colorRed),
-                )),
-            const SizedBox(
-              width: 07,
-            ),
-            GestureDetector(
-                onTap: () {
-                  if (formKey.currentState!.validate()) {
-                    if (id == 0) {
-                      masterPassword = masterPasswordController.text;
-                      masterPassword = encryptMasterKey(
-                          masterPassword!, "5a7b3c1eab9fd67032b164fae0c9d8b2");
-
-                      masterPasswordController.clear();
-                      Navigator.pop(context);
-                      startLoading();
-                      Box<LocalTransaction> transactionBox =
-                          Hive.box<LocalTransaction>('local_transactions');
-                      List<Map<String, dynamic>> jsonData =
-                          transactionBox.values.map((e) {
-                        return {
-                          'Transaction Id': e.tID,
-                          'User Id': e.userId,
-                          'Transaction Category': e.tCategory,
-                          'Transaction Subcategory': e.tSubcategory,
-                          'Transaction Subcategory Index': e.tSubcategoryIndex,
-                          'Transaction Amount': e.tAmount,
-                          'Transaction Note': e.tNote,
-                          'Transaction Time': e.tDateTime.toString(),
-                          'Transaction PaymentMode': e.tPaymentMode,
-                          'Transaction Created At': e.tCreatedAt.toString(),
-                        };
-                      }).toList();
-
-                      createFile(fileName, jsonData, masterPassword!);
-                    } else {
-                      masterPassword = masterPasswordController.text;
-                      masterPassword = encryptMasterKey(
-                          masterPassword!, "5a7b3c1eab9fd67032b164fae0c9d8b2");
-                      Navigator.pop(context);
-                      masterPasswordController.clear();
-                      importDatabase(masterPassword!);
-                    }
-                  } else {
-                    masterPasswordController.clear();
-                  }
-                },
-                child: Text(
-                  "Save",
-                  style:
-                      TextStyle(color: Theme.of(context).colorScheme.onPrimary),
-                )),
-          ],
-        );
-      },
+      FadeSlideTransitionRoute(page: const UserDetail()),
     );
   }
 
-  Future<void> createFile(String fileName, List<Map<String, dynamic>> jsonData,
-      String masterKeyOfFile) async {
-    final GoogleSignIn googleSignIn = GoogleSignIn(
+  void showCustomDialog(String titleText, String warningText, int id) {
+    showDialog<String>(
+        context: context,
+        builder: (BuildContext context) {
+          var mediaQuery = MediaQuery.of(context);
+          return AnimatedContainer(
+            padding: mediaQuery.padding,
+            duration: const Duration(milliseconds: 300),
+            child: AlertDialog(
+              scrollable: true,
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              shape: RoundedRectangleBorder(
+                  side: BorderSide(
+                      color: Theme.of(context).colorScheme.secondary),
+                  borderRadius: BorderRadius.circular(8)),
+              title: CustomTextStyle(
+                  customTextStyleText: titleText,
+                  customTextColor: Theme.of(context).colorScheme.secondary,
+                  customTextFontWeight: FontWeight.normal,
+                  customtextstyle: null,
+                  customTextSize: MediaQuery.sizeOf(context).height * 0.022),
+              content: SizedBox(
+                height: MediaQuery.sizeOf(context).height * 0.7 / 3,
+                child: Form(
+                  autovalidateMode: AutovalidateMode.always,
+                  key: formKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            'Important',
+                            style: TextStyle(
+                                color: Theme.of(context).hintColor,
+                                fontWeight: FontWeight.w500),
+                            textAlign: TextAlign.start,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        warningText,
+                        style: TextStyle(
+                            color: Theme.of(context).hintColor,
+                            fontWeight: FontWeight.w400,
+                            fontSize:
+                                MediaQuery.of(context).size.height * 0.015),
+                        overflow: TextOverflow.visible,
+                        textAlign: TextAlign.justify,
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      TextFormField(
+                        validator: (value) {
+                          if (value!.length < 8) {
+                            return "Please enter at least 8 character";
+                          }
+                          return null;
+                        },
+                        maxLength: 8,
+                        controller: masterPasswordController,
+                        cursorColor: Theme.of(context).colorScheme.onPrimary,
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.secondary),
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 8),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color:
+                                      Theme.of(context).colorScheme.onPrimary),
+                            ),
+                            labelText: "Master Password",
+                            labelStyle: const TextStyle(
+                              color: Colors.grey, // Change color based on focus
+                              fontSize: 16,
+                            ),
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color:
+                                      Theme.of(context).colorScheme.secondary),
+                            ),
+                            hintText: "8 digit password"),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              actions: <Widget>[
+                GestureDetector(
+                    onTap: () {
+                      masterPasswordController.clear();
+                      Navigator.pop(context);
+                    },
+                    child: Text(
+                      "Cancel",
+                      style: TextStyle(color: PrimaryColor.colorRed),
+                    )),
+                const SizedBox(
+                  width: 07,
+                ),
+                GestureDetector(
+                    onTap: () {
+                      if (formKey.currentState!.validate()) {
+                        if (id == 0) {
+                          masterPassword = masterPasswordController.text;
+                          masterPassword = encryptMasterKey(masterPassword!,
+                              "5a7b3c1eab9fd67032b164fae0c9d8b2");
+
+                          masterPasswordController.clear();
+                          Navigator.pop(context);
+                          setState(() {
+                            isLoading = true;
+                          });
+                          Box<LocalTransaction> transactionBox =
+                              Hive.box<LocalTransaction>('local_transactions');
+                          List<Map<String, dynamic>> jsonData =
+                              transactionBox.values.map((e) {
+                            return {
+                              'Transaction Id': e.tID,
+                              'User Id': e.userId,
+                              'Transaction Category': e.tCategory,
+                              'Transaction Subcategory': e.tSubcategory,
+                              'Transaction Subcategory Index':
+                                  e.tSubcategoryIndex,
+                              'Transaction Amount': e.tAmount,
+                              'Transaction Note': e.tNote,
+                              'Transaction Time': e.tDateTime.toString(),
+                              'Transaction PaymentMode': e.tPaymentMode,
+                              'Transaction Created At': e.tCreatedAt.toString(),
+                            };
+                          }).toList();
+
+                          createFile(jsonData, masterPassword!);
+                        } else {
+                          masterPassword = masterPasswordController.text;
+                          masterPassword = encryptMasterKey(masterPassword!,
+                              "5a7b3c1eab9fd67032b164fae0c9d8b2");
+                          Navigator.pop(context);
+                          masterPasswordController.clear();
+                          importDatabase(masterPassword!);
+                        }
+                      } else {
+                        masterPasswordController.clear();
+                      }
+                    },
+                    child: Text(
+                      "Save",
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.onPrimary),
+                    )),
+              ],
+            ),
+          );
+        });
+  }
+
+  Future<void> createFile(
+      List<Map<String, dynamic>> jsonData, String masterKeyOfFile) async {
+    String fileName = DateFormat.yMMMd().format(DateTime.now());
+    googleSignIn = GoogleSignIn(
       scopes: ['https://www.googleapis.com/auth/drive.file'],
     );
     googleDrive.DriveApi(http.Client());
@@ -445,7 +573,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           'Content-Type': 'application/json',
         },
         body: convert.jsonEncode({
-          'name': fileName,
+          'name': 'Vyaya backup ($fileName).txt',
           'mimeType': 'application/json',
         }),
       );
@@ -459,10 +587,176 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ));
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Upload failed $e'),
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Upload failed'),
       ));
     }
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  Future<void> writeTextToFile(String fileId,
+      List<Map<String, dynamic>> jsonData, String masterKeyOfFile) async {
+    String fileContent;
+    googleSignIn = GoogleSignIn(
+      scopes: ['https://www.googleapis.com/auth/drive.file'],
+    );
+    googleDrive.DriveApi(http.Client());
+
+    try {
+      final encryptedData =
+          await encryptData(jsonData, encryptionDecryptionKey);
+
+      final googleSignInAccount = await googleSignIn.signIn();
+      final googleSignInAuth = await googleSignInAccount!.authentication;
+      fileContent = "$masterKeyOfFile${convert.jsonEncode(encryptedData)}";
+      final response = await http.patch(
+        Uri.parse(
+          'https://www.googleapis.com/upload/drive/v3/files/$fileId?uploadType=media',
+        ),
+        headers: {
+          'Authorization': 'Bearer ${googleSignInAuth.accessToken}',
+          'Content-Type': 'text/plain',
+        },
+        body: fileContent,
+      );
+
+      if (response.statusCode == 200) {
+        String fileName = DateFormat.yMMMd().format(DateTime.now());
+        final renameResponse = await http.patch(
+          Uri.parse(
+            'https://www.googleapis.com/drive/v3/files/$fileId',
+          ),
+          headers: {
+            'Authorization': 'Bearer ${googleSignInAuth.accessToken}',
+            'Content-Type': 'application/json',
+          },
+          body: convert.jsonEncode({
+            'name': 'Vyaya backup ($fileName).txt',
+          }),
+        );
+        setState(() {
+          isLoading = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Row(
+            children: [
+              Icon(Icons.check_circle, color: Colors.green),
+              SizedBox(width: 10),
+              Text(
+                'Backup Uploaded successfully',
+                style: TextStyle(color: Colors.green),
+              ),
+            ],
+          ),
+        ));
+        String lastBackup = DateFormat.yMMMd().format(DateTime.now());
+        final sharedPreferences = await SharedPreferences.getInstance();
+        await sharedPreferences.setBool('sync', true);
+        await sharedPreferences.setString('masterPassword', masterKeyOfFile);
+        await sharedPreferences.setString('fileId', fileId);
+        await sharedPreferences.setString('lastUpdated', lastBackup);
+      } else if (response.statusCode == 404) {
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Row(
+            children: [
+              Icon(Icons.warning, color: Colors.orange),
+              SizedBox(width: 10),
+              Text(
+                'Failed to update',
+                style: TextStyle(color: Colors.orange),
+              ),
+            ],
+          ),
+        ));
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Row(
+          children: [
+            Icon(Icons.error, color: Colors.red),
+            SizedBox(width: 10),
+            Text(
+              'Sync failed',
+              style: TextStyle(color: Colors.red),
+            ),
+          ],
+        ),
+      ));
+    }
+  }
+
+  Future<void> removeTextFromFile(String fileId,
+      List<Map<String, dynamic>> jsonData, String masterKeyOfFile) async {
+    googleSignIn = GoogleSignIn(
+      scopes: ['https://www.googleapis.com/auth/drive.file'],
+    );
+    googleDrive.DriveApi(http.Client());
+
+    try {
+      final googleSignInAccount = await googleSignIn.signIn();
+      final googleSignInAuth = await googleSignInAccount!.authentication;
+
+      final response = await http.patch(
+        Uri.parse(
+          'https://www.googleapis.com/upload/drive/v3/files/$fileId?uploadType=media',
+        ),
+        headers: {
+          'Authorization': 'Bearer ${googleSignInAuth.accessToken}',
+          'Content-Type': 'text/plain',
+        },
+        body: '',
+      );
+
+      if (response.statusCode == 200) {
+        writeTextToFile(fileId, jsonData, masterKeyOfFile);
+      } else if (response.statusCode == 404) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Row(
+            children: [
+              Icon(Icons.check_circle, color: Colors.red),
+              SizedBox(width: 10),
+              Text(
+                'File Does not Exist',
+                style: TextStyle(color: Colors.red),
+              ),
+            ],
+          ),
+        ));
+        createFile(jsonData, masterKeyOfFile);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Row(
+            children: [
+              Icon(Icons.warning, color: Colors.orange),
+              SizedBox(width: 10),
+              Text(
+                'Failed to Sync Data',
+                style: TextStyle(color: Colors.orange),
+              ),
+            ],
+          ),
+        ));
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Row(
+          children: [
+            Icon(Icons.error, color: Colors.red),
+            SizedBox(width: 10),
+            Text(
+              'Failed to Data Sync',
+              style: TextStyle(color: Colors.red),
+            ),
+          ],
+        ),
+      ));
+    }
+    setState(() {
+      isLoading = false;
+    });
   }
 
   String encryptMasterKey(String data, String key) {
@@ -530,7 +824,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> writeFileContent(String fileId,
       List<Map<String, dynamic>> jsonData, String masterKeyOfFile) async {
     String fileContent;
-    final GoogleSignIn googleSignIn = GoogleSignIn(
+    googleSignIn = GoogleSignIn(
       scopes: ['https://www.googleapis.com/auth/drive.file'],
     );
     googleDrive.DriveApi(http.Client());
@@ -563,6 +857,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ],
           ),
         ));
+        String lastBackup = DateFormat.yMMMd().format(DateTime.now());
+        final sharedPreferences = await SharedPreferences.getInstance();
+        await sharedPreferences.setBool('sync', true);
+        await sharedPreferences.setString('masterPassword', masterKeyOfFile);
+        await sharedPreferences.setString('fileId', fileId);
+        await sharedPreferences.setString('lastUpdated', lastBackup);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Row(
@@ -617,6 +917,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final fileContentWithMasterKey = await file.readAsString();
     String masterKeyFromFile = fileContentWithMasterKey.substring(0, 24);
     final fileContent = fileContentWithMasterKey.substring(24);
+    setState(() {
+      isLoading = true;
+    });
 
     if (masterKeyToCheck == masterKeyFromFile) {
       final fileDecryptedData =
@@ -651,6 +954,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
         content: Text('Your Master Password for Restoring backup is Wrong'),
       ));
     }
+    setState(() {
+      isLoading = false;
+    });
   }
 
   Map<String, dynamic> convertListToMap(List<dynamic> list) {

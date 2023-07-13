@@ -253,7 +253,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 GestureDetector(
                   onTap: (){
                     Navigator.of(context).push(
-                              FadeSlideTransitionRoute(
+                              FadeSlideTransitionRouteForList(
                                   page: TransactionOfMonth(id: 4,titleText: value == 0 ?'Weekly Expenses Analysis':value == 1 ?"Monthly Expenses Analysis" :"Yearly Expenses Analysis",amount: incomeOfTheCurrentPageTransactionsValue!,subtitleText: value == 0 ?'$analyticsStartWeekText':value == 1 ?"$analyticsMonthlyText" :"$analyticsYearlyText",currentPageTransaction: currentPageSpendingTransactions,)),);
                     
                   },
@@ -271,7 +271,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 GestureDetector(
                   onTap: (){
                     Navigator.of(context).push(
-                              FadeSlideTransitionRoute(
+                              FadeSlideTransitionRouteForList(
                                   page: TransactionOfMonth(id: 5,titleText:value == 0 ?'Weekly Income Analysis':value == 1 ?"Monthly Income Analysis" :"Yearly Income Analysis", amount: incomeOfTheCurrentPageTransactionsValue!,subtitleText: value == 0 ?'$analyticsStartWeekText':value == 1 ?"$analyticsMonthlyText" :"$analyticsYearlyText",currentPageTransaction: currentPageIncomeTransactions,)),);
                     
                   },

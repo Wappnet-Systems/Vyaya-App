@@ -21,17 +21,14 @@ class MyTheme {
   
   static final darkTheme = ThemeData(
      primaryColor: PrimaryColor.colorBottleGreen, 
-     textSelectionTheme: TextSelectionThemeData(selectionHandleColor: PrimaryColor.colorBottleGreen),  
-          
+     textSelectionTheme: TextSelectionThemeData(selectionHandleColor: PrimaryColor.colorBottleGreen),            
         colorScheme: ColorScheme.fromSeed(seedColor: PrimaryColor.colorBottleGreen).copyWith(
-        primary: Colors.black,
-        
+        primary: Colors.black,        
         onPrimary: PrimaryColor.colorBottleGreen,
         secondary: PrimaryColor.colorWhite,
         onSecondary: PrimaryColor.colorBottleGreen,
         background: PrimaryColor.colorWhite,
-        onBackground: PrimaryColor.colorBottleGreen,
-        
+        onBackground: PrimaryColor.colorBottleGreen,        
       ),
       cardColor: const Color.fromARGB(150, 25, 15, 20),
       hintColor: Colors.white60,

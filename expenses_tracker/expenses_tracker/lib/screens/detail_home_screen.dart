@@ -153,7 +153,7 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                         GestureDetector(
                           onTap: () {
                             Navigator.of(context).push(
-                              FadeSlideTransitionRoute(
+                              FadeSlideTransitionRouteForList(
                                   page: TransactionOfMonth(
                                 id: 3,
                                 amount: spendingOfTheMonthValue!,
@@ -174,7 +174,7 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                         GestureDetector(
                           onTap: () {
                             Navigator.of(context).push(
-                              FadeSlideTransitionRoute(
+                              FadeSlideTransitionRouteForList(
                                   page: TransactionOfMonth(
                                 id: 2,
                                 amount: incomeOfTheMonthValue!,
@@ -315,13 +315,12 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                           GestureDetector(
                             onTap: () {
                               Navigator.of(context).push(
-                              FadeSlideTransitionRoute(
-                                  page: TransactionOfMonth(
-                                            id: 1,
-                                            amount: balanceOfTheMonthValue!,
-                                          )),
-                            );
-                              
+                                FadeSlideTransitionRouteForList(
+                                    page: TransactionOfMonth(
+                                  id: 1,
+                                  amount: balanceOfTheMonthValue!,
+                                )),
+                              );
                             },
                             child: CustomTextStyle(
                                 customTextStyleText: "View all",
@@ -371,51 +370,48 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                     ? const Center(child: CustomNoData())
                     : GestureDetector(
                         onTap: () {
-                          TransactionScreen(
-                                        id: 2,
-                                        transactionPaymentMode:
-                                            transactions[index]
-                                                .transactionPaymentMode,
-                                        transactionId: transactions[index].tID,
-                                        transactionNote:
-                                            transactions[index].transactionNote,
-                                        transactionAmount: transactions[index]
-                                            .transactionAmount,
-                                        transactionSubcategoryIndex:
-                                            transactions[index]
-                                                .transactionSubcategoryIndex,
-                                        transactionDate:
-                                            "${DateFormat.yMMMd().format(transactions[index].transactionDate!.toDate())} ${DateFormat.jm().format(transactions[index].transactionDate!.toDate())}",
-                                        transactionSubcategory:
-                                            transactions[index]
-                                                .transactionSubcategory,
-                                        transactionCategory: transactions[index]
-                                            .transactionCategory,
-                                      );
-                                      Navigator.of(context).push(
-                              FadeSlideTransitionRoute(
-                                  page: TransactionScreen(
-                                        id: 2,
-                                        transactionPaymentMode:
-                                            transactions[index]
-                                                .transactionPaymentMode,
-                                        transactionId: transactions[index].tID,
-                                        transactionNote:
-                                            transactions[index].transactionNote,
-                                        transactionAmount: transactions[index]
-                                            .transactionAmount,
-                                        transactionSubcategoryIndex:
-                                            transactions[index]
-                                                .transactionSubcategoryIndex,
-                                        transactionDate:
-                                            "${DateFormat.yMMMd().format(transactions[index].transactionDate!.toDate())} ${DateFormat.jm().format(transactions[index].transactionDate!.toDate())}",
-                                        transactionSubcategory:
-                                            transactions[index]
-                                                .transactionSubcategory,
-                                        transactionCategory: transactions[index]
-                                            .transactionCategory,
-                                      )),);
-                          
+                          // TransactionScreen(
+                          //               id: 2,
+                          //               transactionPaymentMode:
+                          //                   transactions[index]
+                          //                       .transactionPaymentMode,
+                          //               transactionId: transactions[index].tID,
+                          //               transactionNote:
+                          //                   transactions[index].transactionNote,
+                          //               transactionAmount: transactions[index]
+                          //                   .transactionAmount,
+                          //               transactionSubcategoryIndex:
+                          //                   transactions[index]
+                          //                       .transactionSubcategoryIndex,
+                          //               transactionDate:
+                          //                   "${DateFormat.yMMMd().format(transactions[index].transactionDate!.toDate())} ${DateFormat.jm().format(transactions[index].transactionDate!.toDate())}",
+                          //               transactionSubcategory:
+                          //                   transactions[index]
+                          //                       .transactionSubcategory,
+                          //               transactionCategory: transactions[index]
+                          //                   .transactionCategory,
+                          //             );
+                          Navigator.of(context).push(
+                            FadeSlideTransitionRoute(
+                                page: TransactionScreen(
+                              id: 2,
+                              transactionPaymentMode:
+                                  transactions[index].transactionPaymentMode,
+                              transactionId: transactions[index].tID,
+                              transactionNote:
+                                  transactions[index].transactionNote,
+                              transactionAmount:
+                                  transactions[index].transactionAmount,
+                              transactionSubcategoryIndex: transactions[index]
+                                  .transactionSubcategoryIndex,
+                              transactionDate:
+                                  "${DateFormat.yMMMd().format(transactions[index].transactionDate!.toDate())} ${DateFormat.jm().format(transactions[index].transactionDate!.toDate())}",
+                              transactionSubcategory:
+                                  transactions[index].transactionSubcategory,
+                              transactionCategory:
+                                  transactions[index].transactionCategory,
+                            )),
+                          );
                         },
                         child: CustomTransaction(
                             themeColor: Theme.of(context).cardColor,
@@ -713,7 +709,6 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                                 transactions: currentMonthWantsTransaction,
                               )),
                             );
-                            
                           },
                           child: Icon(
                             Icons.arrow_forward_ios_outlined,
@@ -817,7 +812,7 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                                 id: 2,
                                 transactions: currentMonthSavingTransaction,
                               )),
-                            );                            
+                            );
                           },
                           child: Icon(
                             Icons.arrow_forward_ios_outlined,
