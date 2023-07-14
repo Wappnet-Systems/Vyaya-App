@@ -1080,26 +1080,12 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
     getBalance();
   }
 
-  // static void totalIncomeOfBeforeMonth() {
-  //   for (int i = 0; i < incomeOfTheMonthPf.length; i++) {
-  //     incomeForPersonalFinance =
-  //         incomeOfTheMonthPf[i] + incomeForPersonalFinance!;
-  //   }
-  // }
-
   static void totalIncomeOfTheMonth() {
     for (int i = 0; i < incomeOfTheMonthPf.length; i++) {
       incomeForPersonalFinance =
           incomeOfTheMonthPf[i] + incomeForPersonalFinance!;
     }
   }
-
-  // static void totalExpensesOfTheMonth() {
-  //   // for (int i = 0; i < spendingOfTheMonth.length; i++) {
-  //   //   spendingOfTheMonthValue =
-  //   //       spendingOfTheMonth[i] + spendingOfTheMonthValue!;
-  //   // }
-  // }
 
   String formatCurrencyForBalance(int? value) {
     NumberFormat currencyFormat = NumberFormat.currency(
@@ -1117,11 +1103,6 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
       decimalDigits: 0,
     );
     return currencyFormat.format(value);
-  }
-
-  static void balenceBeforeMonth() {
-    balanceOfTheMonthValue =
-        (incomeOfTheMonthValue! - spendingOfTheMonthValue!);
   }
 
   static void getBalance() {
@@ -1517,7 +1498,6 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
 
   Future<List<LocalTransaction>> getLatestTransactions() async {
     final transactions = await getAllLocalTransactions();
-
     final currentUserTransactions = transactions.where((transaction) {
       return UserData.currentUserId == transaction.userId;
     }).toList();

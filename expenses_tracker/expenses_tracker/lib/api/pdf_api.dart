@@ -22,6 +22,4 @@ class PdfApi {
     throw 'File not found';
   }
   }
-
-  static loadFont() {}
 }

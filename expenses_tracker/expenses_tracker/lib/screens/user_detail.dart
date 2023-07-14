@@ -87,21 +87,22 @@ class _UserDetailState extends State<UserDetail> {
   @override
   Widget build(BuildContext context) {
 
-    return SafeArea(
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        body: 
-        ListView(
-          padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.03,horizontal: MediaQuery.of(context).size.width*0.03),
-          physics: const BouncingScrollPhysics(),
-          children: [
-            SizedBox(
-              height: MediaQuery.of(context).size.height,
-              width: MediaQuery.of(context).size.width,
-              child: Form(
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                key: userDetailFormGlobalKey,                      
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      backgroundColor: Theme.of(context).colorScheme.primary,
+      body: 
+      ListView(
+        physics: const BouncingScrollPhysics(),
+        children: [
+          SizedBox(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            child: Form(
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              key: userDetailFormGlobalKey,                      
+              child: Padding(
+                          padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.03,horizontal: MediaQuery.of(context).size.width*0.03),
+
                 child: Column(
                   children: [                                      
                         const SizedBox(
@@ -227,8 +228,8 @@ class _UserDetailState extends State<UserDetail> {
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   } 

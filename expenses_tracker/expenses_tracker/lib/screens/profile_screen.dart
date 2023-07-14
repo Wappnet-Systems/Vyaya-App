@@ -507,7 +507,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           masterPassword = masterPasswordController.text;
                           masterPassword = encryptMasterKey(masterPassword!,
                               "5a7b3c1eab9fd67032b164fae0c9d8b2");
-
                           masterPasswordController.clear();
                           Navigator.pop(context);
                           setState(() {

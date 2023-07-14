@@ -52,11 +52,9 @@ class _CustomPfRowState extends State<CustomPfRow> {
   @override
   Widget build(BuildContext context) {
     return Row(
-      children: [
-        
+      children: [        
         Flexible(
-          child: TextFormField(
-            
+          child: TextFormField(            
             validator: personalFinanceValidator,
             enableInteractiveSelection: false,
             focusNode: focusNode,
@@ -64,8 +62,7 @@ class _CustomPfRowState extends State<CustomPfRow> {
             style: TextStyle(color: Theme.of(context).colorScheme.secondary),
             inputFormatters: [FilteringTextInputFormatter.digitsOnly,
                               LengthLimitingTextInputFormatter(2),],
-            keyboardType: TextInputType.phone,
-            
+            keyboardType: TextInputType.phone,            
             controller: widget.textEditingController,
             decoration: InputDecoration(
                 suffixIcon: Icon(Icons.percent,size: MediaQuery.of(context).size.height*0.018,color: _isFocused ? Theme.of(context).colorScheme.onPrimary : Colors.grey,),

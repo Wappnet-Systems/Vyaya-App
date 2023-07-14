@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
 import '../api/pdf_api.dart';
 import '../api/pdf_transaction_api.dart';
 import '../model/localtransaction.dart';
@@ -14,7 +13,7 @@ import '../utils/const.dart';
 import '../utils/functions.dart';
 import '../widgets/custom_balance_card.dart';
 import '../widgets/custom_card.dart';
-import '../widgets/custom_no_data.dart';
+import '../widgets/custom_circular_chart.dart';
 import '../widgets/custom_text_style.dart';
 import '../widgets/fade_transition.dart';
 
@@ -53,7 +52,6 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
   static double? averageSpending = 00;
   static int? spendingOfCurrentPageTransactionsValue = 00;
   static int? balanceOfCurrentPageTransactionsValue = 00;
-  bool isLoading = false;
 
   @override
   void initState() {
@@ -312,46 +310,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 ],
               ),
             ),
-            Card(
-              color: Theme.of(context).cardColor,
-              elevation: 5,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(18),
-              ),
-              child: SizedBox(
-                height: MediaQuery.of(context).size.height * 0.30,
-                child: currentPageSpendingTransactions.isEmpty
-                    ? const Center(
-                        child: CustomNoData(),
-                      )
-                    : SfCircularChart(series: <CircularSeries>[
-                        PieSeries<AllTransactionDetails, String>(
-                            dataSource: currentPageSpendingTransactions,
-                            xValueMapper: (AllTransactionDetails data, _) =>
-                                data.transactionNote as String,
-                            yValueMapper: (AllTransactionDetails data, _) =>
-                                data.transactionAmount,
-                            dataLabelMapper: (AllTransactionDetails data, _) =>
-                                '${data.transactionNote!}\n₹${data.transactionAmount}',
-                            radius: '55%',
-                            dataLabelSettings: DataLabelSettings(
-                                textStyle: TextStyle(
-                                    color: Theme.of(context).hintColor),
-                                isVisible: true,
-                                margin: EdgeInsets.zero,
-                                labelIntersectAction:
-                                    LabelIntersectAction.shift,
-                                overflowMode: OverflowMode.shift,
-                                labelAlignment: ChartDataLabelAlignment.auto,
-                                showZeroValue: true,
-                                labelPosition: ChartDataLabelPosition.outside,
-                                connectorLineSettings:
-                                    const ConnectorLineSettings(
-                                        length: '20%',
-                                        type: ConnectorType.line)))
-                      ]),
-              ),
-            ),
+            CustomCircularChart(currentPageTransactions: currentPageSpendingTransactions,),
             const SizedBox(
               height: 10,
             ),
@@ -370,47 +329,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 ],
               ),
             ),
-            Card(
-              color: Theme.of(context).cardColor,
-              elevation: 5,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(18),
-              ),
-              child: SizedBox(
-                height: MediaQuery.of(context).size.height * 0.30,
-                child: currentPageIncomeTransactions.isEmpty
-                    ? const Center(
-                        child: CustomNoData(),
-                      )
-                    : SfCircularChart(series: <CircularSeries>[
-                        PieSeries<AllTransactionDetails, String>(
-                            dataSource: currentPageIncomeTransactions,
-                            xValueMapper: (AllTransactionDetails data, _) =>
-                                data.transactionNote,
-                            yValueMapper: (AllTransactionDetails data, _) =>
-                                data.transactionAmount,
-                            dataLabelMapper: (AllTransactionDetails data, _) =>
-                                '${data.transactionNote!}\n₹${data.transactionAmount}',
-                            radius: '55%',
-                            dataLabelSettings: DataLabelSettings(
-                                textStyle: TextStyle(
-                                    color: Theme.of(context).hintColor),
-                                isVisible: true,
-                                labelIntersectAction:
-                                    LabelIntersectAction.shift,
-                                labelAlignment: ChartDataLabelAlignment.auto,
-                                margin: EdgeInsets.zero,
-                                overflowMode: OverflowMode.shift,
-                                // groupMode: CircularChartGroupMode.value,
-                                showZeroValue: true,
-                                labelPosition: ChartDataLabelPosition.outside,
-                                connectorLineSettings:
-                                    const ConnectorLineSettings(
-                                        length: '20%',
-                                        type: ConnectorType.line)))
-                      ]),
-              ),
-            ),
+            CustomCircularChart(currentPageTransactions: currentPageIncomeTransactions,),
             const SizedBox(
               height: 10,
             ),
@@ -679,9 +598,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     balanceOfCurrentPageTransactionsValue = 00;
     averageIncome = 00;
     averageSpending = 00;
-    setState(() {
-      isLoading = true;
-    });
+    
 
     try {
       recentTransaction = await getTransactionsBetweenDates();
@@ -699,13 +616,11 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 transactionPaymentMode: e.tPaymentMode,
                 transactionCreatedAt: Timestamp.fromDate(e.tCreatedAt)))
             .toList();
-        isLoading = false;
         findIncomeSpending();
       });
+    // ignore: empty_catches
     } catch (e) {
-      setState(() {
-        isLoading = false;
-      });
+      
     }
   }
 
