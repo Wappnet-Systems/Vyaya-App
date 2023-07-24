@@ -142,472 +142,475 @@ class _TransactionScreenState extends State<TransactionScreen> {
               ),
         elevation: 5,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 2.5,
-                    child: OutlinedButton(
-                      onPressed: () {
-                        setState(() {
-                          value = 0;
-                        });
-                      },
-                      style: OutlinedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
-                        side: BorderSide(
+      body: Material(
+        color: Colors.transparent, // Set transparent background
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width / 2.5,
+                      child: OutlinedButton(
+                        onPressed: () {
+                          setState(() {
+                            value = 0;
+                          });
+                        },
+                        style: OutlinedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                          side: BorderSide(
+                              color: (value == 0)
+                                  ? Theme.of(context).colorScheme.onPrimary
+                                  : Theme.of(context).colorScheme.secondary),
+                        ),
+                        child: Text(
+                          "Expenses",
+                          style: TextStyle(
                             color: (value == 0)
                                 ? Theme.of(context).colorScheme.onPrimary
-                                : Theme.of(context).colorScheme.secondary),
-                      ),
-                      child: Text(
-                        "Expenses",
-                        style: TextStyle(
-                          color: (value == 0)
-                              ? Theme.of(context).colorScheme.onPrimary
-                              : Theme.of(context).colorScheme.secondary,
+                                : Theme.of(context).colorScheme.secondary,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.02,
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 2.5,
-                    child: OutlinedButton(
-                      onPressed: () {
-                        setState(() {
-                          value = 1;
-                        });
-                      },
-                      style: OutlinedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
-                        side: BorderSide(
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.02,
+                    ),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width / 2.5,
+                      child: OutlinedButton(
+                        onPressed: () {
+                          setState(() {
+                            value = 1;
+                          });
+                        },
+                        style: OutlinedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                          side: BorderSide(
+                              color: (value == 1)
+                                  ? Theme.of(context).colorScheme.onPrimary
+                                  : Theme.of(context).colorScheme.secondary),
+                        ),
+                        child: Text(
+                          "Income",
+                          style: TextStyle(
                             color: (value == 1)
                                 ? Theme.of(context).colorScheme.onPrimary
-                                : Theme.of(context).colorScheme.secondary),
-                      ),
-                      child: Text(
-                        "Income",
-                        style: TextStyle(
-                          color: (value == 1)
-                              ? Theme.of(context).colorScheme.onPrimary
-                              : Theme.of(context).colorScheme.secondary,
+                                : Theme.of(context).colorScheme.secondary,
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Form(
-                key: transactionFormGlobalKey,
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Card(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(50)),
-                            color: PrimaryColor.colorBottleGreen,
-                            child: Container(
-                                padding: const EdgeInsets.all(6),
-                                child: Icon(
-                                  Icons.calendar_month,
-                                  color: PrimaryColor.colorWhite,
-                                  size: 20,
-                                ))),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Flexible(
-                          child: TextFormField(
-                            readOnly: true,
-                            onTap: () {
-                              _selectDateTime(context);
-                            },
-                            controller: setDateController,
-                            validator: textFormFieldValidator,
-                            style: TextStyle(
-                                color: Theme.of(context).colorScheme.secondary),
-                            decoration: InputDecoration(
-                              hintStyle:
-                                  TextStyle(color: Theme.of(context).hintColor),
-                              hintText: "Enter Date",
-                              prefixIconConstraints:
-                                  const BoxConstraints.tightFor(
-                                      height: 05, width: 35),
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .secondary, // Change this to your desired border color
-                                ),
-                              ),
-                              focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onPrimary, // Change this to your desired border color
-                                ),
-                              ),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Card(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(50)),
-                            color: PrimaryColor.colorBottleGreen,
-                            child: Container(
-                                padding: const EdgeInsets.all(6),
-                                child: Icon(
-                                  Icons.calculate,
-                                  color: PrimaryColor.colorWhite,
-                                  size: 20,
-                                ))),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Flexible(
-                          child: TextFormField(
-                            keyboardType: TextInputType.number,
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly,
-                              LengthLimitingTextInputFormatter(17),
-                            ],
-                            cursorColor:
-                                Theme.of(context).colorScheme.onPrimary,
-                            style: TextStyle(
-                                color: Theme.of(context).colorScheme.secondary),
-                            controller: amountController,
-                            validator: amountValidator,
-                            decoration: InputDecoration(
-                              hintText: "Enter Amount",
-                              prefixIconConstraints:
-                                  const BoxConstraints.tightFor(
-                                      height: 05, width: 35),
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                  color:
-                                      Theme.of(context).colorScheme.secondary,
-                                ),
-                              ),
-                              focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                  color:
-                                      Theme.of(context).colorScheme.onPrimary,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      children: [
-                        Card(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(50)),
-                          color: PrimaryColor.colorBottleGreen,
-                          child: Container(child: prefixIcon),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        value == 1
-                            ? Flexible(
-                                child: InkWell(
-                                  onTap: () {},
-                                  child: Column(
-                                    children: [
-                                      TextFormField(
-                                        validator: textFormFieldValidator,
-                                        onTap: () {
-                                          navigate(context, 0);
-                                        },
-                                        readOnly: true,
-                                        controller: expensesCategoryController,
-                                        style: TextStyle(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .secondary),
-                                        decoration: InputDecoration(
-                                          suffixIcon: Padding(
-                                            padding: EdgeInsets.only(
-                                                left: MediaQuery.sizeOf(context)
-                                                        .width *
-                                                    0.07),
-                                            child:
-                                                const Icon(Icons.chevron_right),
-                                          ),
-                                          prefixIconConstraints:
-                                              const BoxConstraints.tightFor(
-                                                  height: 05, width: 35),
-                                          enabledBorder: UnderlineInputBorder(
-                                            borderSide: BorderSide(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .secondary,
-                                            ),
-                                          ),
-                                          focusedBorder: UnderlineInputBorder(
-                                            borderSide: BorderSide(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .onPrimary,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              )
-                            : Flexible(
-                                child: TextFormField(
-                                  validator: textFormFieldValidator,
-                                  onTap: () {
-                                    navigate(context, 1);
-                                  },
-                                  readOnly: true,
-                                  controller: incomeCategoryController,
-                                  style: TextStyle(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .secondary),
-                                  decoration: InputDecoration(
-                                    suffixIcon: Padding(
-                                      padding: EdgeInsets.only(
-                                          left:
-                                              MediaQuery.sizeOf(context).width *
-                                                  0.07),
-                                      child: const Icon(Icons.chevron_right),
-                                    ),
-                                    prefixIconConstraints:
-                                        const BoxConstraints.tightFor(
-                                            height: 05, width: 35),
-                                    enabledBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .secondary,
-                                      ),
-                                    ),
-                                    focusedBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onPrimary,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      children: [
-                        Card(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(50)),
-                            color: PrimaryColor.colorBottleGreen,
-                            child: Container(
-                                padding: const EdgeInsets.all(6),
-                                child: Icon(
-                                  Icons.money,
-                                  color: PrimaryColor.colorWhite,
-                                  size: 20,
-                                ))),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Expanded(
-                          child: DropdownButtonFormField(
-                            decoration: InputDecoration(
-                              disabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .secondary),
-                              ),
-                              focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .secondary),
-                              ),
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .secondary),
-                              ),
-                              border: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .secondary),
-                              ),
-                            ),
-                            value: dropdownvalue,
-                            dropdownColor:
-                                Theme.of(context).colorScheme.primary,
-                            iconDisabledColor:
-                                Theme.of(context).colorScheme.secondary,
-                            icon: const Icon(Icons.chevron_right),
-                            items: items.map((String items) {
-                              return DropdownMenuItem(
-                                value: items,
-                                child: Text(
-                                  items,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    color:
-                                        Theme.of(context).colorScheme.secondary,
-                                  ),
-                                ),
-                              );
-                            }).toList(),
-                            onChanged: (String? newValue) {
-                              setState(() {
-                                dropdownvalue = newValue!;
-                                paymentModeController.text = dropdownvalue;
-                              });
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                    value == 1
-                        ? Padding(
-                            padding: const EdgeInsets.only(top: 8.0, left: 8.0),
-                            child: Row(
-                              children: [
-                                Checkbox(
-                                  shape: RoundedRectangleBorder(
-                                    side: BorderSide(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .secondary),
-                                  ),
-                                  side: BorderSide(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .secondary),
-                                  activeColor: PrimaryColor.colorBottleGreen,
-                                  checkColor:
-                                      Theme.of(context).colorScheme.primary,
-                                  value: _isChecked,
-                                  onChanged: (bool? newValue) {
-                                    _isChecked = newValue!;
-
-                                    setState(() {});
-                                  },
-                                ),
-                                Text(
-                                  'Add to Personal Finance Portion',
-                                  style: TextStyle(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .secondary),
-                                ),
-                              ],
-                            ),
-                          )
-                        : const SizedBox(
-                            height: 0,
-                          ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Row(
-                      children: [
-                        CustomTextStyle(
-                            customTextStyleText: "Other Details",
-                            customTextColor:
-                                Theme.of(context).colorScheme.secondary,
-                            customTextFontWeight: FontWeight.bold,
-                            customtextstyle: null,
-                            customTextSize: 18.00),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Card(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(50)),
-                            color: PrimaryColor.colorBottleGreen,
-                            child: Container(
-                                padding: const EdgeInsets.all(6),
-                                child: Icon(
-                                  Icons.note,
-                                  color: PrimaryColor.colorWhite,
-                                  size: 20,
-                                ))),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Flexible(
-                          child: TextFormField(
-                            readOnly: false,
-                            cursorColor:
-                                Theme.of(context).colorScheme.onPrimary,
-                            style: TextStyle(
-                                color: Theme.of(context).colorScheme.secondary),
-                            keyboardType: TextInputType.text,
-                            maxLength: 20,
-                            controller: noteController,
-                            decoration: InputDecoration(
-                              hintText: "Description",
-                              prefixIconConstraints:
-                                  const BoxConstraints.tightFor(
-                                      height: 05, width: 35),
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                  color:
-                                      Theme.of(context).colorScheme.secondary,
-                                ),
-                              ),
-                              focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                  color:
-                                      Theme.of(context).colorScheme.onPrimary,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
                     ),
                   ],
                 ),
               ),
-            ),
-          ],
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Form(
+                  key: transactionFormGlobalKey,
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Card(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(50)),
+                              color: PrimaryColor.colorBottleGreen,
+                              child: Container(
+                                  padding: const EdgeInsets.all(6),
+                                  child: Icon(
+                                    Icons.calendar_month,
+                                    color: PrimaryColor.colorWhite,
+                                    size: 20,
+                                  ))),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Flexible(
+                            child: TextFormField(
+                              readOnly: true,
+                              onTap: () {
+                                _selectDateTime(context);
+                              },
+                              controller: setDateController,
+                              validator: textFormFieldValidator,
+                              style: TextStyle(
+                                  color: Theme.of(context).colorScheme.secondary),
+                              decoration: InputDecoration(
+                                hintStyle:
+                                    TextStyle(color: Theme.of(context).hintColor),
+                                hintText: "Enter Date",
+                                prefixIconConstraints:
+                                    const BoxConstraints.tightFor(
+                                        height: 05, width: 35),
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondary, // Change this to your desired border color
+                                  ),
+                                ),
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onPrimary, // Change this to your desired border color
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Card(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(50)),
+                              color: PrimaryColor.colorBottleGreen,
+                              child: Container(
+                                  padding: const EdgeInsets.all(6),
+                                  child: Icon(
+                                    Icons.calculate,
+                                    color: PrimaryColor.colorWhite,
+                                    size: 20,
+                                  ))),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Flexible(
+                            child: TextFormField(
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                                LengthLimitingTextInputFormatter(17),
+                              ],
+                              cursorColor:
+                                  Theme.of(context).colorScheme.onPrimary,
+                              style: TextStyle(
+                                  color: Theme.of(context).colorScheme.secondary),
+                              controller: amountController,
+                              validator: amountValidator,
+                              decoration: InputDecoration(
+                                hintText: "Enter Amount",
+                                prefixIconConstraints:
+                                    const BoxConstraints.tightFor(
+                                        height: 05, width: 35),
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color:
+                                        Theme.of(context).colorScheme.secondary,
+                                  ),
+                                ),
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color:
+                                        Theme.of(context).colorScheme.onPrimary,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        children: [
+                          Card(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50)),
+                            color: PrimaryColor.colorBottleGreen,
+                            child: Container(child: prefixIcon),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          value == 1
+                              ? Flexible(
+                                  child: InkWell(
+                                    onTap: () {},
+                                    child: Column(
+                                      children: [
+                                        TextFormField(
+                                          validator: textFormFieldValidator,
+                                          onTap: () {
+                                            navigate(context, 0);
+                                          },
+                                          readOnly: true,
+                                          controller: expensesCategoryController,
+                                          style: TextStyle(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .secondary),
+                                          decoration: InputDecoration(
+                                            suffixIcon: Padding(
+                                              padding: EdgeInsets.only(
+                                                  left: MediaQuery.sizeOf(context)
+                                                          .width *
+                                                      0.07),
+                                              child:
+                                                  const Icon(Icons.chevron_right),
+                                            ),
+                                            prefixIconConstraints:
+                                                const BoxConstraints.tightFor(
+                                                    height: 05, width: 35),
+                                            enabledBorder: UnderlineInputBorder(
+                                              borderSide: BorderSide(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .secondary,
+                                              ),
+                                            ),
+                                            focusedBorder: UnderlineInputBorder(
+                                              borderSide: BorderSide(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .onPrimary,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                )
+                              : Flexible(
+                                  child: TextFormField(
+                                    validator: textFormFieldValidator,
+                                    onTap: () {
+                                      navigate(context, 1);
+                                    },
+                                    readOnly: true,
+                                    controller: incomeCategoryController,
+                                    style: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary),
+                                    decoration: InputDecoration(
+                                      suffixIcon: Padding(
+                                        padding: EdgeInsets.only(
+                                            left:
+                                                MediaQuery.sizeOf(context).width *
+                                                    0.07),
+                                        child: const Icon(Icons.chevron_right),
+                                      ),
+                                      prefixIconConstraints:
+                                          const BoxConstraints.tightFor(
+                                              height: 05, width: 35),
+                                      enabledBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .secondary,
+                                        ),
+                                      ),
+                                      focusedBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onPrimary,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        children: [
+                          Card(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(50)),
+                              color: PrimaryColor.colorBottleGreen,
+                              child: Container(
+                                  padding: const EdgeInsets.all(6),
+                                  child: Icon(
+                                    Icons.money,
+                                    color: PrimaryColor.colorWhite,
+                                    size: 20,
+                                  ))),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Expanded(
+                            child: DropdownButtonFormField(
+                              decoration: InputDecoration(
+                                disabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary),
+                                ),
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary),
+                                ),
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary),
+                                ),
+                                border: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary),
+                                ),
+                              ),
+                              value: dropdownvalue,
+                              dropdownColor:
+                                  Theme.of(context).colorScheme.primary,
+                              iconDisabledColor:
+                                  Theme.of(context).colorScheme.secondary,
+                              icon: const Icon(Icons.chevron_right),
+                              items: items.map((String items) {
+                                return DropdownMenuItem(
+                                  value: items,
+                                  child: Text(
+                                    items,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w400,
+                                      color:
+                                          Theme.of(context).colorScheme.secondary,
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
+                              onChanged: (String? newValue) {
+                                setState(() {
+                                  dropdownvalue = newValue!;
+                                  paymentModeController.text = dropdownvalue;
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      value == 1
+                          ? Padding(
+                              padding: const EdgeInsets.only(top: 8.0, left: 8.0),
+                              child: Row(
+                                children: [
+                                  Checkbox(
+                                    shape: RoundedRectangleBorder(
+                                      side: BorderSide(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .secondary),
+                                    ),
+                                    side: BorderSide(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary),
+                                    activeColor: PrimaryColor.colorBottleGreen,
+                                    checkColor:
+                                        Theme.of(context).colorScheme.primary,
+                                    value: _isChecked,
+                                    onChanged: (bool? newValue) {
+                                      _isChecked = newValue!;
+      
+                                      setState(() {});
+                                    },
+                                  ),
+                                  Text(
+                                    'Add to Personal Finance Portion',
+                                    style: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary),
+                                  ),
+                                ],
+                              ),
+                            )
+                          : const SizedBox(
+                              height: 0,
+                            ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        children: [
+                          CustomTextStyle(
+                              customTextStyleText: "Other Details",
+                              customTextColor:
+                                  Theme.of(context).colorScheme.secondary,
+                              customTextFontWeight: FontWeight.bold,
+                              customtextstyle: null,
+                              customTextSize: 18.00),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Card(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(50)),
+                              color: PrimaryColor.colorBottleGreen,
+                              child: Container(
+                                  padding: const EdgeInsets.all(6),
+                                  child: Icon(
+                                    Icons.note,
+                                    color: PrimaryColor.colorWhite,
+                                    size: 20,
+                                  ))),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Flexible(
+                            child: TextFormField(
+                              readOnly: false,
+                              cursorColor:
+                                  Theme.of(context).colorScheme.onPrimary,
+                              style: TextStyle(
+                                  color: Theme.of(context).colorScheme.secondary),
+                              keyboardType: TextInputType.text,
+                              maxLength: 20,
+                              controller: noteController,
+                              decoration: InputDecoration(
+                                hintText: "Description",
+                                prefixIconConstraints:
+                                    const BoxConstraints.tightFor(
+                                        height: 05, width: 35),
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color:
+                                        Theme.of(context).colorScheme.secondary,
+                                  ),
+                                ),
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color:
+                                        Theme.of(context).colorScheme.onPrimary,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
       floatingActionButton: widget.id == 1
@@ -669,21 +672,24 @@ class _TransactionScreenState extends State<TransactionScreen> {
         firstDate: DateTime(2023),
         lastDate: DateTime.now(),
         builder: (context, child) {
-          return Theme(
-            data: Theme.of(context).copyWith(
-                colorScheme: ColorScheme.light(
-                  primary: Theme.of(context).colorScheme.onPrimary,
-                  onPrimary: Theme.of(context).colorScheme.primary,
-                  onSurface: PrimaryColor.colorBlack,
-                ),
-                primaryTextTheme: const TextTheme(),
-                textButtonTheme: TextButtonThemeData(
-                  style: TextButton.styleFrom(
-                    foregroundColor: PrimaryColor.colorBottleGreen,
+          return ZoomInOutDialogWrapper(
+          builder: (context){
+            return Theme(
+              data: Theme.of(context).copyWith(
+                  colorScheme: ColorScheme.light(
+                    primary: Theme.of(context).colorScheme.onPrimary,
+                    onPrimary: Theme.of(context).colorScheme.primary,
+                    onSurface: PrimaryColor.colorBlack,
                   ),
-                ),
-                hintColor: Colors.black38),
-            child: child!,
+                  primaryTextTheme: const TextTheme(),
+                  textButtonTheme: TextButtonThemeData(
+                    style: TextButton.styleFrom(
+                      foregroundColor: PrimaryColor.colorBottleGreen,
+                    ),
+                  ),
+                  hintColor: Colors.black38),
+              child: child!,
+            );}
           );
         });
     if (picked != null) {

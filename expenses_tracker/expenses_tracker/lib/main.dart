@@ -10,11 +10,10 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'model/localtransaction.dart';
 
-Future main() async{
-  
+Future main() async{  
   WidgetsFlutterBinding.ensureInitialized();
    await NotificationService.initializeNotification();
-   //  For Local Database
+   //  For Local Database  
    final appDocumentDir = await getApplicationDocumentsDirectory();
    Hive.init(appDocumentDir.path);
    await Hive.initFlutter('hive.db'); 

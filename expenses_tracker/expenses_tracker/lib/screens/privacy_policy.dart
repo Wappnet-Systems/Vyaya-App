@@ -26,8 +26,10 @@ class _PrivacyPolicyState extends State<PrivacyPolicy> {
           centerTitle: true,
           title: Text('Privacy Policy',style: TextStyle(color: PrimaryColor.colorWhite),),
         ),
-        body: Stack(
+        body: 
+        Stack(
           children: [
+            // const Center(child:Text("Privacy Policy")),
             InAppWebView(
                 initialUrlRequest: URLRequest(
                   url: Uri.parse(
@@ -52,6 +54,7 @@ class _PrivacyPolicyState extends State<PrivacyPolicy> {
                   )
                 : const SizedBox()
           ],
-        ));
+        )
+        );
   }
 }

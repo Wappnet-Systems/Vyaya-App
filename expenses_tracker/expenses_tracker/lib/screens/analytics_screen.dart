@@ -1,4 +1,5 @@
 import 'dart:io';
+// import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expenses_tracker/screens/transactions_of_month.dart';
 import 'package:flutter/material.dart';
@@ -509,6 +510,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                         ),
                       ));
                     } else {
+                      // log("File Saved");
                       final File pdfFile;
                       value == 0
                           ? pdfFile = await PdfInvoiceApi.generate(

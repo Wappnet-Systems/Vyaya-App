@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:encrypt/encrypt.dart' as encrypt;
 import 'package:encrypt/encrypt.dart';
-import 'package:expenses_tracker/screens/auth_user.dart';
 import 'package:expenses_tracker/screens/home_screen.dart';
 import 'package:expenses_tracker/utils/const.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +12,7 @@ import '../utils/validation.dart';
 import '../widgets/custom_text_form_field.dart';
 import '../widgets/custom_text_style.dart';
 import '../widgets/fade_transition.dart';
+import 'auth_user.dart';
 
 class UserDetail extends StatefulWidget {
   final String? uid, uname, uEmail;
@@ -275,70 +275,73 @@ class _UserDetailState extends State<UserDetail> {
           : await showDialog(
               context: context,
               builder: (BuildContext context) {
-                return AlertDialog(
-                  shape: RoundedRectangleBorder(
-                    side: BorderSide(
-                      color: Theme.of(context).colorScheme.secondary,
+                return ZoomInOutDialogWrapper(
+          builder: (context){
+            return AlertDialog(
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(
+                        color: Theme.of(context).colorScheme.secondary,
+                      ),
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  title: Text(
-                    "User Authentication",
-                    style: TextStyle(
-                      color: PrimaryColor.colorRed,
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    title: Text(
+                      "User Authentication",
+                      style: TextStyle(
+                        color: PrimaryColor.colorRed,
+                      ),
                     ),
-                  ),
-                  content: Text(
-                    "Authentication using FaceId, Fingerprint, or Password?",
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.secondary,
+                    content: Text(
+                      "Authentication using FaceId, Fingerprint, or Password?",
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary,
+                      ),
                     ),
-                  ),
-                  actions: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            sharedPreferences.setInt('user_auth_biometric', 0);
-                            Navigator.of(context).pushReplacement(
-                              FadeSlideTransitionRoute(
-                                  page: const HomeScreen()),);
-                            
-                          },
-                          child: Text(
-                            "No",
-                            style: TextStyle(
-                              color: Theme.of(context).colorScheme.secondary,
+                    actions: <Widget>[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              sharedPreferences.setInt('user_auth_biometric', 0);
+                              Navigator.of(context).pushReplacement(
+                                FadeSlideTransitionRoute(
+                                    page: const HomeScreen()),);                              
+                            },
+                            child: Text(
+                              "No",
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.secondary,
+                              ),
                             ),
                           ),
-                        ),
-                        const SizedBox(
-                          width: 15,
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            sharedPreferences.setInt('user_auth_biometric', 1);                            
-                            Navigator.of(context).pushReplacement(
-                              FadeSlideTransitionRoute(
-                                  page: const AuthUser()),);
-                            
-                          },
-                          child: Text(
-                            "Yes",
-                            style: TextStyle(
-                              color: PrimaryColor.colorRed,
-                              fontWeight: FontWeight.bold,
+                          const SizedBox(
+                            width: 15,
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              sharedPreferences.setInt('user_auth_biometric', 1);                            
+                              Navigator.of(context).pushReplacement(
+                                FadeSlideTransitionRoute(
+                                    page: const AuthUser()),);
+                              
+                            },
+                            child: Text(
+                              "Yes",
+                              style: TextStyle(
+                                color: PrimaryColor.colorRed,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
+                        ],
+                      ),
+                    ],
+                  );
+                }
                 );
               },
-            );
+      );
     }
   }
 

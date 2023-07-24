@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:encrypt/encrypt.dart';
 import 'package:expenses_tracker/model/localtransaction.dart';
 import 'package:expenses_tracker/screens/privacy_policy.dart';
-import 'package:expenses_tracker/screens/sms_list.dart';
 import 'package:expenses_tracker/screens/user_detail.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +22,7 @@ import 'package:googleapis/drive/v3.dart' as googleDrive;
 
 import '../widgets/custom_text_style.dart';
 import '../widgets/fade_transition.dart';
+import 'home_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -232,28 +232,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         },
                       ),
                       const Divider(),
-                      ListTile(
-                        leading: Icon(
-                          Icons.messenger_outline_outlined,
-                          color: Theme.of(context).colorScheme.secondary,
-                        ),
-                        onTap: (){
-                          Navigator.of(context).push(
-                            FadeSlideTransitionRouteForList(
-                                page: const TextMessageList()),
-                          );
-                        },
-                        title: Text(
-                          'Auto Read Transaction',
-                          style: TextStyle(
-                              color: Theme.of(context).colorScheme.secondary),
-                        ),
-                        contentPadding:
-                            const EdgeInsets.symmetric(horizontal: 12.0),
-                        visualDensity: const VisualDensity(vertical: -4),
-                        // trailing: const ChangeThemeButtonWidget(),
-                      ),
-                      const Divider(),
+                      // ListTile(
+                      //   leading: Icon(
+                      //     Icons.messenger_outline_outlined,
+                      //     color: Theme.of(context).colorScheme.secondary,
+                      //   ),
+                      //   onTap: (){
+                      //     Navigator.of(context).push(
+                      //       FadeSlideTransitionRouteForList(
+                      //           page: const TextMessageList()),
+                      //     );
+                      //   },
+                      //   title: Text(
+                      //     'Auto Read Transaction',
+                      //     style: TextStyle(
+                      //         color: Theme.of(context).colorScheme.secondary),
+                      //   ),
+                      //   contentPadding:
+                      //       const EdgeInsets.symmetric(horizontal: 12.0),
+                      //   visualDensity: const VisualDensity(vertical: -4),
+                      //   // trailing: const ChangeThemeButtonWidget(),
+                      // ),
+                      // const Divider(),
                       
                       ListTile(
                         leading: Icon(
@@ -298,65 +298,68 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    shape: RoundedRectangleBorder(
-                                        side: BorderSide(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .secondary),
-                                        borderRadius: BorderRadius.circular(8)),
-                                    backgroundColor:
-                                        Theme.of(context).colorScheme.primary,
-                                    title: Text(
-                                      "Logout",
-                                      style: TextStyle(
-                                        color: PrimaryColor.colorRed,
+                                  return ZoomInOutDialogWrapper(
+          builder: (context){
+            return AlertDialog(
+                                      shape: RoundedRectangleBorder(
+                                          side: BorderSide(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .secondary),
+                                          borderRadius: BorderRadius.circular(8)),
+                                      backgroundColor:
+                                          Theme.of(context).colorScheme.primary,
+                                      title: Text(
+                                        "Logout",
+                                        style: TextStyle(
+                                          color: PrimaryColor.colorRed,
+                                        ),
                                       ),
-                                    ),
-                                    content: Text(
-                                      "Are you sure you want to logout?",
-                                      style: TextStyle(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .secondary,
+                                      content: Text(
+                                        "Are you sure you want to logout?",
+                                        style: TextStyle(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .secondary,
+                                        ),
                                       ),
-                                    ),
-                                    actions: <Widget>[
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        children: [
-                                          GestureDetector(
-                                            onTap: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                            child: Text(
-                                              "Close",
-                                              style: TextStyle(
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .secondary,
+                                      actions: <Widget>[
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          children: [
+                                            GestureDetector(
+                                              onTap: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              child: Text(
+                                                "Close",
+                                                style: TextStyle(
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .secondary,
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                          const SizedBox(
-                                            width: 15,
-                                          ),
-                                          GestureDetector(
-                                            onTap: () {
-                                              signOutFunction();
-                                              Navigator.of(context).pop();
-                                            },
-                                            child: Text(
-                                              "Logout",
-                                              style: TextStyle(
-                                                  color: PrimaryColor.colorRed,
-                                                  fontWeight: FontWeight.bold),
+                                            const SizedBox(
+                                              width: 15,
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
+                                            GestureDetector(
+                                              onTap: () {
+                                                signOutFunction();
+                                                Navigator.of(context).pop();
+                                              },
+                                              child: Text(
+                                                "Logout",
+                                                style: TextStyle(
+                                                    color: PrimaryColor.colorRed,
+                                                    fontWeight: FontWeight.bold),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    );}
                                   );
                                 },
                               );
@@ -399,158 +402,161 @@ class _ProfileScreenState extends State<ProfileScreen> {
         context: context,
         builder: (BuildContext context) {
           var mediaQuery = MediaQuery.of(context);
-          return AnimatedContainer(
-            padding: mediaQuery.padding,
-            duration: const Duration(milliseconds: 300),
-            child: AlertDialog(
-              scrollable: true,
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              shape: RoundedRectangleBorder(
-                  side: BorderSide(
-                      color: Theme.of(context).colorScheme.secondary),
-                  borderRadius: BorderRadius.circular(8)),
-              title: CustomTextStyle(
-                  customTextStyleText: titleText,
-                  customTextColor: Theme.of(context).colorScheme.secondary,
-                  customTextFontWeight: FontWeight.normal,
-                  customtextstyle: null,
-                  customTextSize: MediaQuery.sizeOf(context).height * 0.022),
-              content: SizedBox(
-                height: MediaQuery.sizeOf(context).height * 0.7 / 3,
-                child: Form(
-                  autovalidateMode: AutovalidateMode.always,
-                  key: formKey,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Row(
-                        children: [
-                          Text(
-                            'Important',
-                            style: TextStyle(
-                                color: Theme.of(context).hintColor,
-                                fontWeight: FontWeight.w500),
-                            textAlign: TextAlign.start,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      Text(
-                        warningText,
-                        style: TextStyle(
-                            color: Theme.of(context).hintColor,
-                            fontWeight: FontWeight.w400,
-                            fontSize:
-                                MediaQuery.of(context).size.height * 0.015),
-                        overflow: TextOverflow.visible,
-                        textAlign: TextAlign.justify,
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      TextFormField(
-                        validator: (value) {
-                          if (value!.length < 8) {
-                            return "Please enter at least 8 character";
-                          }
-                          return null;
-                        },
-                        maxLength: 8,
-                        controller: masterPasswordController,
-                        cursorColor: Theme.of(context).colorScheme.onPrimary,
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.secondary),
-                        keyboardType: TextInputType.emailAddress,
-                        decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 8),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color:
-                                      Theme.of(context).colorScheme.onPrimary),
+          return ZoomInOutDialogWrapper(
+          builder: (context){
+            return AnimatedContainer(
+              padding: mediaQuery.padding,
+              duration: const Duration(milliseconds: 300),
+              child: AlertDialog(
+                scrollable: true,
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                shape: RoundedRectangleBorder(
+                    side: BorderSide(
+                        color: Theme.of(context).colorScheme.secondary),
+                    borderRadius: BorderRadius.circular(8)),
+                title: CustomTextStyle(
+                    customTextStyleText: titleText,
+                    customTextColor: Theme.of(context).colorScheme.secondary,
+                    customTextFontWeight: FontWeight.normal,
+                    customtextstyle: null,
+                    customTextSize: MediaQuery.sizeOf(context).height * 0.022),
+                content: SizedBox(
+                  height: MediaQuery.sizeOf(context).height * 0.7 / 3,
+                  child: Form(
+                    autovalidateMode: AutovalidateMode.always,
+                    key: formKey,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              'Important',
+                              style: TextStyle(
+                                  color: Theme.of(context).hintColor,
+                                  fontWeight: FontWeight.w500),
+                              textAlign: TextAlign.start,
                             ),
-                            labelText: "Master Password",
-                            labelStyle: const TextStyle(
-                              color: Colors.grey, // Change color based on focus
-                              fontSize: 16,
-                            ),
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color:
-                                      Theme.of(context).colorScheme.secondary),
-                            ),
-                            hintText: "8 digit password"),
-                      ),
-                    ],
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        Text(
+                          warningText,
+                          style: TextStyle(
+                              color: Theme.of(context).hintColor,
+                              fontWeight: FontWeight.w400,
+                              fontSize:
+                                  MediaQuery.of(context).size.height * 0.015),
+                          overflow: TextOverflow.visible,
+                          textAlign: TextAlign.justify,
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        TextFormField(
+                          validator: (value) {
+                            if (value!.length < 8) {
+                              return "Please enter at least 8 character";
+                            }
+                            return null;
+                          },
+                          maxLength: 8,
+                          controller: masterPasswordController,
+                          cursorColor: Theme.of(context).colorScheme.onPrimary,
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.secondary),
+                          keyboardType: TextInputType.emailAddress,
+                          decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 8, horizontal: 8),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color:
+                                        Theme.of(context).colorScheme.onPrimary),
+                              ),
+                              labelText: "Master Password",
+                              labelStyle: const TextStyle(
+                                color: Colors.grey, // Change color based on focus
+                                fontSize: 16,
+                              ),
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color:
+                                        Theme.of(context).colorScheme.secondary),
+                              ),
+                              hintText: "8 digit password"),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              actions: <Widget>[
-                GestureDetector(
-                    onTap: () {
-                      masterPasswordController.clear();
-                      Navigator.pop(context);
-                    },
-                    child: Text(
-                      "Cancel",
-                      style: TextStyle(color: PrimaryColor.colorRed),
-                    )),
-                const SizedBox(
-                  width: 07,
-                ),
-                GestureDetector(
-                    onTap: () {
-                      if (formKey.currentState!.validate()) {
-                        if (id == 0) {
-                          masterPassword = masterPasswordController.text;
-                          masterPassword = encryptMasterKey(masterPassword!,
-                              "5a7b3c1eab9fd67032b164fae0c9d8b2");
-                          masterPasswordController.clear();
-                          Navigator.pop(context);
-                          setState(() {
-                            isLoading = true;
-                          });
-                          Box<LocalTransaction> transactionBox =
-                              Hive.box<LocalTransaction>('local_transactions');
-                          List<Map<String, dynamic>> jsonData =
-                              transactionBox.values.map((e) {
-                            return {
-                              'Transaction Id': e.tID,
-                              'User Id': e.userId,
-                              'Transaction Category': e.tCategory,
-                              'Transaction Subcategory': e.tSubcategory,
-                              'Transaction Subcategory Index':
-                                  e.tSubcategoryIndex,
-                              'Transaction Amount': e.tAmount,
-                              'Transaction Note': e.tNote,
-                              'Transaction Time': e.tDateTime.toString(),
-                              'Transaction PaymentMode': e.tPaymentMode,
-                              'Transaction Created At': e.tCreatedAt.toString(),
-                            };
-                          }).toList();
-
-                          createFile(jsonData, masterPassword!);
-                        } else {
-                          masterPassword = masterPasswordController.text;
-                          masterPassword = encryptMasterKey(masterPassword!,
-                              "5a7b3c1eab9fd67032b164fae0c9d8b2");
-                          Navigator.pop(context);
-                          masterPasswordController.clear();
-                          importDatabase(masterPassword!);
-                        }
-                      } else {
+                actions: <Widget>[
+                  GestureDetector(
+                      onTap: () {
                         masterPasswordController.clear();
-                      }
-                    },
-                    child: Text(
-                      "Save",
-                      style: TextStyle(
-                          color: Theme.of(context).colorScheme.onPrimary),
-                    )),
-              ],
-            ),
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        "Cancel",
+                        style: TextStyle(color: PrimaryColor.colorRed),
+                      )),
+                  const SizedBox(
+                    width: 07,
+                  ),
+                  GestureDetector(
+                      onTap: () {
+                        if (formKey.currentState!.validate()) {
+                          if (id == 0) {
+                            masterPassword = masterPasswordController.text;
+                            masterPassword = encryptMasterKey(masterPassword!,
+                                "5a7b3c1eab9fd67032b164fae0c9d8b2");
+                            masterPasswordController.clear();
+                            Navigator.pop(context);
+                            setState(() {
+                              isLoading = true;
+                            });
+                            Box<LocalTransaction> transactionBox =
+                                Hive.box<LocalTransaction>('local_transactions');
+                            List<Map<String, dynamic>> jsonData =
+                                transactionBox.values.map((e) {
+                              return {
+                                'Transaction Id': e.tID,
+                                'User Id': e.userId,
+                                'Transaction Category': e.tCategory,
+                                'Transaction Subcategory': e.tSubcategory,
+                                'Transaction Subcategory Index':
+                                    e.tSubcategoryIndex,
+                                'Transaction Amount': e.tAmount,
+                                'Transaction Note': e.tNote,
+                                'Transaction Time': e.tDateTime.toString(),
+                                'Transaction PaymentMode': e.tPaymentMode,
+                                'Transaction Created At': e.tCreatedAt.toString(),
+                              };
+                            }).toList();
+          
+                            createFile(jsonData, masterPassword!);
+                          } else {
+                            masterPassword = masterPasswordController.text;
+                            masterPassword = encryptMasterKey(masterPassword!,
+                                "5a7b3c1eab9fd67032b164fae0c9d8b2");
+                            Navigator.pop(context);
+                            masterPasswordController.clear();
+                            importDatabase(masterPassword!);
+                          }
+                        } else {
+                          masterPasswordController.clear();
+                        }
+                      },
+                      child: Text(
+                        "Save",
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.onPrimary),
+                      )),
+                ],
+              ),
+            );}
           );
         });
   }

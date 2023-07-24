@@ -17,6 +17,7 @@ class PdfApi {
 
   static Future openFile(File file) async {
    if (await file.exists()) {
+    // log("File Exist");
     await OpenFile.open(file.path);
   } else {
     throw 'File not found';

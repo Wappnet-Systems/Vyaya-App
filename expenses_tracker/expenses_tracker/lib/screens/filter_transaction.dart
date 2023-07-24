@@ -9,6 +9,7 @@ import '../model/localtransaction.dart';
 import '../model/transaction.dart';
 import '../utils/const.dart';
 import '../widgets/transaction_list.dart';
+import 'home_screen.dart';
 
 class FilterTransaction extends StatefulWidget {
   const FilterTransaction({super.key});
@@ -315,21 +316,24 @@ class _FilterTransactionState extends State<FilterTransaction> {
         firstDate: isStartDate ? DateTime(2023) : _startDate!,
         lastDate: DateTime.now(),
         builder: (context, child) {
-          return Theme(
-            data: Theme.of(context).copyWith(
-                colorScheme: ColorScheme.light(
-                  primary: Theme.of(context).colorScheme.onPrimary,
-                  onPrimary: Theme.of(context).colorScheme.primary,
-                  onSurface: PrimaryColor.colorBlack,
-                ),
-                primaryTextTheme: const TextTheme(),
-                textButtonTheme: TextButtonThemeData(
-                  style: TextButton.styleFrom(
-                    foregroundColor: PrimaryColor.colorBottleGreen,
+          return ZoomInOutDialogWrapper(
+          builder: (context){
+            return Theme(
+              data: Theme.of(context).copyWith(
+                  colorScheme: ColorScheme.light(
+                    primary: Theme.of(context).colorScheme.onPrimary,
+                    onPrimary: Theme.of(context).colorScheme.primary,
+                    onSurface: PrimaryColor.colorBlack,
                   ),
-                ),
-                hintColor: Colors.black38),
-            child: child!,
+                  primaryTextTheme: const TextTheme(),
+                  textButtonTheme: TextButtonThemeData(
+                    style: TextButton.styleFrom(
+                      foregroundColor: PrimaryColor.colorBottleGreen,
+                    ),
+                  ),
+                  hintColor: Colors.black38),
+              child: child!,
+            );}
           );
         });
     if (picked != null) {

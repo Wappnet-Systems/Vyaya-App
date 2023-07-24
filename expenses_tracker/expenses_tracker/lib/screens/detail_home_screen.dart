@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import '../model/localtransaction.dart';
 import '../model/localuser.dart';
 import '../model/transaction.dart';
+import 'package:show_up_animation/show_up_animation.dart';
 import '../model/users.dart';
 import '../utils/const.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
@@ -368,68 +369,60 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                 }
                 return transactions.isEmpty
                     ? const Center(child: CustomNoData())
-                    : GestureDetector(
-                        onTap: () {
-                          // TransactionScreen(
-                          //               id: 2,
-                          //               transactionPaymentMode:
-                          //                   transactions[index]
-                          //                       .transactionPaymentMode,
-                          //               transactionId: transactions[index].tID,
-                          //               transactionNote:
-                          //                   transactions[index].transactionNote,
-                          //               transactionAmount: transactions[index]
-                          //                   .transactionAmount,
-                          //               transactionSubcategoryIndex:
-                          //                   transactions[index]
-                          //                       .transactionSubcategoryIndex,
-                          //               transactionDate:
-                          //                   "${DateFormat.yMMMd().format(transactions[index].transactionDate!.toDate())} ${DateFormat.jm().format(transactions[index].transactionDate!.toDate())}",
-                          //               transactionSubcategory:
-                          //                   transactions[index]
-                          //                       .transactionSubcategory,
-                          //               transactionCategory: transactions[index]
-                          //                   .transactionCategory,
-                          //             );
-                          Navigator.of(context).push(
-                            FadeSlideTransitionRoute(
-                                page: TransactionScreen(
-                              id: 2,
-                              transactionPaymentMode:
-                                  transactions[index].transactionPaymentMode,
-                              transactionId: transactions[index].tID,
-                              transactionNote:
-                                  transactions[index].transactionNote,
-                              transactionAmount:
-                                  transactions[index].transactionAmount,
-                              transactionSubcategoryIndex: transactions[index]
-                                  .transactionSubcategoryIndex,
-                              transactionDate:
-                                  "${DateFormat.yMMMd().format(transactions[index].transactionDate!.toDate())} ${DateFormat.jm().format(transactions[index].transactionDate!.toDate())}",
-                              transactionSubcategory:
-                                  transactions[index].transactionSubcategory,
-                              transactionCategory:
-                                  transactions[index].transactionCategory,
-                            )),
-                          );
-                        },
-                        child: CustomTransaction(
-                            themeColor: Theme.of(context).cardColor,
-                            textTheme: Theme.of(context).colorScheme.secondary,
-                            iconColor: iconColor,
-                            categoryId: transactions[index].transactionCategory,
-                            subCateId:
-                                transactions[index].transactionSubcategoryIndex,
-                            transactionAmount:
-                                transactions[index].transactionAmount,
-                            transactionNote:
-                                transactions[index].transactionNote,
-                            dateStamp: DateFormat.yMMMd().format(
-                                transactions[index].transactionDate!.toDate()),
-                            timeStamp: DateFormat.jm().format(
-                                transactions[index]
-                                    .transactionDate!
-                                    .toDate())));
+                    : ShowUpAnimation(
+                        animationDuration: const Duration(milliseconds: 1000),
+                        direction: Direction.horizontal,
+                        offset: index % 2==0 ?-0.5 :0.5,
+                        child: GestureDetector(
+                            onTap: () {
+                              var curve = Curves.ease;
+                              var zoomTween = Tween<double>(begin: 0.0, end: 1.0).chain(CurveTween(curve: curve));
+                              Navigator.of(context).push(
+                                ZoomInTransitionRoute(
+                                    page: TransactionScreen(
+                                  id: 2,
+                                  transactionPaymentMode: transactions[index]
+                                      .transactionPaymentMode,
+                                  transactionId: transactions[index].tID,
+                                  transactionNote:
+                                      transactions[index].transactionNote,
+                                  transactionAmount:
+                                      transactions[index].transactionAmount,
+                                  transactionSubcategoryIndex:
+                                      transactions[index]
+                                          .transactionSubcategoryIndex,
+                                  transactionDate:
+                                      "${DateFormat.yMMMd().format(transactions[index].transactionDate!.toDate())} ${DateFormat.jm().format(transactions[index].transactionDate!.toDate())}",
+                                  transactionSubcategory: transactions[index]
+                                      .transactionSubcategory,
+                                  transactionCategory:
+                                      transactions[index].transactionCategory,
+                                ),
+                                        zoomIn: true, // Set to false if you want ZoomOut animation
+),
+                              );
+                            },
+                            child: CustomTransaction(
+                                themeColor: Theme.of(context).cardColor,
+                                textTheme:
+                                    Theme.of(context).colorScheme.secondary,
+                                iconColor: iconColor,
+                                categoryId:
+                                    transactions[index].transactionCategory,
+                                subCateId: transactions[index]
+                                    .transactionSubcategoryIndex,
+                                transactionAmount:
+                                    transactions[index].transactionAmount,
+                                transactionNote:
+                                    transactions[index].transactionNote,
+                                dateStamp: DateFormat.yMMMd().format(
+                                    transactions[index]
+                                        .transactionDate!
+                                        .toDate()),
+                                timeStamp: DateFormat.jm().format(
+                                    transactions[index]
+                                        .transactionDate!
+                                        .toDate()))));
               }),
     );
   }
@@ -1288,193 +1281,198 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
         int wants = int.tryParse(wantsController.text) ?? 0;
         int saving = int.tryParse(savingController.text) ?? 0;
         int? finalTotal = needs + wants + saving;
-        return AlertDialog(
-          scrollable: true,
-          backgroundColor: Theme.of(context).colorScheme.primary,
-          shape: RoundedRectangleBorder(
-            side: BorderSide(color: Theme.of(context).colorScheme.secondary),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          title: CustomTextStyle(
-            customTextStyleText: "Set Personal Finance",
-            customTextColor: Theme.of(context).colorScheme.secondary,
-            customTextFontWeight: FontWeight.normal,
-            customtextstyle: null,
-            customTextSize: screenHeight * 0.022,
-          ),
-          content: SizedBox(
-            height: screenHeight * 1 / 3,
-            child: SingleChildScrollView(
-              child: Form(
-                autovalidateMode: AutovalidateMode.always,
-                key: personalFinanceGlobalKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Important',
-                      style: TextStyle(
-                          color: Theme.of(context).hintColor,
-                          fontWeight: FontWeight.w500),
-                      textAlign: TextAlign.left,
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          '• ',
-                          style: TextStyle(
-                              color: Theme.of(context).hintColor,
-                              fontWeight: FontWeight.bold,
-                              fontSize:
-                                  MediaQuery.of(context).size.height * 0.015),
-                          textAlign: TextAlign.left,
-                        ),
-                        Text(
-                          "Values can't be zero.",
-                          style: TextStyle(
-                              color: Theme.of(context).hintColor,
-                              fontWeight: FontWeight.w400,
-                              fontSize:
-                                  MediaQuery.of(context).size.height * 0.015),
-                          textAlign: TextAlign.justify,
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          '• ',
-                          style: TextStyle(
-                              color: Theme.of(context).hintColor,
-                              fontWeight: FontWeight.bold,
-                              fontSize:
-                                  MediaQuery.of(context).size.height * 0.015),
-                          textAlign: TextAlign.left,
-                        ),
-                        Text(
-                          'Values counted as Percentage.',
-                          style: TextStyle(
-                              color: Theme.of(context).hintColor,
-                              fontWeight: FontWeight.w400,
-                              fontSize:
-                                  MediaQuery.of(context).size.height * 0.015),
-                          textAlign: TextAlign.justify,
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          '• ',
-                          style: TextStyle(
-                              color: Theme.of(context).hintColor,
-                              fontWeight: FontWeight.bold,
-                              fontSize:
-                                  MediaQuery.of(context).size.height * 0.015),
-                          textAlign: TextAlign.left,
-                        ),
-                        Text(
-                          'Total of all Three Values must be 100.',
-                          style: TextStyle(
-                              color: Theme.of(context).hintColor,
-                              fontWeight: FontWeight.w400,
-                              fontSize:
-                                  MediaQuery.of(context).size.height * 0.015),
-                          textAlign: TextAlign.justify,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    CustomPfRow(
-                      labelText: "Needs",
-                      hintText: "Set Needs Percentage",
-                      textEditingController: needsController,
-                      textInputAction: TextInputAction.next,
-                    ),
-                    const SizedBox(
-                      height: 12,
-                    ),
-                    CustomPfRow(
-                      labelText: "Wants",
-                      hintText: "Set Wants Percentage",
-                      textEditingController: wantsController,
-                      textInputAction: TextInputAction.next,
-                    ),
-                    const SizedBox(
-                      height: 12,
-                    ),
-                    CustomPfRow(
-                      labelText: "Saving",
-                      hintText: "Set Saving Percentage",
-                      textEditingController: savingController,
-                      textInputAction: TextInputAction.done,
-                    ),
-                    const SizedBox(
-                      height: 07,
-                    ),
-                    finalTotal == 100
-                        ? const Text('')
-                        : Row(
-                            children: [
-                              Text(
-                                "Please Enter possible values",
-                                style: TextStyle(color: PrimaryColor.colorRed),
-                              ),
-                            ],
+        return ZoomInOutDialogWrapper(
+          builder: (context){
+            return AlertDialog(
+            scrollable: true,
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            shape: RoundedRectangleBorder(
+              side: BorderSide(color: Theme.of(context).colorScheme.secondary),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            title: CustomTextStyle(
+              customTextStyleText: "Set Personal Finance",
+              customTextColor: Theme.of(context).colorScheme.secondary,
+              customTextFontWeight: FontWeight.normal,
+              customtextstyle: null,
+              customTextSize: screenHeight * 0.022,
+            ),
+            content: SizedBox(
+              height: screenHeight * 1 / 3,
+              child: SingleChildScrollView(
+                child: Form(
+                  autovalidateMode: AutovalidateMode.always,
+                  key: personalFinanceGlobalKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Important',
+                        style: TextStyle(
+                            color: Theme.of(context).hintColor,
+                            fontWeight: FontWeight.w500),
+                        textAlign: TextAlign.left,
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            '• ',
+                            style: TextStyle(
+                                color: Theme.of(context).hintColor,
+                                fontWeight: FontWeight.bold,
+                                fontSize:
+                                    MediaQuery.of(context).size.height * 0.015),
+                            textAlign: TextAlign.left,
                           ),
-                  ],
+                          Text(
+                            "Values can't be zero.",
+                            style: TextStyle(
+                                color: Theme.of(context).hintColor,
+                                fontWeight: FontWeight.w400,
+                                fontSize:
+                                    MediaQuery.of(context).size.height * 0.015),
+                            textAlign: TextAlign.justify,
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            '• ',
+                            style: TextStyle(
+                                color: Theme.of(context).hintColor,
+                                fontWeight: FontWeight.bold,
+                                fontSize:
+                                    MediaQuery.of(context).size.height * 0.015),
+                            textAlign: TextAlign.left,
+                          ),
+                          Text(
+                            'Values counted as Percentage.',
+                            style: TextStyle(
+                                color: Theme.of(context).hintColor,
+                                fontWeight: FontWeight.w400,
+                                fontSize:
+                                    MediaQuery.of(context).size.height * 0.015),
+                            textAlign: TextAlign.justify,
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            '• ',
+                            style: TextStyle(
+                                color: Theme.of(context).hintColor,
+                                fontWeight: FontWeight.bold,
+                                fontSize:
+                                    MediaQuery.of(context).size.height * 0.015),
+                            textAlign: TextAlign.left,
+                          ),
+                          Text(
+                            'Total of all Three Values must be 100.',
+                            style: TextStyle(
+                                color: Theme.of(context).hintColor,
+                                fontWeight: FontWeight.w400,
+                                fontSize:
+                                    MediaQuery.of(context).size.height * 0.015),
+                            textAlign: TextAlign.justify,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      CustomPfRow(
+                        labelText: "Needs",
+                        hintText: "Set Needs Percentage",
+                        textEditingController: needsController,
+                        textInputAction: TextInputAction.next,
+                      ),
+                      const SizedBox(
+                        height: 12,
+                      ),
+                      CustomPfRow(
+                        labelText: "Wants",
+                        hintText: "Set Wants Percentage",
+                        textEditingController: wantsController,
+                        textInputAction: TextInputAction.next,
+                      ),
+                      const SizedBox(
+                        height: 12,
+                      ),
+                      CustomPfRow(
+                        labelText: "Saving",
+                        hintText: "Set Saving Percentage",
+                        textEditingController: savingController,
+                        textInputAction: TextInputAction.done,
+                      ),
+                      const SizedBox(
+                        height: 07,
+                      ),
+                      finalTotal == 100
+                          ? const Text('')
+                          : Row(
+                              children: [
+                                Text(
+                                  "Please Enter possible values",
+                                  style: TextStyle(color: PrimaryColor.colorRed),
+                                ),
+                              ],
+                            ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-          actions: <Widget>[
-            GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-              },
-              child: Text(
-                "Cancel",
-                style: TextStyle(color: PrimaryColor.colorRed),
+            actions: <Widget>[
+              GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  "Cancel",
+                  style: TextStyle(color: PrimaryColor.colorRed),
+                ),
               ),
-            ),
-            const SizedBox(
-              width: 07,
-            ),
-            GestureDetector(
-              onTap: () {
-                int needsValue = int.tryParse(needsController.text) ?? 0;
-                int wantsValue = int.tryParse(wantsController.text) ?? 0;
-                int savingValue = int.tryParse(savingController.text) ?? 0;
-                finalTotal = needsValue + wantsValue + savingValue;
-
-                if (finalTotal == 100) {
-                  pfManager(
-                    wantsValue,
-                    "wants_percent",
-                    needsValue,
-                    "needs_percent",
-                    savingValue,
-                    "saving_percent",
-                  );
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const HomeScreen(),
-                    ),
-                  );
-                } else {}
-              },
-              child: Text(
-                "Save",
-                style:
-                    TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+              const SizedBox(
+                width: 07,
               ),
-            ),
-          ],
-        );
+              GestureDetector(
+                onTap: () {
+                  int needsValue = int.tryParse(needsController.text) ?? 0;
+                  int wantsValue = int.tryParse(wantsController.text) ?? 0;
+                  int savingValue = int.tryParse(savingController.text) ?? 0;
+                  finalTotal = needsValue + wantsValue + savingValue;
+        
+                  if (finalTotal == 100) {
+                    pfManager(
+                      wantsValue,
+                      "wants_percent",
+                      needsValue,
+                      "needs_percent",
+                      savingValue,
+                      "saving_percent",
+                    );
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const HomeScreen(),
+                      ),
+                    );
+                  } else {}
+                },
+                child: Text(
+                  "Save",
+                  style:
+                      TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+                ),
+              ),
+            ],
+          );
+         
+          }
+          );
       },
     );
   }
