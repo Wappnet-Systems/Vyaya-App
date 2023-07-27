@@ -1,131 +1,37 @@
-// import 'package:flutter/material.dart';
-
-// class DetailHomeScreen extends StatefulWidget {
-//   const DetailHomeScreen({Key? key}) : super(key: key);
-
-//   @override
-//   State<DetailHomeScreen> createState() => _DetailHomeScreenState();
-// }
-
-// class _DetailHomeScreenState extends State<DetailHomeScreen> {
-//   @override
-//   Widget build(BuildContext context) {
-// return Scaffold(
-//   appBar: AppBar(
-//     title: const Text('Home Screen'),
-//   ),
-//   body: MediaQuery.of(context).size.width < 600
-//       ? _buildMobileTabletView()
-//       : _buildDesktopLargeScreenView(),
-// );
-//   }
-
-// Widget _buildMobileTabletView() {
-//   return Padding(
-//     padding: const EdgeInsets.all(16.0),
-//     child: Column(
-//       crossAxisAlignment: CrossAxisAlignment.start,
-//       children: [
-//         _buildDateRangePicker(),
-//         const SizedBox(height: 16),
-//         _buildFilterOptions(),
-//         const SizedBox(height: 16),
-//         _buildApplyButton(),
-//       ],
-//     ),
-//   );
-// }
-
-//   Widget _buildDesktopLargeScreenView() {
-//     return Row(
-//       mainAxisAlignment: MainAxisAlignment.center,
-//       children: [
-//         Expanded(
-//           child: Padding(
-//             padding: const EdgeInsets.all(16.0),
-//             child: Column(
-//               crossAxisAlignment: CrossAxisAlignment.start,
-//               children: [
-//                 _buildDateRangePicker(),
-//                 const SizedBox(height: 16),
-//                 _buildFilterOptions(),
-//                 const SizedBox(height: 16),
-//                 _buildApplyButton(),
-//               ],
-//             ),
-//           ),
-//         ),
-//         const VerticalDivider(thickness: 1, width: 1),
-//         Expanded(
-//           child: Padding(
-//             padding: const EdgeInsets.all(16.0),
-//             child: _buildResultSection(),
-//           ),
-//         ),
-//       ],
-//     );
-//   }
-
-//   Widget _buildDateRangePicker() {
-//     // Replace this with your date range picker implementation
-//     return const Text('Date Range Picker');
-//   }
-
-//   Widget _buildFilterOptions() {
-//     // Replace this with your filter options implementation
-//     return const Text('Filter Options');
-//   }
-
-//   Widget _buildApplyButton() {
-//     return ElevatedButton(
-//       onPressed: () {
-//       },
-//       child: const Text('Apply Filters'),
-//     );
-//   }
-
-//   Widget _buildResultSection() {
-//     // Replace this with your result section implementation
-//     return const Text('Filtered Results');
-//   }
-// }
-
-import 'package:expenses_tracker/screens/pf_screen.dart';
-import 'package:expenses_tracker/screens/transaction_screen.dart';
-import 'package:expenses_tracker/screens/transactions_of_month.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
-import '../model/localtransaction.dart';
-import '../model/localuser.dart';
-import '../model/transaction.dart';
-import 'package:show_up_animation/show_up_animation.dart';
-import '../model/users.dart';
-import '../utils/const.dart';
-import 'package:sleek_circular_slider/sleek_circular_slider.dart';
-import '../utils/functions.dart';
-import '../widgets/build_skeleton.dart';
-import '../widgets/custom_card.dart';
-import '../widgets/custom_header.dart';
-import '../widgets/custom_no_data.dart';
-import '../widgets/custom_pf_row.dart';
-import '../widgets/custom_text_style.dart';
-import '../widgets/custom_transaction.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:show_up_animation/show_up_animation.dart';
+import 'package:sleek_circular_slider/sleek_circular_slider.dart';
+import 'dart:developer';
+import '../../model/localtransaction.dart';
+import '../../model/localuser.dart';
+import '../../model/transaction.dart';
+import '../../model/users.dart';
+import '../../utils/const.dart';
+import '../../utils/functions.dart';
+import '../../widgets/build_skeleton.dart';
+import '../../widgets/custom_card.dart';
+import '../../widgets/custom_header.dart';
+import '../../widgets/custom_no_data.dart';
+import '../../widgets/custom_pf_row.dart';
+import '../../widgets/custom_text_style.dart';
+import '../../widgets/custom_transaction.dart';
+import '../../widgets/fade_transition.dart';
+import '../home_screen.dart';
+import '../pf_screen.dart';
+import '../transaction_screen.dart';
+import '../transactions_of_month.dart';
 
-import '../widgets/fade_transition.dart';
-import '../widgets/transaction_list.dart';
-import 'home_screen.dart';
-import 'mobile/home_screen_mobile.dart';
-
-class DetailHomeScreen extends StatefulWidget {
-  const DetailHomeScreen({super.key});
+class DetailHomeScreenMobile extends StatefulWidget {
+  const DetailHomeScreenMobile({super.key});
 
   @override
-  State<DetailHomeScreen> createState() => _DetailHomeScreenState();
+  State<DetailHomeScreenMobile> createState() => _DetailHomeScreenMobileState();
 }
 
-class _DetailHomeScreenState extends State<DetailHomeScreen> {
+class _DetailHomeScreenMobileState extends State<DetailHomeScreenMobile> {
   static int needsPercentage = 50;
   static int wantsPercentage = 30;
   static int savingPercentage = 20;
@@ -191,11 +97,13 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
   static double? expenseNeedsOfTheValue = 00;
   static double? expenseWantsOfTheValue = 00;
   static double? expenseSavingOfTheValue = 00;
-
+  late Box<LocalUser> _localUserLoginBox;
   String? uId;
 
   @override
   void initState() {
+    log("");
+    openBox();
     wishingText = getCurrentHour();
     currentMonth = DateFormat.yMMM().format(DateTime.now());
     getSingleUserData();
@@ -206,478 +114,327 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
     super.initState();
   }
 
+  Future<void> openBox() async {
+    _localUserLoginBox = await Hive.openBox<LocalUser>('local_user');
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      body: MediaQuery.of(context).size.width < 600
-          ? _buildMobileTabletView(screenWidth, screenHeight)
-          : _buildDesktopLargeScreenView(screenWidth, screenHeight),
-    );
-  }
-
-  Widget _buildDesktopLargeScreenView(double screenWidth, double screenHeight) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Expanded(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.only(left: 10, right: 10, top: 15),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CustomHeader(
-                    initialOfName: initialOfName,
-                    username: username,
-                    wishingText: wishingText,
-                    textColor: Theme.of(context).colorScheme.secondary),
-                const SizedBox(height: 16),
-                CustomTextStyle(
-                  customTextStyleText: "$currentMonth",
-                  customTextColor: Theme.of(context).colorScheme.secondary,
-                  customTextFontWeight: FontWeight.normal,
-                  customtextstyle: null,
-                  customTextSize: MediaQuery.sizeOf(context).height * 0.030,
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: <Widget>[
-                    Expanded(
-                      flex: 5,
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).push(
-                            FadeSlideTransitionRouteForList(
-                                page: TransactionOfMonth(
-                              id: 3,
-                              amount: spendingOfTheMonthValue!,
-                            )),
-                          );
-                        },
-                        child: CustomCard(
-                            color: PrimaryColor.colorRed,
-                            icon: Icon(
-                              Icons.arrow_upward,
-                              color: PrimaryColor.colorRed,
-                              size: 32,
-                            ),
-                            themeColor: PrimaryColor.colorWhite,
-                            speOrIncMonthValue: spendingOfTheMonthValue,
-                            title: "Spending"),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 5,
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).push(
-                            FadeSlideTransitionRouteForList(
-                                page: TransactionOfMonth(
-                              id: 2,
-                              amount: incomeOfTheMonthValue!,
-                            )),
-                          );
-                        },
-                        child: CustomCard(
-                            color: PrimaryColor.colorBottleGreen,
-                            icon: Icon(
-                              Icons.arrow_downward,
-                              color: PrimaryColor.colorBottleGreen,
-                              size: 32,
-                            ),
-                            themeColor: PrimaryColor.colorWhite,
-                            speOrIncMonthValue: incomeOfTheMonthValue,
-                            title: "Income"),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Center(
-                  child: SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.065,
-                      width: MediaQuery.of(context).size.width / 4,
-                      child: Card(
-                        color: Theme.of(context).cardColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                          side: BorderSide(color: PrimaryColor.colorWhite),
-                        ),
-                        child: Center(
-                            child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.17,
-                              child: Text(
-                                balanceOfTheMonthValue! > 0
-                                    ? "Balance: ₹$balanceOfTheMonthValue"
-                                    : "Balance: -₹${balanceOfTheMonthValue!.abs()}",
-                                style: TextStyle(
-                                    color:
-                                        Theme.of(context).colorScheme.secondary,
-                                    fontWeight: FontWeight.normal,
-                                    fontSize:
-                                        MediaQuery.of(context).size.height *
-                                            0.018),
-                                textAlign: TextAlign.center,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        body: isLoading == true
+            ? const HomeSkeleton()
+            : SingleChildScrollView(
+                padding: const EdgeInsets.only(left: 10, right: 10, top: 15),
+                child: LayoutBuilder(builder: (context, constraints) {
+                  log("Detail Home Width: $constraints");
+                  if (constraints.maxWidth < 470) {
+                    return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CustomHeader(
+                              initialOfName: initialOfName,
+                              username: username,
+                              wishingText: wishingText,
+                              textColor:
+                                  Theme.of(context).colorScheme.secondary),
+                          const SizedBox(
+                            height: 25,
+                          ),
+                          CustomTextStyle(
+                              customTextStyleText: "$currentMonth",
+                              customTextColor:
+                                  Theme.of(context).colorScheme.secondary,
+                              customTextFontWeight: FontWeight.normal,
+                              customtextstyle: null,
+                              customTextSize:
+                                  MediaQuery.sizeOf(context).height * 0.03),
+                          const SizedBox(
+                            height: 7,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Expanded(
+                                flex: 5,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.of(context).push(
+                                      FadeSlideTransitionRouteForList(
+                                          page: TransactionOfMonth(
+                                        id: 3,
+                                        amount: spendingOfTheMonthValue!,
+                                      )),
+                                    );
+                                  },
+                                  child: CustomCard(
+                                      color: PrimaryColor.colorRed,
+                                      icon: Icon(
+                                        Icons.arrow_upward,
+                                        color: PrimaryColor.colorRed,
+                                        size:
+                                            MediaQuery.sizeOf(context).height *
+                                                0.08,
+                                      ),
+                                      themeColor: PrimaryColor.colorWhite,
+                                      speOrIncMonthValue:
+                                          spendingOfTheMonthValue,
+                                      title: "Spending"),
+                                ),
                               ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  balanceHintText = !balanceHintText!;
-                                });
-                              },
-                              child: SizedBox(
-                                width:
-                                    MediaQuery.of(context).size.height * 0.02,
-                                child: Icon(Icons.info_outline_rounded,
-                                    color: Theme.of(context).hintColor,
-                                    size: MediaQuery.of(context).size.height *
-                                        0.025),
+                              Expanded(
+                                flex: 5,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.of(context).push(
+                                      FadeSlideTransitionRouteForList(
+                                          page: TransactionOfMonth(
+                                        id: 2,
+                                        amount: incomeOfTheMonthValue!,
+                                      )),
+                                    );
+                                  },
+                                  child: CustomCard(
+                                      color: PrimaryColor.colorBottleGreen,
+                                      icon: Icon(
+                                        Icons.arrow_downward,
+                                        color: PrimaryColor.colorBottleGreen,
+                                        size:
+                                            MediaQuery.sizeOf(context).height *
+                                                0.08,
+                                      ),
+                                      themeColor: PrimaryColor.colorWhite,
+                                      speOrIncMonthValue: incomeOfTheMonthValue,
+                                      title: "Income"),
+                                ),
                               ),
-                            )
-                          ],
-                        )),
-                      )),
-                ),
-                balanceHintText == false
-                    ? const SizedBox.shrink()
-                    : Center(
-                        child: Text(
-                        "Balance: Remaining balance of Previous months + current month balance",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: Theme.of(context).hintColor,
-                            fontSize:
-                                MediaQuery.of(context).size.height * 0.012),
-                      )),
-                const SizedBox(
-                  height: 10,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 8.0, vertical: 6.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      CustomTextStyle(
-                          customTextStyleText: "Personal Finance",
-                          customTextColor:
-                              Theme.of(context).colorScheme.secondary,
-                          customTextFontWeight: FontWeight.w400,
-                          customtextstyle: null,
-                          customTextSize:
-                              MediaQuery.of(context).size.width < 600
-                                  ? MediaQuery.sizeOf(context).height * 0.015
-                                  : MediaQuery.sizeOf(context).height * 0.020),
-                      GestureDetector(
-                        onTap: () {
-                          personalFinanceDialog(screenHeight, screenWidth);
-                        },
-                        child: CustomTextStyle(
-                            customTextStyleText: "Set Manually",
-                            customTextColor: Colors.blueAccent,
-                            customTextFontWeight: FontWeight.w400,
-                            customtextstyle: null,
-                            customTextSize: MediaQuery.of(context).size.width <
-                                    600
-                                ? MediaQuery.sizeOf(context).height * 0.012
-                                : MediaQuery.sizeOf(context).height * 0.018),
-                      ),
-                    ],
-                  ),
-                ),
-                buildCustomPersonalFinance(screenHeight, screenWidth),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 8.0, vertical: 6.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      CustomTextStyle(
-                          customTextStyleText: "Recent Transaction",
-                          customTextColor:
-                              Theme.of(context).colorScheme.secondary,
-                          customTextFontWeight: FontWeight.w400,
-                          customtextstyle: null,
-                          customTextSize:
-                              MediaQuery.of(context).size.width < 600
-                                  ? MediaQuery.sizeOf(context).height * 0.015
-                                  : MediaQuery.sizeOf(context).height * 0.020),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).push(
-                            FadeSlideTransitionRouteForList(
-                                page: TransactionOfMonth(
-                              id: 1,
-                              amount: balanceOfTheMonthValue!,
-                            )),
-                          );
-                        },
-                        child: CustomTextStyle(
-                            customTextStyleText: "View all",
-                            customTextColor: Colors.blueAccent,
-                            customTextFontWeight: FontWeight.w400,
-                            customtextstyle: null,
-                            customTextSize: MediaQuery.of(context).size.width <
-                                    600
-                                ? MediaQuery.sizeOf(context).height * 0.012
-                                : MediaQuery.sizeOf(context).height * 0.018),
-                      ),
-                    ],
-                  ),
-                ),
-                buildRecentTransactionList(screenHeight, screenWidth),
-              ],
-            ),
-          ),
-        ),
-        const VerticalDivider(thickness: 1, width: 1),
-        Expanded(
-          child: Container(
-            height: MediaQuery.of(context).size.height,
-            padding: const EdgeInsets.all(8.0),
-            child: SingleChildScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              child: TransactionList(
-                transactionList: currentMonthTransactions,
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildMobileTabletView(double screenWidth, double screenHeight) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.primary,
-      body: isLoading == true
-          ? const HomeSkeleton()
-          : SingleChildScrollView(
-              padding: const EdgeInsets.only(left: 10, right: 10, top: 15),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CustomHeader(
-                        initialOfName: initialOfName,
-                        username: username,
-                        wishingText: wishingText,
-                        textColor: Theme.of(context).colorScheme.secondary),
-                    const SizedBox(
-                      height: 25,
-                    ),
-                    CustomTextStyle(
-                      customTextStyleText: "$currentMonth",
-                      customTextColor: Theme.of(context).colorScheme.secondary,
-                      customTextFontWeight: FontWeight.normal,
-                      customtextstyle: null,
-                      customTextSize: MediaQuery.sizeOf(context).height * 0.030,
-                    ),
-                    const SizedBox(
-                      height: 7,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).push(
-                              FadeSlideTransitionRouteForList(
-                                  page: TransactionOfMonth(
-                                id: 3,
-                                amount: spendingOfTheMonthValue!,
-                              )),
-                            );
-                          },
-                          child: CustomCard(
-                              color: PrimaryColor.colorRed,
-                              icon: Icon(
-                                Icons.arrow_upward,
-                                color: PrimaryColor.colorRed,
-                                size: 32,
-                              ),
-                              themeColor: PrimaryColor.colorWhite,
-                              speOrIncMonthValue: spendingOfTheMonthValue,
-                              title: "Spending"),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).push(
-                              FadeSlideTransitionRouteForList(
-                                  page: TransactionOfMonth(
-                                id: 2,
-                                amount: incomeOfTheMonthValue!,
-                              )),
-                            );
-                          },
-                          child: CustomCard(
-                              color: PrimaryColor.colorBottleGreen,
-                              icon: Icon(
-                                Icons.arrow_downward,
-                                color: PrimaryColor.colorBottleGreen,
-                                size: 32,
-                              ),
-                              themeColor: PrimaryColor.colorWhite,
-                              speOrIncMonthValue: incomeOfTheMonthValue,
-                              title: "Income"),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Center(
-                      child: SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.05,
-                          width: MediaQuery.of(context).size.width * 0.60,
-                          child: Card(
-                            color: Theme.of(context).cardColor,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                              side: BorderSide(color: PrimaryColor.colorWhite),
-                            ),
-                            child: Center(
-                                child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 15.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  SizedBox(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.45,
-                                    child: Text(
-                                      balanceOfTheMonthValue! > 0
-                                          ? "Balance: ₹$balanceOfTheMonthValue"
-                                          : "Balance: -₹${balanceOfTheMonthValue!.abs()}",
-                                      style: TextStyle(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .secondary,
-                                          fontWeight: FontWeight.normal,
-                                          fontSize: MediaQuery.of(context)
-                                                  .size
-                                                  .width /
-                                              25),
-                                      textAlign: TextAlign.center,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.clip,
-                                    ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Center(
+                            child: SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.05,
+                                width: MediaQuery.of(context).size.width * 0.60,
+                                child: Card(
+                                  color: Theme.of(context).cardColor,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                    side: BorderSide(
+                                        color: PrimaryColor.colorWhite),
                                   ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        balanceHintText = !balanceHintText!;
-                                      });
-                                    },
-                                    child: SizedBox(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.02,
-                                      child: Icon(Icons.info_outline_rounded,
-                                          color: Theme.of(context).hintColor,
-                                          size: MediaQuery.of(context)
+                                  child: Center(
+                                      child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 15.0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        SizedBox(
+                                          width: MediaQuery.of(context)
                                                   .size
-                                                  .height *
-                                              0.025),
+                                                  .width *
+                                              0.45,
+                                          child: Text(
+                                            balanceOfTheMonthValue! > 0
+                                                ? "Balance: ₹$balanceOfTheMonthValue"
+                                                : "Balance: -₹${balanceOfTheMonthValue!.abs()}",
+                                            style: TextStyle(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .secondary,
+                                                fontWeight: FontWeight.normal,
+                                                fontSize: MediaQuery.of(context)
+                                                        .size
+                                                        .width /
+                                                    25),
+                                            textAlign: TextAlign.center,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.clip,
+                                          ),
+                                        ),
+                                        GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              balanceHintText =
+                                                  !balanceHintText!;
+                                            });
+                                          },
+                                          child: SizedBox(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.02,
+                                            child: Icon(
+                                                Icons.info_outline_rounded,
+                                                color:
+                                                    Theme.of(context).hintColor,
+                                                size: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.025),
+                                          ),
+                                        )
+                                      ],
                                     ),
-                                  )
-                                ],
-                              ),
-                            )),
-                          )),
-                    ),
-                    balanceHintText == false
-                        ? const SizedBox.shrink()
-                        : Center(
-                            child: Text(
-                            "Balance: Remaining balance of Previous months + current month balance",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: Theme.of(context).hintColor,
-                                fontSize:
-                                    MediaQuery.of(context).size.height * 0.012),
-                          )),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          CustomTextStyle(
-                              customTextStyleText: "Personal Finance",
-                              customTextColor:
-                                  Theme.of(context).colorScheme.secondary,
-                              customTextFontWeight: FontWeight.w400,
-                              customtextstyle: null,
-                              customTextSize: 20),
-                          GestureDetector(
-                            onTap: () {
-                              personalFinanceDialog(screenHeight, screenWidth);
-                            },
-                            child: CustomTextStyle(
-                                customTextStyleText: "Set Manually",
-                                customTextColor: Colors.blueAccent,
-                                customTextFontWeight: FontWeight.w400,
-                                customtextstyle: null,
-                                customTextSize: 14),
-                          ),
-                        ],
-                      ),
-                    ),
-                    buildCustomPersonalFinance(screenHeight, screenWidth),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8.0, vertical: 6.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          CustomTextStyle(
-                              customTextStyleText: "Recent Transaction",
-                              customTextColor:
-                                  Theme.of(context).colorScheme.secondary,
-                              customTextFontWeight: FontWeight.w400,
-                              customtextstyle: null,
-                              customTextSize: 20),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.of(context).push(
-                                FadeSlideTransitionRouteForList(
-                                    page: TransactionOfMonth(
-                                  id: 1,
-                                  amount: balanceOfTheMonthValue!,
+                                  )),
                                 )),
-                              );
-                            },
-                            child: CustomTextStyle(
-                                customTextStyleText: "View all",
-                                customTextColor: Colors.blueAccent,
-                                customTextFontWeight: FontWeight.w400,
-                                customtextstyle: null,
-                                customTextSize: 14),
                           ),
-                        ],
-                      ),
-                    ),
-                    buildRecentTransactionList(screenHeight, screenWidth)
-                  ]),
-            ),
-    );
+                          balanceHintText == false
+                              ? const SizedBox.shrink()
+                              : Center(
+                                  child: Text(
+                                  "Balance: Remaining balance of Previous months + current month balance",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Theme.of(context).hintColor,
+                                      fontSize:
+                                          MediaQuery.of(context).size.height *
+                                              0.012),
+                                )),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                CustomTextStyle(
+                                    customTextStyleText: "Personal Finance",
+                                    customTextColor:
+                                        Theme.of(context).colorScheme.secondary,
+                                    customTextFontWeight: FontWeight.w400,
+                                    customtextstyle: null,
+                                    customTextSize: 20),
+                                GestureDetector(
+                                  onTap: () {
+                                    personalFinanceDialog(
+                                        screenHeight, screenWidth);
+                                  },
+                                  child: CustomTextStyle(
+                                      customTextStyleText: "Set Manually",
+                                      customTextColor: Colors.blueAccent,
+                                      customTextFontWeight: FontWeight.w400,
+                                      customtextstyle: null,
+                                      customTextSize: 14),
+                                ),
+                              ],
+                            ),
+                          ),
+                          buildCustomPersonalFinance(screenHeight, screenWidth),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8.0, vertical: 6.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                CustomTextStyle(
+                                    customTextStyleText: "Recent Transaction",
+                                    customTextColor:
+                                        Theme.of(context).colorScheme.secondary,
+                                    customTextFontWeight: FontWeight.w400,
+                                    customtextstyle: null,
+                                    customTextSize: 20),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.of(context).push(
+                                      FadeSlideTransitionRouteForList(
+                                          page: TransactionOfMonth(
+                                        id: 1,
+                                        amount: balanceOfTheMonthValue!,
+                                      )),
+                                    );
+                                  },
+                                  child: CustomTextStyle(
+                                      customTextStyleText: "View all",
+                                      customTextColor: Colors.blueAccent,
+                                      customTextFontWeight: FontWeight.w400,
+                                      customtextstyle: null,
+                                      customTextSize: 14),
+                                ),
+                              ],
+                            ),
+                          ),
+                          buildRecentTransactionList(screenHeight, screenWidth)
+                        ]);
+                  } else {
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CustomHeader(
+                              initialOfName: initialOfName,
+                              username: username,
+                              wishingText: wishingText,
+                              textColor:
+                                  Theme.of(context).colorScheme.secondary),
+                        CustomTextStyle(
+                              customTextStyleText: "$currentMonth",
+                              customTextColor:
+                                  Theme.of(context).colorScheme.secondary,
+                              customTextFontWeight: FontWeight.normal,
+                              customtextstyle: null,
+                              customTextSize:
+                                  MediaQuery.sizeOf(context).height * 0.03),
+                          const SizedBox(
+                            height: 7,
+                          ),
+                        SizedBox(
+                          height:MediaQuery.sizeOf(context).height/2,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                            Expanded(
+                              flex:5,
+                              child: Container(
+                                color: Colors.black,
+                                child:const Center(
+                                  child:Text('first Left')
+                                )
+                              ),
+                            ),
+                            Expanded(
+                              flex:5,
+                              child: Container(
+                                color: Colors.red,
+                                child:const Center(
+                                  child:Text('first Right')
+                                )
+                              ),
+                            ),
+                          ]),
+                        ),
+                        // Row(
+                        //   children: [
+                        //     Expanded(
+                        //       flex:5,
+                        //       child: Container(
+                        //         color: Colors.red,
+                        //       ),
+                        //     ),
+                        //     Expanded(
+                        //       flex:5,
+                        //       child: Container(
+                        //         color: Colors.black,
+                        //       ),
+                        //     ),
+                        //   ],
+                        // ),
+                      ],
+                    );
+                  }
+                })));
   }
 
   Widget buildRecentTransactionList(double screenHeight, double screenWidth) {
@@ -692,9 +449,7 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                   : transactions.length == 1
                       ? screenHeight * 0.115
                       : screenHeight * 0.225,
-      width: MediaQuery.of(context).size.width < 600
-          ? MediaQuery.of(context).size.width
-          : MediaQuery.of(context).size.width / 2.2,
+      width: MediaQuery.of(context).size.width,
       child: transactions.isEmpty
           ? const Center(child: CustomNoData())
           : ListView.builder(
@@ -770,18 +525,9 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
   }
 
   Widget buildCustomPersonalFinance(double screenHeight, double screenWidth) {
-    final bool isMobileOrTablet = MediaQuery.of(context).size.width < 600;
-    final bool isDesktop = MediaQuery.of(context).size.width >= 600 &&
-        MediaQuery.of(context).size.width < 1200;
-    final bool isLargeScreen = MediaQuery.of(context).size.width >= 1200;
-
     return SizedBox(
       height: screenHeight * 0.43,
-      width: isMobileOrTablet
-          ? screenWidth
-          : isLargeScreen
-              ? screenWidth / 2
-              : screenWidth / 2,
+      width: screenWidth,
       child: Card(
         elevation: 5,
         color: Theme.of(context).cardColor,
@@ -800,11 +546,7 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                   Row(
                     children: [
                       SizedBox(
-                          width: isMobileOrTablet
-                              ? screenWidth / 2.201
-                              : isLargeScreen
-                                  ? screenWidth / 4.5
-                                  : screenWidth / 5.5,
+                          width: screenWidth / 2.201,
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
@@ -834,11 +576,7 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                             ],
                           )),
                       SizedBox(
-                          width: isMobileOrTablet
-                              ? screenWidth / 2.201
-                              : isLargeScreen
-                                  ? screenWidth / 4.5
-                                  : screenWidth / 5.5,
+                          width: screenWidth / 2.201,
                           child: Column(children: [
                             Text(
                               'Performance',
@@ -869,11 +607,7 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                     children: [
                       Container(
                         padding: const EdgeInsets.all(12),
-                        width: isMobileOrTablet
-                            ? screenWidth / 4
-                            : isLargeScreen
-                                ? screenWidth / 8
-                                : screenWidth / 10,
+                        width: screenWidth / 4,
                         height: screenHeight / 10,
                         child: SleekCircularSlider(
                           appearance: CircularSliderAppearance(
@@ -923,11 +657,7 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
-                            width: isMobileOrTablet
-                                ? screenWidth / 1.7
-                                : isLargeScreen
-                                    ? screenWidth / 3.5
-                                    : screenWidth / 4,
+                            width: screenWidth / 1.7,
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 8.0),
                             child: Text(
@@ -940,11 +670,7 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                             ),
                           ),
                           Container(
-                            width: isMobileOrTablet
-                                ? screenWidth / 1.7
-                                : isLargeScreen
-                                    ? screenWidth / 3.5
-                                    : screenWidth / 4,
+                            width: screenWidth / 1.7,
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 8.0),
                             child: Text(
@@ -973,9 +699,7 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                           child: Icon(
                             Icons.arrow_forward_ios_outlined,
                             color: Theme.of(context).colorScheme.secondary,
-                            size: isMobileOrTablet
-                                ? screenHeight * 0.018
-                                : screenHeight * 0.020,
+                            size: screenWidth / 20,
                           )),
                     ],
                   ),
@@ -987,11 +711,7 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                     children: [
                       Container(
                         padding: const EdgeInsets.all(12),
-                        width: isMobileOrTablet
-                            ? screenWidth / 4
-                            : isLargeScreen
-                                ? screenWidth / 8
-                                : screenWidth / 10,
+                        width: screenWidth / 4,
                         height: screenHeight / 10,
                         child: SleekCircularSlider(
                           appearance: CircularSliderAppearance(
@@ -1041,11 +761,7 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
-                            width: isMobileOrTablet
-                                ? screenWidth / 1.7
-                                : isLargeScreen
-                                    ? screenWidth / 3.5
-                                    : screenWidth / 4,
+                            width: screenWidth / 1.7,
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 8.0),
                             child: Text(
@@ -1058,11 +774,7 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                             ),
                           ),
                           Container(
-                            width: isMobileOrTablet
-                                ? screenWidth / 1.7
-                                : isLargeScreen
-                                    ? screenWidth / 3.5
-                                    : screenWidth / 4,
+                            width: screenWidth / 1.7,
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 8.0),
                             child: Text(
@@ -1091,9 +803,7 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                           child: Icon(
                             Icons.arrow_forward_ios_outlined,
                             color: Theme.of(context).colorScheme.secondary,
-                            size: isMobileOrTablet
-                                ? screenHeight * 0.018
-                                : screenHeight * 0.020,
+                            size: screenWidth / 20,
                           )),
                     ],
                   ),
@@ -1105,11 +815,7 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                     children: [
                       Container(
                         padding: const EdgeInsets.all(12),
-                        width: isMobileOrTablet
-                            ? screenWidth / 4
-                            : isLargeScreen
-                                ? screenWidth / 8
-                                : screenWidth / 10,
+                        width: screenWidth / 4,
                         height: screenHeight / 10,
                         child: SleekCircularSlider(
                           appearance: CircularSliderAppearance(
@@ -1159,11 +865,7 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
-                            width: isMobileOrTablet
-                                ? screenWidth / 1.7
-                                : isLargeScreen
-                                    ? screenWidth / 3.5
-                                    : screenWidth / 4,
+                            width: screenWidth / 1.7,
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 8.0),
                             child: Text(
@@ -1176,11 +878,7 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                             ),
                           ),
                           Container(
-                            width: isMobileOrTablet
-                                ? screenWidth / 1.7
-                                : isLargeScreen
-                                    ? screenWidth / 3.5
-                                    : screenWidth / 4,
+                            width: screenWidth / 1.7,
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 8.0),
                             child: Text(
@@ -1209,9 +907,7 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                           child: Icon(
                             Icons.arrow_forward_ios_outlined,
                             color: Theme.of(context).colorScheme.secondary,
-                            size: isMobileOrTablet
-                                ? screenHeight * 0.018
-                                : screenHeight * 0.020,
+                            size: screenWidth / 20,
                           )),
                     ],
                   ),
@@ -1643,13 +1339,12 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
     savingController.text = savingPercentage.toString();
 
     showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        int needs = int.tryParse(needsController.text) ?? 0;
-        int wants = int.tryParse(wantsController.text) ?? 0;
-        int saving = int.tryParse(savingController.text) ?? 0;
-        int? finalTotal = needs + wants + saving;
-        return ZoomInOutDialogWrapper(builder: (context) {
+        context: context,
+        builder: (BuildContext context) {
+          int needs = int.tryParse(needsController.text) ?? 0;
+          int wants = int.tryParse(wantsController.text) ?? 0;
+          int saving = int.tryParse(savingController.text) ?? 0;
+          int? finalTotal = needs + wants + saving;
           return AlertDialog(
             scrollable: true,
             backgroundColor: Theme.of(context).colorScheme.primary,
@@ -1839,8 +1534,6 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
             ],
           );
         });
-      },
-    );
   }
 
   Future<void> getSingleUserData() async {

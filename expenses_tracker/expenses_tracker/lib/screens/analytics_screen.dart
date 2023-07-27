@@ -1,13 +1,8 @@
-import 'dart:io';
-// import 'dart:developer';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:developer';
 import 'package:expenses_tracker/screens/transactions_of_month.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
-import '../api/pdf_api.dart';
-import '../api/pdf_transaction_api.dart';
 import '../model/localtransaction.dart';
 import '../model/transaction.dart';
 import '../utils/const.dart';
@@ -30,24 +25,18 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
   DateTime? startDate;
   DateTime? endDate;
   String? uid;
-
   DateTime? analyticsYearly = DateTime.now();
   DateTime? analyticsMonthly = DateTime.now();
   DateTime? analyticsWeekly = DateTime.now();
-
   String? analyticsMonthlyText;
   String? analyticsStartWeekText;
   String? analyticsYearlyText;
-
   static List<LocalTransaction> recentTransaction = [];
   static List<AllTransactionDetails> currentPageTransactions = [];
-
   static List<AllTransactionDetails> currentPageIncomeTransactions = [];
   static List<AllTransactionDetails> currentPageSpendingTransactions = [];
-
   static List<int> incomeOfTheCurrentPageTransactions = [];
   static List<int> spendingOfTheCurrentPageTransactions = [];
-
   static int? incomeOfTheCurrentPageTransactionsValue = 00;
   static double? averageIncome = 00;
   static double? averageSpending = 00;
@@ -63,11 +52,233 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     getWeekDates();
   }
 
+    Future<List<LocalTransaction>> getAllLocalTransactions() async {
+    final box = await Hive.openBox<LocalTransaction>('local_transactions');
+    final transactions = box.values.toList();
+    return transactions;
+  }
+
+  Future<List<LocalTransaction>> getTransactionsBetweenDates() async {
+    startDate = DateTime(startDate!.year, startDate!.month, startDate!.day);
+    endDate = DateTime(endDate!.year, endDate!.month, endDate!.day, 23, 59, 59);
+    final transactions = await getAllLocalTransactions();
+
+    final filteredTransactions = transactions
+        .where((transaction) =>
+            transaction.tDateTime.isAfter(startDate!) &&
+            transaction.tDateTime.isBefore(endDate!) &&
+            UserData.currentUserId == transaction.userId)
+        .toList();
+
+    filteredTransactions.sort((a, b) => a.tDateTime.compareTo(b.tDateTime));
+    return filteredTransactions;
+  }
+
+  Future<void> getAllTransaction() async {
+    currentPageIncomeTransactions.clear();
+    currentPageSpendingTransactions.clear();
+    incomeOfTheCurrentPageTransactions.clear();
+    spendingOfTheCurrentPageTransactions.clear();
+    incomeOfTheCurrentPageTransactionsValue = 00;
+    spendingOfCurrentPageTransactionsValue = 00;
+    balanceOfCurrentPageTransactionsValue = 00;
+    averageIncome = 00;
+    averageSpending = 00;
+    
+
+    try {
+      recentTransaction = await getTransactionsBetweenDates();
+      setState(() {
+        currentPageTransactions = recentTransaction
+            .map((e) => AllTransactionDetails(
+                uId: e.userId,
+                tID: e.tID,
+                transactionDate: e.tDateTime,
+                transactionAmount: e.tAmount,
+                transactionCategory: e.tCategory,
+                transactionSubcategory: e.tSubcategory,
+                transactionSubcategoryIndex: e.tSubcategoryIndex,
+                transactionNote: e.tNote,
+                transactionPaymentMode: e.tPaymentMode,
+                transactionCreatedAt: e.tCreatedAt))
+            .toList();
+        findIncomeSpending();
+      });
+    // ignore: empty_catches
+    } catch (e) {
+      
+    }
+  }
+
+  static void findIncomeSpending() {
+    for (int i = 0, j = 0, k = 0; i < currentPageTransactions.length; i++) {
+      if (currentPageTransactions[i].transactionCategory == 0 ||
+          currentPageTransactions[i].transactionCategory == 3) {
+        incomeOfTheCurrentPageTransactions
+            .add(currentPageTransactions[i].transactionAmount!);
+        currentPageIncomeTransactions.insert(
+            j,
+            AllTransactionDetails(
+                uId: currentPageTransactions[i].uId,
+                tID: currentPageTransactions[i].tID,
+                transactionDate: currentPageTransactions[i].transactionDate,
+                transactionAmount: currentPageTransactions[i].transactionAmount,
+                transactionCategory:
+                    currentPageTransactions[i].transactionCategory,
+                transactionSubcategory:
+                    currentPageTransactions[i].transactionSubcategory,
+                transactionSubcategoryIndex:
+                    currentPageTransactions[i].transactionSubcategoryIndex,
+                transactionNote: currentPageTransactions[i].transactionNote,
+                transactionPaymentMode:
+                    currentPageTransactions[i].transactionPaymentMode,
+                transactionCreatedAt:
+                    currentPageTransactions[i].transactionCreatedAt));
+        j++;
+      } else if (currentPageTransactions[i].transactionCategory == 1) {
+        spendingOfTheCurrentPageTransactions
+            .add(currentPageTransactions[i].transactionAmount!);
+        currentPageSpendingTransactions.insert(
+            k,
+            AllTransactionDetails(
+                uId: currentPageTransactions[i].uId,
+                tID: currentPageTransactions[i].tID,
+                transactionDate: currentPageTransactions[i].transactionDate,
+                transactionAmount: currentPageTransactions[i].transactionAmount,
+                transactionCategory:
+                    currentPageTransactions[i].transactionCategory,
+                transactionSubcategory:
+                    currentPageTransactions[i].transactionSubcategory,
+                transactionSubcategoryIndex:
+                    currentPageTransactions[i].transactionSubcategoryIndex,
+                transactionNote: currentPageTransactions[i].transactionNote,
+                transactionPaymentMode:
+                    currentPageTransactions[i].transactionPaymentMode,
+                transactionCreatedAt:
+                    currentPageTransactions[i].transactionCreatedAt));
+        k++;
+      }
+    }
+    totalIncomeOfTheMonth();
+    totalExpensesOfTheMonth();
+    getBalance();
+  }
+
+  static void totalIncomeOfTheMonth() {
+    for (int i = 0; i < incomeOfTheCurrentPageTransactions.length; i++) {
+      incomeOfTheCurrentPageTransactionsValue =
+          incomeOfTheCurrentPageTransactions[i] +
+              incomeOfTheCurrentPageTransactionsValue!;
+    }
+  }
+
+  static void totalExpensesOfTheMonth() {
+    for (int i = 0; i < spendingOfTheCurrentPageTransactions.length; i++) {
+      spendingOfCurrentPageTransactionsValue =
+          spendingOfTheCurrentPageTransactions[i] +
+              spendingOfCurrentPageTransactionsValue!;
+    }
+  }
+
+  static getBalance() {
+    balanceOfCurrentPageTransactionsValue =
+        (incomeOfTheCurrentPageTransactionsValue! -
+            spendingOfCurrentPageTransactionsValue!);
+
+    averageIncome = (incomeOfTheCurrentPageTransactionsValue! /
+        incomeOfTheCurrentPageTransactions.length);
+    averageSpending = (spendingOfCurrentPageTransactionsValue! /
+        spendingOfTheCurrentPageTransactions.length);
+
+    averageIncome = double.parse((averageIncome)!.toStringAsFixed(2));
+    averageSpending = double.parse((averageSpending)!.toStringAsFixed(2));
+  }
+
+  void getWeekDates() {
+    String currentWeekRange = _getWeekRange(DateTime.now());
+    analyticsStartWeekText = currentWeekRange;
+    getAllTransaction();
+  }
+
+  String _getWeekRange(DateTime date) {
+    DateTime startOfWeek = date.subtract(Duration(days: date.weekday - 1));
+    DateTime endOfWeek = startOfWeek.add(const Duration(days: 6));
+    String startOfWeekStr =
+        '${CurrentValues.getMonthName(startOfWeek.month)} ${startOfWeek.day}';
+    String endOfWeekStr =
+        '${CurrentValues.getMonthName(endOfWeek.month)} ${endOfWeek.day}';
+    String year = startOfWeek.year != endOfWeek.year
+        ? '${startOfWeek.year} - ${endOfWeek.year}'
+        : '${startOfWeek.year}';
+    startDate = DateTime(startOfWeek.year, startOfWeek.month, startOfWeek.day);
+    endDate = DateTime(endOfWeek.year, endOfWeek.month, endOfWeek.day + 1);
+    return '$startOfWeekStr - $endOfWeekStr, $year';
+  }
+
+  void updateWeek(int id) {
+    DateTime currentWeek = analyticsWeekly ??
+        DateTime.now().subtract(Duration(days: DateTime.now().weekday - 1));
+    DateTime nextWeek = id == 1
+        ? currentWeek.add(const Duration(days: 7))
+        : currentWeek.subtract(const Duration(days: 7));
+    analyticsWeekly = nextWeek;
+    analyticsStartWeekText = _getWeekRange(nextWeek);
+    getAllTransaction();
+  }
+
+  void updateMonth(int id) {
+    DateTime currentMonth = analyticsMonthly!;
+    int nextMonth = id == 0 ? currentMonth.month - 1 : currentMonth.month + 1;
+    int nextYear = currentMonth.year;
+    if (nextMonth < 1) {
+      nextMonth = 12;
+      nextYear--;
+    } else if (nextMonth > 12) {
+      nextMonth = 1;
+      nextYear++;
+    }
+    analyticsMonthlyText = '${CurrentValues.getMonthName(nextMonth)} $nextYear';
+    analyticsMonthly = DateTime(nextYear, nextMonth, 1);
+    startDate = DateTime(nextYear, nextMonth, 1);
+    endDate = DateTime(nextYear, nextMonth + 1, 1);
+    getAllTransaction();
+  }
+
+  void getCurrentYear() {
+    DateTime currentTime = DateTime.now();
+    startDate = DateTime(currentTime.year, 1, 1);
+    endDate = DateTime(currentTime.year + 1, 1, 1);
+    getAllTransaction();
+  }
+
+  void getCurrentMonth() {
+    DateTime currentTime = DateTime.now();
+    startDate = DateTime(currentTime.year, currentTime.month, 1);
+    endDate = DateTime(currentTime.year, currentTime.month + 1, 1);
+    getAllTransaction();
+  }
+
+  void updateYear(int id) {
+    DateTime currentYear = analyticsYearly!;
+    int nextYear = id == 0 ? currentYear.year - 1 : currentYear.year + 1;
+    analyticsYearlyText = nextYear.toString();
+    analyticsYearly = DateTime(nextYear, 1, 1);
+    startDate = DateTime(nextYear, 1, 1);
+    endDate = DateTime(nextYear + 1, 1, 1);
+    getAllTransaction();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.primary,
-      body: SingleChildScrollView(
+      body: MediaQuery.of(context).size.width < 600
+          ? _buildMobileTabletView()
+          : _buildDesktopLargeScreenView(),
+    );
+  }
+
+  Widget _buildMobileTabletView() {
+    return SingleChildScrollView(
         padding: const EdgeInsets.only(left: 10, right: 10, top: 15),
         child: Column(
           children: [
@@ -77,99 +288,106 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                OutlinedButton(
-                  onPressed: () {
-                    setState(() {
-                      value = 0;
-                      getWeekDates();
-                    });
-                  },
-                  style: OutlinedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
-                    side: BorderSide(
-                        color: (value == 0)
-                            ? PrimaryColor.colorBottleGreen
-                            : Theme.of(context).colorScheme.secondary),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 1.0, vertical: 3.0),
-                    child: Text(
-                      "Weekly\nAnalysis",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color: value == 0
+                Expanded(
+                  flex:3,
+                  child: OutlinedButton(
+                    onPressed: () {
+                      setState(() {
+                        value = 0;
+                        getWeekDates();
+                      });
+                    },
+                    style: OutlinedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                      side: BorderSide(
+                          color: (value == 0)
                               ? PrimaryColor.colorBottleGreen
-                              : Theme.of(context).colorScheme.secondary,
-                          fontWeight: FontWeight.w400,
-                          fontSize: ScreenUtil().setSp(15)),
+                              : Theme.of(context).colorScheme.secondary),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 1.0, vertical: 3.0),
+                      child: Text(
+                        "Weekly \nAnalysis",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: value == 0
+                                ? PrimaryColor.colorBottleGreen
+                                : Theme.of(context).colorScheme.secondary,
+                            fontWeight: FontWeight.w400,
+                            fontSize: MediaQuery.sizeOf(context).height*0.018,
+                      ),
+                    ),
+                  ),),
+                ),
+                SizedBox(width: MediaQuery.sizeOf(context).width*0.02,),
+                Expanded(
+                  flex:3,
+                  child: OutlinedButton(
+                    onPressed: () {
+                      setState(() {
+                        value = 1;
+                        getCurrentMonth();
+                      });
+                    },
+                    style: OutlinedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                      side: BorderSide(
+                          color: (value == 1)
+                              ? PrimaryColor.colorBottleGreen
+                              : Theme.of(context).colorScheme.secondary),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 1.0, vertical: 3.0),
+                      child: Text(
+                        "Monthly \nAnalysis",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: value == 1
+                                ? PrimaryColor.colorBottleGreen
+                                : Theme.of(context).colorScheme.secondary,
+                            fontWeight: FontWeight.w400,
+                            fontSize: MediaQuery.sizeOf(context).height*0.018,),
+                      ),
                     ),
                   ),
                 ),
                 SizedBox(
                   width: MediaQuery.of(context).size.width * 0.02,
                 ),
-                OutlinedButton(
-                  onPressed: () {
-                    setState(() {
-                      value = 1;
-                      getCurrentMonth();
-                    });
-                  },
-                  style: OutlinedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
-                    side: BorderSide(
-                        color: (value == 1)
-                            ? PrimaryColor.colorBottleGreen
-                            : Theme.of(context).colorScheme.secondary),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 1.0, vertical: 3.0),
-                    child: Text(
-                      "Monthly\nAnalysis",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color: value == 1
+                Expanded(
+                  flex:3,
+                  child: OutlinedButton(
+                    onPressed: () {
+                      setState(() {
+                        value = 2;
+                        getCurrentYear();
+                      });
+                    },
+                    style: OutlinedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                      side: BorderSide(
+                          color: (value == 2)
                               ? PrimaryColor.colorBottleGreen
-                              : Theme.of(context).colorScheme.secondary,
-                          fontWeight: FontWeight.w400,
-                          fontSize: ScreenUtil().setSp(15)),
+                              : Theme.of(context).colorScheme.secondary),
                     ),
-                  ),
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.02,
-                ),
-                OutlinedButton(
-                  onPressed: () {
-                    setState(() {
-                      value = 2;
-                      getCurrentYear();
-                    });
-                  },
-                  style: OutlinedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
-                    side: BorderSide(
-                        color: (value == 2)
-                            ? PrimaryColor.colorBottleGreen
-                            : Theme.of(context).colorScheme.secondary),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 1.0, vertical: 3.0),
-                    child: Text(
-                      "Yearly\nAnalysis",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color: value == 2
-                              ? PrimaryColor.colorBottleGreen
-                              : Theme.of(context).colorScheme.secondary,
-                          fontWeight: FontWeight.w400,
-                          fontSize: ScreenUtil().setSp(15)),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 1.0, vertical: 3.0),
+                      child: Text(
+                        "Yearly \nAnalysis",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: value == 2
+                                ? PrimaryColor.colorBottleGreen
+                                : Theme.of(context).colorScheme.secondary,
+                            fontWeight: FontWeight.w400,
+                            fontSize: MediaQuery.sizeOf(context).height*0.018,),
+                      ),
                     ),
                   ),
                 ),
@@ -510,32 +728,32 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                         ),
                       ));
                     } else {
-                      // log("File Saved");
-                      final File pdfFile;
-                      value == 0
-                          ? pdfFile = await PdfInvoiceApi.generate(
-                              currentPageTransactions,
-                              analyticsStartWeekText!,
-                              "Weekly Analysis",
-                              incomeOfTheCurrentPageTransactionsValue!,
-                              spendingOfCurrentPageTransactionsValue!,
-                              balanceOfCurrentPageTransactionsValue!)
-                          : value == 1
-                              ? pdfFile = await PdfInvoiceApi.generate(
-                                  currentPageTransactions,
-                                  analyticsMonthlyText!,
-                                  "Monthly Analysis",
-                                  incomeOfTheCurrentPageTransactionsValue!,
-                                  spendingOfCurrentPageTransactionsValue!,
-                                  balanceOfCurrentPageTransactionsValue!)
-                              : pdfFile = await PdfInvoiceApi.generate(
-                                  currentPageTransactions,
-                                  analyticsYearlyText!,
-                                  "Yearly Analysis",
-                                  incomeOfTheCurrentPageTransactionsValue!,
-                                  spendingOfCurrentPageTransactionsValue!,
-                                  balanceOfCurrentPageTransactionsValue!);
-                      PdfApi.openFile(pdfFile);
+                      log("File Saved");
+                      // final File pdfFile;
+                      // value == 0
+                      //     ? pdfFile = await PdfInvoiceApi.generate(
+                      //         currentPageTransactions,
+                      //         analyticsStartWeekText!,
+                      //         "Weekly Analysis",
+                      //         incomeOfTheCurrentPageTransactionsValue!,
+                      //         spendingOfCurrentPageTransactionsValue!,
+                      //         balanceOfCurrentPageTransactionsValue!)
+                      //     : value == 1
+                      //         ? pdfFile = await PdfInvoiceApi.generate(
+                      //             currentPageTransactions,
+                      //             analyticsMonthlyText!,
+                      //             "Monthly Analysis",
+                      //             incomeOfTheCurrentPageTransactionsValue!,
+                      //             spendingOfCurrentPageTransactionsValue!,
+                      //             balanceOfCurrentPageTransactionsValue!)
+                      //         : pdfFile = await PdfInvoiceApi.generate(
+                      //             currentPageTransactions,
+                      //             analyticsYearlyText!,
+                      //             "Yearly Analysis",
+                      //             incomeOfTheCurrentPageTransactionsValue!,
+                      //             spendingOfCurrentPageTransactionsValue!,
+                      //             balanceOfCurrentPageTransactionsValue!);
+                      // PdfApi.openFile(pdfFile);
                     }
                   },
                   child: Card(
@@ -564,223 +782,60 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
             )
           ],
         ),
-      ),
+      );
+
+  }
+
+  Widget _buildDesktopLargeScreenView() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildDateRangePicker(),
+                const SizedBox(height: 16),
+                _buildFilterOptions(),
+                const SizedBox(height: 16),
+                _buildApplyButton(),
+              ],
+            ),
+          ),
+        ),
+        const VerticalDivider(thickness: 1, width: 1),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: _buildResultSection(),
+          ),
+        ),
+      ],
     );
   }
 
-  Future<List<LocalTransaction>> getAllLocalTransactions() async {
-    final box = await Hive.openBox<LocalTransaction>('local_transactions');
-    final transactions = box.values.toList();
-    return transactions;
+  Widget _buildDateRangePicker() {
+    // Replace this with your date range picker implementation
+    return const Text('Date Range Picker');
   }
 
-  Future<List<LocalTransaction>> getTransactionsBetweenDates() async {
-    startDate = DateTime(startDate!.year, startDate!.month, startDate!.day);
-    endDate = DateTime(endDate!.year, endDate!.month, endDate!.day, 23, 59, 59);
-    final transactions = await getAllLocalTransactions();
-
-    final filteredTransactions = transactions
-        .where((transaction) =>
-            transaction.tDateTime.isAfter(startDate!) &&
-            transaction.tDateTime.isBefore(endDate!) &&
-            UserData.currentUserId == transaction.userId)
-        .toList();
-
-    filteredTransactions.sort((a, b) => a.tDateTime.compareTo(b.tDateTime));
-    return filteredTransactions;
+  Widget _buildFilterOptions() {
+    // Replace this with your filter options implementation
+    return const Text('Filter Options');
   }
 
-  Future<void> getAllTransaction() async {
-    currentPageIncomeTransactions.clear();
-    currentPageSpendingTransactions.clear();
-    incomeOfTheCurrentPageTransactions.clear();
-    spendingOfTheCurrentPageTransactions.clear();
-    incomeOfTheCurrentPageTransactionsValue = 00;
-    spendingOfCurrentPageTransactionsValue = 00;
-    balanceOfCurrentPageTransactionsValue = 00;
-    averageIncome = 00;
-    averageSpending = 00;
-    
-
-    try {
-      recentTransaction = await getTransactionsBetweenDates();
-      setState(() {
-        currentPageTransactions = recentTransaction
-            .map((e) => AllTransactionDetails(
-                uId: e.userId,
-                tID: e.tID,
-                transactionDate: Timestamp.fromDate(e.tDateTime),
-                transactionAmount: e.tAmount,
-                transactionCategory: e.tCategory,
-                transactionSubcategory: e.tSubcategory,
-                transactionSubcategoryIndex: e.tSubcategoryIndex,
-                transactionNote: e.tNote,
-                transactionPaymentMode: e.tPaymentMode,
-                transactionCreatedAt: Timestamp.fromDate(e.tCreatedAt)))
-            .toList();
-        findIncomeSpending();
-      });
-    // ignore: empty_catches
-    } catch (e) {
-      
-    }
+  Widget _buildApplyButton() {
+    return ElevatedButton(
+      onPressed: () {
+      },
+      child: const Text('Apply Filters'),
+    );
   }
 
-  static void findIncomeSpending() {
-    for (int i = 0, j = 0, k = 0; i < currentPageTransactions.length; i++) {
-      if (currentPageTransactions[i].transactionCategory == 0 ||
-          currentPageTransactions[i].transactionCategory == 3) {
-        incomeOfTheCurrentPageTransactions
-            .add(currentPageTransactions[i].transactionAmount!);
-        currentPageIncomeTransactions.insert(
-            j,
-            AllTransactionDetails(
-                uId: currentPageTransactions[i].uId,
-                tID: currentPageTransactions[i].tID,
-                transactionDate: currentPageTransactions[i].transactionDate,
-                transactionAmount: currentPageTransactions[i].transactionAmount,
-                transactionCategory:
-                    currentPageTransactions[i].transactionCategory,
-                transactionSubcategory:
-                    currentPageTransactions[i].transactionSubcategory,
-                transactionSubcategoryIndex:
-                    currentPageTransactions[i].transactionSubcategoryIndex,
-                transactionNote: currentPageTransactions[i].transactionNote,
-                transactionPaymentMode:
-                    currentPageTransactions[i].transactionPaymentMode,
-                transactionCreatedAt:
-                    currentPageTransactions[i].transactionCreatedAt));
-        j++;
-      } else if (currentPageTransactions[i].transactionCategory == 1) {
-        spendingOfTheCurrentPageTransactions
-            .add(currentPageTransactions[i].transactionAmount!);
-        currentPageSpendingTransactions.insert(
-            k,
-            AllTransactionDetails(
-                uId: currentPageTransactions[i].uId,
-                tID: currentPageTransactions[i].tID,
-                transactionDate: currentPageTransactions[i].transactionDate,
-                transactionAmount: currentPageTransactions[i].transactionAmount,
-                transactionCategory:
-                    currentPageTransactions[i].transactionCategory,
-                transactionSubcategory:
-                    currentPageTransactions[i].transactionSubcategory,
-                transactionSubcategoryIndex:
-                    currentPageTransactions[i].transactionSubcategoryIndex,
-                transactionNote: currentPageTransactions[i].transactionNote,
-                transactionPaymentMode:
-                    currentPageTransactions[i].transactionPaymentMode,
-                transactionCreatedAt:
-                    currentPageTransactions[i].transactionCreatedAt));
-        k++;
-      }
-    }
-    totalIncomeOfTheMonth();
-    totalExpensesOfTheMonth();
-    getBalance();
-  }
-
-  static void totalIncomeOfTheMonth() {
-    for (int i = 0; i < incomeOfTheCurrentPageTransactions.length; i++) {
-      incomeOfTheCurrentPageTransactionsValue =
-          incomeOfTheCurrentPageTransactions[i] +
-              incomeOfTheCurrentPageTransactionsValue!;
-    }
-  }
-
-  static void totalExpensesOfTheMonth() {
-    for (int i = 0; i < spendingOfTheCurrentPageTransactions.length; i++) {
-      spendingOfCurrentPageTransactionsValue =
-          spendingOfTheCurrentPageTransactions[i] +
-              spendingOfCurrentPageTransactionsValue!;
-    }
-  }
-
-  static getBalance() {
-    balanceOfCurrentPageTransactionsValue =
-        (incomeOfTheCurrentPageTransactionsValue! -
-            spendingOfCurrentPageTransactionsValue!);
-
-    averageIncome = (incomeOfTheCurrentPageTransactionsValue! /
-        incomeOfTheCurrentPageTransactions.length);
-    averageSpending = (spendingOfCurrentPageTransactionsValue! /
-        spendingOfTheCurrentPageTransactions.length);
-
-    averageIncome = double.parse((averageIncome)!.toStringAsFixed(2));
-    averageSpending = double.parse((averageSpending)!.toStringAsFixed(2));
-  }
-
-  void getWeekDates() {
-    String currentWeekRange = _getWeekRange(DateTime.now());
-    analyticsStartWeekText = currentWeekRange;
-    getAllTransaction();
-  }
-
-  String _getWeekRange(DateTime date) {
-    DateTime startOfWeek = date.subtract(Duration(days: date.weekday - 1));
-    DateTime endOfWeek = startOfWeek.add(const Duration(days: 6));
-    String startOfWeekStr =
-        '${CurrentValues.getMonthName(startOfWeek.month)} ${startOfWeek.day}';
-    String endOfWeekStr =
-        '${CurrentValues.getMonthName(endOfWeek.month)} ${endOfWeek.day}';
-    String year = startOfWeek.year != endOfWeek.year
-        ? '${startOfWeek.year} - ${endOfWeek.year}'
-        : '${startOfWeek.year}';
-    startDate = DateTime(startOfWeek.year, startOfWeek.month, startOfWeek.day);
-    endDate = DateTime(endOfWeek.year, endOfWeek.month, endOfWeek.day + 1);
-    return '$startOfWeekStr - $endOfWeekStr, $year';
-  }
-
-  void updateWeek(int id) {
-    DateTime currentWeek = analyticsWeekly ??
-        DateTime.now().subtract(Duration(days: DateTime.now().weekday - 1));
-    DateTime nextWeek = id == 1
-        ? currentWeek.add(const Duration(days: 7))
-        : currentWeek.subtract(const Duration(days: 7));
-    analyticsWeekly = nextWeek;
-    analyticsStartWeekText = _getWeekRange(nextWeek);
-    getAllTransaction();
-  }
-
-  void updateMonth(int id) {
-    DateTime currentMonth = analyticsMonthly!;
-    int nextMonth = id == 0 ? currentMonth.month - 1 : currentMonth.month + 1;
-    int nextYear = currentMonth.year;
-    if (nextMonth < 1) {
-      nextMonth = 12;
-      nextYear--;
-    } else if (nextMonth > 12) {
-      nextMonth = 1;
-      nextYear++;
-    }
-    analyticsMonthlyText = '${CurrentValues.getMonthName(nextMonth)} $nextYear';
-    analyticsMonthly = DateTime(nextYear, nextMonth, 1);
-    startDate = DateTime(nextYear, nextMonth, 1);
-    endDate = DateTime(nextYear, nextMonth + 1, 1);
-    getAllTransaction();
-  }
-
-  void getCurrentYear() {
-    DateTime currentTime = DateTime.now();
-    startDate = DateTime(currentTime.year, 1, 1);
-    endDate = DateTime(currentTime.year + 1, 1, 1);
-    getAllTransaction();
-  }
-
-  void getCurrentMonth() {
-    DateTime currentTime = DateTime.now();
-    startDate = DateTime(currentTime.year, currentTime.month, 1);
-    endDate = DateTime(currentTime.year, currentTime.month + 1, 1);
-    getAllTransaction();
-  }
-
-  void updateYear(int id) {
-    DateTime currentYear = analyticsYearly!;
-    int nextYear = id == 0 ? currentYear.year - 1 : currentYear.year + 1;
-    analyticsYearlyText = nextYear.toString();
-    analyticsYearly = DateTime(nextYear, 1, 1);
-    startDate = DateTime(nextYear, 1, 1);
-    endDate = DateTime(nextYear + 1, 1, 1);
-    getAllTransaction();
+  Widget _buildResultSection() {
+    // Replace this with your result section implementation
+    return const Text('Filtered Results');
   }
 }

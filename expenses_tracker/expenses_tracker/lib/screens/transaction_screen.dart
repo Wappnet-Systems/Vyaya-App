@@ -672,9 +672,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
         firstDate: DateTime(2023),
         lastDate: DateTime.now(),
         builder: (context, child) {
-          return ZoomInOutDialogWrapper(
-          builder: (context){
-            return Theme(
+          return  Theme(
               data: Theme.of(context).copyWith(
                   colorScheme: ColorScheme.light(
                     primary: Theme.of(context).colorScheme.onPrimary,
@@ -691,7 +689,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
               child: child!,
             );}
           );
-        });
+    
     if (picked != null) {
       final time = await showTimePicker(
           context: context,

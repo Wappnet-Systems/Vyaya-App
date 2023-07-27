@@ -1,5 +1,4 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
-import 'package:expenses_tracker/screens/auth_user.dart';
 import 'package:expenses_tracker/screens/home_screen.dart';
 import 'package:expenses_tracker/screens/user_detail.dart';
 import 'package:flutter/material.dart';
@@ -14,13 +13,12 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   String? userId;
-  int? authDisplay;
   SharedPreferences? sharedPreferences;
 
   @override
   void initState() {
+    // sharedConfigManager.addListener(_configListen);
     byPassLoginSharedPreferences();
-    authDisplayFromSharedPreferences();
     super.initState();
   }
 
@@ -28,13 +26,6 @@ class _SplashScreenState extends State<SplashScreen> {
     sharedPreferences = await SharedPreferences.getInstance();
     setState(() {
       userId = sharedPreferences!.getString('userId') ?? "";
-    });
-  }
-
-  void authDisplayFromSharedPreferences() async {
-    sharedPreferences = await SharedPreferences.getInstance();
-    setState(() {
-      authDisplay = sharedPreferences!.getInt('user_auth_biometric') ?? 0;
     });
   }
 
@@ -53,9 +44,8 @@ class _SplashScreenState extends State<SplashScreen> {
       ),
       nextScreen: userId == ""
           ? const UserDetail()
-          : authDisplay == 0
-              ? const HomeScreen()
-              : const AuthUser(),
+          : const HomeScreen()
+          
     );
   }
 }

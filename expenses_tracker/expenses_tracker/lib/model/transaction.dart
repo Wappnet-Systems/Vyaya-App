@@ -1,16 +1,14 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class AllTransactionDetails {
   final String? uId;
   final String? tID;
-  final Timestamp? transactionDate;
+  final DateTime? transactionDate;
   final int? transactionAmount;
   final int? transactionCategory;
   final int? transactionSubcategory;
   final int? transactionSubcategoryIndex;
   final String? transactionNote;
   final String? transactionPaymentMode;
-  final Timestamp? transactionCreatedAt;
+  final DateTime? transactionCreatedAt;
 
   
   AllTransactionDetails(

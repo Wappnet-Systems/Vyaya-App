@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expenses_tracker/widgets/custom_no_data.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -48,14 +47,14 @@ class _TransactionOfMonthState extends State<TransactionOfMonth> with SingleTick
             .map((e) => AllTransactionDetails(
                 uId: e.userId,
                 tID: e.tID,
-                transactionDate: Timestamp.fromDate(e.tDateTime),
+                transactionDate: e.tDateTime,
                 transactionAmount: e.tAmount,
                 transactionCategory: e.tCategory,
                 transactionSubcategory: e.tSubcategory,
                 transactionSubcategoryIndex: e.tSubcategoryIndex,
                 transactionNote: e.tNote,
                 transactionPaymentMode: e.tPaymentMode,
-                transactionCreatedAt: Timestamp.fromDate(e.tCreatedAt)))
+                transactionCreatedAt: e.tCreatedAt))
             .toList();
         isLoading = false;
       });

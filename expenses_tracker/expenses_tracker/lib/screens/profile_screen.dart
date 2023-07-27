@@ -2,27 +2,23 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:encrypt/encrypt.dart';
 import 'package:expenses_tracker/model/localtransaction.dart';
-import 'package:expenses_tracker/screens/privacy_policy.dart';
 import 'package:expenses_tracker/screens/user_detail.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+// import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis_auth/auth_io.dart';
 import 'package:hive/hive.dart';
-import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../model/localuser.dart';
 import '../utils/const.dart';
 import '../utils/functions.dart';
 import '../widgets/change_theme_button_widget.dart';
-import 'package:http/http.dart' as http;
 import 'package:encrypt/encrypt.dart' as encrypt;
 import '../widgets/custom_header.dart';
 import 'dart:convert' as convert;
-import 'package:googleapis/drive/v3.dart' as googleDrive;
 
 import '../widgets/custom_text_style.dart';
 import '../widgets/fade_transition.dart';
-import 'home_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -39,15 +35,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
       TextEditingController();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   bool isLoading = false;
-  GoogleSignIn googleSignIn = GoogleSignIn();
+  // GoogleSignIn googleSignIn = GoogleSignIn();
 
   late Box<LocalTransaction> localTransactionBox;
+  late Box<LocalUser> _localUserLoginBox;
   // final fileName = 'Vyaya (backup).txt';
   final encryptionDecryptionKey = '5a7b3c1eab9fd67032b164fae0c9d8b2';
   final masterPasswordKey = "5a7b3c1eab9fd67032b164fae0c9d8b2";
 
   @override
   void initState() {
+    openBox();
     checkForSync();
     username = UserData.currentUserName;
     localTransactionBox = Hive.box<LocalTransaction>('local_transactions');
@@ -57,9 +55,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.initState();
   }
 
+  Future<void> openBox() async {
+    _localUserLoginBox = await Hive.openBox<LocalUser>('local_user');
+  }
+
   void checkForSync() async {
     final sharedPreferences = await SharedPreferences.getInstance();
-
     setState(() {
       syncCheck = sharedPreferences.getBool('sync') ?? false;
       if (syncCheck == true) {
@@ -123,43 +124,43 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         trailing: syncCheck == true
                             ? GestureDetector(
                                 onTap: () async {
-                                  final sharedPreferences =
-                                      await SharedPreferences.getInstance();
-                                  String masterPasswordForSync =
-                                      sharedPreferences
-                                              .getString('masterPassword') ??
-                                          "";
-                                  String fileIdForSync =
-                                      sharedPreferences.getString('fileId') ??
-                                          "";
+                                  // final sharedPreferences =
+                                  //     await SharedPreferences.getInstance();
+                                  // String masterPasswordForSync =
+                                  //     sharedPreferences
+                                  //             .getString('masterPassword') ??
+                                  //         "";
+                                  // String fileIdForSync =
+                                  //     sharedPreferences.getString('fileId') ??
+                                  //         "";
 
-                                  Box<LocalTransaction> transactionBox =
-                                      Hive.box<LocalTransaction>(
-                                          'local_transactions');
-                                  List<Map<String, dynamic>> jsonData =
-                                      transactionBox.values.map((e) {
-                                    return {
-                                      'Transaction Id': e.tID,
-                                      'User Id': e.userId,
-                                      'Transaction Category': e.tCategory,
-                                      'Transaction Subcategory': e.tSubcategory,
-                                      'Transaction Subcategory Index':
-                                          e.tSubcategoryIndex,
-                                      'Transaction Amount': e.tAmount,
-                                      'Transaction Note': e.tNote,
-                                      'Transaction Time':
-                                          e.tDateTime.toString(),
-                                      'Transaction PaymentMode': e.tPaymentMode,
-                                      'Transaction Created At':
-                                          e.tCreatedAt.toString(),
-                                    };
-                                  }).toList();
-                                  setState(() {
-                                    isLoading = true;
-                                  });
-                                  removeTextFromFile(fileIdForSync, jsonData,
-                                          masterPasswordForSync)
-                                      .then((_) {});
+                                  // Box<LocalTransaction> transactionBox =
+                                  //     Hive.box<LocalTransaction>(
+                                  //         'local_transactions');
+                                  // List<Map<String, dynamic>> jsonData =
+                                  //     transactionBox.values.map((e) {
+                                  //   return {
+                                  //     'Transaction Id': e.tID,
+                                  //     'User Id': e.userId,
+                                  //     'Transaction Category': e.tCategory,
+                                  //     'Transaction Subcategory': e.tSubcategory,
+                                  //     'Transaction Subcategory Index':
+                                  //         e.tSubcategoryIndex,
+                                  //     'Transaction Amount': e.tAmount,
+                                  //     'Transaction Note': e.tNote,
+                                  //     'Transaction Time':
+                                  //         e.tDateTime.toString(),
+                                  //     'Transaction PaymentMode': e.tPaymentMode,
+                                  //     'Transaction Created At':
+                                  //         e.tCreatedAt.toString(),
+                                  //   };
+                                  // }).toList();
+                                  // setState(() {
+                                  //   isLoading = true;
+                                  // });
+                                  // removeTextFromFile(fileIdForSync, jsonData,
+                                  //         masterPasswordForSync)
+                                  //     .then((_) {});
                                 },
                                 child: Text(
                                   "Sync Now",
@@ -285,10 +286,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             const EdgeInsets.symmetric(horizontal: 12.0),
                         visualDensity: const VisualDensity(vertical: -4),
                         onTap: () {
-                          Navigator.of(context).push(
-                            FadeSlideTransitionRouteForList(
-                                page: const PrivacyPolicy()),
-                          );
+                          // Navigator.of(context).push(
+                          //   FadeSlideTransitionRouteForList(
+                          //       page: const PrivacyPolicy()),
+                          // );
                         },
                       ),
                       const Divider(),
@@ -298,9 +299,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
-                                  return ZoomInOutDialogWrapper(
-          builder: (context){
-            return AlertDialog(
+                                  return AlertDialog(
                                       shape: RoundedRectangleBorder(
                                           side: BorderSide(
                                               color: Theme.of(context)
@@ -361,8 +360,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       ],
                                     );}
                                   );
-                                },
-                              );
+                                
                             },
                             style: ElevatedButton.styleFrom(
                                 backgroundColor: PrimaryColor.colorRed,
@@ -391,7 +389,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final sharedPreferences = await SharedPreferences.getInstance();
     await sharedPreferences.setString('userId', "");
     await sharedPreferences.setBool('sync', false);
-    await googleSignIn.signOut();
+    // await googleSignIn.signOut();
     Navigator.of(context).pushReplacement(
       FadeSlideTransitionRoute(page: const UserDetail()),
     );
@@ -402,9 +400,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         context: context,
         builder: (BuildContext context) {
           var mediaQuery = MediaQuery.of(context);
-          return ZoomInOutDialogWrapper(
-          builder: (context){
-            return AnimatedContainer(
+          return AnimatedContainer(
               padding: mediaQuery.padding,
               duration: const Duration(milliseconds: 300),
               child: AlertDialog(
@@ -558,210 +554,210 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             );}
           );
-        });
+        
   }
 
   Future<void> createFile(
       List<Map<String, dynamic>> jsonData, String masterKeyOfFile) async {
-    String fileName = DateFormat.yMMMd().format(DateTime.now());
-    googleSignIn = GoogleSignIn(
-      scopes: ['https://www.googleapis.com/auth/drive.file'],
-    );
-    googleDrive.DriveApi(http.Client());
-    try {
-      final googleSignInAccount = await googleSignIn.signIn();
-      final googleSignInAuth = await googleSignInAccount!.authentication;
-      final response = await http.post(
-        Uri.parse('https://www.googleapis.com/drive/v3/files'),
-        headers: {
-          'Authorization': 'Bearer ${googleSignInAuth.accessToken}',
-          'Content-Type': 'application/json',
-        },
-        body: convert.jsonEncode({
-          'name': 'Vyaya backup ($fileName).txt',
-          'mimeType': 'application/json',
-        }),
-      );
+    // String fileName = DateFormat.yMMMd().format(DateTime.now());
+    // googleSignIn = GoogleSignIn(
+    //   scopes: ['https://www.googleapis.com/auth/drive.file'],
+    // );
+    // googleDrive.DriveApi(http.Client());
+    // try {
+    //   final googleSignInAccount = await googleSignIn.signIn();
+    //   final googleSignInAuth = await googleSignInAccount!.authentication;
+    //   final response = await http.post(
+    //     Uri.parse('https://www.googleapis.com/drive/v3/files'),
+    //     headers: {
+    //       'Authorization': 'Bearer ${googleSignInAuth.accessToken}',
+    //       'Content-Type': 'application/json',
+    //     },
+    //     body: convert.jsonEncode({
+    //       'name': 'Vyaya backup ($fileName).txt',
+    //       'mimeType': 'application/json',
+    //     }),
+    //   );
 
-      if (response.statusCode == 200) {
-        final fileId = convert.jsonDecode(response.body)['id'];
-        await writeFileContent(fileId, jsonData, masterKeyOfFile);
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Failed to create file'),
-        ));
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Upload failed'),
-      ));
-    }
-    setState(() {
-      isLoading = false;
-    });
+    //   if (response.statusCode == 200) {
+    //     final fileId = convert.jsonDecode(response.body)['id'];
+    //     await writeFileContent(fileId, jsonData, masterKeyOfFile);
+    //   } else {
+    //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+    //       content: Text('Failed to create file'),
+    //     ));
+    //   }
+    // } catch (e) {
+    //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+    //     content: Text('Upload failed'),
+    //   ));
+    // }
+    // setState(() {
+    //   isLoading = false;
+    // });
   }
 
   Future<void> writeTextToFile(String fileId,
       List<Map<String, dynamic>> jsonData, String masterKeyOfFile) async {
-    String fileContent;
-    googleSignIn = GoogleSignIn(
-      scopes: ['https://www.googleapis.com/auth/drive.file'],
-    );
-    googleDrive.DriveApi(http.Client());
+    // String fileContent;
+    // googleSignIn = GoogleSignIn(
+    //   scopes: ['https://www.googleapis.com/auth/drive.file'],
+    // );
+    // googleDrive.DriveApi(http.Client());
 
-    try {
-      final encryptedData =
-          await encryptData(jsonData, encryptionDecryptionKey);
+    // try {
+    //   final encryptedData =
+    //       await encryptData(jsonData, encryptionDecryptionKey);
 
-      final googleSignInAccount = await googleSignIn.signIn();
-      final googleSignInAuth = await googleSignInAccount!.authentication;
-      fileContent = "$masterKeyOfFile${convert.jsonEncode(encryptedData)}";
-      final response = await http.patch(
-        Uri.parse(
-          'https://www.googleapis.com/upload/drive/v3/files/$fileId?uploadType=media',
-        ),
-        headers: {
-          'Authorization': 'Bearer ${googleSignInAuth.accessToken}',
-          'Content-Type': 'text/plain',
-        },
-        body: fileContent,
-      );
+    //   final googleSignInAccount = await googleSignIn.signIn();
+    //   final googleSignInAuth = await googleSignInAccount!.authentication;
+    //   fileContent = "$masterKeyOfFile${convert.jsonEncode(encryptedData)}";
+    //   final response = await http.patch(
+    //     Uri.parse(
+    //       'https://www.googleapis.com/upload/drive/v3/files/$fileId?uploadType=media',
+    //     ),
+    //     headers: {
+    //       'Authorization': 'Bearer ${googleSignInAuth.accessToken}',
+    //       'Content-Type': 'text/plain',
+    //     },
+    //     body: fileContent,
+    //   );
 
-      if (response.statusCode == 200) {
-        String fileName = DateFormat.yMMMd().format(DateTime.now());
-        final renameResponse = await http.patch(
-          Uri.parse(
-            'https://www.googleapis.com/drive/v3/files/$fileId',
-          ),
-          headers: {
-            'Authorization': 'Bearer ${googleSignInAuth.accessToken}',
-            'Content-Type': 'application/json',
-          },
-          body: convert.jsonEncode({
-            'name': 'Vyaya backup ($fileName).txt',
-          }),
-        );
-        setState(() {
-          isLoading = false;
-        });
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Row(
-            children: [
-              Icon(Icons.check_circle, color: Colors.green),
-              SizedBox(width: 10),
-              Text(
-                'Backup Uploaded successfully',
-                style: TextStyle(color: Colors.green),
-              ),
-            ],
-          ),
-        ));
-        String lastBackup = DateFormat.yMMMd().format(DateTime.now());
-        final sharedPreferences = await SharedPreferences.getInstance();
-        await sharedPreferences.setBool('sync', true);
-        await sharedPreferences.setString('masterPassword', masterKeyOfFile);
-        await sharedPreferences.setString('fileId', fileId);
-        await sharedPreferences.setString('lastUpdated', lastBackup);
-      } else if (response.statusCode == 404) {
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Row(
-            children: [
-              Icon(Icons.warning, color: Colors.orange),
-              SizedBox(width: 10),
-              Text(
-                'Failed to update',
-                style: TextStyle(color: Colors.orange),
-              ),
-            ],
-          ),
-        ));
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Row(
-          children: [
-            Icon(Icons.error, color: Colors.red),
-            SizedBox(width: 10),
-            Text(
-              'Sync failed',
-              style: TextStyle(color: Colors.red),
-            ),
-          ],
-        ),
-      ));
-    }
+    //   if (response.statusCode == 200) {
+    //     String fileName = DateFormat.yMMMd().format(DateTime.now());
+    //     final renameResponse = await http.patch(
+    //       Uri.parse(
+    //         'https://www.googleapis.com/drive/v3/files/$fileId',
+    //       ),
+    //       headers: {
+    //         'Authorization': 'Bearer ${googleSignInAuth.accessToken}',
+    //         'Content-Type': 'application/json',
+    //       },
+    //       body: convert.jsonEncode({
+    //         'name': 'Vyaya backup ($fileName).txt',
+    //       }),
+    //     );
+    //     setState(() {
+    //       isLoading = false;
+    //     });
+    //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+    //       content: Row(
+    //         children: [
+    //           Icon(Icons.check_circle, color: Colors.green),
+    //           SizedBox(width: 10),
+    //           Text(
+    //             'Backup Uploaded successfully',
+    //             style: TextStyle(color: Colors.green),
+    //           ),
+    //         ],
+    //       ),
+    //     ));
+    //     String lastBackup = DateFormat.yMMMd().format(DateTime.now());
+    //     final sharedPreferences = await SharedPreferences.getInstance();
+    //     await sharedPreferences.setBool('sync', true);
+    //     await sharedPreferences.setString('masterPassword', masterKeyOfFile);
+    //     await sharedPreferences.setString('fileId', fileId);
+    //     await sharedPreferences.setString('lastUpdated', lastBackup);
+    //   } else if (response.statusCode == 404) {
+    //   } else {
+    //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+    //       content: Row(
+    //         children: [
+    //           Icon(Icons.warning, color: Colors.orange),
+    //           SizedBox(width: 10),
+    //           Text(
+    //             'Failed to update',
+    //             style: TextStyle(color: Colors.orange),
+    //           ),
+    //         ],
+    //       ),
+    //     ));
+    //   }
+    // } catch (e) {
+    //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+    //     content: Row(
+    //       children: [
+    //         Icon(Icons.error, color: Colors.red),
+    //         SizedBox(width: 10),
+    //         Text(
+    //           'Sync failed',
+    //           style: TextStyle(color: Colors.red),
+    //         ),
+    //       ],
+    //     ),
+    //   ));
+    // }
   }
 
   Future<void> removeTextFromFile(String fileId,
       List<Map<String, dynamic>> jsonData, String masterKeyOfFile) async {
-    googleSignIn = GoogleSignIn(
-      scopes: ['https://www.googleapis.com/auth/drive.file'],
-    );
-    googleDrive.DriveApi(http.Client());
+    // googleSignIn = GoogleSignIn(
+    //   scopes: ['https://www.googleapis.com/auth/drive.file'],
+    // );
+    // googleDrive.DriveApi(http.Client());
 
-    try {
-      final googleSignInAccount = await googleSignIn.signIn();
-      final googleSignInAuth = await googleSignInAccount!.authentication;
+    // try {
+    //   final googleSignInAccount = await googleSignIn.signIn();
+    //   final googleSignInAuth = await googleSignInAccount!.authentication;
 
-      final response = await http.patch(
-        Uri.parse(
-          'https://www.googleapis.com/upload/drive/v3/files/$fileId?uploadType=media',
-        ),
-        headers: {
-          'Authorization': 'Bearer ${googleSignInAuth.accessToken}',
-          'Content-Type': 'text/plain',
-        },
-        body: '',
-      );
+    //   final response = await http.patch(
+    //     Uri.parse(
+    //       'https://www.googleapis.com/upload/drive/v3/files/$fileId?uploadType=media',
+    //     ),
+    //     headers: {
+    //       'Authorization': 'Bearer ${googleSignInAuth.accessToken}',
+    //       'Content-Type': 'text/plain',
+    //     },
+    //     body: '',
+    //   );
 
-      if (response.statusCode == 200) {
-        writeTextToFile(fileId, jsonData, masterKeyOfFile);
-      } else if (response.statusCode == 404) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Row(
-            children: [
-              Icon(Icons.check_circle, color: Colors.red),
-              SizedBox(width: 10),
-              Text(
-                'File Does not Exist',
-                style: TextStyle(color: Colors.red),
-              ),
-            ],
-          ),
-        ));
-        createFile(jsonData, masterKeyOfFile);
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Row(
-            children: [
-              Icon(Icons.warning, color: Colors.orange),
-              SizedBox(width: 10),
-              Text(
-                'Failed to Sync Data',
-                style: TextStyle(color: Colors.orange),
-              ),
-            ],
-          ),
-        ));
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Row(
-          children: [
-            Icon(Icons.error, color: Colors.red),
-            SizedBox(width: 10),
-            Text(
-              'Failed to Data Sync',
-              style: TextStyle(color: Colors.red),
-            ),
-          ],
-        ),
-      ));
-    }
-    setState(() {
-      isLoading = false;
-    });
+    //   if (response.statusCode == 200) {
+    //     writeTextToFile(fileId, jsonData, masterKeyOfFile);
+    //   } else if (response.statusCode == 404) {
+    //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+    //       content: Row(
+    //         children: [
+    //           Icon(Icons.check_circle, color: Colors.red),
+    //           SizedBox(width: 10),
+    //           Text(
+    //             'File Does not Exist',
+    //             style: TextStyle(color: Colors.red),
+    //           ),
+    //         ],
+    //       ),
+    //     ));
+    //     createFile(jsonData, masterKeyOfFile);
+    //   } else {
+    //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+    //       content: Row(
+    //         children: [
+    //           Icon(Icons.warning, color: Colors.orange),
+    //           SizedBox(width: 10),
+    //           Text(
+    //             'Failed to Sync Data',
+    //             style: TextStyle(color: Colors.orange),
+    //           ),
+    //         ],
+    //       ),
+    //     ));
+    //   }
+    // } catch (e) {
+    //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+    //     content: Row(
+    //       children: [
+    //         Icon(Icons.error, color: Colors.red),
+    //         SizedBox(width: 10),
+    //         Text(
+    //           'Failed to Data Sync',
+    //           style: TextStyle(color: Colors.red),
+    //         ),
+    //       ],
+    //     ),
+    //   ));
+    // }
+    // setState(() {
+    //   isLoading = false;
+    // });
   }
 
   String encryptMasterKey(String data, String key) {
@@ -828,74 +824,74 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future<void> writeFileContent(String fileId,
       List<Map<String, dynamic>> jsonData, String masterKeyOfFile) async {
-    String fileContent;
-    googleSignIn = GoogleSignIn(
-      scopes: ['https://www.googleapis.com/auth/drive.file'],
-    );
-    googleDrive.DriveApi(http.Client());
-    try {
-      final encryptedData =
-          await encryptData(jsonData, encryptionDecryptionKey);
-      final googleSignInAccount = await googleSignIn.signIn();
-      final googleSignInAuth = await googleSignInAccount!.authentication;
-      fileContent = "$masterKeyOfFile${convert.jsonEncode(encryptedData)}";
-      final response = await http.patch(
-        Uri.parse(
-            'https://www.googleapis.com/upload/drive/v3/files/$fileId?uploadType=media'),
-        headers: {
-          'Authorization': 'Bearer ${googleSignInAuth.accessToken}',
-          'Content-Type': 'application/json',
-        },
-        body: fileContent,
-      );
+    // String fileContent;
+    // googleSignIn = GoogleSignIn(
+    //   scopes: ['https://www.googleapis.com/auth/drive.file'],
+    // );
+    // googleDrive.DriveApi(http.Client());
+    // try {
+    //   final encryptedData =
+    //       await encryptData(jsonData, encryptionDecryptionKey);
+    //   final googleSignInAccount = await googleSignIn.signIn();
+    //   final googleSignInAuth = await googleSignInAccount!.authentication;
+    //   fileContent = "$masterKeyOfFile${convert.jsonEncode(encryptedData)}";
+    //   final response = await http.patch(
+    //     Uri.parse(
+    //         'https://www.googleapis.com/upload/drive/v3/files/$fileId?uploadType=media'),
+    //     headers: {
+    //       'Authorization': 'Bearer ${googleSignInAuth.accessToken}',
+    //       'Content-Type': 'application/json',
+    //     },
+    //     body: fileContent,
+    //   );
 
-      if (response.statusCode == 200) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Row(
-            children: [
-              Icon(Icons.check_circle, color: Colors.green),
-              SizedBox(width: 10),
-              Text(
-                'File Uploaded successfully',
-                style: TextStyle(color: Colors.green),
-              ),
-            ],
-          ),
-        ));
-        String lastBackup = DateFormat.yMMMd().format(DateTime.now());
-        final sharedPreferences = await SharedPreferences.getInstance();
-        await sharedPreferences.setBool('sync', true);
-        await sharedPreferences.setString('masterPassword', masterKeyOfFile);
-        await sharedPreferences.setString('fileId', fileId);
-        await sharedPreferences.setString('lastUpdated', lastBackup);
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Row(
-            children: [
-              Icon(Icons.warning, color: Colors.orange),
-              SizedBox(width: 10),
-              Text(
-                'Empty File is Created',
-                style: TextStyle(color: Colors.orange),
-              ),
-            ],
-          ),
-        ));
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Row(
-          children: [
-            Icon(Icons.error, color: Colors.red),
-            SizedBox(width: 10),
-            Text(
-              'Upload failed',
-              style: TextStyle(color: Colors.red),
-            ),
-          ],
-        ),
-      ));
-    }
+    //   if (response.statusCode == 200) {
+    //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+    //       content: Row(
+    //         children: [
+    //           Icon(Icons.check_circle, color: Colors.green),
+    //           SizedBox(width: 10),
+    //           Text(
+    //             'File Uploaded successfully',
+    //             style: TextStyle(color: Colors.green),
+    //           ),
+    //         ],
+    //       ),
+    //     ));
+    //     String lastBackup = DateFormat.yMMMd().format(DateTime.now());
+    //     final sharedPreferences = await SharedPreferences.getInstance();
+    //     await sharedPreferences.setBool('sync', true);
+    //     await sharedPreferences.setString('masterPassword', masterKeyOfFile);
+    //     await sharedPreferences.setString('fileId', fileId);
+    //     await sharedPreferences.setString('lastUpdated', lastBackup);
+    //   } else {
+    //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+    //       content: Row(
+    //         children: [
+    //           Icon(Icons.warning, color: Colors.orange),
+    //           SizedBox(width: 10),
+    //           Text(
+    //             'Empty File is Created',
+    //             style: TextStyle(color: Colors.orange),
+    //           ),
+    //         ],
+    //       ),
+    //     ));
+    //   }
+    // } catch (e) {
+    //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+    //     content: Row(
+    //       children: [
+    //         Icon(Icons.error, color: Colors.red),
+    //         SizedBox(width: 10),
+    //         Text(
+    //           'Upload failed',
+    //           style: TextStyle(color: Colors.red),
+    //         ),
+    //       ],
+    //     ),
+    //   ));
+    // }
   }
 
   Future<ServiceAccountCredentials> obtainCredentials() async {

@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:encrypt/encrypt.dart' as encrypt;
 import 'package:encrypt/encrypt.dart';
-import 'package:expenses_tracker/screens/home_screen.dart';
 import 'package:expenses_tracker/utils/const.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -12,7 +11,7 @@ import '../utils/validation.dart';
 import '../widgets/custom_text_form_field.dart';
 import '../widgets/custom_text_style.dart';
 import '../widgets/fade_transition.dart';
-import 'auth_user.dart';
+import 'home_screen.dart';
 
 class UserDetail extends StatefulWidget {
   final String? uid, uname, uEmail;
@@ -86,12 +85,10 @@ class _UserDetailState extends State<UserDetail> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Theme.of(context).colorScheme.primary,
-      body: 
-      ListView(
+      body: ListView(
         physics: const BouncingScrollPhysics(),
         children: [
           SizedBox(
@@ -99,17 +96,22 @@ class _UserDetailState extends State<UserDetail> {
             width: MediaQuery.of(context).size.width,
             child: Form(
               autovalidateMode: AutovalidateMode.onUserInteraction,
-              key: userDetailFormGlobalKey,                      
+              key: userDetailFormGlobalKey,
               child: Padding(
-                          padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.03,horizontal: MediaQuery.of(context).size.width*0.03),
-
+                padding: EdgeInsets.symmetric(
+                    vertical: MediaQuery.of(context).size.height * 0.03,
+                    horizontal: MediaQuery.of(context).size.width * 0.03),
                 child: Column(
-                  children: [                                      
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        SizedBox(
-                    child: Image.asset("assets/splashimage.png",height: MediaQuery.of(context).size.height/3.5,width: MediaQuery.of(context).size.width/2.5,)),
+                  children: [
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    SizedBox(
+                        child: Image.asset(
+                      "assets/splashimage.png",
+                      height: MediaQuery.of(context).size.height / 3.5,
+                      width: MediaQuery.of(context).size.width / 2.5,
+                    )),
                     const SizedBox(
                       height: 10,
                     ),
@@ -138,92 +140,90 @@ class _UserDetailState extends State<UserDetail> {
                                   customTextSize:
                                       MediaQuery.of(context).size.height *
                                           0.030,
-                                          textAlign: TextAlign.left,),
+                                  textAlign: TextAlign.left,
+                                ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 10,),                                    
-                    CustomTextFormField(
-                    textInputAction: TextInputAction.next,
-                    textCapitalization: TextCapitalization.words,
-                    textInputType: TextInputType.name,
-                    textEditingController: firstNameController,
-                    textEditingHintText: "First Name",
-                    customPreFixIcon: Icon(Icons.person,
-                    color: Theme.of(context).colorScheme.secondary),
-                    customObscureText: true,
-                    validationFunction: nameValidator,
-                    customInkwell: null),              
                     const SizedBox(
                       height: 10,
                     ),
                     CustomTextFormField(
-                    textInputAction: TextInputAction.next,
-                    textInputType: TextInputType.name,
-                    textEditingController: lastNameController,
-                    textEditingHintText: "Last Name",
-                    customPreFixIcon: Icon(Icons.person,
-                        color: Theme.of(context).colorScheme.secondary),
-                    customObscureText: true,
-                    validationFunction: nameValidator,
-                    customInkwell: null,
-                    textCapitalization: TextCapitalization.words),
-                    
+                        textInputAction: TextInputAction.next,
+                        textCapitalization: TextCapitalization.words,
+                        textInputType: TextInputType.name,
+                        textEditingController: firstNameController,
+                        textEditingHintText: "First Name",
+                        customPreFixIcon: Icon(Icons.person,
+                            color: Theme.of(context).colorScheme.secondary),
+                        customObscureText: true,
+                        validationFunction: nameValidator,
+                        customInkwell: null),
                     const SizedBox(
                       height: 10,
                     ),
                     CustomTextFormField(
-                    textInputAction: TextInputAction.done,
-                    textCapitalization: TextCapitalization.none,
-                    readOnly: widget.id == 1 ? true : false,
-                    textInputType: TextInputType.emailAddress,
-                    textEditingController: userEmailController,
-                    textEditingHintText: "Email",
-                    customPreFixIcon: Icon(Icons.email,
-                        color: Theme.of(context).colorScheme.secondary),
-                    customObscureText: true,
-                    validationFunction: emailValidator,
-                    customInkwell: null),
+                        textInputAction: TextInputAction.next,
+                        textInputType: TextInputType.name,
+                        textEditingController: lastNameController,
+                        textEditingHintText: "Last Name",
+                        customPreFixIcon: Icon(Icons.person,
+                            color: Theme.of(context).colorScheme.secondary),
+                        customObscureText: true,
+                        validationFunction: nameValidator,
+                        customInkwell: null,
+                        textCapitalization: TextCapitalization.words),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    CustomTextFormField(
+                        textInputAction: TextInputAction.done,
+                        textCapitalization: TextCapitalization.none,
+                        readOnly: widget.id == 1 ? true : false,
+                        textInputType: TextInputType.emailAddress,
+                        textEditingController: userEmailController,
+                        textEditingHintText: "Email",
+                        customPreFixIcon: Icon(Icons.email,
+                            color: Theme.of(context).colorScheme.secondary),
+                        customObscureText: true,
+                        validationFunction: emailValidator,
+                        customInkwell: null),
                     Padding(
-                padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom)),
+                        padding: EdgeInsets.only(
+                            bottom: MediaQuery.of(context).viewInsets.bottom)),
                     const SizedBox(
                       height: 10,
                     ),
                     GestureDetector(
-                    onTap: addUser,
-                    child: Container(
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(18),
-                          color: PrimaryColor.colorBottleGreen,
-                        ),
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height / 18,
-                        padding: const EdgeInsets.all(12),
-                        child: widget.id == 1
-                            ? Text(
-                                "Update",
-                                style: TextStyle(
-                                    color: PrimaryColor.colorWhite,
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: MediaQuery.of(context)
-                                            .size
-                                            .height /
-                                        50),
-                              )
-                            : Text(
-                                "Save",
-                                style: TextStyle(
-                                    color: PrimaryColor.colorWhite,
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: MediaQuery.of(context)
-                                            .size
-                                            .height /
-                                        50),
-                              ))),
-                    
-                    
+                        onTap: addUser,
+                        child: Container(
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(18),
+                              color: PrimaryColor.colorBottleGreen,
+                            ),
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.height / 18,
+                            padding: const EdgeInsets.all(12),
+                            child: widget.id == 1
+                                ? Text(
+                                    "Update",
+                                    style: TextStyle(
+                                        color: PrimaryColor.colorWhite,
+                                        fontWeight: FontWeight.w400,
+                                        fontSize:
+                                            MediaQuery.of(context).size.height /
+                                                50),
+                                  )
+                                : Text(
+                                    "Save",
+                                    style: TextStyle(
+                                        color: PrimaryColor.colorWhite,
+                                        fontWeight: FontWeight.w400,
+                                        fontSize:
+                                            MediaQuery.of(context).size.height /
+                                                50),
+                                  ))),
                   ],
                 ),
               ),
@@ -232,8 +232,8 @@ class _UserDetailState extends State<UserDetail> {
         ],
       ),
     );
-  } 
-    
+  }
+
   Future<String> encryptData(String? email, String key) async {
     final plainText = utf8.encode(email!);
     final encryptionKey = encrypt.Key.fromUtf8(key);
@@ -265,82 +265,8 @@ class _UserDetailState extends State<UserDetail> {
           await SharedPreferences.getInstance();
       await sharedPreferences.setString('userId', uid!);
 
-      widget.id == 1
-          ? Navigator.of(context).pushReplacement(
-                              FadeSlideTransitionRoute(
-                                  page: const HomeScreen()),)
-          
-            
-          // ignore: use_build_context_synchronously
-          : await showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return ZoomInOutDialogWrapper(
-          builder: (context){
-            return AlertDialog(
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(
-                        color: Theme.of(context).colorScheme.secondary,
-                      ),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    backgroundColor: Theme.of(context).colorScheme.primary,
-                    title: Text(
-                      "User Authentication",
-                      style: TextStyle(
-                        color: PrimaryColor.colorRed,
-                      ),
-                    ),
-                    content: Text(
-                      "Authentication using FaceId, Fingerprint, or Password?",
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.secondary,
-                      ),
-                    ),
-                    actions: <Widget>[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              sharedPreferences.setInt('user_auth_biometric', 0);
-                              Navigator.of(context).pushReplacement(
-                                FadeSlideTransitionRoute(
-                                    page: const HomeScreen()),);                              
-                            },
-                            child: Text(
-                              "No",
-                              style: TextStyle(
-                                color: Theme.of(context).colorScheme.secondary,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 15,
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              sharedPreferences.setInt('user_auth_biometric', 1);                            
-                              Navigator.of(context).pushReplacement(
-                                FadeSlideTransitionRoute(
-                                    page: const AuthUser()),);
-                              
-                            },
-                            child: Text(
-                              "Yes",
-                              style: TextStyle(
-                                color: PrimaryColor.colorRed,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  );
-                }
-                );
-              },
+      Navigator.of(context).pushReplacement(
+        FadeSlideTransitionRoute(page: const HomeScreen()),
       );
     }
   }
