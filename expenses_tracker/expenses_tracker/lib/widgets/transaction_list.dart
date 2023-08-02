@@ -25,8 +25,8 @@ class TransactionList extends StatelessWidget {
                     children: [
                       if (i == 0 ||
                           isDifferentDay(
-                              transactionList[i].transactionDate!.toDate(),
-                              transactionList[i - 1].transactionDate!.toDate()))
+                              transactionList[i].transactionDate!,
+                              transactionList[i - 1].transactionDate!))
                         SizedBox(
                             height: MediaQuery.sizeOf(context).height * 0.040,
                             width: MediaQuery.sizeOf(context).width / 3.5,
@@ -41,7 +41,7 @@ class TransactionList extends StatelessWidget {
                                     Text(
                                         getDatestamp(transactionList[i]
                                             .transactionDate!
-                                            .toDate()),
+                                            ),
                                         style: TextStyle(
                                             color: Theme.of(context)
                                                 .colorScheme
@@ -61,10 +61,10 @@ class TransactionList extends StatelessWidget {
                               transactionList[i].transactionAmount,
                           transactionNote: transactionList[i].transactionNote,
                           dateStamp: DateFormat.yMMMd().format(
-                            transactionList[i].transactionDate!.toDate(),
+                            transactionList[i].transactionDate!,
                           ),
                           timeStamp: DateFormat.jm().format(
-                            transactionList[i].transactionDate!.toDate(),
+                            transactionList[i].transactionDate!,
                           ),
                           themeColor: Theme.of(context).colorScheme.primary,
                           textTheme: Theme.of(context).colorScheme.secondary,

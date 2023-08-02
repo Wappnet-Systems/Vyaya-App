@@ -113,7 +113,7 @@ class PdfInvoiceApi {
       'Amount',
     ];
     final data = transaction.map((item) {
-      DateTime transactionDateTime = item.transactionDate!.toDate();
+      DateTime transactionDateTime = item.transactionDate!;
 
       String transactionCategory;
       String subcategory;

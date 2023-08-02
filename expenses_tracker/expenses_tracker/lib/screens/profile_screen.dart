@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'package:encrypt/encrypt.dart';
 import 'package:expenses_tracker/model/localtransaction.dart';
@@ -592,6 +593,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ));
       }
     } catch (e) {
+      log("issue $e");
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('Upload failed'),
       ));
@@ -883,6 +885,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ));
       }
     } catch (e) {
+            log("issue $e");
+
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Row(
           children: [

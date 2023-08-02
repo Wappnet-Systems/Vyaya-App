@@ -1,5 +1,4 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expenses_tracker/screens/pf_screen.dart';
 import 'package:expenses_tracker/screens/transaction_screen.dart';
 import 'package:expenses_tracker/screens/transactions_of_month.dart';
@@ -392,7 +391,7 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                                       transactions[index]
                                           .transactionSubcategoryIndex,
                                   transactionDate:
-                                      "${DateFormat.yMMMd().format(transactions[index].transactionDate!.toDate())} ${DateFormat.jm().format(transactions[index].transactionDate!.toDate())}",
+                                      "${DateFormat.yMMMd().format(transactions[index].transactionDate!)} ${DateFormat.jm().format(transactions[index].transactionDate!)}",
                                   transactionSubcategory: transactions[index]
                                       .transactionSubcategory,
                                   transactionCategory:
@@ -418,11 +417,11 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                                 dateStamp: DateFormat.yMMMd().format(
                                     transactions[index]
                                         .transactionDate!
-                                        .toDate()),
+                                        ),
                                 timeStamp: DateFormat.jm().format(
                                     transactions[index]
                                         .transactionDate!
-                                        .toDate()))));
+                                        ))));
               }),
     );
   }
@@ -877,14 +876,14 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
             .map((e) => AllTransactionDetails(
                 uId: e.userId,
                 tID: e.tID,
-                transactionDate: Timestamp.fromDate(e.tDateTime),
+                transactionDate: e.tDateTime,
                 transactionAmount: e.tAmount,
                 transactionCategory: e.tCategory,
                 transactionSubcategory: e.tSubcategory,
                 transactionSubcategoryIndex: e.tSubcategoryIndex,
                 transactionNote: e.tNote,
                 transactionPaymentMode: e.tPaymentMode,
-                transactionCreatedAt: Timestamp.fromDate(e.tCreatedAt)))
+                transactionCreatedAt: e.tCreatedAt))
             .toList();
         findIncomeSpendingBeforeMonth();
         isLoading = false;
@@ -932,14 +931,14 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
             .map((e) => AllTransactionDetails(
                 uId: e.userId,
                 tID: e.tID,
-                transactionDate: Timestamp.fromDate(e.tDateTime),
+                transactionDate: e.tDateTime,
                 transactionAmount: e.tAmount,
                 transactionCategory: e.tCategory,
                 transactionSubcategory: e.tSubcategory,
                 transactionSubcategoryIndex: e.tSubcategoryIndex,
                 transactionNote: e.tNote,
                 transactionPaymentMode: e.tPaymentMode,
-                transactionCreatedAt: Timestamp.fromDate(e.tCreatedAt)))
+                transactionCreatedAt: e.tCreatedAt))
             .toList();
         findIncomeSpending();
         isLoading = false;
@@ -1511,14 +1510,14 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
         .map((e) => AllTransactionDetails(
             uId: e.userId,
             tID: e.tID,
-            transactionDate: Timestamp.fromDate(e.tDateTime),
+            transactionDate:e.tDateTime,
             transactionAmount: e.tAmount,
             transactionCategory: e.tCategory,
             transactionSubcategory: e.tSubcategory,
             transactionSubcategoryIndex: e.tSubcategoryIndex,
             transactionNote: e.tNote,
             transactionPaymentMode: e.tPaymentMode,
-            transactionCreatedAt: Timestamp.fromDate(e.tCreatedAt)))
+            transactionCreatedAt:e.tCreatedAt))
         .toList();
   }
 
