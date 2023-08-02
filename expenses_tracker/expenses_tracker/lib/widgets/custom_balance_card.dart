@@ -16,14 +16,17 @@ class CustomBalanceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
-    final isDesktop = mediaQuery.size.width > 768; // Adjust the breakpoint as needed
-
-    // double fontSize = ;
+    final isDesktop =
+        mediaQuery.size.width > 600; // Adjust the breakpoint as needed
 
     return Center(
       child: SizedBox(
-        height: isDesktop ? mediaQuery.size.height * 0.1 : mediaQuery.size.height * 0.07,
-        width: isDesktop ? mediaQuery.size.width * 0.2 : mediaQuery.size.width * 0.5,
+        height: isDesktop
+            ? mediaQuery.size.height * 0.1
+            : mediaQuery.size.height * 0.05,
+        width: isDesktop
+            ? mediaQuery.size.width * 0.2
+            : mediaQuery.size.width * 0.5,
         child: Card(
           color: themeColor,
           shape: RoundedRectangleBorder(
@@ -35,7 +38,9 @@ class CustomBalanceCard extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 15.0),
               child: balanceOfTheMonthValue > 0
                   ? SizedBox(
-                      width: isDesktop ? mediaQuery.size.width * 0.2 : mediaQuery.size.width * 0.5,
+                      width: isDesktop
+                          ? mediaQuery.size.width * 0.2
+                          : mediaQuery.size.width * 0.35,
                       child: Center(
                         child: Text(
                           "Balance: ₹$balanceOfTheMonthValue",
@@ -43,8 +48,8 @@ class CustomBalanceCard extends StatelessWidget {
                             color: textThemeColor,
                             fontWeight: FontWeight.normal,
                             fontSize: isDesktop
-        ? mediaQuery.size.height * 0.018
-        : mediaQuery.size.height * 0.018,
+                                ? mediaQuery.size.height * 0.018
+                                : mediaQuery.size.height * 0.018,
                           ),
                           textAlign: TextAlign.left,
                           maxLines: 1,
@@ -53,7 +58,9 @@ class CustomBalanceCard extends StatelessWidget {
                       ),
                     )
                   : SizedBox(
-                      width: isDesktop ? mediaQuery.size.width * 0.2 : mediaQuery.size.width * 0.5,
+                      width: isDesktop
+                          ? mediaQuery.size.width * 0.2
+                          : mediaQuery.size.width * 0.5,
                       child: Center(
                         child: Text(
                           "Balance: -₹${balanceOfTheMonthValue.abs()}",
@@ -61,8 +68,8 @@ class CustomBalanceCard extends StatelessWidget {
                             color: textThemeColor,
                             fontWeight: FontWeight.normal,
                             fontSize: isDesktop
-        ? mediaQuery.size.width * 0.0001
-        : mediaQuery.size.width * 0.005,
+                                ? mediaQuery.size.width * 0.0001
+                                : mediaQuery.size.width * 0.005,
                           ),
                           textAlign: TextAlign.left,
                           maxLines: 1,

@@ -153,6 +153,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SizedBox(
+                      height: MediaQuery.of(context).size.height *0.050,
                       width: MediaQuery.of(context).size.width / 2.5,
                       child: OutlinedButton(
                         onPressed: () {
@@ -182,6 +183,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                       width: MediaQuery.of(context).size.width * 0.02,
                     ),
                     SizedBox(
+                      height: MediaQuery.of(context).size.height *0.050,
                       width: MediaQuery.of(context).size.width / 2.5,
                       child: OutlinedButton(
                         onPressed: () {

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'package:encrypt/encrypt.dart';
 import 'package:expenses_tracker/model/localtransaction.dart';
@@ -8,6 +9,8 @@ import 'package:flutter/material.dart';
 // import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis_auth/auth_io.dart';
 import 'package:hive/hive.dart';
+import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../model/localuser.dart';
 import '../utils/const.dart';
@@ -255,7 +258,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       //   // trailing: const ChangeThemeButtonWidget(),
                       // ),
                       // const Divider(),
-                      
+
                       ListTile(
                         leading: Icon(
                           Icons.brightness_4,
@@ -271,41 +274,42 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         visualDensity: const VisualDensity(vertical: -4),
                         trailing: const ChangeThemeButtonWidget(),
                       ),
-                      const Divider(),
-                      ListTile(
-                        leading: Icon(
-                          Icons.privacy_tip,
-                          color: Theme.of(context).colorScheme.secondary,
-                        ),
-                        title: Text(
-                          'Privacy policy',
-                          style: TextStyle(
-                              color: Theme.of(context).colorScheme.secondary),
-                        ),
-                        contentPadding:
-                            const EdgeInsets.symmetric(horizontal: 12.0),
-                        visualDensity: const VisualDensity(vertical: -4),
-                        onTap: () {
-                          // Navigator.of(context).push(
-                          //   FadeSlideTransitionRouteForList(
-                          //       page: const PrivacyPolicy()),
-                          // );
-                        },
-                      ),
+                      // const Divider(),
+                      // ListTile(
+                      //   leading: Icon(
+                      //     Icons.privacy_tip,
+                      //     color: Theme.of(context).colorScheme.secondary,
+                      //   ),
+                      //   title: Text(
+                      //     'Privacy policy',
+                      //     style: TextStyle(
+                      //         color: Theme.of(context).colorScheme.secondary),
+                      //   ),
+                      //   contentPadding:
+                      //       const EdgeInsets.symmetric(horizontal: 12.0),
+                      //   visualDensity: const VisualDensity(vertical: -4),
+                      //   onTap: () {
+                      //     // Navigator.of(context).push(
+                      //     //   FadeSlideTransitionRouteForList(
+                      //     //       page: const PrivacyPolicy()),
+                      //     // );
+                      //   },
+                      // ),
                       const Divider(),
                       Center(
                         child: ElevatedButton(
                             onPressed: () {
                               showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
                                       shape: RoundedRectangleBorder(
                                           side: BorderSide(
                                               color: Theme.of(context)
                                                   .colorScheme
                                                   .secondary),
-                                          borderRadius: BorderRadius.circular(8)),
+                                          borderRadius:
+                                              BorderRadius.circular(8)),
                                       backgroundColor:
                                           Theme.of(context).colorScheme.primary,
                                       title: Text(
@@ -314,12 +318,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           color: PrimaryColor.colorRed,
                                         ),
                                       ),
-                                      content: Text(
-                                        "Are you sure you want to logout?",
-                                        style: TextStyle(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .secondary,
+                                      content: SizedBox(
+                                        width:
+                                            MediaQuery.sizeOf(context).width *
+                                                0.65 /
+                                                3,
+                                        height:
+                                            MediaQuery.sizeOf(context).height *
+                                                0.25 /
+                                                3,
+                                        child: Text(
+                                          "Are you sure you want to logout?",
+                                          style: TextStyle(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .secondary,
+                                          ),
                                         ),
                                       ),
                                       actions: <Widget>[
@@ -351,16 +365,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                               child: Text(
                                                 "Logout",
                                                 style: TextStyle(
-                                                    color: PrimaryColor.colorRed,
-                                                    fontWeight: FontWeight.bold),
+                                                    color:
+                                                        PrimaryColor.colorRed,
+                                                    fontWeight:
+                                                        FontWeight.bold),
                                               ),
                                             ),
                                           ],
                                         ),
                                       ],
-                                    );}
-                                  );
-                                
+                                    );
+                                  });
                             },
                             style: ElevatedButton.styleFrom(
                                 backgroundColor: PrimaryColor.colorRed,
@@ -376,8 +391,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           if (isLoading)
             Container(
               color: Colors.black.withOpacity(0.5),
-              child: const Center(
-                child: CircularProgressIndicator(),
+              child: Center(
+                child: CircularProgressIndicator(color:PrimaryColor.colorBlue),
               ),
             ),
         ],
@@ -389,7 +404,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final sharedPreferences = await SharedPreferences.getInstance();
     await sharedPreferences.setString('userId', "");
     await sharedPreferences.setBool('sync', false);
-    // await googleSignIn.signOut();
     Navigator.of(context).pushReplacement(
       FadeSlideTransitionRoute(page: const UserDetail()),
     );
@@ -401,365 +415,219 @@ class _ProfileScreenState extends State<ProfileScreen> {
         builder: (BuildContext context) {
           var mediaQuery = MediaQuery.of(context);
           return AnimatedContainer(
-              padding: mediaQuery.padding,
-              duration: const Duration(milliseconds: 300),
-              child: AlertDialog(
-                scrollable: true,
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                shape: RoundedRectangleBorder(
-                    side: BorderSide(
-                        color: Theme.of(context).colorScheme.secondary),
-                    borderRadius: BorderRadius.circular(8)),
-                title: CustomTextStyle(
-                    customTextStyleText: titleText,
-                    customTextColor: Theme.of(context).colorScheme.secondary,
-                    customTextFontWeight: FontWeight.normal,
-                    customtextstyle: null,
-                    customTextSize: MediaQuery.sizeOf(context).height * 0.022),
-                content: SizedBox(
-                  height: MediaQuery.sizeOf(context).height * 0.7 / 3,
-                  child: Form(
-                    autovalidateMode: AutovalidateMode.always,
-                    key: formKey,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              'Important',
-                              style: TextStyle(
-                                  color: Theme.of(context).hintColor,
-                                  fontWeight: FontWeight.w500),
-                              textAlign: TextAlign.start,
+            padding: mediaQuery.padding,
+            duration: const Duration(milliseconds: 300),
+            child: AlertDialog(
+              scrollable: true,
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              shape: RoundedRectangleBorder(
+                  side: BorderSide(
+                      color: Theme.of(context).colorScheme.secondary),
+                  borderRadius: BorderRadius.circular(8)),
+              title: CustomTextStyle(
+                  customTextStyleText: titleText,
+                  customTextColor: Theme.of(context).colorScheme.secondary,
+                  customTextFontWeight: FontWeight.normal,
+                  customtextstyle: null,
+                  customTextSize: MediaQuery.sizeOf(context).height * 0.022),
+              content: SizedBox(
+                height: MediaQuery.sizeOf(context).height * 0.7 / 3,
+                width: MediaQuery.sizeOf(context).width * 1 / 3,
+                child: Form(
+                  autovalidateMode: AutovalidateMode.always,
+                  key: formKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            'Important',
+                            style: TextStyle(
+                                color: Theme.of(context).hintColor,
+                                fontWeight: FontWeight.w500),
+                            textAlign: TextAlign.start,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        warningText,
+                        style: TextStyle(
+                            color: Theme.of(context).hintColor,
+                            fontWeight: FontWeight.w400,
+                            fontSize:
+                                MediaQuery.of(context).size.height * 0.015),
+                        overflow: TextOverflow.visible,
+                        textAlign: TextAlign.justify,
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      TextFormField(
+                        validator: (value) {
+                          if (value!.length < 8) {
+                            return "Please enter at least 8 character";
+                          }
+                          return null;
+                        },
+                        maxLength: 8,
+                        controller: masterPasswordController,
+                        cursorColor: Theme.of(context).colorScheme.onPrimary,
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.secondary),
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 8),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color:
+                                      Theme.of(context).colorScheme.onPrimary),
                             ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        Text(
-                          warningText,
-                          style: TextStyle(
-                              color: Theme.of(context).hintColor,
-                              fontWeight: FontWeight.w400,
-                              fontSize:
-                                  MediaQuery.of(context).size.height * 0.015),
-                          overflow: TextOverflow.visible,
-                          textAlign: TextAlign.justify,
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        TextFormField(
-                          validator: (value) {
-                            if (value!.length < 8) {
-                              return "Please enter at least 8 character";
-                            }
-                            return null;
-                          },
-                          maxLength: 8,
-                          controller: masterPasswordController,
-                          cursorColor: Theme.of(context).colorScheme.onPrimary,
-                          style: TextStyle(
-                              color: Theme.of(context).colorScheme.secondary),
-                          keyboardType: TextInputType.emailAddress,
-                          decoration: InputDecoration(
-                              contentPadding: const EdgeInsets.symmetric(
-                                  vertical: 8, horizontal: 8),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color:
-                                        Theme.of(context).colorScheme.onPrimary),
-                              ),
-                              labelText: "Master Password",
-                              labelStyle: const TextStyle(
-                                color: Colors.grey, // Change color based on focus
-                                fontSize: 16,
-                              ),
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color:
-                                        Theme.of(context).colorScheme.secondary),
-                              ),
-                              hintText: "8 digit password"),
-                        ),
-                      ],
-                    ),
+                            labelText: "Master Password",
+                            labelStyle: const TextStyle(
+                              color: Colors.grey, // Change color based on focus
+                              fontSize: 16,
+                            ),
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color:
+                                      Theme.of(context).colorScheme.secondary),
+                            ),
+                            hintText: "8 digit password"),
+                      ),
+                    ],
                   ),
                 ),
-                actions: <Widget>[
-                  GestureDetector(
-                      onTap: () {
-                        masterPasswordController.clear();
-                        Navigator.pop(context);
-                      },
-                      child: Text(
-                        "Cancel",
-                        style: TextStyle(color: PrimaryColor.colorRed),
-                      )),
-                  const SizedBox(
-                    width: 07,
-                  ),
-                  GestureDetector(
-                      onTap: () {
-                        if (formKey.currentState!.validate()) {
-                          if (id == 0) {
-                            masterPassword = masterPasswordController.text;
-                            masterPassword = encryptMasterKey(masterPassword!,
-                                "5a7b3c1eab9fd67032b164fae0c9d8b2");
-                            masterPasswordController.clear();
-                            Navigator.pop(context);
-                            setState(() {
-                              isLoading = true;
-                            });
-                            Box<LocalTransaction> transactionBox =
-                                Hive.box<LocalTransaction>('local_transactions');
-                            List<Map<String, dynamic>> jsonData =
-                                transactionBox.values.map((e) {
-                              return {
-                                'Transaction Id': e.tID,
-                                'User Id': e.userId,
-                                'Transaction Category': e.tCategory,
-                                'Transaction Subcategory': e.tSubcategory,
-                                'Transaction Subcategory Index':
-                                    e.tSubcategoryIndex,
-                                'Transaction Amount': e.tAmount,
-                                'Transaction Note': e.tNote,
-                                'Transaction Time': e.tDateTime.toString(),
-                                'Transaction PaymentMode': e.tPaymentMode,
-                                'Transaction Created At': e.tCreatedAt.toString(),
-                              };
-                            }).toList();
-          
-                            createFile(jsonData, masterPassword!);
-                          } else {
-                            masterPassword = masterPasswordController.text;
-                            masterPassword = encryptMasterKey(masterPassword!,
-                                "5a7b3c1eab9fd67032b164fae0c9d8b2");
-                            Navigator.pop(context);
-                            masterPasswordController.clear();
-                            importDatabase(masterPassword!);
-                          }
-                        } else {
-                          masterPasswordController.clear();
-                        }
-                      },
-                      child: Text(
-                        "Save",
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.onPrimary),
-                      )),
-                ],
               ),
-            );}
+              actions: <Widget>[
+                GestureDetector(
+                    onTap: () {
+                      masterPasswordController.clear();
+                      Navigator.pop(context);
+                    },
+                    child: Text(
+                      "Cancel",
+                      style: TextStyle(color: PrimaryColor.colorRed),
+                    )),
+                const SizedBox(
+                  width: 07,
+                ),
+                GestureDetector(
+                    onTap: () {
+                      if (formKey.currentState!.validate()) {
+                        if (id == 0) {
+                          masterPassword = masterPasswordController.text;
+                          masterPassword = encryptMasterKey(masterPassword!,
+                              "5a7b3c1eab9fd67032b164fae0c9d8b2");
+                          masterPasswordController.clear();
+                          Navigator.pop(context);
+                          setState(() {
+                            isLoading = true;
+                          });
+                          Box<LocalTransaction> transactionBox =
+                              Hive.box<LocalTransaction>('local_transactions');
+                          List<Map<String, dynamic>> jsonData =
+                              transactionBox.values.map((e) {
+                            return {
+                              'Transaction Id': e.tID,
+                              'User Id': e.userId,
+                              'Transaction Category': e.tCategory,
+                              'Transaction Subcategory': e.tSubcategory,
+                              'Transaction Subcategory Index':
+                                  e.tSubcategoryIndex,
+                              'Transaction Amount': e.tAmount,
+                              'Transaction Note': e.tNote,
+                              'Transaction Time': e.tDateTime.toString(),
+                              'Transaction PaymentMode': e.tPaymentMode,
+                              'Transaction Created At': e.tCreatedAt.toString(),
+                            };
+                          }).toList();
+
+                          createFile(jsonData, masterPassword!);
+                        } else {
+                          masterPassword = masterPasswordController.text;
+                          masterPassword = encryptMasterKey(masterPassword!,
+                              "5a7b3c1eab9fd67032b164fae0c9d8b2");
+                          Navigator.pop(context);
+                          masterPasswordController.clear();
+                          importDatabase(masterPassword!);
+                        }
+                      } else {
+                        masterPasswordController.clear();
+                      }
+                    },
+                    child: Text(
+                      "Save",
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.onPrimary),
+                    )),
+              ],
+            ),
           );
-        
+        });
   }
 
   Future<void> createFile(
       List<Map<String, dynamic>> jsonData, String masterKeyOfFile) async {
-    // String fileName = DateFormat.yMMMd().format(DateTime.now());
-    // googleSignIn = GoogleSignIn(
-    //   scopes: ['https://www.googleapis.com/auth/drive.file'],
-    // );
-    // googleDrive.DriveApi(http.Client());
-    // try {
-    //   final googleSignInAccount = await googleSignIn.signIn();
-    //   final googleSignInAuth = await googleSignInAccount!.authentication;
-    //   final response = await http.post(
-    //     Uri.parse('https://www.googleapis.com/drive/v3/files'),
-    //     headers: {
-    //       'Authorization': 'Bearer ${googleSignInAuth.accessToken}',
-    //       'Content-Type': 'application/json',
-    //     },
-    //     body: convert.jsonEncode({
-    //       'name': 'Vyaya backup ($fileName).txt',
-    //       'mimeType': 'application/json',
-    //     }),
-    //   );
+     String fileName = DateFormat.yMMMd().format(DateTime.now());
+  try {
+    final directory = await getApplicationDocumentsDirectory();
+    final filePath = '${directory.path}/Vyaya_backup_$fileName.txt';
+    String fileContent;
 
-    //   if (response.statusCode == 200) {
-    //     final fileId = convert.jsonDecode(response.body)['id'];
-    //     await writeFileContent(fileId, jsonData, masterKeyOfFile);
-    //   } else {
-    //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-    //       content: Text('Failed to create file'),
-    //     ));
-    //   }
-    // } catch (e) {
-    //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-    //     content: Text('Upload failed'),
-    //   ));
-    // }
-    // setState(() {
-    //   isLoading = false;
-    // });
+    try {
+      final encryptedData = await encryptData(jsonData, encryptionDecryptionKey);
+      fileContent = "$masterKeyOfFile${convert.jsonEncode(encryptedData)}";
+
+      final file = File(filePath);
+      await file.writeAsString(fileContent);
+      log('File saved at: $filePath');
+    } catch (e) {
+      ScaffoldMessenger.of(context)
+                              .showSnackBar(SnackBar(
+                            content: Row(
+                              children: [
+                                const Icon(Icons.error, color: Colors.red),
+                                const SizedBox(width: 10),
+                                Text(
+                                  'Error saving file: $e',
+                                  style: const TextStyle(color: Colors.white),
+                                ),
+                              ],
+                            ),
+                          ));
+      
+      log('Error saving file: $e');
+      return;
+    }
+  } catch (e) {
+    ScaffoldMessenger.of(context)
+                              .showSnackBar(SnackBar(
+                            content: Row(
+                              children: [
+                                const Icon(Icons.error, color: Colors.red),
+                                const SizedBox(width: 10),
+                                Text(
+                                  'Error getting document directory: $e',
+                                  style: const TextStyle(color: Colors.white),
+                                ),
+                              ],
+                            ),
+                          ));
+      
+    log('Error getting document directory: $e');
   }
 
-  Future<void> writeTextToFile(String fileId,
-      List<Map<String, dynamic>> jsonData, String masterKeyOfFile) async {
-    // String fileContent;
-    // googleSignIn = GoogleSignIn(
-    //   scopes: ['https://www.googleapis.com/auth/drive.file'],
-    // );
-    // googleDrive.DriveApi(http.Client());
-
-    // try {
-    //   final encryptedData =
-    //       await encryptData(jsonData, encryptionDecryptionKey);
-
-    //   final googleSignInAccount = await googleSignIn.signIn();
-    //   final googleSignInAuth = await googleSignInAccount!.authentication;
-    //   fileContent = "$masterKeyOfFile${convert.jsonEncode(encryptedData)}";
-    //   final response = await http.patch(
-    //     Uri.parse(
-    //       'https://www.googleapis.com/upload/drive/v3/files/$fileId?uploadType=media',
-    //     ),
-    //     headers: {
-    //       'Authorization': 'Bearer ${googleSignInAuth.accessToken}',
-    //       'Content-Type': 'text/plain',
-    //     },
-    //     body: fileContent,
-    //   );
-
-    //   if (response.statusCode == 200) {
-    //     String fileName = DateFormat.yMMMd().format(DateTime.now());
-    //     final renameResponse = await http.patch(
-    //       Uri.parse(
-    //         'https://www.googleapis.com/drive/v3/files/$fileId',
-    //       ),
-    //       headers: {
-    //         'Authorization': 'Bearer ${googleSignInAuth.accessToken}',
-    //         'Content-Type': 'application/json',
-    //       },
-    //       body: convert.jsonEncode({
-    //         'name': 'Vyaya backup ($fileName).txt',
-    //       }),
-    //     );
-    //     setState(() {
-    //       isLoading = false;
-    //     });
-    //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-    //       content: Row(
-    //         children: [
-    //           Icon(Icons.check_circle, color: Colors.green),
-    //           SizedBox(width: 10),
-    //           Text(
-    //             'Backup Uploaded successfully',
-    //             style: TextStyle(color: Colors.green),
-    //           ),
-    //         ],
-    //       ),
-    //     ));
-    //     String lastBackup = DateFormat.yMMMd().format(DateTime.now());
-    //     final sharedPreferences = await SharedPreferences.getInstance();
-    //     await sharedPreferences.setBool('sync', true);
-    //     await sharedPreferences.setString('masterPassword', masterKeyOfFile);
-    //     await sharedPreferences.setString('fileId', fileId);
-    //     await sharedPreferences.setString('lastUpdated', lastBackup);
-    //   } else if (response.statusCode == 404) {
-    //   } else {
-    //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-    //       content: Row(
-    //         children: [
-    //           Icon(Icons.warning, color: Colors.orange),
-    //           SizedBox(width: 10),
-    //           Text(
-    //             'Failed to update',
-    //             style: TextStyle(color: Colors.orange),
-    //           ),
-    //         ],
-    //       ),
-    //     ));
-    //   }
-    // } catch (e) {
-    //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-    //     content: Row(
-    //       children: [
-    //         Icon(Icons.error, color: Colors.red),
-    //         SizedBox(width: 10),
-    //         Text(
-    //           'Sync failed',
-    //           style: TextStyle(color: Colors.red),
-    //         ),
-    //       ],
-    //     ),
-    //   ));
-    // }
+  setState(() {
+    isLoading = false;
+  });
   }
 
-  Future<void> removeTextFromFile(String fileId,
-      List<Map<String, dynamic>> jsonData, String masterKeyOfFile) async {
-    // googleSignIn = GoogleSignIn(
-    //   scopes: ['https://www.googleapis.com/auth/drive.file'],
-    // );
-    // googleDrive.DriveApi(http.Client());
-
-    // try {
-    //   final googleSignInAccount = await googleSignIn.signIn();
-    //   final googleSignInAuth = await googleSignInAccount!.authentication;
-
-    //   final response = await http.patch(
-    //     Uri.parse(
-    //       'https://www.googleapis.com/upload/drive/v3/files/$fileId?uploadType=media',
-    //     ),
-    //     headers: {
-    //       'Authorization': 'Bearer ${googleSignInAuth.accessToken}',
-    //       'Content-Type': 'text/plain',
-    //     },
-    //     body: '',
-    //   );
-
-    //   if (response.statusCode == 200) {
-    //     writeTextToFile(fileId, jsonData, masterKeyOfFile);
-    //   } else if (response.statusCode == 404) {
-    //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-    //       content: Row(
-    //         children: [
-    //           Icon(Icons.check_circle, color: Colors.red),
-    //           SizedBox(width: 10),
-    //           Text(
-    //             'File Does not Exist',
-    //             style: TextStyle(color: Colors.red),
-    //           ),
-    //         ],
-    //       ),
-    //     ));
-    //     createFile(jsonData, masterKeyOfFile);
-    //   } else {
-    //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-    //       content: Row(
-    //         children: [
-    //           Icon(Icons.warning, color: Colors.orange),
-    //           SizedBox(width: 10),
-    //           Text(
-    //             'Failed to Sync Data',
-    //             style: TextStyle(color: Colors.orange),
-    //           ),
-    //         ],
-    //       ),
-    //     ));
-    //   }
-    // } catch (e) {
-    //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-    //     content: Row(
-    //       children: [
-    //         Icon(Icons.error, color: Colors.red),
-    //         SizedBox(width: 10),
-    //         Text(
-    //           'Failed to Data Sync',
-    //           style: TextStyle(color: Colors.red),
-    //         ),
-    //       ],
-    //     ),
-    //   ));
-    // }
-    // setState(() {
-    //   isLoading = false;
-    // });
-  }
-
+  
   String encryptMasterKey(String data, String key) {
     final plainText = utf8.encode(data);
     final encryptionKey = encrypt.Key.fromUtf8(key);
@@ -824,74 +692,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future<void> writeFileContent(String fileId,
       List<Map<String, dynamic>> jsonData, String masterKeyOfFile) async {
-    // String fileContent;
-    // googleSignIn = GoogleSignIn(
-    //   scopes: ['https://www.googleapis.com/auth/drive.file'],
-    // );
-    // googleDrive.DriveApi(http.Client());
-    // try {
-    //   final encryptedData =
-    //       await encryptData(jsonData, encryptionDecryptionKey);
-    //   final googleSignInAccount = await googleSignIn.signIn();
-    //   final googleSignInAuth = await googleSignInAccount!.authentication;
-    //   fileContent = "$masterKeyOfFile${convert.jsonEncode(encryptedData)}";
-    //   final response = await http.patch(
-    //     Uri.parse(
-    //         'https://www.googleapis.com/upload/drive/v3/files/$fileId?uploadType=media'),
-    //     headers: {
-    //       'Authorization': 'Bearer ${googleSignInAuth.accessToken}',
-    //       'Content-Type': 'application/json',
-    //     },
-    //     body: fileContent,
-    //   );
+    String fileContent;
+  try {
+    final encryptedData = await encryptData(jsonData, encryptionDecryptionKey);
+    fileContent = "$masterKeyOfFile${convert.jsonEncode(encryptedData)}";
+    final directory = await getApplicationDocumentsDirectory();
+    final fileName = DateFormat.yMMMd().format(DateTime.now());
+    final filePath = '${directory.path}/Vyaya_backup_$fileName.txt';
+    final file = File(filePath);
+    await file.writeAsString(fileContent);
 
-    //   if (response.statusCode == 200) {
-    //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-    //       content: Row(
-    //         children: [
-    //           Icon(Icons.check_circle, color: Colors.green),
-    //           SizedBox(width: 10),
-    //           Text(
-    //             'File Uploaded successfully',
-    //             style: TextStyle(color: Colors.green),
-    //           ),
-    //         ],
-    //       ),
-    //     ));
-    //     String lastBackup = DateFormat.yMMMd().format(DateTime.now());
-    //     final sharedPreferences = await SharedPreferences.getInstance();
-    //     await sharedPreferences.setBool('sync', true);
-    //     await sharedPreferences.setString('masterPassword', masterKeyOfFile);
-    //     await sharedPreferences.setString('fileId', fileId);
-    //     await sharedPreferences.setString('lastUpdated', lastBackup);
-    //   } else {
-    //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-    //       content: Row(
-    //         children: [
-    //           Icon(Icons.warning, color: Colors.orange),
-    //           SizedBox(width: 10),
-    //           Text(
-    //             'Empty File is Created',
-    //             style: TextStyle(color: Colors.orange),
-    //           ),
-    //         ],
-    //       ),
-    //     ));
-    //   }
-    // } catch (e) {
-    //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-    //     content: Row(
-    //       children: [
-    //         Icon(Icons.error, color: Colors.red),
-    //         SizedBox(width: 10),
-    //         Text(
-    //           'Upload failed',
-    //           style: TextStyle(color: Colors.red),
-    //         ),
-    //       ],
-    //     ),
-    //   ));
-    // }
+    log('File saved at: $filePath');
+  } catch (e) {
+    log('Error saving file: $e');
+  }
   }
 
   Future<ServiceAccountCredentials> obtainCredentials() async {

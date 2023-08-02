@@ -1,95 +1,3 @@
-// import 'package:flutter/material.dart';
-
-// class DetailHomeScreen extends StatefulWidget {
-//   const DetailHomeScreen({Key? key}) : super(key: key);
-
-//   @override
-//   State<DetailHomeScreen> createState() => _DetailHomeScreenState();
-// }
-
-// class _DetailHomeScreenState extends State<DetailHomeScreen> {
-//   @override
-//   Widget build(BuildContext context) {
-// return Scaffold(
-//   appBar: AppBar(
-//     title: const Text('Home Screen'),
-//   ),
-//   body: MediaQuery.of(context).size.width < 600
-//       ? _buildMobileTabletView()
-//       : _buildDesktopLargeScreenView(),
-// );
-//   }
-
-// Widget _buildMobileTabletView() {
-//   return Padding(
-//     padding: const EdgeInsets.all(16.0),
-//     child: Column(
-//       crossAxisAlignment: CrossAxisAlignment.start,
-//       children: [
-//         _buildDateRangePicker(),
-//         const SizedBox(height: 16),
-//         _buildFilterOptions(),
-//         const SizedBox(height: 16),
-//         _buildApplyButton(),
-//       ],
-//     ),
-//   );
-// }
-
-//   Widget _buildDesktopLargeScreenView() {
-//     return Row(
-//       mainAxisAlignment: MainAxisAlignment.center,
-//       children: [
-//         Expanded(
-//           child: Padding(
-//             padding: const EdgeInsets.all(16.0),
-//             child: Column(
-//               crossAxisAlignment: CrossAxisAlignment.start,
-//               children: [
-//                 _buildDateRangePicker(),
-//                 const SizedBox(height: 16),
-//                 _buildFilterOptions(),
-//                 const SizedBox(height: 16),
-//                 _buildApplyButton(),
-//               ],
-//             ),
-//           ),
-//         ),
-//         const VerticalDivider(thickness: 1, width: 1),
-//         Expanded(
-//           child: Padding(
-//             padding: const EdgeInsets.all(16.0),
-//             child: _buildResultSection(),
-//           ),
-//         ),
-//       ],
-//     );
-//   }
-
-//   Widget _buildDateRangePicker() {
-//     // Replace this with your date range picker implementation
-//     return const Text('Date Range Picker');
-//   }
-
-//   Widget _buildFilterOptions() {
-//     // Replace this with your filter options implementation
-//     return const Text('Filter Options');
-//   }
-
-//   Widget _buildApplyButton() {
-//     return ElevatedButton(
-//       onPressed: () {
-//       },
-//       child: const Text('Apply Filters'),
-//     );
-//   }
-
-//   Widget _buildResultSection() {
-//     // Replace this with your result section implementation
-//     return const Text('Filtered Results');
-//   }
-// }
-
 import 'package:expenses_tracker/screens/pf_screen.dart';
 import 'package:expenses_tracker/screens/transaction_screen.dart';
 import 'package:expenses_tracker/screens/transactions_of_month.dart';
@@ -212,6 +120,8 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
     double screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
+      
+      backgroundColor: Theme.of(context).colorScheme.primary,
       body: MediaQuery.of(context).size.width < 600
           ? _buildMobileTabletView(screenWidth, screenHeight)
           : _buildDesktopLargeScreenView(screenWidth, screenHeight),
@@ -219,7 +129,9 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
   }
 
   Widget _buildDesktopLargeScreenView(double screenWidth, double screenHeight) {
-    return Row(
+    return isLoading == true
+          ? Center(child: CircularProgressIndicator(color:PrimaryColor.colorBlue))
+          : Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Expanded(
@@ -449,11 +361,28 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
           child: Container(
             height: MediaQuery.of(context).size.height,
             padding: const EdgeInsets.all(8.0),
-            child: SingleChildScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              child: TransactionList(
-                transactionList: currentMonthTransactions,
-              ),
+            child: Column(
+              children: [
+                SizedBox(height: MediaQuery.sizeOf(context).height * 0.007,),
+                Text(
+                  'Monthly Transactions',
+                  style: TextStyle(
+                      decorationColor: Theme.of(context).colorScheme.onPrimary,
+                      color: Theme.of(context).colorScheme.onPrimary,
+                      fontSize: MediaQuery.sizeOf(context).height * 0.027),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height:MediaQuery.of(context).size.height*0.010),
+                
+                Expanded(
+                  child: SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    child: TransactionList(
+                      transactionList: currentMonthTransactions,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -1665,6 +1594,7 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
               customTextSize: screenHeight * 0.022,
             ),
             content: SizedBox(
+              width:screenWidth *1/3,
               height: screenHeight * 1 / 3,
               child: SingleChildScrollView(
                 child: Form(
