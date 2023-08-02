@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
+import 'package:flutter/services.dart';
 import '../model/localtransaction.dart';
 import '../model/transaction.dart';
 import '../utils/const.dart';
+import 'dart:developer';
 import '../utils/functions.dart';
 import '../utils/validation.dart';
 import '../widgets/custom_no_data.dart';
@@ -27,8 +28,8 @@ class _FilterTransactionState extends State<FilterTransaction> {
   DateTime? _startDate;
   DateTime? _endDate;
   String? uid;
+  String? tPaymentOption;
   bool isLoading = false;
-  int? categoryTypeValue;
   static List<AllTransactionDetails> currentPageTransactions = [];
   static List<LocalTransaction> betweenDatesTransaction = [];
   final TextEditingController startDateController = TextEditingController();
@@ -41,7 +42,7 @@ class _FilterTransactionState extends State<FilterTransaction> {
   void initState() {
     super.initState();
     uid = UserData.currentUserId;
-    categoryTypeValue =1;
+    tPaymentOption='all';
     currentPageTransactions.clear();
     greaterAmountController.text="0";
     lesserAmountController.text="5000";
@@ -128,22 +129,66 @@ class _FilterTransactionState extends State<FilterTransaction> {
     _endDate =
         DateTime(_endDate!.year, _endDate!.month, _endDate!.day, 23, 59, 59);
     final transactions = await getAllLocalTransactions();
-
-    final filteredTransactions = transactions.where((transaction) {
-      // const transactionGreaterAmount=0;
-      // const transactionLesserAmount=5000;
-      final transactionDate = transaction.tDateTime;
+    
+      log("$tPaymentOption  $selectedPaymentOption");
+      final filteredTransactions = transactions.where((transaction) {
+        final transactionDate = transaction.tDateTime;
+      if (selectedCategory == TransactionCategory.income && selectedPaymentOption != TransactionPaymentOption.all) {
       return transactionDate.isAfter(_startDate!) &&
           transactionDate.isBefore(_endDate!) &&
-          greaterAmount<transaction.tAmount &&
-          lesserAmount>transaction.tAmount &&
+          greaterAmount < transaction.tAmount &&
+          tPaymentOption== transaction.tPaymentMode &&
+          lesserAmount > transaction.tAmount &&
+          (transaction.tCategory == 0 || transaction.tCategory == 3) &&
           UserData.currentUserId == transaction.userId;
-    }).toList();
-
+    } else if(selectedCategory == TransactionCategory.expenses  && selectedPaymentOption != TransactionPaymentOption.all)
+    {
+      return transactionDate.isAfter(_startDate!) &&
+          transactionDate.isBefore(_endDate!) &&
+          greaterAmount < transaction.tAmount &&
+          lesserAmount > transaction.tAmount &&
+          transaction.tCategory == 1 &&
+          tPaymentOption== transaction.tPaymentMode &&
+          UserData.currentUserId == transaction.userId;}
+    else if (selectedCategory == TransactionCategory.income && selectedPaymentOption == TransactionPaymentOption.all) {
+      return transactionDate.isAfter(_startDate!) &&
+          transactionDate.isBefore(_endDate!) &&
+          greaterAmount < transaction.tAmount &&
+          lesserAmount > transaction.tAmount &&
+          (transaction.tCategory == 0 || transaction.tCategory == 3) &&
+          UserData.currentUserId == transaction.userId;
+    } else if(selectedCategory == TransactionCategory.expenses  && selectedPaymentOption == TransactionPaymentOption.all)
+    {
+      return transactionDate.isAfter(_startDate!) &&
+          transactionDate.isBefore(_endDate!) &&
+          greaterAmount < transaction.tAmount &&
+          lesserAmount > transaction.tAmount &&
+          transaction.tCategory == 1 &&
+          UserData.currentUserId == transaction.userId;}
+    else if(selectedCategory == TransactionCategory.all  && selectedPaymentOption != TransactionPaymentOption.all){
+      return transactionDate.isAfter(_startDate!) &&
+          transactionDate.isBefore(_endDate!) &&
+          tPaymentOption== transaction.tPaymentMode &&
+          greaterAmount < transaction.tAmount &&
+          lesserAmount > transaction.tAmount &&
+          UserData.currentUserId == transaction.userId;
+    }
+    else{
+      return transactionDate.isAfter(_startDate!) &&
+          transactionDate.isBefore(_endDate!) &&
+          greaterAmount < transaction.tAmount &&
+          lesserAmount > transaction.tAmount &&
+          UserData.currentUserId == transaction.userId;
+    }
+  }).toList();    
     filteredTransactions.sort((a, b) => a.tDateTime.compareTo(b.tDateTime));
-
+ 
+    
+  
     return filteredTransactions;
   }
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -519,105 +564,86 @@ class _FilterTransactionState extends State<FilterTransaction> {
                           ),
                           SizedBox(
                               height: MediaQuery.sizeOf(context).height * 0.02),
-                          TextFormField(
-                            keyboardType: TextInputType.number,
-                            controller: greaterAmountController,
-                            
-                            style: TextStyle(
-                              color: Theme.of(context).colorScheme.secondary,
-                              fontSize:
-                                  MediaQuery.sizeOf(context).height * 0.018,
-                            ),
-                            onChanged: (value) {
-                              if (value.isEmpty) {
-                              } else {
-                                greaterAmountController.text = value;
-                              }
-                            },
-                            decoration: InputDecoration(
-                              labelText: "Amount Greater Than",
+                        
+                            TextFormField(
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                                LengthLimitingTextInputFormatter(17),
+                              ],
+                              cursorColor:
+                                  Theme.of(context).colorScheme.onPrimary,
+                              style: TextStyle(
+                                  color: Theme.of(context).colorScheme.secondary),
+                              controller: greaterAmountController,
+                              validator: amountValidator,
+                              decoration: InputDecoration(
+                                labelText: "Amount Greater Than",
                               labelStyle: TextStyle(
                                 fontSize:
                                     MediaQuery.sizeOf(context).height * 0.018,
                                 color: Theme.of(context).colorScheme.onPrimary,
                               ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color:
-                                      Theme.of(context).colorScheme.onPrimary,
+                          
+                                hintText: "Enter Greater Amount",
+                                prefixIconConstraints:
+                                    const BoxConstraints.tightFor(
+                                        height: 05, width: 35),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color:
+                                        Theme.of(context).colorScheme.secondary,
+                                  ),
                                 ),
-                              ),
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color:
-                                      Theme.of(context).colorScheme.secondary,
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color:
+                                        Theme.of(context).colorScheme.onPrimary,
+                                  ),
                                 ),
-                              ),
-                              hintText: "Enter Amount",
-                              
-                              hintStyle:
-                                  TextStyle(color: Theme.of(context).hintColor),
-                              prefixIcon: Icon(
-                                Icons.filter_list,
-                                color: Theme.of(context).colorScheme.secondary,
-                              ),
-                              prefixIconConstraints:
-                                  const BoxConstraints.tightFor(
-                                height: 25,
-                                width: 50,
                               ),
                             ),
-                          ),
                           SizedBox(
                               height: MediaQuery.sizeOf(context).height * 0.02),
-                          TextFormField(
-                            keyboardType: TextInputType.number,
-                            controller: lesserAmountController,
-                            style: TextStyle(
-                              color: Theme.of(context).colorScheme.secondary,
-                              fontSize:
-                                  MediaQuery.sizeOf(context).height * 0.018,
-                            ),
-                            onChanged: (value) {
-                              // if (value.isEmpty) {
-                              //   amountLesser = null;
-                              // } else {
-                              //   amountLesser = double.tryParse(value);
-                              // }
-                            },
-                            decoration: InputDecoration(
-                              labelText: "Amount Less Than",
+                          
+                            TextFormField(
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                                LengthLimitingTextInputFormatter(17),
+                              ],
+                              cursorColor:
+                                  Theme.of(context).colorScheme.onPrimary,
+                              style: TextStyle(
+                                  color: Theme.of(context).colorScheme.secondary),
+                              controller: lesserAmountController,
+                              validator: amountValidator,
+                              decoration: InputDecoration(
+                              labelText: "Amount Lesser Than",
                               labelStyle: TextStyle(
                                 fontSize:
                                     MediaQuery.sizeOf(context).height * 0.018,
                                 color: Theme.of(context).colorScheme.onPrimary,
                               ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color:
-                                      Theme.of(context).colorScheme.onPrimary,
+                          
+                                hintText: "Enter Lesser Amount",
+                                prefixIconConstraints:
+                                    const BoxConstraints.tightFor(
+                                        height: 05, width: 35),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color:
+                                        Theme.of(context).colorScheme.secondary,
+                                  ),
                                 ),
-                              ),
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color:
-                                      Theme.of(context).colorScheme.secondary,
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color:
+                                        Theme.of(context).colorScheme.onPrimary,
+                                  ),
                                 ),
-                              ),
-                              hintText: "Enter Amount",
-                              hintStyle:
-                                  TextStyle(color: Theme.of(context).hintColor),
-                              prefixIcon: Icon(
-                                Icons.filter_list,
-                                color: Theme.of(context).colorScheme.secondary,
-                              ),
-                              prefixIconConstraints:
-                                  const BoxConstraints.tightFor(
-                                height: 25,
-                                width: 50,
                               ),
                             ),
-                          ),
                           SizedBox(
                               height: MediaQuery.sizeOf(context).height * 0.02),
                           Text(
@@ -695,86 +721,86 @@ class _FilterTransactionState extends State<FilterTransaction> {
                           ),
                           SizedBox(
                               height: MediaQuery.sizeOf(context).height * 0.02),
-                          Text(
-                            "Subcategory",
-                            style: TextStyle(
-                                color: Theme.of(context).colorScheme.secondary),
-                            textAlign: TextAlign.left,
-                          ),
-                          selectedCategory == TransactionCategory.all
-                              ? Column(
-                                children: [
-                                  ListView.builder(
-                                      shrinkWrap: true,
-                                      itemCount: ListOfAppData.listOfCategory.length,
-                                      itemBuilder: (context, index) {
-                                        return CheckboxListTile(
-                                          activeColor: PrimaryColor.colorBottleGreen,
-                                    checkColor:
-                                        Theme.of(context).colorScheme.primary,
-                                          title: Text('${ListOfAppData.listOfCategory[index].categoryText}'),
-                                          value:ListOfAppData.listOfCategory[index].isSelected, 
-                                          onChanged: (bool? value) {
-                                            setState(() {
-                                              ListOfAppData.listOfCategory[index].isSelected= !ListOfAppData.listOfCategory[index].isSelected!;  
-                                            });                                            
-                                          },
-                                        );
-                                      }),
-                                  ListView.builder(
-                                      shrinkWrap: true,
-                                      itemCount: ListOfAppData.listOfIncome.length,
-                                      itemBuilder: (context, index) {
-                                        return CheckboxListTile(
-                                          activeColor: PrimaryColor.colorBottleGreen,
-                                    checkColor:
-                                        Theme.of(context).colorScheme.primary,
-                                          title: Text('${ListOfAppData.listOfIncome[index].categoryText}'),
-                                          value:ListOfAppData.listOfIncome[index].isSelected, 
-                                          onChanged: (bool? value) {
-                                            setState(() {
-                                              ListOfAppData.listOfIncome[index].isSelected=!ListOfAppData.listOfIncome[index].isSelected!;  
-                                            });                                            
-                                          },
-                                        );
-                                      }),
-                                ],
-                              )
-                              : selectedCategory == TransactionCategory.expenses
-                                  ? ListView.builder(
-                                      shrinkWrap: true,
-                                      itemCount: ListOfAppData.listOfCategory.length,
-                                      itemBuilder: (context, index) {
-                                        return CheckboxListTile(
-                                          activeColor: PrimaryColor.colorBottleGreen,
-                                    checkColor:
-                                        Theme.of(context).colorScheme.primary,
-                                          title: Text('${ListOfAppData.listOfCategory[index].categoryText}'),
-                                          value:ListOfAppData.listOfCategory[index].isSelected, 
-                                          onChanged: (bool? value) {
-                                            setState(() {
-                                              ListOfAppData.listOfCategory[index].isSelected= !ListOfAppData.listOfCategory[index].isSelected!;  
-                                            });                                            
-                                          },
-                                        );
-                                      })
-                                  : ListView.builder(
-                                      shrinkWrap: true,
-                                      itemCount: ListOfAppData.listOfIncome.length,
-                                      itemBuilder: (context, index) {
-                                        return CheckboxListTile(
-                                          activeColor: PrimaryColor.colorBottleGreen,
-                                    checkColor:
-                                        Theme.of(context).colorScheme.primary,
-                                          title: Text('${ListOfAppData.listOfIncome[index].categoryText}'),
-                                          value:ListOfAppData.listOfIncome[index].isSelected, 
-                                          onChanged: (bool? value) {
-                                            setState(() {
-                                              ListOfAppData.listOfIncome[index].isSelected=!ListOfAppData.listOfIncome[index].isSelected!;  
-                                            });                                            
-                                          },
-                                        );
-                                      }),
+                          // Text(
+                          //   "Subcategory",
+                          //   style: TextStyle(
+                          //       color: Theme.of(context).colorScheme.secondary),
+                          //   textAlign: TextAlign.left,
+                          // ),
+                          // selectedCategory == TransactionCategory.all
+                          //     ? Column(
+                          //       children: [
+                          //         ListView.builder(
+                          //             shrinkWrap: true,
+                          //             itemCount: ListOfAppData.listOfCategory.length,
+                          //             itemBuilder: (context, index) {
+                          //               return CheckboxListTile(
+                          //                 activeColor: PrimaryColor.colorBottleGreen,
+                          //           checkColor:
+                          //               Theme.of(context).colorScheme.primary,
+                          //                 title: Text('${ListOfAppData.listOfCategory[index].categoryText}'),
+                          //                 value:ListOfAppData.listOfCategory[index].isSelected, 
+                          //                 onChanged: (bool? value) {
+                          //                   setState(() {
+                          //                     ListOfAppData.listOfCategory[index].isSelected= !ListOfAppData.listOfCategory[index].isSelected!;  
+                          //                   });                                            
+                          //                 },
+                          //               );
+                          //             }),
+                          //         ListView.builder(
+                          //             shrinkWrap: true,
+                          //             itemCount: ListOfAppData.listOfIncome.length,
+                          //             itemBuilder: (context, index) {
+                          //               return CheckboxListTile(
+                          //                 activeColor: PrimaryColor.colorBottleGreen,
+                          //           checkColor:
+                          //               Theme.of(context).colorScheme.primary,
+                          //                 title: Text('${ListOfAppData.listOfIncome[index].categoryText}'),
+                          //                 value:ListOfAppData.listOfIncome[index].isSelected, 
+                          //                 onChanged: (bool? value) {
+                          //                   setState(() {
+                          //                     ListOfAppData.listOfIncome[index].isSelected=!ListOfAppData.listOfIncome[index].isSelected!;  
+                          //                   });                                            
+                          //                 },
+                          //               );
+                          //             }),
+                          //       ],
+                          //     )
+                          //     : selectedCategory == TransactionCategory.expenses
+                          //         ? ListView.builder(
+                          //             shrinkWrap: true,
+                          //             itemCount: ListOfAppData.listOfCategory.length,
+                          //             itemBuilder: (context, index) {
+                          //               return CheckboxListTile(
+                          //                 activeColor: PrimaryColor.colorBottleGreen,
+                          //           checkColor:
+                          //               Theme.of(context).colorScheme.primary,
+                          //                 title: Text('${ListOfAppData.listOfCategory[index].categoryText}'),
+                          //                 value:ListOfAppData.listOfCategory[index].isSelected, 
+                          //                 onChanged: (bool? value) {
+                          //                   setState(() {
+                          //                     ListOfAppData.listOfCategory[index].isSelected= !ListOfAppData.listOfCategory[index].isSelected!;  
+                          //                   });                                            
+                          //                 },
+                          //               );
+                          //             })
+                          //         : ListView.builder(
+                          //             shrinkWrap: true,
+                          //             itemCount: ListOfAppData.listOfIncome.length,
+                          //             itemBuilder: (context, index) {
+                          //               return CheckboxListTile(
+                          //                 activeColor: PrimaryColor.colorBottleGreen,
+                          //           checkColor:
+                          //               Theme.of(context).colorScheme.primary,
+                          //                 title: Text('${ListOfAppData.listOfIncome[index].categoryText}'),
+                          //                 value:ListOfAppData.listOfIncome[index].isSelected, 
+                          //                 onChanged: (bool? value) {
+                          //                   setState(() {
+                          //                     ListOfAppData.listOfIncome[index].isSelected=!ListOfAppData.listOfIncome[index].isSelected!;  
+                          //                   });                                            
+                          //                 },
+                          //               );
+                          //             }),
                           SizedBox(
                               height: MediaQuery.sizeOf(context).height * 0.02),
                           Text(
@@ -801,6 +827,7 @@ class _FilterTransactionState extends State<FilterTransaction> {
                                   groupValue: selectedPaymentOption,
                                   onChanged: (TransactionPaymentOption? value) {
                                     setState(() {
+                                      tPaymentOption='all';
                                       selectedPaymentOption = value!;
                                     });
                                   },
@@ -822,6 +849,7 @@ class _FilterTransactionState extends State<FilterTransaction> {
                                   groupValue: selectedPaymentOption,
                                   onChanged: (TransactionPaymentOption? value) {
                                     setState(() {
+                                      tPaymentOption='Cash';
                                       selectedPaymentOption = value!;
                                     });
                                   },
@@ -843,6 +871,7 @@ class _FilterTransactionState extends State<FilterTransaction> {
                                   groupValue: selectedPaymentOption,
                                   onChanged: (TransactionPaymentOption? value) {
                                     setState(() {
+                                      tPaymentOption='Bank';
                                       selectedPaymentOption = value!;
                                     });
                                   },
@@ -869,6 +898,7 @@ class _FilterTransactionState extends State<FilterTransaction> {
                                   groupValue: selectedPaymentOption,
                                   onChanged: (TransactionPaymentOption? value) {
                                     setState(() {
+                                      tPaymentOption='Credit / Debit Card';
                                       selectedPaymentOption = value!;
                                     });
                                   },
@@ -890,6 +920,7 @@ class _FilterTransactionState extends State<FilterTransaction> {
                                   groupValue: selectedPaymentOption,
                                   onChanged: (TransactionPaymentOption? value) {
                                     setState(() {
+                                      tPaymentOption='UPI';
                                       selectedPaymentOption = value!;
                                     });
                                   },

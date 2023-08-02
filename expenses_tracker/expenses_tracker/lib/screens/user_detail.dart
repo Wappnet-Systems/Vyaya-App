@@ -203,7 +203,7 @@ class _UserDetailState extends State<UserDetail> {
                               color: PrimaryColor.colorBottleGreen,
                             ),
                             width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).size.height / 18,
+                            height: MediaQuery.of(context).size.height * 0.070,
                             padding: const EdgeInsets.all(12),
                             child: widget.id == 1
                                 ? Text(
@@ -212,8 +212,8 @@ class _UserDetailState extends State<UserDetail> {
                                         color: PrimaryColor.colorWhite,
                                         fontWeight: FontWeight.w400,
                                         fontSize:
-                                            MediaQuery.of(context).size.height /
-                                                50),
+                                            MediaQuery.of(context).size.height *
+                                                0.020),
                                   )
                                 : Text(
                                     "Save",
@@ -221,8 +221,8 @@ class _UserDetailState extends State<UserDetail> {
                                         color: PrimaryColor.colorWhite,
                                         fontWeight: FontWeight.w400,
                                         fontSize:
-                                            MediaQuery.of(context).size.height /
-                                                50),
+                                            MediaQuery.of(context).size.height *
+                                                0.020),
                                   ))),
                   ],
                 ),

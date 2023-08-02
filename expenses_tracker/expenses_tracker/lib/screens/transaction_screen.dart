@@ -291,7 +291,8 @@ class _TransactionScreenState extends State<TransactionScreen> {
                             width: 10,
                           ),
                           Flexible(
-                            child: TextFormField(
+                            child: 
+                            TextFormField(
                               keyboardType: TextInputType.number,
                               inputFormatters: [
                                 FilteringTextInputFormatter.digitsOnly,

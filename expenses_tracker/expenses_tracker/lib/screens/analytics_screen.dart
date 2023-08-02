@@ -76,6 +76,11 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
         .toList();
 
     filteredTransactions.sort((a, b) => a.tDateTime.compareTo(b.tDateTime));
+
+    for (var transaction in filteredTransactions) {
+    log('Transaction Payment Opion: ${transaction.tPaymentMode}');
+  }
+
     return filteredTransactions;
   }
 
@@ -1196,7 +1201,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                   ],
                 ),
                 SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.150,
+                  height: MediaQuery.of(context).size.height * 0.160,
                   width: MediaQuery.of(context).size.width,
                   child: Card(
                     color: Theme.of(context).cardColor,

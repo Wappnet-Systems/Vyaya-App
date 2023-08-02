@@ -578,7 +578,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final directory = await getApplicationDocumentsDirectory();
     final filePath = '${directory.path}/Vyaya_backup_$fileName.txt';
     String fileContent;
-
     try {
       final encryptedData = await encryptData(jsonData, encryptionDecryptionKey);
       fileContent = "$masterKeyOfFile${convert.jsonEncode(encryptedData)}";
