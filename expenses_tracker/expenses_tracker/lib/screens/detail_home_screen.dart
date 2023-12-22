@@ -77,7 +77,7 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
   static List<LocalTransaction> beforeMonthTransactionsList = [];
 
   static List<int> incomeOfTheMonthPf = [];
-  static List<int> incomdeBeforeMonthPf = [];
+  // static List<int> incomeBeforeMonthPf = [];
 
   static int? incomeOfTheMonthValue = 00;
   static int? incomeForPersonalFinance = 00;
@@ -86,10 +86,10 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
   static int? balanceOfTheMonthPfValue = 00;
 
   static int? incomeBeforeMonth = 00;
-  static int? incomeForBeforeMonthPersonalFinance = 00;
+  // static int? incomeForBeforeMonthPersonalFinance = 00;
   static int? spendingBeforeMonth = 00;
   static int? balanceBeforeMonth = 00;
-  static int? balanceBeforeMonthPfValue = 00;
+  // static int? balanceBeforeMonthPfValue = 00;
 
   static double? needsOfTheMonthValue = 00;
   static double? wantsOfTheMonthValue = 00;
@@ -142,7 +142,7 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                         customTextColor:
                             Theme.of(context).colorScheme.secondary,
                         customTextFontWeight: FontWeight.normal,
-                        customtextstyle: null,
+                        customTextStyle: null,
                         customTextSize: 25.0),
                     const SizedBox(
                       height: 7,
@@ -282,7 +282,7 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                               customTextColor:
                                   Theme.of(context).colorScheme.secondary,
                               customTextFontWeight: FontWeight.w400,
-                              customtextstyle: null,
+                              customTextStyle: null,
                               customTextSize: 20),
                           GestureDetector(
                             onTap: () {
@@ -292,7 +292,7 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                                 customTextStyleText: "Set Manually",
                                 customTextColor: Colors.blueAccent,
                                 customTextFontWeight: FontWeight.w400,
-                                customtextstyle: null,
+                                customTextStyle: null,
                                 customTextSize: 14),
                           ),
                         ],
@@ -310,7 +310,7 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                               customTextColor:
                                   Theme.of(context).colorScheme.secondary,
                               customTextFontWeight: FontWeight.w400,
-                              customtextstyle: null,
+                              customTextStyle: null,
                               customTextSize: 20),
                           GestureDetector(
                             onTap: () {
@@ -326,7 +326,7 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                                 customTextStyleText: "View all",
                                 customTextColor: Colors.blueAccent,
                                 customTextFontWeight: FontWeight.w400,
-                                customtextstyle: null,
+                                customTextStyle: null,
                                 customTextSize: 14),
                           ),
                         ],
@@ -371,34 +371,35 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                     : ShowUpAnimation(
                         animationDuration: const Duration(milliseconds: 1000),
                         direction: Direction.horizontal,
-                        offset: index % 2==0 ?-0.5 :0.5,
+                        offset: index % 2 == 0 ? -0.5 : 0.5,
                         child: GestureDetector(
                             onTap: () {
-                              var curve = Curves.ease;
-                              var zoomTween = Tween<double>(begin: 0.0, end: 1.0).chain(CurveTween(curve: curve));
+                              // var curve = Curves.ease;
+                              // var zoomTween = Tween<double>(begin: 0.0, end: 1.0).chain(CurveTween(curve: curve));
                               Navigator.of(context).push(
                                 ZoomInTransitionRoute(
-                                    page: TransactionScreen(
-                                  id: 2,
-                                  transactionPaymentMode: transactions[index]
-                                      .transactionPaymentMode,
-                                  transactionId: transactions[index].tID,
-                                  transactionNote:
-                                      transactions[index].transactionNote,
-                                  transactionAmount:
-                                      transactions[index].transactionAmount,
-                                  transactionSubcategoryIndex:
-                                      transactions[index]
-                                          .transactionSubcategoryIndex,
-                                  transactionDate:
-                                      "${DateFormat.yMMMd().format(transactions[index].transactionDate!)} ${DateFormat.jm().format(transactions[index].transactionDate!)}",
-                                  transactionSubcategory: transactions[index]
-                                      .transactionSubcategory,
-                                  transactionCategory:
-                                      transactions[index].transactionCategory,
+                                  page: TransactionScreen(
+                                    id: 2,
+                                    transactionPaymentMode: transactions[index]
+                                        .transactionPaymentMode,
+                                    transactionId: transactions[index].tID,
+                                    transactionNote:
+                                        transactions[index].transactionNote,
+                                    transactionAmount:
+                                        transactions[index].transactionAmount,
+                                    transactionSubcategoryIndex:
+                                        transactions[index]
+                                            .transactionSubcategoryIndex,
+                                    transactionDate:
+                                        "${DateFormat.yMMMd().format(transactions[index].transactionDate!)} ${DateFormat.jm().format(transactions[index].transactionDate!)}",
+                                    transactionSubcategory: transactions[index]
+                                        .transactionSubcategory,
+                                    transactionCategory:
+                                        transactions[index].transactionCategory,
+                                  ),
+                                  zoomIn:
+                                      true, // Set to false if you want ZoomOut animation
                                 ),
-                                        zoomIn: true, // Set to false if you want ZoomOut animation
-),
                               );
                             },
                             child: CustomTransaction(
@@ -415,13 +416,9 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                                 transactionNote:
                                     transactions[index].transactionNote,
                                 dateStamp: DateFormat.yMMMd().format(
-                                    transactions[index]
-                                        .transactionDate!
-                                        ),
+                                    transactions[index].transactionDate!),
                                 timeStamp: DateFormat.jm().format(
-                                    transactions[index]
-                                        .transactionDate!
-                                        ))));
+                                    transactions[index].transactionDate!))));
               }),
     );
   }
@@ -848,7 +845,7 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
         notificationLayout: NotificationLayout.BigText,
       ),
       schedule: NotificationCalendar(
-          hour: 21, minute: 0, second: 0, millisecond: 0, repeats: true),
+          hour: 18, minute: 45, second: 0, millisecond: 0, repeats: true),
     );
   }
 
@@ -1209,13 +1206,11 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
     savingProgressValue = (expenseSavingOfTheValue!) / savingOfTheMonthValue!;
     needProgressValue = (expenseNeedsOfTheValue!) / needsOfTheMonthValue!;
     wantProgressValue = (expenseWantsOfTheValue!) / wantsOfTheMonthValue!;
-
     userScore =
         (savingProgressValue! + needProgressValue! + wantProgressValue!) / 3;
     userScore = (userScore! * 100);
     userScore = 100.00 - userScore!;
     userScore = userScore! < 0 ? 0.00 : userScore!;
-
     if (userScore! < 0) {
       userScore = 0.00;
     }
@@ -1280,9 +1275,8 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
         int wants = int.tryParse(wantsController.text) ?? 0;
         int saving = int.tryParse(savingController.text) ?? 0;
         int? finalTotal = needs + wants + saving;
-        return ZoomInOutDialogWrapper(
-          builder: (context){
-            return AlertDialog(
+        return ZoomInOutDialogWrapper(builder: (context) {
+          return AlertDialog(
             scrollable: true,
             backgroundColor: Theme.of(context).colorScheme.primary,
             shape: RoundedRectangleBorder(
@@ -1293,7 +1287,7 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
               customTextStyleText: "Set Personal Finance",
               customTextColor: Theme.of(context).colorScheme.secondary,
               customTextFontWeight: FontWeight.normal,
-              customtextstyle: null,
+              customTextStyle: null,
               customTextSize: screenHeight * 0.022,
             ),
             content: SizedBox(
@@ -1415,7 +1409,8 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                               children: [
                                 Text(
                                   "Please Enter possible values",
-                                  style: TextStyle(color: PrimaryColor.colorRed),
+                                  style:
+                                      TextStyle(color: PrimaryColor.colorRed),
                                 ),
                               ],
                             ),
@@ -1443,7 +1438,7 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                   int wantsValue = int.tryParse(wantsController.text) ?? 0;
                   int savingValue = int.tryParse(savingController.text) ?? 0;
                   finalTotal = needsValue + wantsValue + savingValue;
-        
+
                   if (finalTotal == 100) {
                     pfManager(
                       wantsValue,
@@ -1469,9 +1464,7 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
               ),
             ],
           );
-         
-          }
-          );
+        });
       },
     );
   }
@@ -1510,14 +1503,14 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
         .map((e) => AllTransactionDetails(
             uId: e.userId,
             tID: e.tID,
-            transactionDate:e.tDateTime,
+            transactionDate: e.tDateTime,
             transactionAmount: e.tAmount,
             transactionCategory: e.tCategory,
             transactionSubcategory: e.tSubcategory,
             transactionSubcategoryIndex: e.tSubcategoryIndex,
             transactionNote: e.tNote,
             transactionPaymentMode: e.tPaymentMode,
-            transactionCreatedAt:e.tCreatedAt))
+            transactionCreatedAt: e.tCreatedAt))
         .toList();
   }
 
@@ -1542,11 +1535,11 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
     final currentMonth = now.month;
     final currentYear = now.year;
 
-    final previousTimeTransactions = transactions.where((transaction) {
-      final transactionDate = transaction.tDateTime;
-      return transactionDate.isBefore(DateTime(currentYear, currentMonth, 1)) &&
-          UserData.currentUserId == transaction.userId;
-    }).toList();
+    // final previousTimeTransactions = transactions.where((transaction) {
+    //   final transactionDate = transaction.tDateTime;
+    //   return transactionDate.isBefore(DateTime(currentYear, currentMonth, 1)) &&
+    //       UserData.currentUserId == transaction.userId;
+    // }).toList();
 
     final transactionsThisMonth = transactions.where((transaction) {
       final transactionDate = transaction.tDateTime;

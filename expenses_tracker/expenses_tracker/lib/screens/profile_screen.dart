@@ -1,16 +1,22 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'package:dio/dio.dart' as dio hide FormData;
+import 'package:flutter/material.dart';
+// import 'package:ml_dataframe/ml_dataframe.dart';
+// import 'package:open_file/open_file.dart';
 import 'package:encrypt/encrypt.dart';
+// import 'package:excel/excel.dart';
 import 'package:expenses_tracker/model/localtransaction.dart';
 import 'package:expenses_tracker/screens/privacy_policy.dart';
 import 'package:expenses_tracker/screens/user_detail.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis_auth/auth_io.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
+// import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../utils/const.dart';
 import '../utils/functions.dart';
@@ -255,7 +261,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       //   // trailing: const ChangeThemeButtonWidget(),
                       // ),
                       // const Divider(),
-                      
+
                       ListTile(
                         leading: Icon(
                           Icons.brightness_4,
@@ -300,14 +306,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 context: context,
                                 builder: (BuildContext context) {
                                   return ZoomInOutDialogWrapper(
-          builder: (context){
-            return AlertDialog(
+                                      builder: (context) {
+                                    return AlertDialog(
                                       shape: RoundedRectangleBorder(
                                           side: BorderSide(
                                               color: Theme.of(context)
                                                   .colorScheme
                                                   .secondary),
-                                          borderRadius: BorderRadius.circular(8)),
+                                          borderRadius:
+                                              BorderRadius.circular(8)),
                                       backgroundColor:
                                           Theme.of(context).colorScheme.primary,
                                       title: Text(
@@ -353,15 +360,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                               child: Text(
                                                 "Logout",
                                                 style: TextStyle(
-                                                    color: PrimaryColor.colorRed,
-                                                    fontWeight: FontWeight.bold),
+                                                    color:
+                                                        PrimaryColor.colorRed,
+                                                    fontWeight:
+                                                        FontWeight.bold),
                                               ),
                                             ),
                                           ],
                                         ),
                                       ],
-                                    );}
-                                  );
+                                    );
+                                  });
                                 },
                               );
                             },
@@ -403,8 +412,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         context: context,
         builder: (BuildContext context) {
           var mediaQuery = MediaQuery.of(context);
-          return ZoomInOutDialogWrapper(
-          builder: (context){
+          return ZoomInOutDialogWrapper(builder: (context) {
             return AnimatedContainer(
               padding: mediaQuery.padding,
               duration: const Duration(milliseconds: 300),
@@ -419,10 +427,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     customTextStyleText: titleText,
                     customTextColor: Theme.of(context).colorScheme.secondary,
                     customTextFontWeight: FontWeight.normal,
-                    customtextstyle: null,
+                    customTextStyle: null,
                     customTextSize: MediaQuery.sizeOf(context).height * 0.022),
                 content: SizedBox(
-                  height: MediaQuery.sizeOf(context).height * 0.7 / 3,
+                  height: MediaQuery.sizeOf(context).height * 0.8 / 3,
                   child: Form(
                     autovalidateMode: AutovalidateMode.always,
                     key: formKey,
@@ -474,18 +482,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   vertical: 8, horizontal: 8),
                               focusedBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
-                                    color:
-                                        Theme.of(context).colorScheme.onPrimary),
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onPrimary),
                               ),
                               labelText: "Master Password",
                               labelStyle: const TextStyle(
-                                color: Colors.grey, // Change color based on focus
+                                color:
+                                    Colors.grey, // Change color based on focus
                                 fontSize: 16,
                               ),
                               border: OutlineInputBorder(
                                 borderSide: BorderSide(
-                                    color:
-                                        Theme.of(context).colorScheme.secondary),
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondary),
                               ),
                               hintText: "8 digit password"),
                         ),
@@ -507,41 +518,53 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     width: 07,
                   ),
                   GestureDetector(
-                      onTap: () {
+                      onTap: () async {
                         if (formKey.currentState!.validate()) {
                           if (id == 0) {
                             masterPassword = masterPasswordController.text;
+                            masterPassword =
+                                (masterPassword! + UserData.currentUserEmail!);
                             masterPassword = encryptMasterKey(masterPassword!,
                                 "5a7b3c1eab9fd67032b164fae0c9d8b2");
+                            masterPassword = masterPassword!.substring(0, 24);
                             masterPasswordController.clear();
                             Navigator.pop(context);
                             setState(() {
                               isLoading = true;
                             });
                             Box<LocalTransaction> transactionBox =
-                                Hive.box<LocalTransaction>('local_transactions');
+                                Hive.box<LocalTransaction>(
+                                    'local_transactions');
                             List<Map<String, dynamic>> jsonData =
                                 transactionBox.values.map((e) {
                               return {
-                                'Transaction Id': e.tID,
-                                'User Id': e.userId,
-                                'Transaction Category': e.tCategory,
-                                'Transaction Subcategory': e.tSubcategory,
-                                'Transaction Subcategory Index':
+                                "Transaction Id": e.tID,
+                                "User Id": e.userId,
+                                "Transaction Category": e.tCategory,
+                                "Transaction Subcategory": e.tSubcategory,
+                                "Transaction Subcategory Index":
                                     e.tSubcategoryIndex,
-                                'Transaction Amount': e.tAmount,
-                                'Transaction Note': e.tNote,
-                                'Transaction Time': e.tDateTime.toString(),
-                                'Transaction PaymentMode': e.tPaymentMode,
-                                'Transaction Created At': e.tCreatedAt.toString(),
+                                "Transaction Amount": e.tAmount,
+                                "Transaction Note": e.tNote,
+                                "Transaction Time": e.tDateTime.toString(),
+                                "Transaction PaymentMode": e.tPaymentMode,
+                                "Transaction Created At":
+                                    e.tCreatedAt.toString(),
                               };
                             }).toList();
-          
-                            createFile(jsonData, masterPassword!);
+                            String jsonFormattedData = json.encode(jsonData);
+
+                            log(jsonFormattedData);
+                            // sendDataToServer(jsonFormattedData, 'sahilc.wappnet@gmail.com');
+                            createAndSaveExcel(jsonData);
+                            // createFile(jsonData, masterPassword!);
                           } else {
                             masterPassword = masterPasswordController.text;
+                            masterPassword =
+                                (masterPassword! + UserData.currentUserEmail!);
                             masterPassword = encryptMasterKey(masterPassword!,
                                 "5a7b3c1eab9fd67032b164fae0c9d8b2");
+                            masterPassword = masterPassword!.substring(0, 24);
                             Navigator.pop(context);
                             masterPasswordController.clear();
                             importDatabase(masterPassword!);
@@ -557,10 +580,149 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       )),
                 ],
               ),
-            );}
-          );
+            );
+          });
         });
   }
+
+  void sendDataToServer(String jsonData, String mailId) async {
+    const apiUrl = 'http://192.168.10.116:8000/api/file_processing/';
+
+    try {
+      log(mailId);
+      await dio.Dio().post(
+        apiUrl,
+        data: {'jsonData': jsonData, 'mailId': mailId},
+      ).then((response) {});
+    } catch (e) {
+      log('Error sending data: $e');
+    }
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  void writeJsonToFile(String jsonString, String filePath) {
+    // Open the file for writing
+    File file = File(filePath);
+
+    // Write the JSON data to the file
+    file.writeAsStringSync(jsonString);
+
+    print('Data written to file: $filePath');
+  }
+
+ 
+
+
+
+  Future<void> createAndSaveExcel(List<Map<String, dynamic>> jsonData) async {
+    try {
+   
+      String jsonString = jsonEncode(jsonData);
+
+
+      final directory2 = (await getExternalStorageDirectories(
+              type: StorageDirectory.downloads))!
+          .first;
+      // Specify the file path
+      File file = File("${directory2.path}/test.json");
+
+      // Write JSON data to the file
+      writeJsonToFile(jsonString, file.path);
+
+  // final data = await fromJson(file.path);
+
+
+
+     
+
+      // Check and request storage permission
+      // var status = await Permission.storage.status;
+      // if (!status.isGranted) {
+      //   var result = await Permission.storage.request();
+      //   if (result != PermissionStatus.granted) {
+      //     // Handle the case where the user denies permission
+      //     log('Permission denied for storage');
+      //     return;
+      //   }
+      // }
+      // var excel = Excel.createExcel();
+      // var sheet = excel['Sheet1'];
+
+      // var headerRow = [
+      //   'Transaction Id',
+      //   'User Id',
+      //   'Transaction Category',
+      //   'Transaction Subcategory',
+      //   'Transaction Subcategory Index',
+      //   'Transaction Amount',
+      //   'Transaction Note',
+      //   'Transaction Time',
+      //   'Transaction PaymentMode',
+      //   'Transaction Created At',
+      // ];
+
+      // sheet.appendRow(headerRow);
+      // for (var i = 0; i < jsonData.length; i++) {
+      //   var rowData = [
+      //     jsonData[i]['Transaction Id'],
+      //     jsonData[i]['User Id'],
+      //     jsonData[i]['Transaction Category'],
+      //     jsonData[i]['Transaction Subcategory'],
+      //     jsonData[i]['Transaction Subcategory Index'],
+      //     jsonData[i]['Transaction Amount'],
+      //     jsonData[i]['Transaction Note'],
+      //     jsonData[i]['Transaction Time'],
+      //     jsonData[i]['Transaction PaymentMode'],
+      //     jsonData[i]['Transaction Created At'],
+      //   ];
+      //   sheet.appendRow(rowData);
+      // }
+
+      // final directory2 = (await getExternalStorageDirectories(
+      //         type: StorageDirectory.downloads))!
+      //     .first;
+      // File file2 = File("${directory2.path}/test.xlsx");
+
+      // final directory = await getExternalStorageDirectory();
+      // String filePath = '${directory!.path}/example.xlsx';
+
+      // // Save the Excel file to external storage
+      // await File(file2.path).writeAsBytes(excel.encode()!);
+      // log('Excel file saved to: $file2');
+      // OpenFile.open(filePath);
+      setState(() {
+        isLoading = false;
+      });
+    } catch (e) {
+      log('Error saving Excel file: $e');
+    }
+  }
+
+//   Future<void> createAndSaveExcel() async {
+//   // Create an Excel workbook and add a worksheet
+//   var excel = Excel.createExcel();
+//   var sheet = excel['Sheet1'];
+
+//   // Add data to the worksheet
+//   sheet.appendRow(['Name', 'Age', 'Occupation']);
+//   sheet.appendRow(['John Doe', 25, 'Engineer']);
+//   sheet.appendRow(['Jane Smith', 30, 'Doctor']);
+
+//   // Get the external storage directory
+//    final directory = await getApplicationDocumentsDirectory();
+//   String filePath = '${directory.path}/example.xlsx';
+
+//   // Save the Excel file to external storage
+//   await File(filePath).writeAsBytes(excel.encode()!);
+//   log('Excel file saved to: $filePath');
+//   OpenFile.open(filePath);
+//   setState(() {
+//     isLoading = false;
+//   });
+
+// }
 
   Future<void> createFile(
       List<Map<String, dynamic>> jsonData, String masterKeyOfFile) async {
@@ -593,7 +755,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ));
       }
     } catch (e) {
-      log("issue $e");
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('Upload failed'),
       ));
@@ -630,19 +791,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
       );
 
       if (response.statusCode == 200) {
-        String fileName = DateFormat.yMMMd().format(DateTime.now());
-        final renameResponse = await http.patch(
-          Uri.parse(
-            'https://www.googleapis.com/drive/v3/files/$fileId',
-          ),
-          headers: {
-            'Authorization': 'Bearer ${googleSignInAuth.accessToken}',
-            'Content-Type': 'application/json',
-          },
-          body: convert.jsonEncode({
-            'name': 'Vyaya backup ($fileName).txt',
-          }),
-        );
+        // String fileName = DateFormat.yMMMd().format(DateTime.now());
+        // final renameResponse = await http.patch(
+        //   Uri.parse(
+        //     'https://www.googleapis.com/drive/v3/files/$fileId',
+        //   ),
+        //   headers: {
+        //     'Authorization': 'Bearer ${googleSignInAuth.accessToken}',
+        //     'Content-Type': 'application/json',
+        //   },
+        //   body: convert.jsonEncode({
+        //     'name': 'Vyaya backup ($fileName).txt',
+        //   }),
+        // );
         setState(() {
           isLoading = false;
         });
@@ -885,8 +1046,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ));
       }
     } catch (e) {
-            log("issue $e");
-
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Row(
           children: [

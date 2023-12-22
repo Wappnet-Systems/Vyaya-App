@@ -23,14 +23,14 @@ class CustomHeader extends StatelessWidget {
                                   customTextColor: textColor,
                                   customTextFontWeight: FontWeight.normal,
                                   customTextSize: 17.0,
-                                  customtextstyle: null,
+                                  customTextStyle: null,
                                 ),
                                 CustomTextStyle(
                                       customTextStyleText: "$username",
                                       customTextColor: textColor,
                                       customTextFontWeight: FontWeight.w400,
                                       customTextSize: 22.0,
-                                      customtextstyle: null,
+                                      customTextStyle: null,
                                     ),
                                   
                               ],

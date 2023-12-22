@@ -45,7 +45,7 @@ class PdfInvoiceApi {
               color: PdfColors.black,
               fontSize: 25,
               fontWeight: FontWeight.bold),
-          textAlign: TextAlign.center)
+          textAlign: TextAlign.center),
     ]));
   }
 

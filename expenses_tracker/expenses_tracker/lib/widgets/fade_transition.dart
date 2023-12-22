@@ -64,7 +64,7 @@ class FadeSlideTransitionRoute extends PageRouteBuilder {
                 .chain(CurveTween(curve: curve));
 
             // Check if it's the forward or reverse transition
-            bool isEntering = animation.status == AnimationStatus.forward;
+            // bool isEntering = animation.status == AnimationStatus.forward;
 
             // Apply slide transition
             return FadeTransition(
@@ -100,7 +100,7 @@ class FadeSlideTransitionRouteForList extends PageRouteBuilder {
                 .chain(CurveTween(curve: curve));
 
             // Check if it's the forward or reverse transition
-            bool isEntering = animation.status == AnimationStatus.forward;
+            // bool isEntering = animation.status == AnimationStatus.forward;
 
             // Apply slide transition
             return FadeTransition(

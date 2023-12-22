@@ -1,4 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+// ignore_for_file: must_be_immutable
+
 import 'package:expenses_tracker/widgets/custom_no_data.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';

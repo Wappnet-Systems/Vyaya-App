@@ -1,8 +1,7 @@
 import 'dart:io';
-// import 'dart:developer';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expenses_tracker/screens/transactions_of_month.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
@@ -173,6 +172,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                     ),
                   ),
                 ),
+              
               ],
             ),
             const SizedBox(
@@ -203,7 +203,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                         customTextColor:
                             Theme.of(context).colorScheme.secondary,
                         customTextFontWeight: FontWeight.normal,
-                        customtextstyle: null,
+                        customTextStyle: null,
                         customTextSize:
                             MediaQuery.of(context).size.height * 0.023)
                     : Container(
@@ -213,7 +213,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                 customTextColor:
                                     Theme.of(context).colorScheme.secondary,
                                 customTextFontWeight: FontWeight.normal,
-                                customtextstyle: null,
+                                customTextStyle: null,
                                 customTextSize:
                                     MediaQuery.of(context).size.height * 0.023)
                             : CustomTextStyle(
@@ -221,7 +221,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                 customTextColor:
                                     Theme.of(context).colorScheme.secondary,
                                 customTextFontWeight: FontWeight.normal,
-                                customtextstyle: null,
+                                customTextStyle: null,
                                 customTextSize:
                                     MediaQuery.of(context).size.height *
                                         0.023)),
@@ -305,7 +305,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                       customTextStyleText: "Category-wise Spending",
                       customTextColor: Theme.of(context).colorScheme.secondary,
                       customTextFontWeight: FontWeight.w400,
-                      customtextstyle: null,
+                      customTextStyle: null,
                       customTextSize:
                           MediaQuery.of(context).size.height * 0.024),
                 ],
@@ -324,7 +324,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                       customTextStyleText: "Category-wise Income",
                       customTextColor: Theme.of(context).colorScheme.secondary,
                       customTextFontWeight: FontWeight.w400,
-                      customtextstyle: null,
+                      customTextStyle: null,
                       customTextSize:
                           MediaQuery.of(context).size.height * 0.024),
                 ],
@@ -344,7 +344,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                       customTextStyleText: "Stats",
                       customTextColor: Theme.of(context).colorScheme.secondary,
                       customTextFontWeight: FontWeight.w400,
-                      customtextstyle: null,
+                      customTextStyle: null,
                       customTextSize:
                           MediaQuery.of(context).size.height * 0.024),
                 ),
@@ -373,7 +373,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                 customTextColor:
                                     Theme.of(context).colorScheme.secondary,
                                 customTextFontWeight: FontWeight.normal,
-                                customtextstyle: null,
+                                customTextStyle: null,
                                 customTextSize:
                                     MediaQuery.of(context).size.height * 0.022),
                           ),
@@ -386,7 +386,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                 customTextColor:
                                     Theme.of(context).colorScheme.secondary,
                                 customTextFontWeight: FontWeight.normal,
-                                customtextstyle: null,
+                                customTextStyle: null,
                                 customTextSize:
                                     MediaQuery.of(context).size.height * 0.022),
                           ),
@@ -399,13 +399,12 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                           children: [
                             SizedBox(
                               width: MediaQuery.of(context).size.width / 2.6,
-                              child: CustomTextStyle(
-                                
+                              child: CustomTextStyle(                                
                                   customTextStyleText: "Average Income",
                                   customTextColor:
                                       Theme.of(context).colorScheme.secondary,
                                   customTextFontWeight: FontWeight.normal,
-                                  customtextstyle: null,
+                                  customTextStyle: null,
                                   customTextSize:
                                       MediaQuery.of(context).size.height *
                                           0.020),
@@ -417,7 +416,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                     customTextColor:
                                         Theme.of(context).colorScheme.secondary,
                                     customTextFontWeight: FontWeight.normal,
-                                    customtextstyle: null,
+                                    customTextStyle: null,
                                     customTextSize:
                                         MediaQuery.of(context).size.height *
                                             0.020)
@@ -431,7 +430,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                             .colorScheme
                                             .secondary,
                                         customTextFontWeight: FontWeight.normal,
-                                        customtextstyle: null,
+                                        customTextStyle: null,
                                         customTextSize:
                                             MediaQuery.of(context).size.height *
                                                 0.020),
@@ -451,7 +450,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                   customTextColor:
                                       Theme.of(context).colorScheme.secondary,
                                   customTextFontWeight: FontWeight.normal,
-                                  customtextstyle: null,
+                                  customTextStyle: null,
                                   customTextSize:
                                       MediaQuery.of(context).size.height *
                                           0.020),
@@ -463,7 +462,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                     customTextColor:
                                         Theme.of(context).colorScheme.secondary,
                                     customTextFontWeight: FontWeight.normal,
-                                    customtextstyle: null,
+                                    customTextStyle: null,
                                     customTextSize:
                                         MediaQuery.of(context).size.height *
                                             0.020)
@@ -478,7 +477,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                             .colorScheme
                                             .secondary,
                                         customTextFontWeight: FontWeight.normal,
-                                        customtextstyle: null,
+                                        customTextStyle: null,
                                         customTextSize:
                                             MediaQuery.of(context).size.height *
                                                 0.020),
@@ -510,7 +509,6 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                         ),
                       ));
                     } else {
-                      // log("File Saved");
                       final File pdfFile;
                       value == 0
                           ? pdfFile = await PdfInvoiceApi.generate(
@@ -537,6 +535,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                   balanceOfCurrentPageTransactionsValue!);
                       PdfApi.openFile(pdfFile);
                     }
+                    // sendEmail();
                   },
                   child: Card(
                     color: PrimaryColor.colorBottleGreen,
@@ -552,7 +551,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                               customTextStyleText: "Download stats",
                               customTextColor: PrimaryColor.colorWhite,
                               customTextFontWeight: FontWeight.normal,
-                              customtextstyle: null,
+                              customTextStyle: null,
                               customTextSize:
                                   MediaQuery.of(context).size.height * 0.02)
                         ],
@@ -564,6 +563,33 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
             )
           ],
         ),
+      ),
+    );
+  }
+
+  Future<void> sendEmail() async {
+    final Email email = Email(
+      body: "all",
+      subject: "Subject",
+      recipients: ['ssahilc.wappnet@gmail.com'],
+      isHTML: true,
+    );
+
+    String platformResponse;
+
+    try {
+      await FlutterEmailSender.send(email);
+      platformResponse = 'success';
+    } catch (error) {
+      print(error);
+      platformResponse = error.toString();
+    }
+
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(platformResponse),
       ),
     );
   }
@@ -783,4 +809,43 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     endDate = DateTime(nextYear + 1, 1, 1);
     getAllTransaction();
   }
+
+  Widget buildAnalysisButton({
+  required int index,
+  required String buttonText,
+  required Function() onPressed,
+}) {
+  return OutlinedButton(
+    onPressed: () {
+      setState(() {
+        value = index;
+        onPressed();
+      });
+    },
+    style: OutlinedButton.styleFrom(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      side: BorderSide(
+        color: (value == index)
+            ? PrimaryColor.colorBottleGreen
+            : Theme.of(context).colorScheme.secondary,
+      ),
+    ),
+    child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 1.0, vertical: 3.0),
+      child: Text(
+        buttonText,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: (value == index)
+              ? PrimaryColor.colorBottleGreen
+              : Theme.of(context).colorScheme.secondary,
+          fontWeight: FontWeight.w400,
+          fontSize: ScreenUtil().setSp(15),
+        ),
+      ),
+    ),
+  );
+}
 }

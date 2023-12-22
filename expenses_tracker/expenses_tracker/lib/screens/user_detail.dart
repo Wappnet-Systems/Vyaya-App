@@ -34,7 +34,7 @@ class _UserDetailState extends State<UserDetail> {
 
   List<Users> listOfUsers = [];
   Map<String, Users> usersList = {};
-  final RegExp _noWhitespaceRegex = RegExp(r'^\S*$');
+  // final RegExp _noWhitespaceRegex = RegExp(r'^\S*$');
 
   late Box<LocalUser> _localUserLoginBox;
 
@@ -76,7 +76,7 @@ class _UserDetailState extends State<UserDetail> {
   }
 
   List<LocalUser> getUserLogin() {
-    final userLogins = _localUserLoginBox.values.toList();
+    // final userLogins = _localUserLoginBox.values.toList();
     return _localUserLoginBox.values.toList();
   }
 
@@ -124,7 +124,7 @@ class _UserDetailState extends State<UserDetail> {
                                   customTextColor:
                                       PrimaryColor.colorBottleGreen,
                                   customTextFontWeight: FontWeight.normal,
-                                  customtextstyle: null,
+                                  customTextStyle: null,
                                   textAlign: TextAlign.left,
                                   customTextSize:
                                       MediaQuery.of(context).size.height *
@@ -134,7 +134,7 @@ class _UserDetailState extends State<UserDetail> {
                                   customTextColor:
                                       PrimaryColor.colorBottleGreen,
                                   customTextFontWeight: FontWeight.normal,
-                                  customtextstyle: null,
+                                  customTextStyle: null,
                                   customTextSize:
                                       MediaQuery.of(context).size.height *
                                           0.030,

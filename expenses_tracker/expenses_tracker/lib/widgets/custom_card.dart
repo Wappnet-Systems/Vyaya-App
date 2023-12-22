@@ -54,7 +54,7 @@ class CustomCard extends StatelessWidget {
                       customTextStyleText: "$title",
                       customTextColor: themeColor,
                       customTextFontWeight: FontWeight.normal,
-                      customtextstyle: null,
+                      customTextStyle: null,
                       customTextSize: MediaQuery.of(context).size.width/25), 
                   SizedBox(
                     width: MediaQuery.sizeOf(context).width/4,

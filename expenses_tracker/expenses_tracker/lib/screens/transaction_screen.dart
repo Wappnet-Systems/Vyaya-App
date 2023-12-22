@@ -553,7 +553,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                               customTextColor:
                                   Theme.of(context).colorScheme.secondary,
                               customTextFontWeight: FontWeight.bold,
-                              customtextstyle: null,
+                              customTextStyle: null,
                               customTextSize: 18.00),
                         ],
                       ),
@@ -844,8 +844,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
           tSubcategory: subcategory!,
           tSubcategoryIndex: subcategoryIndex!,
           tDateTime: _dateTime,
-          tCreatedAt: currentDateTime);
-
+          tCreatedAt: currentDateTime);      
       createLocalTransaction(localTransaction);
       getAllLocalTransactions();
       Navigator.of(context).push(

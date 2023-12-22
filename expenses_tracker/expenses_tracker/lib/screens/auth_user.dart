@@ -18,7 +18,7 @@ class _AuthUserState extends State<AuthUser> {
   final LocalAuthentication _localAuthentication = LocalAuthentication();
   bool _isFaceIdAvailable = false;
   bool _isFingerprintAvailable = false;
-  String _authorized = 'Not Authorized';
+  String authorized = 'Not Authorized';
   int _failedAttempts = 0;
 
   @override
@@ -152,7 +152,7 @@ class _AuthUserState extends State<AuthUser> {
 
     if (isAuthenticated) {
       setState(() {
-        _authorized = 'Authorized';
+        authorized = 'Authorized';
         _failedAttempts = 0;
       });
       Navigator.of(context).pushReplacement(
@@ -176,7 +176,7 @@ class _AuthUserState extends State<AuthUser> {
 
     if (isAuthenticated) {
       setState(() {
-        _authorized = 'Authorized';
+        authorized = 'Authorized';
         _failedAttempts = 0;
       });
       Navigator.of(context).pushReplacement(
@@ -191,7 +191,7 @@ class _AuthUserState extends State<AuthUser> {
         await _showLockScreen();
       } else {
         setState(() {
-          _authorized = 'Not Authorized';
+          authorized = 'Not Authorized';
         });
       }
     }
@@ -223,11 +223,11 @@ class _AuthUserState extends State<AuthUser> {
                               FadeSlideTransitionRoute(
                                   page: const HomeScreen()),);
         setState(() {
-          _authorized = 'Authorized';
+          authorized = 'Authorized';
         });
       } else {
         setState(() {
-          _authorized = 'Not Authorized';
+          authorized = 'Not Authorized';
         });
       }
     } catch (e) {}

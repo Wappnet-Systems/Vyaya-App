@@ -21,12 +21,12 @@ class CustomTransaction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final indianRupeesFormat = NumberFormat.currency(
-      name: "INR",
-      locale: 'en_IN',
-      decimalDigits: 0, // change it to get decimal places
-      symbol: '₹ ',
-    );
+    // final indianRupeesFormat = NumberFormat.currency(
+    //   name: "INR",
+    //   locale: 'en_IN',
+    //   decimalDigits: 0, // change it to get decimal places
+    //   symbol: '₹ ',
+    // );
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 2.0),

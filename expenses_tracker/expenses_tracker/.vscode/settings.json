@@ -6,6 +6,7 @@
         "firestore",
         "horiz",
         "pinput",
+        "screenutil",
         "sqflite",
         "syncfusion",
         "textstyle"

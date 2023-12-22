@@ -11,7 +11,7 @@ class CustomNoData extends StatelessWidget {
         customTextStyleText: "No Data",
         customTextColor: Theme.of(context).hintColor,
         customTextFontWeight: FontWeight.bold,
-        customtextstyle: null,
+        customTextStyle: null,
         customTextSize: MediaQuery.of(context).size.height * 0.025);
   }
 }
