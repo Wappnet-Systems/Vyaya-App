@@ -29,7 +29,7 @@ class _CustomCircularChartState extends State<CustomCircularChart> {
 
   @override
   Widget build(BuildContext context) {
-    int? _getExplodeIndex() {
+    int? getExplodeIndex() {
       if (selectedTransactions.isNotEmpty) {
         final selectedTransaction = selectedTransactions.first;
         return widget.currentPageTransactions.indexOf(selectedTransaction);
@@ -81,7 +81,7 @@ class _CustomCircularChartState extends State<CustomCircularChart> {
                       ),
                     ),
                     explode: true,
-                    explodeIndex: _getExplodeIndex(),
+                    explodeIndex: getExplodeIndex(),
                   ),
                 ],
                 legend: Legend(
