@@ -1,29 +1,10 @@
-import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:expenses_tracker/screens/pf_screen.dart';
-import 'package:expenses_tracker/screens/transaction_screen.dart';
-import 'package:expenses_tracker/screens/transactions_of_month.dart';
-import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
-import 'package:intl/intl.dart';
-import '../model/localtransaction.dart';
-import '../model/localuser.dart';
-import '../model/transaction.dart';
-import 'package:show_up_animation/show_up_animation.dart';
-import '../model/users.dart';
-import '../utils/const.dart';
-import 'package:sleek_circular_slider/sleek_circular_slider.dart';
-import '../utils/functions.dart';
-import '../widgets/build_skeleton.dart';
-import '../widgets/custom_card.dart';
-import '../widgets/custom_header.dart';
-import '../widgets/custom_no_data.dart';
-import '../widgets/custom_pf_row.dart';
-import '../widgets/custom_text_style.dart';
-import '../widgets/custom_transaction.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-import '../widgets/fade_transition.dart';
-import 'home_screen.dart';
+import 'package:expenses_tracker/exports.dart';
+
+import 'package:intl/intl.dart';
+
+
+
 
 class DetailHomeScreen extends StatefulWidget {
   const DetailHomeScreen({super.key});
@@ -332,7 +313,8 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                         ],
                       ),
                     ),
-                    buildRecentTransactionList(screenHeight, screenWidth)
+                    buildRecentTransactionList(screenHeight, screenWidth),
+                    verticalSpacer(hp(10, context)),
                   ]),
             ),
     );

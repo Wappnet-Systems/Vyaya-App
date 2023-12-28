@@ -1,18 +1,8 @@
-import 'dart:convert';
+// ignore_for_file: use_build_context_synchronously, duplicate_ignore
+
 import 'package:encrypt/encrypt.dart' as encrypt;
 import 'package:encrypt/encrypt.dart';
-import 'package:expenses_tracker/screens/home_screen.dart';
-import 'package:expenses_tracker/utils/const.dart';
-import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import '../model/localuser.dart';
-import '../model/users.dart';
-import '../utils/validation.dart';
-import '../widgets/custom_text_form_field.dart';
-import '../widgets/custom_text_style.dart';
-import '../widgets/fade_transition.dart';
-import 'auth_user.dart';
+import 'package:expenses_tracker/exports.dart';
 
 class UserDetail extends StatefulWidget {
   final String? uid, uname, uEmail;
@@ -34,7 +24,6 @@ class _UserDetailState extends State<UserDetail> {
 
   List<Users> listOfUsers = [];
   Map<String, Users> usersList = {};
-  // final RegExp _noWhitespaceRegex = RegExp(r'^\S*$');
 
   late Box<LocalUser> _localUserLoginBox;
 

@@ -1,12 +1,7 @@
-import 'dart:io';
-import 'package:expenses_tracker/screens/profile_screen.dart';
-import 'package:expenses_tracker/screens/transaction_screen.dart';
-import 'package:flutter/material.dart';
+// ignore_for_file: library_private_types_in_public_api
+import 'package:expenses_tracker/exports.dart';
 import 'package:intl/intl.dart';
-import '../utils/const.dart';
-import 'analytics_screen.dart';
-import 'detail_home_screen.dart';
-import 'filter_transaction.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -46,6 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
         return shouldPop!;
       },
       child: Scaffold(
+        extendBody: true,
           backgroundColor: Theme.of(context).colorScheme.primary,
           body: Container(
             child: screens[_currentIndex],

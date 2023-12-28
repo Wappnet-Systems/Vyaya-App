@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:expenses_tracker/exports.dart';
 import '../model/category.dart';
 
 class PrimaryColor{

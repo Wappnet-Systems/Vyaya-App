@@ -53,10 +53,10 @@ packages:
     dependency: transitive
     description:
       name: archive
-      sha256: d6347d54a2d8028e0437e3c099f66fdb8ae02c4720c1e7534c9f24c10351f85d
+      sha256: "20071638cbe4e5964a427cfa0e86dce55d060bc7d82d56f3554095d7239a8765"
       url: "https://pub.dev"
     source: hosted
-    version: "3.3.6"
+    version: "3.4.2"
   args:
     dependency: transitive
     description:
@@ -265,14 +265,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.2"
-  csv:
-    dependency: transitive
-    description:
-      name: csv
-      sha256: "63ed2871dd6471193dffc52c0e6c76fb86269c00244d244297abbb355c84a86e"
-      url: "https://pub.dev"
-    source: hosted
-    version: "5.1.1"
   cupertino_icons:
     dependency: "direct main"
     description:
@@ -289,14 +281,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.1"
-  dio:
-    dependency: "direct main"
-    description:
-      name: dio
-      sha256: "797e1e341c3dd2f69f2dad42564a6feff3bfb87187d05abb93b9609e6f1645c3"
-      url: "https://pub.dev"
-    source: hosted
-    version: "5.4.0"
   encrypt:
     dependency: "direct main"
     description:
@@ -390,14 +374,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_email_sender:
-    dependency: "direct main"
-    description:
-      name: flutter_email_sender
-      sha256: "5001e9158f91a8799140fb30a11ad89cd587244f30b4f848d87085985c49b60f"
-      url: "https://pub.dev"
-    source: hosted
-    version: "6.0.2"
   flutter_inappwebview:
     dependency: "direct main"
     description:
@@ -725,22 +701,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.4"
-  ml_dataframe:
-    dependency: "direct main"
-    description:
-      name: ml_dataframe
-      sha256: "75434865e7ff85edcf8b006cb7c580e65a7863bb853010f41e12597b69d55db7"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.6.0"
-  ml_linalg:
-    dependency: transitive
-    description:
-      name: ml_linalg
-      sha256: "36b658c6619c4e1b47f8e2edd100308fd75a5b71d1e6359d8be0cbe06214b441"
-      url: "https://pub.dev"
-    source: hosted
-    version: "13.11.31"
   nested:
     dependency: transitive
     description:
@@ -765,6 +725,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.0"
+  package_info_plus:
+    dependency: transitive
+    description:
+      name: package_info_plus
+      sha256: "7e76fad405b3e4016cd39d08f455a4eb5199723cf594cd1b8916d47140d93017"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.2.0"
+  package_info_plus_platform_interface:
+    dependency: transitive
+    description:
+      name: package_info_plus_platform_interface
+      sha256: "9bc8ba46813a4cc42c66ab781470711781940780fd8beddd0c3da62506d3a6c6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.1"
   page_transition:
     dependency: transitive
     description:
@@ -801,10 +777,10 @@ packages:
     dependency: "direct main"
     description:
       name: path_provider
-      sha256: c7edf82217d4b2952b2129a61d3ad60f1075b9299e629e149a8d2e39c2e6aad4
+      sha256: "3087813781ab814e4157b172f1a11c46be20179fcc9bea043e0fba36bc0acaa2"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.14"
+    version: "2.0.15"
   path_provider_android:
     dependency: transitive
     description:
@@ -973,14 +949,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.1"
-  qr_flutter:
-    dependency: "direct main"
-    description:
-      name: qr_flutter
-      sha256: "5095f0fc6e3f71d08adef8feccc8cea4f12eec18a2e31c2e8d82cb6019f4b097"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.1.0"
   quiver:
     dependency: transitive
     description:
@@ -989,6 +957,54 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.2.1"
+  serious_python:
+    dependency: "direct main"
+    description:
+      name: serious_python
+      sha256: d16746f56c52efc6d3f27f77df1e45f798022ce26a16152c58c952fa71602fa1
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.5.1"
+  serious_python_android:
+    dependency: transitive
+    description:
+      name: serious_python_android
+      sha256: "5795c01644f5805e924234ad68d9c13d57b69cfa1f47ad01299f0581971ad6dc"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.5.1"
+  serious_python_darwin:
+    dependency: transitive
+    description:
+      name: serious_python_darwin
+      sha256: c2e9f7c14674f07370d5cc388e2f08aa425ef02fd60713a3ac75d1c5fe0239bf
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.5.1"
+  serious_python_linux:
+    dependency: transitive
+    description:
+      name: serious_python_linux
+      sha256: "8f5eb5207cb8579d789b7a313711fb441dfd03157688574bdddc9d83f5476bc2"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.5.1"
+  serious_python_platform_interface:
+    dependency: transitive
+    description:
+      name: serious_python_platform_interface
+      sha256: a36364a43a02867675777bf14dc4ca261775e490649e9718968d77b652edf17c
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.5.1"
+  serious_python_windows:
+    dependency: transitive
+    description:
+      name: serious_python_windows
+      sha256: "7d901efb10f0db0ea3eb7aa68db646e633298d8517497fd17b8107331994452b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.5.1"
   shared_preferences:
     dependency: "direct main"
     description:
@@ -1162,14 +1178,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "21.2.10"
-  syncfusion_flutter_pdf:
-    dependency: "direct main"
-    description:
-      name: syncfusion_flutter_pdf
-      sha256: e97daea47f9ac4cf25cc8fc11a0475580ad9c592056d9c2bdc809c73e276decf
-      url: "https://pub.dev"
-    source: hosted
-    version: "21.2.10"
   term_glyph:
     dependency: transitive
     description:
@@ -1194,6 +1202,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.1"
+  toml:
+    dependency: transitive
+    description:
+      name: toml
+      sha256: "157c5dca5160fced243f3ce984117f729c788bb5e475504f3dbcda881accee44"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.14.0"
   typed_data:
     dependency: transitive
     description:

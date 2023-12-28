@@ -1,10 +1,5 @@
+import 'package:expenses_tracker/exports.dart';
 
-import 'package:expenses_tracker/utils/const.dart';
-import 'package:expenses_tracker/widgets/custom_no_data.dart';
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import '../model/transaction.dart';
-import '../widgets/transaction_list.dart';
 
 class PfScreen extends StatefulWidget {
   final int id;

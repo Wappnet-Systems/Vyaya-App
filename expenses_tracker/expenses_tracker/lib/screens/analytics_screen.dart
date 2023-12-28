@@ -1,21 +1,6 @@
-import 'dart:io';
-import 'package:expenses_tracker/screens/transactions_of_month.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_email_sender/flutter_email_sender.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hive/hive.dart';
+import 'package:expenses_tracker/exports.dart';
+import 'dart:developer' as dev;
 import 'package:intl/intl.dart';
-import '../api/pdf_api.dart';
-import '../api/pdf_transaction_api.dart';
-import '../model/localtransaction.dart';
-import '../model/transaction.dart';
-import '../utils/const.dart';
-import '../utils/functions.dart';
-import '../widgets/custom_balance_card.dart';
-import '../widgets/custom_card.dart';
-import '../widgets/custom_circular_chart.dart';
-import '../widgets/custom_text_style.dart';
-import '../widgets/fade_transition.dart';
 
 class AnalyticsScreen extends StatefulWidget {
   const AnalyticsScreen({super.key});
@@ -70,9 +55,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
         padding: const EdgeInsets.only(left: 10, right: 10, top: 15),
         child: Column(
           children: [
-            const SizedBox(
-              height: 10,
-            ),
+            verticalSpacer(10),
+            
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -172,12 +156,9 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                     ),
                   ),
                 ),
-              
               ],
             ),
-            const SizedBox(
-              height: 10,
-            ),
+            verticalSpacer(10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -243,18 +224,30 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 ),
               ],
             ),
-            const SizedBox(
-              height: 10,
-            ),
+            verticalSpacer(10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 GestureDetector(
-                  onTap: (){
+                  onTap: () {
                     Navigator.of(context).push(
-                              FadeSlideTransitionRouteForList(
-                                  page: TransactionOfMonth(id: 4,titleText: value == 0 ?'Weekly Expenses Analysis':value == 1 ?"Monthly Expenses Analysis" :"Yearly Expenses Analysis",amount: incomeOfTheCurrentPageTransactionsValue!,subtitleText: value == 0 ?'$analyticsStartWeekText':value == 1 ?"$analyticsMonthlyText" :"$analyticsYearlyText",currentPageTransaction: currentPageSpendingTransactions,)),);
-                    
+                      FadeSlideTransitionRouteForList(
+                          page: TransactionOfMonth(
+                        id: 4,
+                        titleText: value == 0
+                            ? 'Weekly Expenses Analysis'
+                            : value == 1
+                                ? "Monthly Expenses Analysis"
+                                : "Yearly Expenses Analysis",
+                        amount: incomeOfTheCurrentPageTransactionsValue!,
+                        subtitleText: value == 0
+                            ? '$analyticsStartWeekText'
+                            : value == 1
+                                ? "$analyticsMonthlyText"
+                                : "$analyticsYearlyText",
+                        currentPageTransaction: currentPageSpendingTransactions,
+                      )),
+                    );
                   },
                   child: CustomCard(
                       color: PrimaryColor.colorRed,
@@ -264,15 +257,30 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                         size: 32,
                       ),
                       themeColor: PrimaryColor.colorWhite,
-                      speOrIncMonthValue: spendingOfCurrentPageTransactionsValue,
+                      speOrIncMonthValue:
+                          spendingOfCurrentPageTransactionsValue,
                       title: "Spending"),
                 ),
                 GestureDetector(
-                  onTap: (){
+                  onTap: () {
                     Navigator.of(context).push(
-                              FadeSlideTransitionRouteForList(
-                                  page: TransactionOfMonth(id: 5,titleText:value == 0 ?'Weekly Income Analysis':value == 1 ?"Monthly Income Analysis" :"Yearly Income Analysis", amount: incomeOfTheCurrentPageTransactionsValue!,subtitleText: value == 0 ?'$analyticsStartWeekText':value == 1 ?"$analyticsMonthlyText" :"$analyticsYearlyText",currentPageTransaction: currentPageIncomeTransactions,)),);
-                    
+                      FadeSlideTransitionRouteForList(
+                          page: TransactionOfMonth(
+                        id: 5,
+                        titleText: value == 0
+                            ? 'Weekly Income Analysis'
+                            : value == 1
+                                ? "Monthly Income Analysis"
+                                : "Yearly Income Analysis",
+                        amount: incomeOfTheCurrentPageTransactionsValue!,
+                        subtitleText: value == 0
+                            ? '$analyticsStartWeekText'
+                            : value == 1
+                                ? "$analyticsMonthlyText"
+                                : "$analyticsYearlyText",
+                        currentPageTransaction: currentPageIncomeTransactions,
+                      )),
+                    );
                   },
                   child: CustomCard(
                       color: PrimaryColor.colorBottleGreen,
@@ -282,21 +290,18 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                         size: 32,
                       ),
                       themeColor: PrimaryColor.colorWhite,
-                      speOrIncMonthValue: incomeOfTheCurrentPageTransactionsValue,
+                      speOrIncMonthValue:
+                          incomeOfTheCurrentPageTransactionsValue,
                       title: "Income"),
                 ),
               ],
             ),
-            const SizedBox(
-              height: 10,
-            ),
+            verticalSpacer(10),
             CustomBalanceCard(
                 balanceOfTheMonthValue: balanceOfCurrentPageTransactionsValue!,
                 themeColor: Theme.of(context).cardColor,
                 textThemeColor: Theme.of(context).colorScheme.secondary),
-            const SizedBox(
-              height: 10,
-            ),
+            verticalSpacer(10),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Row(
@@ -311,10 +316,10 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 ],
               ),
             ),
-            CustomCircularChart(currentPageTransactions: currentPageSpendingTransactions,),
-            const SizedBox(
-              height: 10,
+            CustomCircularChart(
+              currentPageTransactions: currentPageSpendingTransactions,
             ),
+            verticalSpacer(10),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Row(
@@ -330,10 +335,10 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 ],
               ),
             ),
-            CustomCircularChart(currentPageTransactions: currentPageIncomeTransactions,),
-            const SizedBox(
-              height: 10,
+            CustomCircularChart(
+              currentPageTransactions: currentPageIncomeTransactions,
             ),
+            verticalSpacer(10),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -399,7 +404,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                           children: [
                             SizedBox(
                               width: MediaQuery.of(context).size.width / 2.6,
-                              child: CustomTextStyle(                                
+                              child: CustomTextStyle(
                                   customTextStyleText: "Average Income",
                                   customTextColor:
                                       Theme.of(context).colorScheme.secondary,
@@ -411,7 +416,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                             ),
                             averageIncome!.isNaN
                                 ? CustomTextStyle(
-                                  textAlign: TextAlign.right,
+                                    textAlign: TextAlign.right,
                                     customTextStyleText: "₹0.0",
                                     customTextColor:
                                         Theme.of(context).colorScheme.secondary,
@@ -424,7 +429,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                     width:
                                         MediaQuery.of(context).size.width / 2.6,
                                     child: CustomTextStyle(
-                                      textAlign: TextAlign.right,
+                                        textAlign: TextAlign.right,
                                         customTextStyleText: "₹$averageIncome",
                                         customTextColor: Theme.of(context)
                                             .colorScheme
@@ -457,7 +462,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                             ),
                             averageSpending!.isNaN
                                 ? CustomTextStyle(
-                                  textAlign: TextAlign.right,
+                                    textAlign: TextAlign.right,
                                     customTextStyleText: "₹0.0",
                                     customTextColor:
                                         Theme.of(context).colorScheme.secondary,
@@ -470,7 +475,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                     width:
                                         MediaQuery.of(context).size.width / 2.6,
                                     child: CustomTextStyle(
-                                      textAlign: TextAlign.right,
+                                        textAlign: TextAlign.right,
                                         customTextStyleText:
                                             "₹$averageSpending",
                                         customTextColor: Theme.of(context)
@@ -535,7 +540,6 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                   balanceOfCurrentPageTransactionsValue!);
                       PdfApi.openFile(pdfFile);
                     }
-                    // sendEmail();
                   },
                   child: Card(
                     color: PrimaryColor.colorBottleGreen,
@@ -560,36 +564,10 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                   ),
                 ),
               ],
-            )
+            ),
+            verticalSpacer(hp(10, context)),
           ],
         ),
-      ),
-    );
-  }
-
-  Future<void> sendEmail() async {
-    final Email email = Email(
-      body: "all",
-      subject: "Subject",
-      recipients: ['ssahilc.wappnet@gmail.com'],
-      isHTML: true,
-    );
-
-    String platformResponse;
-
-    try {
-      await FlutterEmailSender.send(email);
-      platformResponse = 'success';
-    } catch (error) {
-      print(error);
-      platformResponse = error.toString();
-    }
-
-    if (!mounted) return;
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(platformResponse),
       ),
     );
   }
@@ -626,7 +604,6 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     balanceOfCurrentPageTransactionsValue = 00;
     averageIncome = 00;
     averageSpending = 00;
-    
 
     try {
       recentTransaction = await getTransactionsBetweenDates();
@@ -646,12 +623,11 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
             .toList();
         findIncomeSpending();
       });
-    // ignore: empty_catches
     } catch (e) {
-      
+      dev.log("$e");
     }
   }
-
+   
   static void findIncomeSpending() {
     for (int i = 0, j = 0, k = 0; i < currentPageTransactions.length; i++) {
       if (currentPageTransactions[i].transactionCategory == 0 ||
@@ -705,6 +681,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     totalExpensesOfTheMonth();
     getBalance();
   }
+  
 
   static void totalIncomeOfTheMonth() {
     for (int i = 0; i < incomeOfTheCurrentPageTransactions.length; i++) {
@@ -737,12 +714,12 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
   }
 
   void getWeekDates() {
-    String currentWeekRange = _getWeekRange(DateTime.now());
+    String currentWeekRange = getWeekRange(DateTime.now());
     analyticsStartWeekText = currentWeekRange;
     getAllTransaction();
   }
 
-  String _getWeekRange(DateTime date) {
+  String getWeekRange(DateTime date) {
     DateTime startOfWeek = date.subtract(Duration(days: date.weekday - 1));
     DateTime endOfWeek = startOfWeek.add(const Duration(days: 6));
     String startOfWeekStr =
@@ -764,7 +741,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
         ? currentWeek.add(const Duration(days: 7))
         : currentWeek.subtract(const Duration(days: 7));
     analyticsWeekly = nextWeek;
-    analyticsStartWeekText = _getWeekRange(nextWeek);
+    analyticsStartWeekText = getWeekRange(nextWeek);
     getAllTransaction();
   }
 
@@ -810,42 +787,5 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     getAllTransaction();
   }
 
-  Widget buildAnalysisButton({
-  required int index,
-  required String buttonText,
-  required Function() onPressed,
-}) {
-  return OutlinedButton(
-    onPressed: () {
-      setState(() {
-        value = index;
-        onPressed();
-      });
-    },
-    style: OutlinedButton.styleFrom(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      side: BorderSide(
-        color: (value == index)
-            ? PrimaryColor.colorBottleGreen
-            : Theme.of(context).colorScheme.secondary,
-      ),
-    ),
-    child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 1.0, vertical: 3.0),
-      child: Text(
-        buttonText,
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          color: (value == index)
-              ? PrimaryColor.colorBottleGreen
-              : Theme.of(context).colorScheme.secondary,
-          fontWeight: FontWeight.w400,
-          fontSize: ScreenUtil().setSp(15),
-        ),
-      ),
-    ),
-  );
-}
+  
 }

@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
-
-import 'custom_text_style.dart';
+import 'package:expenses_tracker/exports.dart';
 
 class CustomNoData extends StatelessWidget {
   const CustomNoData({super.key});

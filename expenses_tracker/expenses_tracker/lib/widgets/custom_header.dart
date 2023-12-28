@@ -1,7 +1,4 @@
-import 'package:flutter/material.dart';
-
-import '../utils/const.dart';
-import 'custom_text_style.dart';
+import 'package:expenses_tracker/exports.dart';
 
 class CustomHeader extends StatelessWidget {
   final String? wishingText,username,initialOfName;

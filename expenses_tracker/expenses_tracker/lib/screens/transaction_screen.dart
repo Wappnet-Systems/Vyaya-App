@@ -1,15 +1,12 @@
-import 'dart:math';
-import 'package:expenses_tracker/screens/home_screen.dart';
-import 'package:expenses_tracker/utils/validation.dart';
-import 'package:flutter/material.dart';
+
+
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/services.dart';
-import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
-import '../model/localtransaction.dart';
-import '../utils/const.dart';
-import '../widgets/custom_text_style.dart';
-import '../widgets/fade_transition.dart';
-import 'category_list.dart';
+
+import 'package:expenses_tracker/exports.dart';
+
 
 class TransactionScreen extends StatefulWidget {
   final int? id;

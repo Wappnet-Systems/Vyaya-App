@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-import '../utils/const.dart';
+import 'package:expenses_tracker/exports.dart';
 
 class CategoryList extends StatefulWidget {
   final int? id;

@@ -1,13 +1,4 @@
-import 'package:expenses_tracker/model/localuser.dart';
-import 'package:expenses_tracker/provider/theme_provider.dart';
-import 'package:expenses_tracker/screens/splash_screen.dart';
-import 'package:expenses_tracker/utils/functions.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:provider/provider.dart';
-import 'model/localtransaction.dart';
+import 'package:expenses_tracker/exports.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,11 +18,8 @@ Future main() async {
   );
 }
 
-
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -45,7 +33,7 @@ class MyApp extends StatelessWidget {
                   debugShowCheckedModeBanner: false,
                   title: AppDetailsClass.appName,
                   theme: MyTheme.lightTheme,
-                  darkTheme: MyTheme.darkTheme,
+                  darkTheme: MyTheme.darkTheme,                  
                   themeMode: provider.themeMode,
                   home: const SplashScreen(),
                 );

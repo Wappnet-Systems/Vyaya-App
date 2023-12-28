@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
-
-import '../utils/const.dart';
+import 'package:expenses_tracker/exports.dart';
 
 class CustomBalanceCard extends StatelessWidget {
   final int balanceOfTheMonthValue;

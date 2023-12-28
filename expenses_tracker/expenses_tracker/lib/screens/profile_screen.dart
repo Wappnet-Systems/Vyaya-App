@@ -1,35 +1,14 @@
-import 'dart:convert';
-import 'dart:developer';
-import 'dart:io';
-import 'package:dio/dio.dart' as dio hide FormData;
-import 'package:flutter/material.dart';
-// import 'package:ml_dataframe/ml_dataframe.dart';
-// import 'package:open_file/open_file.dart';
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:encrypt/encrypt.dart';
-// import 'package:excel/excel.dart';
-import 'package:expenses_tracker/model/localtransaction.dart';
-import 'package:expenses_tracker/screens/privacy_policy.dart';
-import 'package:expenses_tracker/screens/user_detail.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:googleapis_auth/auth_io.dart';
-import 'package:hive/hive.dart';
+import 'package:expenses_tracker/exports.dart';
+import 'dart:developer' as dev;
 import 'package:intl/intl.dart';
-import 'package:path_provider/path_provider.dart';
-// import 'package:permission_handler/permission_handler.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import '../utils/const.dart';
-import '../utils/functions.dart';
-import '../widgets/change_theme_button_widget.dart';
 import 'package:http/http.dart' as http;
 import 'package:encrypt/encrypt.dart' as encrypt;
-import '../widgets/custom_header.dart';
 import 'dart:convert' as convert;
+// ignore: library_prefixes
 import 'package:googleapis/drive/v3.dart' as googleDrive;
-
-import '../widgets/custom_text_style.dart';
-import '../widgets/fade_transition.dart';
-import 'home_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -261,7 +240,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       //   // trailing: const ChangeThemeButtonWidget(),
                       // ),
                       // const Divider(),
-
+                      ListTile(
+                        leading: Icon(
+                          Icons.next_plan_rounded,
+                          color: Theme.of(context).colorScheme.secondary,
+                        ),
+                        title: Text(
+                          'Budget Planning',
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.secondary),
+                        ),
+                        contentPadding:
+                            const EdgeInsets.symmetric(horizontal: 12.0),
+                        visualDensity: const VisualDensity(vertical: -4),
+                        trailing: const SizedBox.shrink(),
+                      ),
+                      const Divider(),
                       ListTile(
                         leading: Icon(
                           Icons.brightness_4,
@@ -349,12 +343,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                 ),
                                               ),
                                             ),
-                                            const SizedBox(
-                                              width: 15,
-                                            ),
+                                            horizontalSpacer(15),
                                             GestureDetector(
                                               onTap: () {
-                                                signOutFunction();
+                                                signOutFunction(context);
                                                 Navigator.of(context).pop();
                                               },
                                               child: Text(
@@ -397,7 +389,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  void signOutFunction() async {
+  void signOutFunction(context) async {
     final sharedPreferences = await SharedPreferences.getInstance();
     await sharedPreferences.setString('userId', "");
     await sharedPreferences.setBool('sync', false);
@@ -424,13 +416,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         color: Theme.of(context).colorScheme.secondary),
                     borderRadius: BorderRadius.circular(8)),
                 title: CustomTextStyle(
-                    customTextStyleText: titleText,
-                    customTextColor: Theme.of(context).colorScheme.secondary,
-                    customTextFontWeight: FontWeight.normal,
-                    customTextStyle: null,
-                    customTextSize: MediaQuery.sizeOf(context).height * 0.022),
+                  customTextStyleText: titleText,
+                  customTextColor: Theme.of(context).colorScheme.secondary,
+                  customTextFontWeight: FontWeight.normal,
+                  customTextSize: MediaQuery.sizeOf(context).height * 0.022,
+                  customTextStyle: null,
+                ),
                 content: SizedBox(
-                  height: MediaQuery.sizeOf(context).height * 0.8 / 3,
+                  height: MediaQuery.sizeOf(context).height * 0.7 / 3,
                   child: Form(
                     autovalidateMode: AutovalidateMode.always,
                     key: formKey,
@@ -514,11 +507,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         "Cancel",
                         style: TextStyle(color: PrimaryColor.colorRed),
                       )),
-                  const SizedBox(
-                    width: 07,
-                  ),
+                  horizontalSpacer(7),
                   GestureDetector(
-                      onTap: () async {
+                      onTap: () {
                         if (formKey.currentState!.validate()) {
                           if (id == 0) {
                             masterPassword = masterPasswordController.text;
@@ -538,26 +529,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             List<Map<String, dynamic>> jsonData =
                                 transactionBox.values.map((e) {
                               return {
-                                "Transaction Id": e.tID,
-                                "User Id": e.userId,
-                                "Transaction Category": e.tCategory,
-                                "Transaction Subcategory": e.tSubcategory,
-                                "Transaction Subcategory Index":
+                                'Transaction Id': e.tID,
+                                'User Id': e.userId,
+                                'Transaction Category': e.tCategory,
+                                'Transaction Subcategory': e.tSubcategory,
+                                'Transaction Subcategory Index':
                                     e.tSubcategoryIndex,
-                                "Transaction Amount": e.tAmount,
-                                "Transaction Note": e.tNote,
-                                "Transaction Time": e.tDateTime.toString(),
-                                "Transaction PaymentMode": e.tPaymentMode,
-                                "Transaction Created At":
+                                'Transaction Amount': e.tAmount,
+                                'Transaction Note': e.tNote,
+                                'Transaction Time': e.tDateTime.toString(),
+                                'Transaction PaymentMode': e.tPaymentMode,
+                                'Transaction Created At':
                                     e.tCreatedAt.toString(),
                               };
                             }).toList();
-                            String jsonFormattedData = json.encode(jsonData);
 
-                            log(jsonFormattedData);
-                            // sendDataToServer(jsonFormattedData, 'sahilc.wappnet@gmail.com');
-                            createAndSaveExcel(jsonData);
-                            // createFile(jsonData, masterPassword!);
+                            createFile(jsonData, masterPassword!);
                           } else {
                             masterPassword = masterPasswordController.text;
                             masterPassword =
@@ -584,145 +571,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
           });
         });
   }
-
-  void sendDataToServer(String jsonData, String mailId) async {
-    const apiUrl = 'http://192.168.10.116:8000/api/file_processing/';
-
-    try {
-      log(mailId);
-      await dio.Dio().post(
-        apiUrl,
-        data: {'jsonData': jsonData, 'mailId': mailId},
-      ).then((response) {});
-    } catch (e) {
-      log('Error sending data: $e');
-    }
-    setState(() {
-      isLoading = false;
-    });
-  }
-
-  void writeJsonToFile(String jsonString, String filePath) {
-    // Open the file for writing
-    File file = File(filePath);
-
-    // Write the JSON data to the file
-    file.writeAsStringSync(jsonString);
-
-    print('Data written to file: $filePath');
-  }
-
- 
-
-
-
-  Future<void> createAndSaveExcel(List<Map<String, dynamic>> jsonData) async {
-    try {
-   
-      String jsonString = jsonEncode(jsonData);
-
-
-      final directory2 = (await getExternalStorageDirectories(
-              type: StorageDirectory.downloads))!
-          .first;
-      // Specify the file path
-      File file = File("${directory2.path}/test.json");
-
-      // Write JSON data to the file
-      writeJsonToFile(jsonString, file.path);
-
-  // final data = await fromJson(file.path);
-
-
-
-     
-
-      // Check and request storage permission
-      // var status = await Permission.storage.status;
-      // if (!status.isGranted) {
-      //   var result = await Permission.storage.request();
-      //   if (result != PermissionStatus.granted) {
-      //     // Handle the case where the user denies permission
-      //     log('Permission denied for storage');
-      //     return;
-      //   }
-      // }
-      // var excel = Excel.createExcel();
-      // var sheet = excel['Sheet1'];
-
-      // var headerRow = [
-      //   'Transaction Id',
-      //   'User Id',
-      //   'Transaction Category',
-      //   'Transaction Subcategory',
-      //   'Transaction Subcategory Index',
-      //   'Transaction Amount',
-      //   'Transaction Note',
-      //   'Transaction Time',
-      //   'Transaction PaymentMode',
-      //   'Transaction Created At',
-      // ];
-
-      // sheet.appendRow(headerRow);
-      // for (var i = 0; i < jsonData.length; i++) {
-      //   var rowData = [
-      //     jsonData[i]['Transaction Id'],
-      //     jsonData[i]['User Id'],
-      //     jsonData[i]['Transaction Category'],
-      //     jsonData[i]['Transaction Subcategory'],
-      //     jsonData[i]['Transaction Subcategory Index'],
-      //     jsonData[i]['Transaction Amount'],
-      //     jsonData[i]['Transaction Note'],
-      //     jsonData[i]['Transaction Time'],
-      //     jsonData[i]['Transaction PaymentMode'],
-      //     jsonData[i]['Transaction Created At'],
-      //   ];
-      //   sheet.appendRow(rowData);
-      // }
-
-      // final directory2 = (await getExternalStorageDirectories(
-      //         type: StorageDirectory.downloads))!
-      //     .first;
-      // File file2 = File("${directory2.path}/test.xlsx");
-
-      // final directory = await getExternalStorageDirectory();
-      // String filePath = '${directory!.path}/example.xlsx';
-
-      // // Save the Excel file to external storage
-      // await File(file2.path).writeAsBytes(excel.encode()!);
-      // log('Excel file saved to: $file2');
-      // OpenFile.open(filePath);
-      setState(() {
-        isLoading = false;
-      });
-    } catch (e) {
-      log('Error saving Excel file: $e');
-    }
-  }
-
-//   Future<void> createAndSaveExcel() async {
-//   // Create an Excel workbook and add a worksheet
-//   var excel = Excel.createExcel();
-//   var sheet = excel['Sheet1'];
-
-//   // Add data to the worksheet
-//   sheet.appendRow(['Name', 'Age', 'Occupation']);
-//   sheet.appendRow(['John Doe', 25, 'Engineer']);
-//   sheet.appendRow(['Jane Smith', 30, 'Doctor']);
-
-//   // Get the external storage directory
-//    final directory = await getApplicationDocumentsDirectory();
-//   String filePath = '${directory.path}/example.xlsx';
-
-//   // Save the Excel file to external storage
-//   await File(filePath).writeAsBytes(excel.encode()!);
-//   log('Excel file saved to: $filePath');
-//   OpenFile.open(filePath);
-//   setState(() {
-//     isLoading = false;
-//   });
-
-// }
 
   Future<void> createFile(
       List<Map<String, dynamic>> jsonData, String masterKeyOfFile) async {
@@ -755,6 +603,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ));
       }
     } catch (e) {
+      dev.log("issue $e");
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('Upload failed'),
       ));
@@ -791,28 +640,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
       );
 
       if (response.statusCode == 200) {
-        // String fileName = DateFormat.yMMMd().format(DateTime.now());
-        // final renameResponse = await http.patch(
-        //   Uri.parse(
-        //     'https://www.googleapis.com/drive/v3/files/$fileId',
-        //   ),
-        //   headers: {
-        //     'Authorization': 'Bearer ${googleSignInAuth.accessToken}',
-        //     'Content-Type': 'application/json',
-        //   },
-        //   body: convert.jsonEncode({
-        //     'name': 'Vyaya backup ($fileName).txt',
-        //   }),
-        // );
+        String fileName = DateFormat.yMMMd().format(DateTime.now());
+        final renameResponse = await http.patch(
+          Uri.parse(
+            'https://www.googleapis.com/drive/v3/files/$fileId',
+          ),
+          headers: {
+            'Authorization': 'Bearer ${googleSignInAuth.accessToken}',
+            'Content-Type': 'application/json',
+          },
+          body: convert.jsonEncode({
+            'name': 'Vyaya backup ($fileName).txt',
+          }),
+        );
+        dev.log("Response : $renameResponse");
         setState(() {
           isLoading = false;
         });
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar( SnackBar(
           content: Row(
             children: [
-              Icon(Icons.check_circle, color: Colors.green),
-              SizedBox(width: 10),
-              Text(
+              const Icon(Icons.check_circle, color: Colors.green),
+              horizontalSpacer(10),
+              const Text(
                 'Backup Uploaded successfully',
                 style: TextStyle(color: Colors.green),
               ),
@@ -827,12 +677,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
         await sharedPreferences.setString('lastUpdated', lastBackup);
       } else if (response.statusCode == 404) {
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar( SnackBar(
           content: Row(
             children: [
-              Icon(Icons.warning, color: Colors.orange),
-              SizedBox(width: 10),
-              Text(
+              const Icon(Icons.warning, color: Colors.orange),
+              horizontalSpacer(10),
+              const Text(
                 'Failed to update',
                 style: TextStyle(color: Colors.orange),
               ),
@@ -841,12 +691,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ));
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar( SnackBar(
         content: Row(
           children: [
-            Icon(Icons.error, color: Colors.red),
-            SizedBox(width: 10),
-            Text(
+            const Icon(Icons.error, color: Colors.red),
+            horizontalSpacer(10),
+            const Text(
               'Sync failed',
               style: TextStyle(color: Colors.red),
             ),
@@ -881,12 +731,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
       if (response.statusCode == 200) {
         writeTextToFile(fileId, jsonData, masterKeyOfFile);
       } else if (response.statusCode == 404) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar( SnackBar(
           content: Row(
             children: [
-              Icon(Icons.check_circle, color: Colors.red),
-              SizedBox(width: 10),
-              Text(
+              const Icon(Icons.check_circle, color: Colors.red),
+              horizontalSpacer(10),
+              const Text(
                 'File Does not Exist',
                 style: TextStyle(color: Colors.red),
               ),
@@ -895,12 +745,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ));
         createFile(jsonData, masterKeyOfFile);
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar( SnackBar(
           content: Row(
             children: [
-              Icon(Icons.warning, color: Colors.orange),
-              SizedBox(width: 10),
-              Text(
+              const Icon(Icons.warning, color: Colors.orange),
+              horizontalSpacer(10),
+              const Text(
                 'Failed to Sync Data',
                 style: TextStyle(color: Colors.orange),
               ),
@@ -909,12 +759,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ));
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar( SnackBar(
         content: Row(
           children: [
-            Icon(Icons.error, color: Colors.red),
-            SizedBox(width: 10),
-            Text(
+            const Icon(Icons.error, color: Colors.red),
+            horizontalSpacer(10),
+            const Text(
               'Failed to Data Sync',
               style: TextStyle(color: Colors.red),
             ),
@@ -1013,12 +863,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
       );
 
       if (response.statusCode == 200) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar( SnackBar(
           content: Row(
             children: [
-              Icon(Icons.check_circle, color: Colors.green),
-              SizedBox(width: 10),
-              Text(
+              const Icon(Icons.check_circle, color: Colors.green),
+              horizontalSpacer(10),
+              const Text(
                 'File Uploaded successfully',
                 style: TextStyle(color: Colors.green),
               ),
@@ -1032,12 +882,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
         await sharedPreferences.setString('fileId', fileId);
         await sharedPreferences.setString('lastUpdated', lastBackup);
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar( SnackBar(
           content: Row(
             children: [
-              Icon(Icons.warning, color: Colors.orange),
-              SizedBox(width: 10),
-              Text(
+              const Icon(Icons.warning, color: Colors.orange),
+              horizontalSpacer(10),
+              const Text(
                 'Empty File is Created',
                 style: TextStyle(color: Colors.orange),
               ),
@@ -1046,12 +896,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ));
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Row(
           children: [
-            Icon(Icons.error, color: Colors.red),
-            SizedBox(width: 10),
-            Text(
+            const Icon(Icons.error, color: Colors.red),
+            horizontalSpacer(10),
+            const Text(
               'Upload failed',
               style: TextStyle(color: Colors.red),
             ),

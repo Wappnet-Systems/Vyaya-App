@@ -1,10 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:expenses_tracker/exports.dart';
 import 'package:intl/intl.dart';
-import 'package:show_up_animation/show_up_animation.dart';
-import '../utils/functions.dart';
-import '../widgets/custom_transaction.dart';
-import '../model/transaction.dart';
-import '../utils/const.dart';
 
 class TransactionList extends StatelessWidget {
   final List<AllTransactionDetails> transactionList;

@@ -1,14 +1,5 @@
-import 'package:expenses_tracker/utils/validation.dart';
-import 'package:expenses_tracker/widgets/custom_no_data.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
-import '../model/localtransaction.dart';
-import '../model/transaction.dart';
-import '../utils/const.dart';
-import '../widgets/transaction_list.dart';
-import 'home_screen.dart';
+import 'package:expenses_tracker/exports.dart';
 
 class FilterTransaction extends StatefulWidget {
   const FilterTransaction({super.key});
@@ -51,8 +42,7 @@ class _FilterTransactionState extends State<FilterTransaction> {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primary,
       body: Container(
-        height: MediaQuery.sizeOf(context).height,
-        width: MediaQuery.of(context).size.width,
+        
         padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -69,8 +59,7 @@ class _FilterTransactionState extends State<FilterTransaction> {
               height: 05,
             ),
             SizedBox(
-              height: MediaQuery.sizeOf(context).height * 0.19,
-              width: MediaQuery.of(context).size.width,
+              height: hp(17, context),
               child: Form(
                   key: transactionFormKey,
                   child: Column(
@@ -253,7 +242,8 @@ class _FilterTransactionState extends State<FilterTransaction> {
                         ),
                       ),
               ),
-            )
+            ),
+            
           ],
         ),
       ),

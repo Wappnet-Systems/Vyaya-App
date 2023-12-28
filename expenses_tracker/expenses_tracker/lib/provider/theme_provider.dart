@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import '../utils/const.dart';
+import 'package:expenses_tracker/exports.dart';
 
 class MyTheme {
   static final lightTheme = ThemeData(

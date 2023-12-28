@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:expenses_tracker/exports.dart';
 
 // ignore: must_be_immutable
 class CustomTextStyle extends StatelessWidget {

@@ -1,11 +1,6 @@
-import 'dart:io';
-import 'package:expenses_tracker/screens/home_screen.dart';
-import 'package:expenses_tracker/utils/const.dart';
-import 'package:flutter/material.dart';
-import 'package:local_auth/local_auth.dart';
-import 'package:permission_handler/permission_handler.dart';
-
-import '../widgets/fade_transition.dart';
+// ignore_for_file: use_build_context_synchronously
+import 'dart:developer' as dev;
+import 'package:expenses_tracker/exports.dart';
 
 class AuthUser extends StatefulWidget {
   const AuthUser({super.key});
@@ -44,18 +39,14 @@ class _AuthUserState extends State<AuthUser> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [              
-              const SizedBox(
-                height: 10,
-              ),
+              verticalSpacer(10),
               Text(
                 'Vyaya Security Shield',
                 style: TextStyle(
                     fontSize: MediaQuery.sizeOf(context).height / 40,
                     fontWeight: FontWeight.w400),
               ),
-              const SizedBox(
-                height: 10,
-              ),
+              verticalSpacer(10),
               Container(
                 padding: const EdgeInsets.all(12.0),
                 child: Align(
@@ -67,9 +58,7 @@ class _AuthUserState extends State<AuthUser> {
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 10,
-              ),
+              verticalSpacer(10),
               Row(
                 children: <Widget>[
                   Container(
@@ -230,6 +219,8 @@ class _AuthUserState extends State<AuthUser> {
           authorized = 'Not Authorized';
         });
       }
-    } catch (e) {}
+    } catch (e) {
+      dev.log("$e");
+    }
   }
 }

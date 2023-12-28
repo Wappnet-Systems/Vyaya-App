@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'custom_text_style.dart';
+import 'package:expenses_tracker/exports.dart';
 
 class CustomCard extends StatelessWidget {
   final int? speOrIncMonthValue;
