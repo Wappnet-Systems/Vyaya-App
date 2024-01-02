@@ -1,7 +1,8 @@
 // ignore_for_file: use_build_context_synchronously
-
 import 'package:encrypt/encrypt.dart';
+import 'package:excel/excel.dart';
 import 'package:expenses_tracker/exports.dart';
+import 'package:expenses_tracker/model/prediaction_helper.dart';
 import 'dart:developer' as dev;
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
@@ -18,6 +19,11 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   String? username, initialOfName, wishingText;
+
+  static List<LocalTransaction> recentTransaction = [];
+  static List<AllTransactionDetails> currentPageTransactions = [];
+  Map<String, List<AllTransactionDetails>>? categorizedTransactionsMap;
+  Map<String, PredictionHelper>? predictionHelperMap;
   bool _darkMode = false;
   bool? syncCheck;
   String? masterPassword, lastBackupTime;
@@ -35,6 +41,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     checkForSync();
+    print("UserId : ${UserData.currentUserId}");
     username = UserData.currentUserName;
     localTransactionBox = Hive.box<LocalTransaction>('local_transactions');
     wishingText = getCurrentHour();
@@ -254,6 +261,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             const EdgeInsets.symmetric(horizontal: 12.0),
                         visualDensity: const VisualDensity(vertical: -4),
                         trailing: const SizedBox.shrink(),
+                        onTap: fetchDataFromGoogleScript,
                       ),
                       const Divider(),
                       ListTile(
@@ -388,6 +396,305 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
     );
   }
+
+  void fetchDataFromGoogleScript() async {
+    // String apiUrl = "https://script.google.com/macros/s/AKfycbyGboptjZ6z6BjO4VfyHhpLpodo0kcg3ncHu2RtcryHt0D7MEhaUwP0dVw5ZOQl56uw/exec";
+    // final response = await http.get(Uri.parse(apiUrl));
+    // // https://script.google.com/macros/s/AKfycbyGboptjZ6z6BjO4VfyHhpLpodo0kcg3ncHu2RtcryHt0D7MEhaUwP0dVw5ZOQl56uw/exec
+
+    // if (response.statusCode == 200) {
+    //   // Parse and handle the response data here
+    //   print(response.body);
+    // } else {
+    //   // Handle errors
+    //   print('Error: ${response.statusCode}');
+    // }
+    // final transactions = await getAllLocalTransactions();
+    try {
+      recentTransaction = await getAllLocalTransactions();
+
+      setState(() {
+        currentPageTransactions = recentTransaction
+            .map((e) => AllTransactionDetails(
+                uId: e.userId,
+                tID: e.tID,
+                transactionDate: e.tDateTime,
+                transactionAmount: e.tAmount,
+                transactionCategory: e.tCategory,
+                transactionSubcategory: e.tSubcategory,
+                transactionSubcategoryIndex: e.tSubcategoryIndex,
+                transactionNote: e.tNote,
+                transactionPaymentMode: e.tPaymentMode,
+                transactionCreatedAt: e.tCreatedAt))
+            .where((element) => element.uId == UserData.currentUserId)
+            .toList();
+      });
+      currentPageTransactions
+          .sort((a, b) => a.transactionDate!.compareTo(b.transactionDate!));
+
+      if (currentPageTransactions.isNotEmpty) {
+        categorizedTransactionsMap = {};
+
+        for (AllTransactionDetails transaction in currentPageTransactions) {
+          String monthYearKey =
+              DateFormat.yMMM().format(transaction.transactionDate!);
+
+          if (categorizedTransactionsMap!.containsKey(monthYearKey)) {
+            categorizedTransactionsMap![monthYearKey]!.add(transaction);
+          } else {
+            categorizedTransactionsMap![monthYearKey] = [transaction];
+          }
+        }
+        categorizedTransactionsMap!.forEach((monthYearKey, transactions) {
+          predictionHelperMap = {};
+          transactions.forEach((transaction) {
+            int totalIncome = 0;
+            int totlaExpenses = 0;
+            int totalNeeds = 0;
+            int totalWants = 0;
+            int totalSavings = 0;
+            for (AllTransactionDetails transaction in transactions) {
+              if (transaction.transactionCategory == 0 ||
+                  transaction.transactionCategory == 3) {
+                totalIncome += transaction.transactionAmount!;
+              } else if (transaction.transactionCategory == 1) {
+                if (transaction.transactionSubcategory == 0) {
+                  totalNeeds += transaction.transactionAmount!;
+                } else if (transaction.transactionSubcategory == 1) {
+                  totalWants += transaction.transactionAmount!;
+                } else if (transaction.transactionSubcategory == 2) {
+                  totalSavings += transaction.transactionAmount!;
+                } else {}
+                totlaExpenses += transaction.transactionAmount!;
+              }
+            }
+            PredictionHelper model = PredictionHelper(
+                totalIncome: totalIncome,
+                totalExpenses: totlaExpenses,
+                needExpenses: totalNeeds,
+                wantsExpenses: totalWants,
+                savingExpenses: totalSavings,
+                remaininBalance: (totalIncome - totlaExpenses));
+            if (predictionHelperMap!.containsKey(monthYearKey)) {
+              predictionHelperMap![monthYearKey] = model;
+            } else {
+              predictionHelperMap![monthYearKey] = model;
+            }
+
+            
+          });
+          predictionHelperMap!.forEach((monthYearKey, transactions) {
+            print("$monthYearKey");
+            
+          });
+          createAndSaveExcel(predictionHelperMap!);
+        });
+      } else {
+        print("The list is empty");
+      }
+      // createAndSaveExcel(predictionHelperMap!);
+    } catch (e) {
+      dev.log("$e");
+    }
+  }
+
+  Future<void> createAndSaveExcel(Map<String, PredictionHelper> data) async {
+    // Create an Excel workbook and add a worksheet
+    var excel = Excel.createExcel();
+    var sheet = excel['Sheet1'];
+
+    sheet.appendRow([
+      'No',
+      'Months',
+      'Income',
+      'Expenses',
+      "Needs",
+      "Wants",
+      "Saving",
+      "Balance"
+    ]);
+    int rowIndex = 1; // Start from the first row (assuming headers are in row 0)
+
+predictionHelperMap!.forEach((key, value) {
+  print("${value.totalIncome}");
+  sheet.insertRowIterables([
+    rowIndex,
+    key,
+    value.totalIncome,
+    value.totalExpenses,
+  ], rowIndex, startingColumn: 0, overwriteMergedCells: false);
+  rowIndex++; // Increment rowIndex for the next iteration
+});
+
+  //   int startingRowIndex = 1;
+  // int rowIndex = startingRowIndex;
+
+  // predictionHelperMap!.forEach((key, value) {
+  //   print("Inserting at row $rowIndex: ${value.totalIncome}");
+
+  //   sheet.insertRowIterables([
+  //     rowIndex,
+  //     key,
+  //     value.totalIncome,
+  //     value.totalExpenses,
+  //   ], rowIndex, startingColumn: 0, overwriteMergedCells: false);
+
+  //   rowIndex++;
+  // });
+    // predictionHelperMap!.forEach((monthYearKey, value) {
+    //   print("${value.totalIncome}");
+    //   sheet.appendRow([
+    //     rowIndex,
+    //     monthYearKey,
+    //     value.totalIncome,
+    //     value.totalExpenses,
+    //     value.needExpenses,
+    //     value.wantsExpenses,
+    //     value.savingExpenses,
+    //     value.remaininBalance
+    //   ]);
+    //   rowIndex++;
+    // });
+    //  List<PredictionHelper> myList = predictionHelperMap!.values.toList();
+      // print("Length : ${myList.length}");
+        //  sheet.appendRow(headerRow);
+      // for (var i = 0; i < myList.length; i++) {
+      //   var rowData = [
+      //     i++,
+      //     myList[i].totalExpenses,
+      //     myList[i].needExpenses,
+      //     myList[i].totalExpenses,
+      //     myList[i].needExpenses,
+      //     myList[i].totalExpenses,
+      //     myList[i].needExpenses,
+      //   ];
+      //   sheet.appendRow(rowData);
+      // }
+
+
+    // predictionHelperMap!.forEach((key, value) {
+    //   print("${value.totalIncome}");
+    //   sheet.appendRow([
+    //     rowIndex,
+    //     key,
+    //     value.totalIncome,
+    //     value.totalExpenses,
+    //   ]);
+    //   rowIndex++;
+    // });
+    //     for (var i = 0; i < data.length; i++) {
+    //       var rowData = [
+    //         i++,
+    //         i++,
+    //         data[i]!.totalIncome,
+    //         data[i]!.totalExpenses,
+    //         data[i]!.needExpenses,
+    //         data[i]!.wantsExpenses,
+    //         data[i]!.savingExpenses,
+    //         data[i]!.remaininBalance,
+
+    //       ];
+    //       sheet.appendRow(rowData);
+    //     }
+    // data.forEach((key, value) {
+    //   sheet.appendRow([index, key,'${value.totalIncome}', '${value.totalExpenses}',"${value.needExpenses}","${value.wantsExpenses}","${value.savingExpenses}","${value.remaininBalance}"]);
+    //   index++;
+    // });
+
+    // Get the external storage directory
+    final directory =
+        (await getExternalStorageDirectories(type: StorageDirectory.downloads))!
+            .first;
+    //  final directory = await getApplicationDocumentsDirectory();
+    String filePath = '${directory.path}/example.xlsx';
+
+    // Save the Excel file to external storage
+    await File(filePath).writeAsBytes(excel.encode()!);
+    print('Excel file saved to: $filePath');
+    OpenFile.open(filePath);
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  // Future<void> createAndSaveExcel(List<Map<String, dynamic>> jsonData) async {
+  //   try {
+
+  //     String jsonString = jsonEncode(jsonData);
+
+  //     final directory2 = (await getExternalStorageDirectories(
+  //             type: StorageDirectory.downloads))!
+  //         .first;
+  //     // Specify the file path
+  //     File file = File("${directory2.path}/test.json");
+
+  //     // Write JSON data to the file
+  //     writeJsonToFile(jsonString, file.path);
+
+  // // final data = await fromJson(file.path);
+
+  //     // Check and request storage permission
+  //     // var status = await Permission.storage.status;
+  //     // if (!status.isGranted) {
+  //     //   var result = await Permission.storage.request();
+  //     //   if (result != PermissionStatus.granted) {
+  //     //     // Handle the case where the user denies permission
+  //     //     log('Permission denied for storage');
+  //     //     return;
+  //     //   }
+  //     // }
+  //     // var excel = Excel.createExcel();
+  //     // var sheet = excel['Sheet1'];
+
+  //     // var headerRow = [
+  //     //   'Transaction Id',
+  //     //   'User Id',
+  //     //   'Transaction Category',
+  //     //   'Transaction Subcategory',
+  //     //   'Transaction Subcategory Index',
+  //     //   'Transaction Amount',
+  //     //   'Transaction Note',
+  //     //   'Transaction Time',
+  //     //   'Transaction PaymentMode',
+  //     //   'Transaction Created At',
+  //     // ];
+
+  //     // sheet.appendRow(headerRow);
+  //     // for (var i = 0; i < jsonData.length; i++) {
+  //     //   var rowData = [
+  //     //     jsonData[i]['Transaction Id'],
+  //     //     jsonData[i]['User Id'],
+  //     //     jsonData[i]['Transaction Category'],
+  //     //     jsonData[i]['Transaction Subcategory'],
+  //     //     jsonData[i]['Transaction Subcategory Index'],
+  //     //     jsonData[i]['Transaction Amount'],
+  //     //     jsonData[i]['Transaction Note'],
+  //     //     jsonData[i]['Transaction Time'],
+  //     //     jsonData[i]['Transaction PaymentMode'],
+  //     //     jsonData[i]['Transaction Created At'],
+  //     //   ];
+  //     //   sheet.appendRow(rowData);
+  //     // }
+
+  //     // final directory2 = (await getExternalStorageDirectories(
+  //     //         type: StorageDirectory.downloads))!
+  //     //     .first;
+  //     // File file2 = File("${directory2.path}/test.xlsx");
+
+  //     // final directory = await getExternalStorageDirectory();
+  //     // String filePath = '${directory!.path}/example.xlsx';
+
+  //     // // Save the Excel file to external storage
+  //     // await File(file2.path).writeAsBytes(excel.encode()!);
+  //     // log('Excel file saved to: $file2');
+  //     // OpenFile.open(filePath);
+  //     setState(() {
+  //       isLoading = false;
+  //     });
+  //   } catch (e) {
+  //     log('Error saving Excel file: $e');
+  //   }
+  // }
 
   void signOutFunction(context) async {
     final sharedPreferences = await SharedPreferences.getInstance();
@@ -657,7 +964,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         setState(() {
           isLoading = false;
         });
-        ScaffoldMessenger.of(context).showSnackBar( SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Row(
             children: [
               const Icon(Icons.check_circle, color: Colors.green),
@@ -677,7 +984,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         await sharedPreferences.setString('lastUpdated', lastBackup);
       } else if (response.statusCode == 404) {
       } else {
-        ScaffoldMessenger.of(context).showSnackBar( SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Row(
             children: [
               const Icon(Icons.warning, color: Colors.orange),
@@ -691,7 +998,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ));
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar( SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Row(
           children: [
             const Icon(Icons.error, color: Colors.red),
@@ -731,7 +1038,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       if (response.statusCode == 200) {
         writeTextToFile(fileId, jsonData, masterKeyOfFile);
       } else if (response.statusCode == 404) {
-        ScaffoldMessenger.of(context).showSnackBar( SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Row(
             children: [
               const Icon(Icons.check_circle, color: Colors.red),
@@ -745,7 +1052,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ));
         createFile(jsonData, masterKeyOfFile);
       } else {
-        ScaffoldMessenger.of(context).showSnackBar( SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Row(
             children: [
               const Icon(Icons.warning, color: Colors.orange),
@@ -759,7 +1066,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ));
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar( SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Row(
           children: [
             const Icon(Icons.error, color: Colors.red),
@@ -863,7 +1170,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       );
 
       if (response.statusCode == 200) {
-        ScaffoldMessenger.of(context).showSnackBar( SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Row(
             children: [
               const Icon(Icons.check_circle, color: Colors.green),
@@ -882,7 +1189,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         await sharedPreferences.setString('fileId', fileId);
         await sharedPreferences.setString('lastUpdated', lastBackup);
       } else {
-        ScaffoldMessenger.of(context).showSnackBar( SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Row(
             children: [
               const Icon(Icons.warning, color: Colors.orange),
@@ -896,7 +1203,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ));
       }
     } catch (e) {
-      
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Row(
           children: [

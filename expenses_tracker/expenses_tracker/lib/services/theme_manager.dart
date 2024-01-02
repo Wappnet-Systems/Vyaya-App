@@ -11,8 +11,6 @@ class ThemeManager {
     _darkTheme = ThemeData.dark();
   }
 
-  // bool? get _isDarkMode => isDarkMode;
-
   ThemeData? get lightTheme => _lightTheme;
 
   ThemeData? get darkTheme => _darkTheme;

@@ -23,7 +23,7 @@ class CustomTextFormField extends StatefulWidget {
       required this.customObscureText,
       required this.validationFunction,
       required this.customInkwell,
-      required this.textCapitalization,
+      this.textCapitalization,
       required this.textInputAction,
       this.readOnly,
       this.inputFormatters

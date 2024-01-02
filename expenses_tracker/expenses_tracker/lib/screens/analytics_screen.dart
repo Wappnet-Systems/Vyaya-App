@@ -607,6 +607,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
 
     try {
       recentTransaction = await getTransactionsBetweenDates();
+      
       setState(() {
         currentPageTransactions = recentTransaction
             .map((e) => AllTransactionDetails(
@@ -621,6 +622,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 transactionPaymentMode: e.tPaymentMode,
                 transactionCreatedAt: e.tCreatedAt))
             .toList();
+            
+            
         findIncomeSpending();
       });
     } catch (e) {
@@ -722,16 +725,11 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
   String getWeekRange(DateTime date) {
     DateTime startOfWeek = date.subtract(Duration(days: date.weekday - 1));
     DateTime endOfWeek = startOfWeek.add(const Duration(days: 6));
-    String startOfWeekStr =
-        '${CurrentValues.getMonthName(startOfWeek.month)} ${startOfWeek.day}';
-    String endOfWeekStr =
-        '${CurrentValues.getMonthName(endOfWeek.month)} ${endOfWeek.day}';
-    String year = startOfWeek.year != endOfWeek.year
-        ? '${startOfWeek.year} - ${endOfWeek.year}'
-        : '${startOfWeek.year}';
+    String startOfWeekStr = DateFormat.MMMd().format(startOfWeek);    
+    String endOfWeekStr =DateFormat.yMMMd().format(endOfWeek);      
     startDate = DateTime(startOfWeek.year, startOfWeek.month, startOfWeek.day);
     endDate = DateTime(endOfWeek.year, endOfWeek.month, endOfWeek.day + 1);
-    return '$startOfWeekStr - $endOfWeekStr, $year';
+    return '$startOfWeekStr - $endOfWeekStr';
   }
 
   void updateWeek(int id) {
@@ -747,7 +745,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
 
   void updateMonth(int id) {
     DateTime currentMonth = analyticsMonthly!;
-    int nextMonth = id == 0 ? currentMonth.month - 1 : currentMonth.month + 1;
+    int nextMonth = (id == 0 ? -1 : 1) + currentMonth.month;
     int nextYear = currentMonth.year;
     if (nextMonth < 1) {
       nextMonth = 12;
@@ -756,7 +754,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
       nextMonth = 1;
       nextYear++;
     }
-    analyticsMonthlyText = '${CurrentValues.getMonthName(nextMonth)} $nextYear';
+    analyticsMonthlyText = '${DateFormat.MMM().format(DateTime(nextYear, nextMonth))} $nextYear';
     analyticsMonthly = DateTime(nextYear, nextMonth, 1);
     startDate = DateTime(nextYear, nextMonth, 1);
     endDate = DateTime(nextYear, nextMonth + 1, 1);

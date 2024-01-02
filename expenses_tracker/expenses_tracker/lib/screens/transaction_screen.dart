@@ -94,6 +94,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
       subcategory = 1;
       personalFinanceCategory = 1;
     } else {
+      print("Updation Date : ${widget.transactionDate}");
       amountController.text = widget.transactionAmount.toString();
       noteController.text = widget.transactionNote.toString();
       paymentModeController.text = widget.transactionPaymentMode!;
@@ -767,7 +768,11 @@ class _TransactionScreenState extends State<TransactionScreen> {
       int amountOfMoney = int.parse(transactionAmount!);
       String tID = widget.transactionId.toString();
       transactionPaymentMode = paymentModeController.text;
-
+//         DateFormat dateFormat = DateFormat('MMM dd, yyyy hh:mm a');
+// DateTime dateTime = dateFormat.parse(setDateController.text);
+//       print("${_dateTime}");
+//       print("${dateTime}");
+      // print("${DateTime.parse(setDateController.text)}");
       // For Local Database
       final localTransaction = LocalTransaction(
           userId: userId!,

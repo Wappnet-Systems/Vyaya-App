@@ -21,7 +21,7 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
 
   bool isLoading = false;
 
-  String? wishingText, currentMonth;
+  String? wishingText;
   List<AllTransactionDetails> transactions = [];
 
   final TextEditingController needsController = TextEditingController();
@@ -85,7 +85,6 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
   @override
   void initState() {
     wishingText = getCurrentHour();
-    currentMonth = DateFormat.yMMM().format(DateTime.now());
     getSingleUserData();
     loadVariableFromSharedPreferences();
     getAllTransaction();
@@ -119,7 +118,7 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                       height: 25,
                     ),
                     CustomTextStyle(
-                        customTextStyleText: "$currentMonth",
+                        customTextStyleText: DateFormat.yMMM().format(DateTime.now()),
                         customTextColor:
                             Theme.of(context).colorScheme.secondary,
                         customTextFontWeight: FontWeight.normal,
