@@ -1,15 +1,21 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:intl/intl.dart';
 import 'package:expenses_tracker/exports.dart';
 
 class CustomCard extends StatelessWidget {
   final int? speOrIncMonthValue;
+  double? cardHeight;
+  double? cardWidth;
   final Icon? icon;
   final Color? color, themeColor;
   final String? title;
-  const CustomCard(
+  CustomCard(
       {super.key,
       required this.color,
       required this.icon,
+      this.cardHeight,
+      this.cardWidth,
       required this.speOrIncMonthValue,
       required this.title,
       required this.themeColor});
@@ -29,8 +35,8 @@ class CustomCard extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         color: color,
         child: SizedBox(
-          width: MediaQuery.of(context).size.width * 0.45,
-          height: MediaQuery.of(context).size.height * 0.08,
+          width: cardWidth ?? MediaQuery.of(context).size.width * 0.45,
+          height: cardHeight ?? MediaQuery.of(context).size.height * 0.08,
           child: Row(
             children: [
               Padding(

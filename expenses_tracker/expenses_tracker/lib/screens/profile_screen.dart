@@ -4,6 +4,7 @@ import 'package:encrypt/encrypt.dart';
 import 'package:expenses_tracker/exports.dart';
 import 'package:expenses_tracker/model/linear_regrassion_model.dart';
 import 'package:expenses_tracker/model/prediaction_helper.dart';
+import 'package:expenses_tracker/screens/prediction_page.dart';
 import 'dart:developer' as dev;
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
@@ -491,9 +492,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Map<String, PredictionHelper> newMap = {monthYearKey: model};
               predictionHelperList.add(newMap);
             }
-            
           });
-         
         });
       } else {
         print("The list is empty");
@@ -538,6 +537,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
     double predictedRemainingBalance = remainingBalanceModel
         .predictRemainingBalance((predictionHelperList.length + 1));
     print('Upcoming Months Remaining Balance: $predictedRemainingBalance');
+
+    Navigator.of(context).push(
+      FadeSlideTransitionRoute(
+          page: PredictionPage(
+        predictionHelperList: predictionHelperList,
+        predictionHelperData: PredictionHelper(
+            totalIncome: predictedIncome.toInt(),
+            totalExpenses: predictedExpenses.toInt(),
+            needExpenses: predictedNeedExpenses.toInt(),
+            wantsExpenses: predictedWantExpenses.toInt(),
+            savingExpenses: predictedSavingExpenses.toInt(),
+            remaininBalance: predictedRemainingBalance.toInt()),
+      )),
+    );
   }
 
   // Future<void> createAndSaveExcel(Map<String, PredictionHelper> data) async {
