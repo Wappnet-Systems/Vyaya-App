@@ -8,11 +8,9 @@ class PredictionHelper {
 
   PredictionHelper(
       {required this.totalIncome,
-      required this.totalExpenses,
-      required this.needExpenses,
-      required this.wantsExpenses,
-      required this.savingExpenses,
+      this.totalExpenses,
+      this.needExpenses,
+      this.wantsExpenses,
+      this.savingExpenses,
       required this.remaininBalance});
-
-
 }

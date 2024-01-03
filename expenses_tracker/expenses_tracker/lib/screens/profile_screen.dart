@@ -1,6 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 import 'package:encrypt/encrypt.dart';
-import 'package:excel/excel.dart';
+// import 'package:excel/excel.dart';
 import 'package:expenses_tracker/exports.dart';
 import 'package:expenses_tracker/model/prediaction_helper.dart';
 import 'dart:developer' as dev;
@@ -24,6 +24,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   static List<AllTransactionDetails> currentPageTransactions = [];
   Map<String, List<AllTransactionDetails>>? categorizedTransactionsMap;
   Map<String, PredictionHelper>? predictionHelperMap;
+  List<Map<String, PredictionHelper>> predictionHelperList = [];
+
   bool _darkMode = false;
   bool? syncCheck;
   String? masterPassword, lastBackupTime;
@@ -409,7 +411,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     //   // Handle errors
     //   print('Error: ${response.statusCode}');
     // }
-    // final transactions = await getAllLocalTransactions();
     try {
       recentTransaction = await getAllLocalTransactions();
 
@@ -475,226 +476,104 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 wantsExpenses: totalWants,
                 savingExpenses: totalSavings,
                 remaininBalance: (totalIncome - totlaExpenses));
-            if (predictionHelperMap!.containsKey(monthYearKey)) {
-              predictionHelperMap![monthYearKey] = model;
-            } else {
-              predictionHelperMap![monthYearKey] = model;
-            }
 
-            
+            bool containsKey = predictionHelperList
+                .any((map) => map.containsKey(monthYearKey));
+            if (containsKey) {
+              // Update the existing map if it contains the key
+              predictionHelperList.forEach((map) {
+                if (map.containsKey(monthYearKey)) {
+                  map[monthYearKey] = model;
+                }
+              });
+            } else {
+              // Create a new map with the key and add it to the list
+              Map<String, PredictionHelper> newMap = {monthYearKey: model};
+              predictionHelperList.add(newMap);
+            }
+            // if (predictionHelperMap!.containsKey(monthYearKey)) {
+            //   predictionHelperMap![monthYearKey] = model;
+            // } else {
+            //   predictionHelperMap![monthYearKey] = model;
+            // }
           });
-          predictionHelperMap!.forEach((monthYearKey, transactions) {
-            print("$monthYearKey");
-            
-          });
-          createAndSaveExcel(predictionHelperMap!);
+          // predictionHelperMap!.forEach((monthYearKey, transactions) {
+          //   print("$monthYearKey");
+
+          // });
         });
       } else {
         print("The list is empty");
       }
-      // createAndSaveExcel(predictionHelperMap!);
     } catch (e) {
       dev.log("$e");
     }
+    // createAndSaveExcel(predictionHelperMap!);
+    var model = LinearRegressionModel();
+  model.trainForIncome(predictionHelperList);
+
+  // Use the trained model to make predictions
+  // var newEntry = PredictionHelper( totalIncome: 5500, remaininBalance: null);
+  double predictedRemainingBalance = model.predictIncome((predictionHelperList.length+1));
+
+  print('Upcoming Months Income: $predictedRemainingBalance');
   }
 
-  Future<void> createAndSaveExcel(Map<String, PredictionHelper> data) async {
-    // Create an Excel workbook and add a worksheet
-    var excel = Excel.createExcel();
-    var sheet = excel['Sheet1'];
+  // Future<void> createAndSaveExcel(Map<String, PredictionHelper> data) async {
+  //   // Create an Excel workbook and add a worksheet
+  //   var excel = Excel.createExcel();
+  //   var sheet = excel['Sheet1'];
 
-    sheet.appendRow([
-      'No',
-      'Months',
-      'Income',
-      'Expenses',
-      "Needs",
-      "Wants",
-      "Saving",
-      "Balance"
-    ]);
-    int rowIndex = 1; // Start from the first row (assuming headers are in row 0)
+  //   sheet.appendRow([
+  //     'No',
+  //     'Months',
+  //     'Income',
+  //     'Expenses',
+  //     "Needs",
+  //     "Wants",
+  //     "Saving",
+  //     "Balance"
+  //   ]);
 
-predictionHelperMap!.forEach((key, value) {
-  print("${value.totalIncome}");
-  sheet.insertRowIterables([
-    rowIndex,
-    key,
-    value.totalIncome,
-    value.totalExpenses,
-  ], rowIndex, startingColumn: 0, overwriteMergedCells: false);
-  rowIndex++; // Increment rowIndex for the next iteration
-});
-
-  //   int startingRowIndex = 1;
-  // int rowIndex = startingRowIndex;
-
-  // predictionHelperMap!.forEach((key, value) {
-  //   print("Inserting at row $rowIndex: ${value.totalIncome}");
-
-  //   sheet.insertRowIterables([
-  //     rowIndex,
-  //     key,
-  //     value.totalIncome,
-  //     value.totalExpenses,
-  //   ], rowIndex, startingColumn: 0, overwriteMergedCells: false);
-
-  //   rowIndex++;
-  // });
-    // predictionHelperMap!.forEach((monthYearKey, value) {
-    //   print("${value.totalIncome}");
-    //   sheet.appendRow([
-    //     rowIndex,
-    //     monthYearKey,
-    //     value.totalIncome,
-    //     value.totalExpenses,
-    //     value.needExpenses,
-    //     value.wantsExpenses,
-    //     value.savingExpenses,
-    //     value.remaininBalance
-    //   ]);
-    //   rowIndex++;
-    // });
-    //  List<PredictionHelper> myList = predictionHelperMap!.values.toList();
-      // print("Length : ${myList.length}");
-        //  sheet.appendRow(headerRow);
-      // for (var i = 0; i < myList.length; i++) {
-      //   var rowData = [
-      //     i++,
-      //     myList[i].totalExpenses,
-      //     myList[i].needExpenses,
-      //     myList[i].totalExpenses,
-      //     myList[i].needExpenses,
-      //     myList[i].totalExpenses,
-      //     myList[i].needExpenses,
-      //   ];
-      //   sheet.appendRow(rowData);
-      // }
-
-
-    // predictionHelperMap!.forEach((key, value) {
-    //   print("${value.totalIncome}");
-    //   sheet.appendRow([
-    //     rowIndex,
-    //     key,
-    //     value.totalIncome,
-    //     value.totalExpenses,
-    //   ]);
-    //   rowIndex++;
-    // });
-    //     for (var i = 0; i < data.length; i++) {
-    //       var rowData = [
-    //         i++,
-    //         i++,
-    //         data[i]!.totalIncome,
-    //         data[i]!.totalExpenses,
-    //         data[i]!.needExpenses,
-    //         data[i]!.wantsExpenses,
-    //         data[i]!.savingExpenses,
-    //         data[i]!.remaininBalance,
-
-    //       ];
-    //       sheet.appendRow(rowData);
-    //     }
-    // data.forEach((key, value) {
-    //   sheet.appendRow([index, key,'${value.totalIncome}', '${value.totalExpenses}',"${value.needExpenses}","${value.wantsExpenses}","${value.savingExpenses}","${value.remaininBalance}"]);
-    //   index++;
-    // });
-
-    // Get the external storage directory
-    final directory =
-        (await getExternalStorageDirectories(type: StorageDirectory.downloads))!
-            .first;
-    //  final directory = await getApplicationDocumentsDirectory();
-    String filePath = '${directory.path}/example.xlsx';
-
-    // Save the Excel file to external storage
-    await File(filePath).writeAsBytes(excel.encode()!);
-    print('Excel file saved to: $filePath');
-    OpenFile.open(filePath);
-    setState(() {
-      isLoading = false;
-    });
-  }
-
-  // Future<void> createAndSaveExcel(List<Map<String, dynamic>> jsonData) async {
-  //   try {
-
-  //     String jsonString = jsonEncode(jsonData);
-
-  //     final directory2 = (await getExternalStorageDirectories(
-  //             type: StorageDirectory.downloads))!
-  //         .first;
-  //     // Specify the file path
-  //     File file = File("${directory2.path}/test.json");
-
-  //     // Write JSON data to the file
-  //     writeJsonToFile(jsonString, file.path);
-
-  // // final data = await fromJson(file.path);
-
-  //     // Check and request storage permission
-  //     // var status = await Permission.storage.status;
-  //     // if (!status.isGranted) {
-  //     //   var result = await Permission.storage.request();
-  //     //   if (result != PermissionStatus.granted) {
-  //     //     // Handle the case where the user denies permission
-  //     //     log('Permission denied for storage');
-  //     //     return;
-  //     //   }
-  //     // }
-  //     // var excel = Excel.createExcel();
-  //     // var sheet = excel['Sheet1'];
-
-  //     // var headerRow = [
-  //     //   'Transaction Id',
-  //     //   'User Id',
-  //     //   'Transaction Category',
-  //     //   'Transaction Subcategory',
-  //     //   'Transaction Subcategory Index',
-  //     //   'Transaction Amount',
-  //     //   'Transaction Note',
-  //     //   'Transaction Time',
-  //     //   'Transaction PaymentMode',
-  //     //   'Transaction Created At',
-  //     // ];
-
-  //     // sheet.appendRow(headerRow);
-  //     // for (var i = 0; i < jsonData.length; i++) {
-  //     //   var rowData = [
-  //     //     jsonData[i]['Transaction Id'],
-  //     //     jsonData[i]['User Id'],
-  //     //     jsonData[i]['Transaction Category'],
-  //     //     jsonData[i]['Transaction Subcategory'],
-  //     //     jsonData[i]['Transaction Subcategory Index'],
-  //     //     jsonData[i]['Transaction Amount'],
-  //     //     jsonData[i]['Transaction Note'],
-  //     //     jsonData[i]['Transaction Time'],
-  //     //     jsonData[i]['Transaction PaymentMode'],
-  //     //     jsonData[i]['Transaction Created At'],
-  //     //   ];
-  //     //   sheet.appendRow(rowData);
-  //     // }
-
-  //     // final directory2 = (await getExternalStorageDirectories(
-  //     //         type: StorageDirectory.downloads))!
-  //     //     .first;
-  //     // File file2 = File("${directory2.path}/test.xlsx");
-
-  //     // final directory = await getExternalStorageDirectory();
-  //     // String filePath = '${directory!.path}/example.xlsx';
-
-  //     // // Save the Excel file to external storage
-  //     // await File(file2.path).writeAsBytes(excel.encode()!);
-  //     // log('Excel file saved to: $file2');
-  //     // OpenFile.open(filePath);
-  //     setState(() {
-  //       isLoading = false;
-  //     });
-  //   } catch (e) {
-  //     log('Error saving Excel file: $e');
+  //   int rowIndex = 1;
+  //   int listLen = predictionHelperList.length;
+  //   for (Map<String, PredictionHelper> map in predictionHelperList) {
+  //     for (String key in map.keys) {        
+  //       var rowData = [
+  //         rowIndex,
+  //         key,
+  //         map[key]!.totalIncome,
+  //         map[key]!.totalExpenses,
+  //         map[key]!.needExpenses,
+  //         map[key]!.wantsExpenses,
+  //         map[key]!.savingExpenses,
+  //         map[key]!.remaininBalance,
+  //       ];
+  //       sheet.appendRow(rowData);
+  //       rowIndex++;
+  //     }
   //   }
+  //   // print("Len: ${listLen}");
+  //   sheet.appendRow([rowIndex]);
+  //   String formulaForPrediction = "FORECAST.LINEAR(A${listLen+2},C2:C${listLen+1},A2:A${listLen+1})";
+  //   CellIndex cellIndex= CellIndex.indexByColumnRow(columnIndex: 2,rowIndex: (listLen+1));
+  //   var cellValue = sheet.cell(CellIndex.indexByString('C6')).value;
+  //   print("Cell Value : $cellValue");
+  //   sheet.cell(cellIndex).setFormula("${formulaForPrediction.toUpperCase()}");
+  //   final directory =
+  //       (await getExternalStorageDirectories(type: StorageDirectory.downloads))!
+  //           .first;
+  //   String filePath = '${directory.path}/example.xlsx';
+  //   await File(filePath).writeAsBytes(excel.encode()!);
+
+  //   print('Excel file saved to: $filePath');
+  //   OpenFile.open(filePath);
+  //   setState(() {
+  //     isLoading = false;
+  //   });
   // }
+
+  
 
   void signOutFunction(context) async {
     final sharedPreferences = await SharedPreferences.getInstance();
@@ -1297,5 +1176,32 @@ predictionHelperMap!.forEach((key, value) {
     setState(() {
       _darkMode = !_darkMode;
     });
+  }
+}
+
+class LinearRegressionModel {
+  late double slopeIncome;
+  late double interceptIncome;
+
+  void trainForIncome(List<Map<String, PredictionHelper>> data) {
+    final int n = data.length;
+    double sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0;
+
+    for (var i = 0; i < n; i++) {
+      var helper = data[i].values.first;
+      var order = i + 1;  
+
+      sumX += order;
+      sumY += helper.totalIncome!; 
+      sumXY += order * helper.totalIncome!;
+      sumX2 += order * order;
+    }
+
+    slopeIncome = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+    interceptIncome = (sumY - slopeIncome * sumX) / n;
+  }
+
+  double predictIncome(double order) {
+    return slopeIncome * order + interceptIncome;
   }
 }
