@@ -2,6 +2,7 @@
 import 'package:encrypt/encrypt.dart';
 // import 'package:excel/excel.dart';
 import 'package:expenses_tracker/exports.dart';
+import 'package:expenses_tracker/model/linear_regrassion_model.dart';
 import 'package:expenses_tracker/model/prediaction_helper.dart';
 import 'dart:developer' as dev;
 import 'package:intl/intl.dart';
@@ -487,20 +488,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 }
               });
             } else {
-              // Create a new map with the key and add it to the list
               Map<String, PredictionHelper> newMap = {monthYearKey: model};
               predictionHelperList.add(newMap);
             }
-            // if (predictionHelperMap!.containsKey(monthYearKey)) {
-            //   predictionHelperMap![monthYearKey] = model;
-            // } else {
-            //   predictionHelperMap![monthYearKey] = model;
-            // }
+            
           });
-          // predictionHelperMap!.forEach((monthYearKey, transactions) {
-          //   print("$monthYearKey");
-
-          // });
+         
         });
       } else {
         print("The list is empty");
@@ -508,15 +501,43 @@ class _ProfileScreenState extends State<ProfileScreen> {
     } catch (e) {
       dev.log("$e");
     }
-    // createAndSaveExcel(predictionHelperMap!);
-    var model = LinearRegressionModel();
-  model.trainForIncome(predictionHelperList);
 
-  // Use the trained model to make predictions
-  // var newEntry = PredictionHelper( totalIncome: 5500, remaininBalance: null);
-  double predictedRemainingBalance = model.predictIncome((predictionHelperList.length+1));
 
-  print('Upcoming Months Income: $predictedRemainingBalance');
+    var incomeModel = IncomeModel();
+    incomeModel.trainForIncome(predictionHelperList);
+    double predictedIncome =
+        incomeModel.predictIncome((predictionHelperList.length + 1));
+    print('Upcoming Months Income: $predictedIncome');
+
+    var expensesModel = ExpensesModel();
+    expensesModel.trainForExpenses(predictionHelperList);
+    double predictedExpenses =
+        expensesModel.predictExpenses((predictionHelperList.length + 1));
+    print('Upcoming Months Expenses: $predictedExpenses');
+
+    var needExpensesModel = NeedExpensesModel();
+    needExpensesModel.trainForNeedExpenses(predictionHelperList);
+    double predictedNeedExpenses = needExpensesModel
+        .predictNeedExpenses((predictionHelperList.length + 1));
+    print('Upcoming Months Needs Expenses: $predictedNeedExpenses');
+
+    var wantExpensesModel = WantExpensesModel();
+    wantExpensesModel.trainForWantExpenses(predictionHelperList);
+    double predictedWantExpenses = wantExpensesModel
+        .predictWantExpenses((predictionHelperList.length + 1));
+    print('Upcoming Months Wants Expenses: $predictedWantExpenses');
+
+    var savingExpensesModel = SavingExpensesModel();
+    savingExpensesModel.trainForSavingExpenses(predictionHelperList);
+    double predictedSavingExpenses = savingExpensesModel
+        .predictSavingExpenses((predictionHelperList.length + 1));
+    print('Upcoming Months Saving Expenses: $predictedSavingExpenses');
+
+    var remainingBalanceModel = RemainingBalanceModel();
+    remainingBalanceModel.trainForRemainingBalance(predictionHelperList);
+    double predictedRemainingBalance = remainingBalanceModel
+        .predictRemainingBalance((predictionHelperList.length + 1));
+    print('Upcoming Months Remaining Balance: $predictedRemainingBalance');
   }
 
   // Future<void> createAndSaveExcel(Map<String, PredictionHelper> data) async {
@@ -538,7 +559,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   //   int rowIndex = 1;
   //   int listLen = predictionHelperList.length;
   //   for (Map<String, PredictionHelper> map in predictionHelperList) {
-  //     for (String key in map.keys) {        
+  //     for (String key in map.keys) {
   //       var rowData = [
   //         rowIndex,
   //         key,
@@ -572,8 +593,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   //     isLoading = false;
   //   });
   // }
-
-  
 
   void signOutFunction(context) async {
     final sharedPreferences = await SharedPreferences.getInstance();
@@ -1179,29 +1198,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 }
 
-class LinearRegressionModel {
-  late double slopeIncome;
-  late double interceptIncome;
+// class LinearRegressionModel {
+//   late double slopeIncome;
+//   late double interceptIncome;
 
-  void trainForIncome(List<Map<String, PredictionHelper>> data) {
-    final int n = data.length;
-    double sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0;
+//   void trainForIncome(List<Map<String, PredictionHelper>> data) {
+//     final int n = data.length;
+//     double sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0;
 
-    for (var i = 0; i < n; i++) {
-      var helper = data[i].values.first;
-      var order = i + 1;  
+//     for (var i = 0; i < n; i++) {
+//       var helper = data[i].values.first;
+//       var order = i + 1;
 
-      sumX += order;
-      sumY += helper.totalIncome!; 
-      sumXY += order * helper.totalIncome!;
-      sumX2 += order * order;
-    }
+//       sumX += order;
+//       sumY += helper.totalIncome!;
+//       sumXY += order * helper.totalIncome!;
+//       sumX2 += order * order;
+//     }
 
-    slopeIncome = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
-    interceptIncome = (sumY - slopeIncome * sumX) / n;
-  }
+//     slopeIncome = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+//     interceptIncome = (sumY - slopeIncome * sumX) / n;
+//   }
 
-  double predictIncome(double order) {
-    return slopeIncome * order + interceptIncome;
-  }
-}
+//   double predictIncome(double order) {
+//     return slopeIncome * order + interceptIncome;
+//   }
+// }
