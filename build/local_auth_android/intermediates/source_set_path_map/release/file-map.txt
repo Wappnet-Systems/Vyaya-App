@@ -1,0 +1,28 @@
+io.flutter.plugins.localauth.local_auth_android-jetified-window-1.0.0-beta04-0 /home/wappnet-52/.gradle/caches/transforms-3/11fad413a07dee03e37e38d79dbe6d2d/transformed/jetified-window-1.0.0-beta04/res
+io.flutter.plugins.localauth.local_auth_android-jetified-profileinstaller-1.3.0-1 /home/wappnet-52/.gradle/caches/transforms-3/1e10caebcfc7597069c4be7f854da936/transformed/jetified-profileinstaller-1.3.0/res
+io.flutter.plugins.localauth.local_auth_android-jetified-annotation-experimental-1.3.0-2 /home/wappnet-52/.gradle/caches/transforms-3/29530830a671fe0ebdfef42ab525f1f5/transformed/jetified-annotation-experimental-1.3.0/res
+io.flutter.plugins.localauth.local_auth_android-jetified-lifecycle-viewmodel-savedstate-2.6.1-3 /home/wappnet-52/.gradle/caches/transforms-3/39d96a7a38b4ccd22cdad7de6269d94d/transformed/jetified-lifecycle-viewmodel-savedstate-2.6.1/res
+io.flutter.plugins.localauth.local_auth_android-jetified-window-java-1.0.0-beta04-4 /home/wappnet-52/.gradle/caches/transforms-3/3d3335744c9a764486446228a2583c98/transformed/jetified-window-java-1.0.0-beta04/res
+io.flutter.plugins.localauth.local_auth_android-appcompat-1.2.0-5 /home/wappnet-52/.gradle/caches/transforms-3/3e1cc451657486403381f4ae2cae1a0b/transformed/appcompat-1.2.0/res
+io.flutter.plugins.localauth.local_auth_android-jetified-activity-1.7.2-6 /home/wappnet-52/.gradle/caches/transforms-3/4a07d846842af3958fe79f4570926488/transformed/jetified-activity-1.7.2/res
+io.flutter.plugins.localauth.local_auth_android-fragment-1.6.2-7 /home/wappnet-52/.gradle/caches/transforms-3/4c7c33ecf01806af5006be48baff26de/transformed/fragment-1.6.2/res
+io.flutter.plugins.localauth.local_auth_android-lifecycle-livedata-2.6.1-8 /home/wappnet-52/.gradle/caches/transforms-3/798148fca85d424cc2eff064a9375973/transformed/lifecycle-livedata-2.6.1/res
+io.flutter.plugins.localauth.local_auth_android-jetified-startup-runtime-1.1.1-9 /home/wappnet-52/.gradle/caches/transforms-3/7efea8dd94658769dba25b1b82c5679c/transformed/jetified-startup-runtime-1.1.1/res
+io.flutter.plugins.localauth.local_auth_android-biometric-1.1.0-10 /home/wappnet-52/.gradle/caches/transforms-3/ab903027678bbde7c441ff99159b1311/transformed/biometric-1.1.0/res
+io.flutter.plugins.localauth.local_auth_android-core-1.10.1-11 /home/wappnet-52/.gradle/caches/transforms-3/c1d90683d3e54dc745282639f46e3236/transformed/core-1.10.1/res
+io.flutter.plugins.localauth.local_auth_android-jetified-savedstate-1.2.1-12 /home/wappnet-52/.gradle/caches/transforms-3/ca3f5d77b3d66a30ddf020a1f61ecce1/transformed/jetified-savedstate-1.2.1/res
+io.flutter.plugins.localauth.local_auth_android-jetified-appcompat-resources-1.2.0-13 /home/wappnet-52/.gradle/caches/transforms-3/d0585fe5f3516fad07f5ef15080393be/transformed/jetified-appcompat-resources-1.2.0/res
+io.flutter.plugins.localauth.local_auth_android-lifecycle-viewmodel-2.6.1-14 /home/wappnet-52/.gradle/caches/transforms-3/dc15e6ba5e4ab4b4ac3e8a9e9e10fedc/transformed/lifecycle-viewmodel-2.6.1/res
+io.flutter.plugins.localauth.local_auth_android-lifecycle-runtime-2.6.1-15 /home/wappnet-52/.gradle/caches/transforms-3/e05dfe7c31535dca24dec823fd753d77/transformed/lifecycle-runtime-2.6.1/res
+io.flutter.plugins.localauth.local_auth_android-jetified-core-ktx-1.10.1-16 /home/wappnet-52/.gradle/caches/transforms-3/ebe6de4063003bf3975b2f14a866bdcc/transformed/jetified-core-ktx-1.10.1/res
+io.flutter.plugins.localauth.local_auth_android-lifecycle-livedata-core-2.6.1-17 /home/wappnet-52/.gradle/caches/transforms-3/eec4ba5be900a011156cec499e4728b0/transformed/lifecycle-livedata-core-2.6.1/res
+io.flutter.plugins.localauth.local_auth_android-core-runtime-2.2.0-18 /home/wappnet-52/.gradle/caches/transforms-3/f50597cecb697341fa523bf2331df113/transformed/core-runtime-2.2.0/res
+io.flutter.plugins.localauth.local_auth_android-main-19 /home/wappnet-52/.pub-cache/hosted/pub.dev/local_auth_android-1.0.36/android/src/main/res
+io.flutter.plugins.localauth.local_auth_android-release-20 /home/wappnet-52/.pub-cache/hosted/pub.dev/local_auth_android-1.0.36/android/src/release/res
+io.flutter.plugins.localauth.local_auth_android-packaged_res-21 /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/flutter_plugin_android_lifecycle/intermediates/packaged_res/release
+io.flutter.plugins.localauth.local_auth_android-pngs-22 /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/local_auth_android/generated/res/pngs/release
+io.flutter.plugins.localauth.local_auth_android-resValues-23 /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/local_auth_android/generated/res/resValues/release
+io.flutter.plugins.localauth.local_auth_android-rs-24 /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/local_auth_android/generated/res/rs/release
+io.flutter.plugins.localauth.local_auth_android-mergeReleaseResources-25 /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/local_auth_android/intermediates/incremental/release/mergeReleaseResources/merged.dir
+io.flutter.plugins.localauth.local_auth_android-mergeReleaseResources-26 /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/local_auth_android/intermediates/incremental/release/mergeReleaseResources/stripped.dir
+io.flutter.plugins.localauth.local_auth_android-merged_res-27 /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/local_auth_android/intermediates/merged_res/release

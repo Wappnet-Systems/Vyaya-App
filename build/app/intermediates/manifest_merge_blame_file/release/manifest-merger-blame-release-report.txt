@@ -1,0 +1,680 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.wappnet.vyaya"
+4    android:versionCode="11"
+5    android:versionName="1.1.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="23"
+8-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml
+9        android:targetSdkVersion="33" />
+9-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml
+10
+11    <uses-permission android:name="android.permission.INTERNET" />
+11-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:3:5-66
+11-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:3:22-64
+12    <uses-permission android:name="android.permission.VIBRATE" />
+12-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:4:5-66
+12-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:4:22-63
+13    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+13-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:5:5-80
+13-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:5:22-78
+14    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
+14-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:6:5-85
+14-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:6:22-82
+15    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+15-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:7:5-79
+15-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:7:22-76
+16    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+16-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:8:5-72
+16-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:8:22-69
+17    <uses-permission android:name="android.permission.CAMERA" />
+17-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:9:5-65
+17-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:9:22-62
+18    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+18-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:10:5-74
+18-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:10:22-71
+19    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+19-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:11:5-80
+19-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:11:22-78
+20    <uses-permission
+20-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:12:5-80
+21        android:name="android.permission.READ_EXTERNAL_STORAGE"
+21-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:12:22-77
+22        android:maxSdkVersion="32" />
+22-->[:file_picker] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/file_picker/intermediates/merged_manifest/release/AndroidManifest.xml:11:9-35
+23
+24    <queries>
+24-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:13:5-18:13
+25        <intent>
+25-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:14:5-17:14
+26            <action android:name="android.intent.action.SENDTO" />
+26-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:15:7-61
+26-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:15:15-58
+27
+28            <data android:scheme="mailto" />
+28-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:16:7-39
+28-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:16:13-36
+29        </intent>
+30        <intent>
+30-->[:file_picker] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/file_picker/intermediates/merged_manifest/release/AndroidManifest.xml:14:9-18:18
+31            <action android:name="android.intent.action.GET_CONTENT" />
+31-->[:file_picker] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/file_picker/intermediates/merged_manifest/release/AndroidManifest.xml:15:13-72
+31-->[:file_picker] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/file_picker/intermediates/merged_manifest/release/AndroidManifest.xml:15:21-69
+32
+33            <data android:mimeType="*/*" />
+33-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:16:7-39
+34        </intent>
+35        <intent>
+35-->[:flutter_inappwebview_android] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/flutter_inappwebview_android/intermediates/merged_manifest/release/AndroidManifest.xml:10:9-12:18
+36            <action android:name="android.support.customtabs.action.CustomTabsService" />
+36-->[:flutter_inappwebview_android] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/flutter_inappwebview_android/intermediates/merged_manifest/release/AndroidManifest.xml:11:13-90
+36-->[:flutter_inappwebview_android] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/flutter_inappwebview_android/intermediates/merged_manifest/release/AndroidManifest.xml:11:21-87
+37        </intent>
+38    </queries>
+39
+40    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+40-->[:awesome_notifications] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/awesome_notifications/intermediates/merged_manifest/release/AndroidManifest.xml:9:5-77
+40-->[:awesome_notifications] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/awesome_notifications/intermediates/merged_manifest/release/AndroidManifest.xml:9:22-74
+41    <uses-permission android:name="android.permission.BROADCAST_CLOSE_SYSTEM_DIALOGS" />
+41-->[:awesome_notifications] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/awesome_notifications/intermediates/merged_manifest/release/AndroidManifest.xml:10:5-89
+41-->[:awesome_notifications] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/awesome_notifications/intermediates/merged_manifest/release/AndroidManifest.xml:10:22-86
+42    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+42-->[com.google.android.gms:play-services-measurement-api:21.5.0] /home/wappnet-52/.gradle/caches/transforms-3/21e59b31ffd4afde87d691067a7a9395/transformed/jetified-play-services-measurement-api-21.5.0/AndroidManifest.xml:23:5-79
+42-->[com.google.android.gms:play-services-measurement-api:21.5.0] /home/wappnet-52/.gradle/caches/transforms-3/21e59b31ffd4afde87d691067a7a9395/transformed/jetified-play-services-measurement-api-21.5.0/AndroidManifest.xml:23:22-76
+43    <uses-permission android:name="android.permission.WAKE_LOCK" />
+43-->[com.google.android.gms:play-services-measurement-api:21.5.0] /home/wappnet-52/.gradle/caches/transforms-3/21e59b31ffd4afde87d691067a7a9395/transformed/jetified-play-services-measurement-api-21.5.0/AndroidManifest.xml:24:5-68
+43-->[com.google.android.gms:play-services-measurement-api:21.5.0] /home/wappnet-52/.gradle/caches/transforms-3/21e59b31ffd4afde87d691067a7a9395/transformed/jetified-play-services-measurement-api-21.5.0/AndroidManifest.xml:24:22-65
+44    <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
+44-->[com.google.android.gms:play-services-measurement-api:21.5.0] /home/wappnet-52/.gradle/caches/transforms-3/21e59b31ffd4afde87d691067a7a9395/transformed/jetified-play-services-measurement-api-21.5.0/AndroidManifest.xml:25:5-79
+44-->[com.google.android.gms:play-services-measurement-api:21.5.0] /home/wappnet-52/.gradle/caches/transforms-3/21e59b31ffd4afde87d691067a7a9395/transformed/jetified-play-services-measurement-api-21.5.0/AndroidManifest.xml:25:22-76
+45    <uses-permission android:name="android.permission.ACCESS_ADSERVICES_ATTRIBUTION" />
+45-->[com.google.android.gms:play-services-measurement-api:21.5.0] /home/wappnet-52/.gradle/caches/transforms-3/21e59b31ffd4afde87d691067a7a9395/transformed/jetified-play-services-measurement-api-21.5.0/AndroidManifest.xml:26:5-88
+45-->[com.google.android.gms:play-services-measurement-api:21.5.0] /home/wappnet-52/.gradle/caches/transforms-3/21e59b31ffd4afde87d691067a7a9395/transformed/jetified-play-services-measurement-api-21.5.0/AndroidManifest.xml:26:22-85
+46    <uses-permission android:name="android.permission.ACCESS_ADSERVICES_AD_ID" />
+46-->[com.google.android.gms:play-services-measurement-api:21.5.0] /home/wappnet-52/.gradle/caches/transforms-3/21e59b31ffd4afde87d691067a7a9395/transformed/jetified-play-services-measurement-api-21.5.0/AndroidManifest.xml:27:5-82
+46-->[com.google.android.gms:play-services-measurement-api:21.5.0] /home/wappnet-52/.gradle/caches/transforms-3/21e59b31ffd4afde87d691067a7a9395/transformed/jetified-play-services-measurement-api-21.5.0/AndroidManifest.xml:27:22-79
+47    <uses-permission
+47-->[me.carda:AndroidAwnCore:0.8.3] /home/wappnet-52/.gradle/caches/transforms-3/c100ca504a6049b861a7a82c81eb663f/transformed/jetified-AndroidAwnCore-0.8.3/AndroidManifest.xml:10:5-12:38
+48        android:name="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"
+48-->[me.carda:AndroidAwnCore:0.8.3] /home/wappnet-52/.gradle/caches/transforms-3/c100ca504a6049b861a7a82c81eb663f/transformed/jetified-AndroidAwnCore-0.8.3/AndroidManifest.xml:11:9-77
+49        android:maxSdkVersion="22" />
+49-->[me.carda:AndroidAwnCore:0.8.3] /home/wappnet-52/.gradle/caches/transforms-3/c100ca504a6049b861a7a82c81eb663f/transformed/jetified-AndroidAwnCore-0.8.3/AndroidManifest.xml:12:9-35
+50    <uses-permission android:name="com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE" />
+50-->[com.google.android.gms:play-services-measurement:21.5.0] /home/wappnet-52/.gradle/caches/transforms-3/a3c07753338e82930bb0f29097539e6b/transformed/jetified-play-services-measurement-21.5.0/AndroidManifest.xml:26:5-110
+50-->[com.google.android.gms:play-services-measurement:21.5.0] /home/wappnet-52/.gradle/caches/transforms-3/a3c07753338e82930bb0f29097539e6b/transformed/jetified-play-services-measurement-21.5.0/AndroidManifest.xml:26:22-107
+51
+52    <permission
+52-->[androidx.core:core:1.10.1] /home/wappnet-52/.gradle/caches/transforms-3/c1d90683d3e54dc745282639f46e3236/transformed/core-1.10.1/AndroidManifest.xml:22:5-24:47
+53        android:name="com.wappnet.vyaya.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+53-->[androidx.core:core:1.10.1] /home/wappnet-52/.gradle/caches/transforms-3/c1d90683d3e54dc745282639f46e3236/transformed/core-1.10.1/AndroidManifest.xml:23:9-81
+54        android:protectionLevel="signature" />
+54-->[androidx.core:core:1.10.1] /home/wappnet-52/.gradle/caches/transforms-3/c1d90683d3e54dc745282639f46e3236/transformed/core-1.10.1/AndroidManifest.xml:24:9-44
+55
+56    <uses-permission android:name="com.wappnet.vyaya.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" /> <!-- for android -->
+56-->[androidx.core:core:1.10.1] /home/wappnet-52/.gradle/caches/transforms-3/c1d90683d3e54dc745282639f46e3236/transformed/core-1.10.1/AndroidManifest.xml:26:5-97
+56-->[androidx.core:core:1.10.1] /home/wappnet-52/.gradle/caches/transforms-3/c1d90683d3e54dc745282639f46e3236/transformed/core-1.10.1/AndroidManifest.xml:26:22-94
+57    <!-- <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS"/> -->
+58    <!-- <uses-permission android:name="com.android.launcher.permission.WRITE_SETTINGS"/> -->
+59    <!-- <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" /> -->
+60    <!-- <uses-permission android:name="com.android.launcher.permission.UNINSTALL_SHORTCUT" /> -->
+61    <!-- for Samsung -->
+62    <uses-permission android:name="com.sec.android.provider.badge.permission.READ" />
+62-->[me.leolin:ShortcutBadger:1.1.22] /home/wappnet-52/.gradle/caches/transforms-3/f14b642f5115934422b4025c2b626641/transformed/jetified-ShortcutBadger-1.1.22/AndroidManifest.xml:19:5-86
+62-->[me.leolin:ShortcutBadger:1.1.22] /home/wappnet-52/.gradle/caches/transforms-3/f14b642f5115934422b4025c2b626641/transformed/jetified-ShortcutBadger-1.1.22/AndroidManifest.xml:19:22-83
+63    <uses-permission android:name="com.sec.android.provider.badge.permission.WRITE" /> <!-- for htc -->
+63-->[me.leolin:ShortcutBadger:1.1.22] /home/wappnet-52/.gradle/caches/transforms-3/f14b642f5115934422b4025c2b626641/transformed/jetified-ShortcutBadger-1.1.22/AndroidManifest.xml:20:5-87
+63-->[me.leolin:ShortcutBadger:1.1.22] /home/wappnet-52/.gradle/caches/transforms-3/f14b642f5115934422b4025c2b626641/transformed/jetified-ShortcutBadger-1.1.22/AndroidManifest.xml:20:22-84
+64    <uses-permission android:name="com.htc.launcher.permission.READ_SETTINGS" />
+64-->[me.leolin:ShortcutBadger:1.1.22] /home/wappnet-52/.gradle/caches/transforms-3/f14b642f5115934422b4025c2b626641/transformed/jetified-ShortcutBadger-1.1.22/AndroidManifest.xml:23:5-81
+64-->[me.leolin:ShortcutBadger:1.1.22] /home/wappnet-52/.gradle/caches/transforms-3/f14b642f5115934422b4025c2b626641/transformed/jetified-ShortcutBadger-1.1.22/AndroidManifest.xml:23:22-78
+65    <uses-permission android:name="com.htc.launcher.permission.UPDATE_SHORTCUT" /> <!-- for sony -->
+65-->[me.leolin:ShortcutBadger:1.1.22] /home/wappnet-52/.gradle/caches/transforms-3/f14b642f5115934422b4025c2b626641/transformed/jetified-ShortcutBadger-1.1.22/AndroidManifest.xml:24:5-83
+65-->[me.leolin:ShortcutBadger:1.1.22] /home/wappnet-52/.gradle/caches/transforms-3/f14b642f5115934422b4025c2b626641/transformed/jetified-ShortcutBadger-1.1.22/AndroidManifest.xml:24:22-80
+66    <uses-permission android:name="com.sonyericsson.home.permission.BROADCAST_BADGE" />
+66-->[me.leolin:ShortcutBadger:1.1.22] /home/wappnet-52/.gradle/caches/transforms-3/f14b642f5115934422b4025c2b626641/transformed/jetified-ShortcutBadger-1.1.22/AndroidManifest.xml:27:5-88
+66-->[me.leolin:ShortcutBadger:1.1.22] /home/wappnet-52/.gradle/caches/transforms-3/f14b642f5115934422b4025c2b626641/transformed/jetified-ShortcutBadger-1.1.22/AndroidManifest.xml:27:22-85
+67    <uses-permission android:name="com.sonymobile.home.permission.PROVIDER_INSERT_BADGE" /> <!-- for apex -->
+67-->[me.leolin:ShortcutBadger:1.1.22] /home/wappnet-52/.gradle/caches/transforms-3/f14b642f5115934422b4025c2b626641/transformed/jetified-ShortcutBadger-1.1.22/AndroidManifest.xml:28:5-92
+67-->[me.leolin:ShortcutBadger:1.1.22] /home/wappnet-52/.gradle/caches/transforms-3/f14b642f5115934422b4025c2b626641/transformed/jetified-ShortcutBadger-1.1.22/AndroidManifest.xml:28:22-89
+68    <uses-permission android:name="com.anddoes.launcher.permission.UPDATE_COUNT" /> <!-- for solid -->
+68-->[me.leolin:ShortcutBadger:1.1.22] /home/wappnet-52/.gradle/caches/transforms-3/f14b642f5115934422b4025c2b626641/transformed/jetified-ShortcutBadger-1.1.22/AndroidManifest.xml:31:5-84
+68-->[me.leolin:ShortcutBadger:1.1.22] /home/wappnet-52/.gradle/caches/transforms-3/f14b642f5115934422b4025c2b626641/transformed/jetified-ShortcutBadger-1.1.22/AndroidManifest.xml:31:22-81
+69    <uses-permission android:name="com.majeur.launcher.permission.UPDATE_BADGE" /> <!-- for huawei -->
+69-->[me.leolin:ShortcutBadger:1.1.22] /home/wappnet-52/.gradle/caches/transforms-3/f14b642f5115934422b4025c2b626641/transformed/jetified-ShortcutBadger-1.1.22/AndroidManifest.xml:34:5-83
+69-->[me.leolin:ShortcutBadger:1.1.22] /home/wappnet-52/.gradle/caches/transforms-3/f14b642f5115934422b4025c2b626641/transformed/jetified-ShortcutBadger-1.1.22/AndroidManifest.xml:34:22-80
+70    <uses-permission android:name="com.huawei.android.launcher.permission.CHANGE_BADGE" />
+70-->[me.leolin:ShortcutBadger:1.1.22] /home/wappnet-52/.gradle/caches/transforms-3/f14b642f5115934422b4025c2b626641/transformed/jetified-ShortcutBadger-1.1.22/AndroidManifest.xml:37:5-91
+70-->[me.leolin:ShortcutBadger:1.1.22] /home/wappnet-52/.gradle/caches/transforms-3/f14b642f5115934422b4025c2b626641/transformed/jetified-ShortcutBadger-1.1.22/AndroidManifest.xml:37:22-88
+71    <uses-permission android:name="com.huawei.android.launcher.permission.READ_SETTINGS" />
+71-->[me.leolin:ShortcutBadger:1.1.22] /home/wappnet-52/.gradle/caches/transforms-3/f14b642f5115934422b4025c2b626641/transformed/jetified-ShortcutBadger-1.1.22/AndroidManifest.xml:38:5-92
+71-->[me.leolin:ShortcutBadger:1.1.22] /home/wappnet-52/.gradle/caches/transforms-3/f14b642f5115934422b4025c2b626641/transformed/jetified-ShortcutBadger-1.1.22/AndroidManifest.xml:38:22-89
+72    <uses-permission android:name="com.huawei.android.launcher.permission.WRITE_SETTINGS" /> <!-- for ZUK -->
+72-->[me.leolin:ShortcutBadger:1.1.22] /home/wappnet-52/.gradle/caches/transforms-3/f14b642f5115934422b4025c2b626641/transformed/jetified-ShortcutBadger-1.1.22/AndroidManifest.xml:39:5-93
+72-->[me.leolin:ShortcutBadger:1.1.22] /home/wappnet-52/.gradle/caches/transforms-3/f14b642f5115934422b4025c2b626641/transformed/jetified-ShortcutBadger-1.1.22/AndroidManifest.xml:39:22-90
+73    <uses-permission android:name="android.permission.READ_APP_BADGE" /> <!-- for OPPO -->
+73-->[me.leolin:ShortcutBadger:1.1.22] /home/wappnet-52/.gradle/caches/transforms-3/f14b642f5115934422b4025c2b626641/transformed/jetified-ShortcutBadger-1.1.22/AndroidManifest.xml:42:5-73
+73-->[me.leolin:ShortcutBadger:1.1.22] /home/wappnet-52/.gradle/caches/transforms-3/f14b642f5115934422b4025c2b626641/transformed/jetified-ShortcutBadger-1.1.22/AndroidManifest.xml:42:22-70
+74    <uses-permission android:name="com.oppo.launcher.permission.READ_SETTINGS" />
+74-->[me.leolin:ShortcutBadger:1.1.22] /home/wappnet-52/.gradle/caches/transforms-3/f14b642f5115934422b4025c2b626641/transformed/jetified-ShortcutBadger-1.1.22/AndroidManifest.xml:45:5-82
+74-->[me.leolin:ShortcutBadger:1.1.22] /home/wappnet-52/.gradle/caches/transforms-3/f14b642f5115934422b4025c2b626641/transformed/jetified-ShortcutBadger-1.1.22/AndroidManifest.xml:45:22-79
+75    <uses-permission android:name="com.oppo.launcher.permission.WRITE_SETTINGS" /> <!-- for EvMe -->
+75-->[me.leolin:ShortcutBadger:1.1.22] /home/wappnet-52/.gradle/caches/transforms-3/f14b642f5115934422b4025c2b626641/transformed/jetified-ShortcutBadger-1.1.22/AndroidManifest.xml:46:5-83
+75-->[me.leolin:ShortcutBadger:1.1.22] /home/wappnet-52/.gradle/caches/transforms-3/f14b642f5115934422b4025c2b626641/transformed/jetified-ShortcutBadger-1.1.22/AndroidManifest.xml:46:22-80
+76    <uses-permission android:name="me.everything.badger.permission.BADGE_COUNT_READ" />
+76-->[me.leolin:ShortcutBadger:1.1.22] /home/wappnet-52/.gradle/caches/transforms-3/f14b642f5115934422b4025c2b626641/transformed/jetified-ShortcutBadger-1.1.22/AndroidManifest.xml:49:5-88
+76-->[me.leolin:ShortcutBadger:1.1.22] /home/wappnet-52/.gradle/caches/transforms-3/f14b642f5115934422b4025c2b626641/transformed/jetified-ShortcutBadger-1.1.22/AndroidManifest.xml:49:22-85
+77    <uses-permission android:name="me.everything.badger.permission.BADGE_COUNT_WRITE" />
+77-->[me.leolin:ShortcutBadger:1.1.22] /home/wappnet-52/.gradle/caches/transforms-3/f14b642f5115934422b4025c2b626641/transformed/jetified-ShortcutBadger-1.1.22/AndroidManifest.xml:50:5-89
+77-->[me.leolin:ShortcutBadger:1.1.22] /home/wappnet-52/.gradle/caches/transforms-3/f14b642f5115934422b4025c2b626641/transformed/jetified-ShortcutBadger-1.1.22/AndroidManifest.xml:50:22-86
+78
+79    <application
+80        android:name="android.app.Application"
+80-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:23:9-42
+81        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+81-->[androidx.core:core:1.10.1] /home/wappnet-52/.gradle/caches/transforms-3/c1d90683d3e54dc745282639f46e3236/transformed/core-1.10.1/AndroidManifest.xml:28:18-86
+82        android:extractNativeLibs="true"
+82-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:24:9-41
+83        android:icon="@mipmap/ic_launcher"
+83-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:25:9-43
+84        android:label="Vyaya"
+84-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:22:9-30
+85        android:requestLegacyExternalStorage="true" >
+85-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:21:9-52
+86        <receiver
+86-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:26:9-33:16
+87            android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver"
+87-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:27:5-93
+88            android:exported="false" >
+88-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:28:5-29
+89            <intent-filter>
+89-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:29:5-32:21
+90                <action android:name="android.intent.action.BOOT_COMPLETED" />
+90-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:30:9-70
+90-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:30:17-68
+91                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+91-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:31:9-75
+91-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:31:17-73
+92            </intent-filter>
+93        </receiver>
+94
+95        <activity
+95-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:34:9-58:20
+96            android:name="com.wappnet.vyaya.MainActivity"
+96-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:35:13-41
+97            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+97-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:40:13-163
+98            android:exported="true"
+98-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:36:13-36
+99            android:hardwareAccelerated="true"
+99-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:41:13-47
+100            android:launchMode="singleTop"
+100-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:37:13-43
+101            android:screenOrientation="portrait"
+101-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:39:13-49
+102            android:theme="@style/LaunchTheme"
+102-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:38:13-47
+103            android:windowSoftInputMode="adjustResize" >
+103-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:42:13-55
+104
+105            <!--
+106                 Specifies an Android theme to apply to this Activity as soon as
+107                 the Android process has started. This theme is visible to the user
+108                 while the Flutter UI initializes. After that, this theme continues
+109                 to determine the Window background behind the Flutter UI.
+110            -->
+111            <meta-data
+111-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:47:13-50:17
+112                android:name="io.flutter.embedding.android.NormalTheme"
+112-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:48:15-70
+113                android:resource="@style/NormalTheme" />
+113-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:49:15-52
+114            <meta-data
+114-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:51:15-52:40
+115                android:name="com.google.firebase.messaging.default_notification_channel_id"
+115-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:51:26-102
+116                android:value="vyayApp" />
+116-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:52:15-38
+117
+118            <intent-filter>
+118-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:53:13-56:29
+119                <action android:name="android.intent.action.MAIN" />
+119-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:54:17-68
+119-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:54:25-66
+120
+121                <category android:name="android.intent.category.LAUNCHER" />
+121-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:55:17-76
+121-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:55:27-74
+122            </intent-filter>
+123        </activity>
+124        <!--
+125             Don't delete the meta-data below.
+126             This is used by the Flutter tool to generate GeneratedPluginRegistrant.java
+127        -->
+128        <meta-data
+128-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:61:9-63:33
+129            android:name="flutterEmbedding"
+129-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:62:13-44
+130            android:value="2" />
+130-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:63:13-30
+131
+132        <service
+132-->[:cloud_firestore] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/cloud_firestore/intermediates/merged_manifest/release/AndroidManifest.xml:10:9-14:19
+133            android:name="com.google.firebase.components.ComponentDiscoveryService"
+133-->[:cloud_firestore] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/cloud_firestore/intermediates/merged_manifest/release/AndroidManifest.xml:10:18-89
+134            android:directBootAware="true"
+134-->[com.google.firebase:firebase-common:20.4.2] /home/wappnet-52/.gradle/caches/transforms-3/efee8ee543948003b8947253ee6a68b8/transformed/jetified-firebase-common-20.4.2/AndroidManifest.xml:32:13-43
+135            android:exported="false" >
+135-->[com.google.android.gms:play-services-measurement-api:21.5.0] /home/wappnet-52/.gradle/caches/transforms-3/21e59b31ffd4afde87d691067a7a9395/transformed/jetified-play-services-measurement-api-21.5.0/AndroidManifest.xml:36:13-37
+136            <meta-data
+136-->[:cloud_firestore] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/cloud_firestore/intermediates/merged_manifest/release/AndroidManifest.xml:11:13-13:85
+137                android:name="com.google.firebase.components:io.flutter.plugins.firebase.firestore.FlutterFirebaseFirestoreRegistrar"
+137-->[:cloud_firestore] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/cloud_firestore/intermediates/merged_manifest/release/AndroidManifest.xml:12:17-134
+138                android:value="com.google.firebase.components.ComponentRegistrar" />
+138-->[:cloud_firestore] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/cloud_firestore/intermediates/merged_manifest/release/AndroidManifest.xml:13:17-82
+139            <meta-data
+139-->[:firebase_core] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/firebase_core/intermediates/merged_manifest/release/AndroidManifest.xml:11:13-13:85
+140                android:name="com.google.firebase.components:io.flutter.plugins.firebase.core.FlutterFirebaseCoreRegistrar"
+140-->[:firebase_core] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/firebase_core/intermediates/merged_manifest/release/AndroidManifest.xml:12:17-124
+141                android:value="com.google.firebase.components.ComponentRegistrar" />
+141-->[:firebase_core] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/firebase_core/intermediates/merged_manifest/release/AndroidManifest.xml:13:17-82
+142            <meta-data
+142-->[com.google.android.gms:play-services-measurement-api:21.5.0] /home/wappnet-52/.gradle/caches/transforms-3/21e59b31ffd4afde87d691067a7a9395/transformed/jetified-play-services-measurement-api-21.5.0/AndroidManifest.xml:37:13-39:85
+143                android:name="com.google.firebase.components:com.google.firebase.analytics.connector.internal.AnalyticsConnectorRegistrar"
+143-->[com.google.android.gms:play-services-measurement-api:21.5.0] /home/wappnet-52/.gradle/caches/transforms-3/21e59b31ffd4afde87d691067a7a9395/transformed/jetified-play-services-measurement-api-21.5.0/AndroidManifest.xml:38:17-139
+144                android:value="com.google.firebase.components.ComponentRegistrar" />
+144-->[com.google.android.gms:play-services-measurement-api:21.5.0] /home/wappnet-52/.gradle/caches/transforms-3/21e59b31ffd4afde87d691067a7a9395/transformed/jetified-play-services-measurement-api-21.5.0/AndroidManifest.xml:39:17-82
+145            <meta-data
+145-->[com.google.firebase:firebase-firestore:24.9.1] /home/wappnet-52/.gradle/caches/transforms-3/7cf8120151ceccb828f506cafa609821/transformed/jetified-firebase-firestore-24.9.1/AndroidManifest.xml:17:13-19:85
+146                android:name="com.google.firebase.components:com.google.firebase.firestore.FirebaseFirestoreKtxRegistrar"
+146-->[com.google.firebase:firebase-firestore:24.9.1] /home/wappnet-52/.gradle/caches/transforms-3/7cf8120151ceccb828f506cafa609821/transformed/jetified-firebase-firestore-24.9.1/AndroidManifest.xml:18:17-122
+147                android:value="com.google.firebase.components.ComponentRegistrar" />
+147-->[com.google.firebase:firebase-firestore:24.9.1] /home/wappnet-52/.gradle/caches/transforms-3/7cf8120151ceccb828f506cafa609821/transformed/jetified-firebase-firestore-24.9.1/AndroidManifest.xml:19:17-82
+148            <meta-data
+148-->[com.google.firebase:firebase-firestore:24.9.1] /home/wappnet-52/.gradle/caches/transforms-3/7cf8120151ceccb828f506cafa609821/transformed/jetified-firebase-firestore-24.9.1/AndroidManifest.xml:20:13-22:85
+149                android:name="com.google.firebase.components:com.google.firebase.firestore.FirestoreRegistrar"
+149-->[com.google.firebase:firebase-firestore:24.9.1] /home/wappnet-52/.gradle/caches/transforms-3/7cf8120151ceccb828f506cafa609821/transformed/jetified-firebase-firestore-24.9.1/AndroidManifest.xml:21:17-111
+150                android:value="com.google.firebase.components.ComponentRegistrar" />
+150-->[com.google.firebase:firebase-firestore:24.9.1] /home/wappnet-52/.gradle/caches/transforms-3/7cf8120151ceccb828f506cafa609821/transformed/jetified-firebase-firestore-24.9.1/AndroidManifest.xml:22:17-82
+151            <meta-data
+151-->[com.google.firebase:firebase-installations:17.2.0] /home/wappnet-52/.gradle/caches/transforms-3/dbed3c41274b26ae932c0ee41ca81a80/transformed/jetified-firebase-installations-17.2.0/AndroidManifest.xml:15:13-17:85
+152                android:name="com.google.firebase.components:com.google.firebase.installations.FirebaseInstallationsKtxRegistrar"
+152-->[com.google.firebase:firebase-installations:17.2.0] /home/wappnet-52/.gradle/caches/transforms-3/dbed3c41274b26ae932c0ee41ca81a80/transformed/jetified-firebase-installations-17.2.0/AndroidManifest.xml:16:17-130
+153                android:value="com.google.firebase.components.ComponentRegistrar" />
+153-->[com.google.firebase:firebase-installations:17.2.0] /home/wappnet-52/.gradle/caches/transforms-3/dbed3c41274b26ae932c0ee41ca81a80/transformed/jetified-firebase-installations-17.2.0/AndroidManifest.xml:17:17-82
+154            <meta-data
+154-->[com.google.firebase:firebase-installations:17.2.0] /home/wappnet-52/.gradle/caches/transforms-3/dbed3c41274b26ae932c0ee41ca81a80/transformed/jetified-firebase-installations-17.2.0/AndroidManifest.xml:18:13-20:85
+155                android:name="com.google.firebase.components:com.google.firebase.installations.FirebaseInstallationsRegistrar"
+155-->[com.google.firebase:firebase-installations:17.2.0] /home/wappnet-52/.gradle/caches/transforms-3/dbed3c41274b26ae932c0ee41ca81a80/transformed/jetified-firebase-installations-17.2.0/AndroidManifest.xml:19:17-127
+156                android:value="com.google.firebase.components.ComponentRegistrar" />
+156-->[com.google.firebase:firebase-installations:17.2.0] /home/wappnet-52/.gradle/caches/transforms-3/dbed3c41274b26ae932c0ee41ca81a80/transformed/jetified-firebase-installations-17.2.0/AndroidManifest.xml:20:17-82
+157            <meta-data
+157-->[com.google.firebase:firebase-common-ktx:20.4.2] /home/wappnet-52/.gradle/caches/transforms-3/b6f54de322a8404fc6236a10c76f9294/transformed/jetified-firebase-common-ktx-20.4.2/AndroidManifest.xml:12:13-14:85
+158                android:name="com.google.firebase.components:com.google.firebase.ktx.FirebaseCommonLegacyRegistrar"
+158-->[com.google.firebase:firebase-common-ktx:20.4.2] /home/wappnet-52/.gradle/caches/transforms-3/b6f54de322a8404fc6236a10c76f9294/transformed/jetified-firebase-common-ktx-20.4.2/AndroidManifest.xml:13:17-116
+159                android:value="com.google.firebase.components.ComponentRegistrar" />
+159-->[com.google.firebase:firebase-common-ktx:20.4.2] /home/wappnet-52/.gradle/caches/transforms-3/b6f54de322a8404fc6236a10c76f9294/transformed/jetified-firebase-common-ktx-20.4.2/AndroidManifest.xml:14:17-82
+160            <meta-data
+160-->[com.google.firebase:firebase-common:20.4.2] /home/wappnet-52/.gradle/caches/transforms-3/efee8ee543948003b8947253ee6a68b8/transformed/jetified-firebase-common-20.4.2/AndroidManifest.xml:35:13-37:85
+161                android:name="com.google.firebase.components:com.google.firebase.FirebaseCommonKtxRegistrar"
+161-->[com.google.firebase:firebase-common:20.4.2] /home/wappnet-52/.gradle/caches/transforms-3/efee8ee543948003b8947253ee6a68b8/transformed/jetified-firebase-common-20.4.2/AndroidManifest.xml:36:17-109
+162                android:value="com.google.firebase.components.ComponentRegistrar" />
+162-->[com.google.firebase:firebase-common:20.4.2] /home/wappnet-52/.gradle/caches/transforms-3/efee8ee543948003b8947253ee6a68b8/transformed/jetified-firebase-common-20.4.2/AndroidManifest.xml:37:17-82
+163        </service>
+164
+165        <receiver
+165-->[:awesome_notifications] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/awesome_notifications/intermediates/merged_manifest/release/AndroidManifest.xml:15:9-17:39
+166            android:name="me.carda.awesome_notifications.DartNotificationActionReceiver"
+166-->[:awesome_notifications] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/awesome_notifications/intermediates/merged_manifest/release/AndroidManifest.xml:16:13-89
+167            android:exported="true" />
+167-->[:awesome_notifications] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/awesome_notifications/intermediates/merged_manifest/release/AndroidManifest.xml:17:13-36
+168        <receiver
+168-->[:awesome_notifications] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/awesome_notifications/intermediates/merged_manifest/release/AndroidManifest.xml:18:9-20:39
+169            android:name="me.carda.awesome_notifications.DartDismissedNotificationReceiver"
+169-->[:awesome_notifications] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/awesome_notifications/intermediates/merged_manifest/release/AndroidManifest.xml:19:13-92
+170            android:exported="true" />
+170-->[:awesome_notifications] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/awesome_notifications/intermediates/merged_manifest/release/AndroidManifest.xml:20:13-36
+171        <receiver
+171-->[:awesome_notifications] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/awesome_notifications/intermediates/merged_manifest/release/AndroidManifest.xml:21:9-23:39
+172            android:name="me.carda.awesome_notifications.DartScheduledNotificationReceiver"
+172-->[:awesome_notifications] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/awesome_notifications/intermediates/merged_manifest/release/AndroidManifest.xml:22:13-92
+173            android:exported="true" />
+173-->[:awesome_notifications] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/awesome_notifications/intermediates/merged_manifest/release/AndroidManifest.xml:23:13-36
+174        <receiver
+174-->[:awesome_notifications] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/awesome_notifications/intermediates/merged_manifest/release/AndroidManifest.xml:24:9-38:20
+175            android:name="me.carda.awesome_notifications.DartRefreshSchedulesReceiver"
+175-->[:awesome_notifications] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/awesome_notifications/intermediates/merged_manifest/release/AndroidManifest.xml:25:13-87
+176            android:enabled="true"
+176-->[:awesome_notifications] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/awesome_notifications/intermediates/merged_manifest/release/AndroidManifest.xml:26:13-35
+177            android:exported="true" >
+177-->[:awesome_notifications] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/awesome_notifications/intermediates/merged_manifest/release/AndroidManifest.xml:27:13-36
+178            <intent-filter>
+178-->[:awesome_notifications] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/awesome_notifications/intermediates/merged_manifest/release/AndroidManifest.xml:28:13-37:29
+179                <category android:name="android.intent.category.DEFAULT" />
+179-->[:awesome_notifications] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/awesome_notifications/intermediates/merged_manifest/release/AndroidManifest.xml:29:17-76
+179-->[:awesome_notifications] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/awesome_notifications/intermediates/merged_manifest/release/AndroidManifest.xml:29:27-73
+180
+181                <action android:name="android.intent.action.BOOT_COMPLETED" />
+181-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:30:9-70
+181-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:30:17-68
+182                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
+182-->[:awesome_notifications] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/awesome_notifications/intermediates/merged_manifest/release/AndroidManifest.xml:32:17-86
+182-->[:awesome_notifications] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/awesome_notifications/intermediates/merged_manifest/release/AndroidManifest.xml:32:25-83
+183                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+183-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:31:9-75
+183-->/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/android/app/src/main/AndroidManifest.xml:31:17-73
+184                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+184-->[:awesome_notifications] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/awesome_notifications/intermediates/merged_manifest/release/AndroidManifest.xml:34:17-82
+184-->[:awesome_notifications] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/awesome_notifications/intermediates/merged_manifest/release/AndroidManifest.xml:34:25-79
+185                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
+185-->[:awesome_notifications] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/awesome_notifications/intermediates/merged_manifest/release/AndroidManifest.xml:35:17-82
+185-->[:awesome_notifications] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/awesome_notifications/intermediates/merged_manifest/release/AndroidManifest.xml:35:25-79
+186                <action android:name="android.app.action.SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED" />
+186-->[:awesome_notifications] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/awesome_notifications/intermediates/merged_manifest/release/AndroidManifest.xml:36:17-107
+186-->[:awesome_notifications] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/awesome_notifications/intermediates/merged_manifest/release/AndroidManifest.xml:36:25-104
+187            </intent-filter>
+188        </receiver>
+189
+190        <service
+190-->[:awesome_notifications] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/awesome_notifications/intermediates/merged_manifest/release/AndroidManifest.xml:40:9-43:72
+191            android:name="me.carda.awesome_notifications.DartBackgroundService"
+191-->[:awesome_notifications] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/awesome_notifications/intermediates/merged_manifest/release/AndroidManifest.xml:41:13-80
+192            android:exported="false"
+192-->[:awesome_notifications] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/awesome_notifications/intermediates/merged_manifest/release/AndroidManifest.xml:42:13-37
+193            android:permission="android.permission.BIND_JOB_SERVICE" />
+193-->[:awesome_notifications] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/awesome_notifications/intermediates/merged_manifest/release/AndroidManifest.xml:43:13-69
+194        <service
+194-->[:awesome_notifications] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/awesome_notifications/intermediates/merged_manifest/release/AndroidManifest.xml:44:9-49:43
+195            android:name="me.carda.awesome_notifications.core.services.ForegroundService"
+195-->[:awesome_notifications] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/awesome_notifications/intermediates/merged_manifest/release/AndroidManifest.xml:45:13-90
+196            android:enabled="true"
+196-->[:awesome_notifications] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/awesome_notifications/intermediates/merged_manifest/release/AndroidManifest.xml:46:13-35
+197            android:exported="false"
+197-->[:awesome_notifications] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/awesome_notifications/intermediates/merged_manifest/release/AndroidManifest.xml:47:13-37
+198            android:foregroundServiceType="phoneCall"
+198-->[:awesome_notifications] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/awesome_notifications/intermediates/merged_manifest/release/AndroidManifest.xml:48:13-54
+199            android:stopWithTask="true" />
+199-->[:awesome_notifications] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/awesome_notifications/intermediates/merged_manifest/release/AndroidManifest.xml:49:13-40
+200
+201        <activity
+201-->[:flutter_inappwebview_android] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/flutter_inappwebview_android/intermediates/merged_manifest/release/AndroidManifest.xml:16:9-20:47
+202            android:name="com.pichillilorenzo.flutter_inappwebview_android.in_app_browser.InAppBrowserActivity"
+202-->[:flutter_inappwebview_android] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/flutter_inappwebview_android/intermediates/merged_manifest/release/AndroidManifest.xml:17:13-112
+203            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density"
+203-->[:flutter_inappwebview_android] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/flutter_inappwebview_android/intermediates/merged_manifest/release/AndroidManifest.xml:18:13-137
+204            android:exported="false"
+204-->[:flutter_inappwebview_android] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/flutter_inappwebview_android/intermediates/merged_manifest/release/AndroidManifest.xml:19:13-37
+205            android:theme="@style/AppTheme" />
+205-->[:flutter_inappwebview_android] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/flutter_inappwebview_android/intermediates/merged_manifest/release/AndroidManifest.xml:20:13-44
+206        <activity
+206-->[:flutter_inappwebview_android] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/flutter_inappwebview_android/intermediates/merged_manifest/release/AndroidManifest.xml:21:9-24:55
+207            android:name="com.pichillilorenzo.flutter_inappwebview_android.chrome_custom_tabs.ChromeCustomTabsActivity"
+207-->[:flutter_inappwebview_android] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/flutter_inappwebview_android/intermediates/merged_manifest/release/AndroidManifest.xml:22:13-120
+208            android:exported="false"
+208-->[:flutter_inappwebview_android] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/flutter_inappwebview_android/intermediates/merged_manifest/release/AndroidManifest.xml:23:13-37
+209            android:theme="@style/ThemeTransparent" />
+209-->[:flutter_inappwebview_android] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/flutter_inappwebview_android/intermediates/merged_manifest/release/AndroidManifest.xml:24:13-52
+210        <activity
+210-->[:flutter_inappwebview_android] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/flutter_inappwebview_android/intermediates/merged_manifest/release/AndroidManifest.xml:25:9-28:55
+211            android:name="com.pichillilorenzo.flutter_inappwebview_android.chrome_custom_tabs.TrustedWebActivity"
+211-->[:flutter_inappwebview_android] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/flutter_inappwebview_android/intermediates/merged_manifest/release/AndroidManifest.xml:26:13-114
+212            android:exported="false"
+212-->[:flutter_inappwebview_android] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/flutter_inappwebview_android/intermediates/merged_manifest/release/AndroidManifest.xml:27:13-37
+213            android:theme="@style/ThemeTransparent" />
+213-->[:flutter_inappwebview_android] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/flutter_inappwebview_android/intermediates/merged_manifest/release/AndroidManifest.xml:28:13-52
+214        <activity
+214-->[:flutter_inappwebview_android] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/flutter_inappwebview_android/intermediates/merged_manifest/release/AndroidManifest.xml:29:9-33:55
+215            android:name="com.pichillilorenzo.flutter_inappwebview_android.chrome_custom_tabs.ChromeCustomTabsActivitySingleInstance"
+215-->[:flutter_inappwebview_android] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/flutter_inappwebview_android/intermediates/merged_manifest/release/AndroidManifest.xml:30:13-134
+216            android:exported="false"
+216-->[:flutter_inappwebview_android] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/flutter_inappwebview_android/intermediates/merged_manifest/release/AndroidManifest.xml:31:13-37
+217            android:launchMode="singleInstance"
+217-->[:flutter_inappwebview_android] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/flutter_inappwebview_android/intermediates/merged_manifest/release/AndroidManifest.xml:32:13-48
+218            android:theme="@style/ThemeTransparent" />
+218-->[:flutter_inappwebview_android] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/flutter_inappwebview_android/intermediates/merged_manifest/release/AndroidManifest.xml:33:13-52
+219        <activity
+219-->[:flutter_inappwebview_android] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/flutter_inappwebview_android/intermediates/merged_manifest/release/AndroidManifest.xml:34:9-38:55
+220            android:name="com.pichillilorenzo.flutter_inappwebview_android.chrome_custom_tabs.TrustedWebActivitySingleInstance"
+220-->[:flutter_inappwebview_android] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/flutter_inappwebview_android/intermediates/merged_manifest/release/AndroidManifest.xml:35:13-128
+221            android:exported="false"
+221-->[:flutter_inappwebview_android] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/flutter_inappwebview_android/intermediates/merged_manifest/release/AndroidManifest.xml:36:13-37
+222            android:launchMode="singleInstance"
+222-->[:flutter_inappwebview_android] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/flutter_inappwebview_android/intermediates/merged_manifest/release/AndroidManifest.xml:37:13-48
+223            android:theme="@style/ThemeTransparent" />
+223-->[:flutter_inappwebview_android] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/flutter_inappwebview_android/intermediates/merged_manifest/release/AndroidManifest.xml:38:13-52
+224
+225        <receiver
+225-->[:flutter_inappwebview_android] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/flutter_inappwebview_android/intermediates/merged_manifest/release/AndroidManifest.xml:40:9-43:40
+226            android:name="com.pichillilorenzo.flutter_inappwebview_android.chrome_custom_tabs.ActionBroadcastReceiver"
+226-->[:flutter_inappwebview_android] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/flutter_inappwebview_android/intermediates/merged_manifest/release/AndroidManifest.xml:41:13-119
+227            android:enabled="true"
+227-->[:flutter_inappwebview_android] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/flutter_inappwebview_android/intermediates/merged_manifest/release/AndroidManifest.xml:42:13-35
+228            android:exported="false" />
+228-->[:flutter_inappwebview_android] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/flutter_inappwebview_android/intermediates/merged_manifest/release/AndroidManifest.xml:43:13-37
+229
+230        <meta-data
+230-->[:flutter_inappwebview_android] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/flutter_inappwebview_android/intermediates/merged_manifest/release/AndroidManifest.xml:45:9-47:36
+231            android:name="io.flutter.embedded_views_preview"
+231-->[:flutter_inappwebview_android] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/flutter_inappwebview_android/intermediates/merged_manifest/release/AndroidManifest.xml:46:13-61
+232            android:value="true" />
+232-->[:flutter_inappwebview_android] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/flutter_inappwebview_android/intermediates/merged_manifest/release/AndroidManifest.xml:47:13-33
+233
+234        <provider
+234-->[:open_file] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/open_file/intermediates/merged_manifest/release/AndroidManifest.xml:11:9-20:20
+235            android:name="com.crazecoder.openfile.FileProvider"
+235-->[:open_file] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/open_file/intermediates/merged_manifest/release/AndroidManifest.xml:12:13-64
+236            android:authorities="com.wappnet.vyaya.fileProvider.com.crazecoder.openfile"
+236-->[:open_file] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/open_file/intermediates/merged_manifest/release/AndroidManifest.xml:13:13-88
+237            android:exported="false"
+237-->[:open_file] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/open_file/intermediates/merged_manifest/release/AndroidManifest.xml:14:13-37
+238            android:grantUriPermissions="true" >
+238-->[:open_file] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/open_file/intermediates/merged_manifest/release/AndroidManifest.xml:15:13-47
+239            <meta-data
+239-->[:open_file] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/open_file/intermediates/merged_manifest/release/AndroidManifest.xml:17:13-19:53
+240                android:name="android.support.FILE_PROVIDER_PATHS"
+240-->[:open_file] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/open_file/intermediates/merged_manifest/release/AndroidManifest.xml:18:17-67
+241                android:resource="@xml/filepaths" />
+241-->[:open_file] /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/open_file/intermediates/merged_manifest/release/AndroidManifest.xml:19:17-50
+242        </provider>
+243
+244        <property
+244-->[com.google.android.gms:play-services-measurement-api:21.5.0] /home/wappnet-52/.gradle/caches/transforms-3/21e59b31ffd4afde87d691067a7a9395/transformed/jetified-play-services-measurement-api-21.5.0/AndroidManifest.xml:30:9-32:61
+245            android:name="android.adservices.AD_SERVICES_CONFIG"
+245-->[com.google.android.gms:play-services-measurement-api:21.5.0] /home/wappnet-52/.gradle/caches/transforms-3/21e59b31ffd4afde87d691067a7a9395/transformed/jetified-play-services-measurement-api-21.5.0/AndroidManifest.xml:31:13-65
+246            android:resource="@xml/ga_ad_services_config" />
+246-->[com.google.android.gms:play-services-measurement-api:21.5.0] /home/wappnet-52/.gradle/caches/transforms-3/21e59b31ffd4afde87d691067a7a9395/transformed/jetified-play-services-measurement-api-21.5.0/AndroidManifest.xml:32:13-58
+247
+248        <service
+248-->[me.carda:AndroidAwnCore:0.8.3] /home/wappnet-52/.gradle/caches/transforms-3/c100ca504a6049b861a7a82c81eb663f/transformed/jetified-AndroidAwnCore-0.8.3/AndroidManifest.xml:21:9-28:19
+249            android:name="me.carda.awesome_notifications.core.managers.StatusBarManager"
+249-->[me.carda:AndroidAwnCore:0.8.3] /home/wappnet-52/.gradle/caches/transforms-3/c100ca504a6049b861a7a82c81eb663f/transformed/jetified-AndroidAwnCore-0.8.3/AndroidManifest.xml:22:13-89
+250            android:exported="true"
+250-->[me.carda:AndroidAwnCore:0.8.3] /home/wappnet-52/.gradle/caches/transforms-3/c100ca504a6049b861a7a82c81eb663f/transformed/jetified-AndroidAwnCore-0.8.3/AndroidManifest.xml:23:13-36
+251            android:label="My Notification Listener Service" >
+251-->[me.carda:AndroidAwnCore:0.8.3] /home/wappnet-52/.gradle/caches/transforms-3/c100ca504a6049b861a7a82c81eb663f/transformed/jetified-AndroidAwnCore-0.8.3/AndroidManifest.xml:24:13-61
+252            <intent-filter>
+252-->[me.carda:AndroidAwnCore:0.8.3] /home/wappnet-52/.gradle/caches/transforms-3/c100ca504a6049b861a7a82c81eb663f/transformed/jetified-AndroidAwnCore-0.8.3/AndroidManifest.xml:25:13-27:29
+253                <action android:name="android.service.notification.NotificationListenerService" />
+253-->[me.carda:AndroidAwnCore:0.8.3] /home/wappnet-52/.gradle/caches/transforms-3/c100ca504a6049b861a7a82c81eb663f/transformed/jetified-AndroidAwnCore-0.8.3/AndroidManifest.xml:26:17-99
+253-->[me.carda:AndroidAwnCore:0.8.3] /home/wappnet-52/.gradle/caches/transforms-3/c100ca504a6049b861a7a82c81eb663f/transformed/jetified-AndroidAwnCore-0.8.3/AndroidManifest.xml:26:25-96
+254            </intent-filter>
+255        </service>
+256        <service
+256-->[androidx.room:room-runtime:2.5.0] /home/wappnet-52/.gradle/caches/transforms-3/30ebe3e2cfd5b8f1ed9df04deb45cc45/transformed/room-runtime-2.5.0/AndroidManifest.xml:24:9-28:63
+257            android:name="androidx.room.MultiInstanceInvalidationService"
+257-->[androidx.room:room-runtime:2.5.0] /home/wappnet-52/.gradle/caches/transforms-3/30ebe3e2cfd5b8f1ed9df04deb45cc45/transformed/room-runtime-2.5.0/AndroidManifest.xml:25:13-74
+258            android:directBootAware="true"
+258-->[androidx.room:room-runtime:2.5.0] /home/wappnet-52/.gradle/caches/transforms-3/30ebe3e2cfd5b8f1ed9df04deb45cc45/transformed/room-runtime-2.5.0/AndroidManifest.xml:26:13-43
+259            android:exported="false" />
+259-->[androidx.room:room-runtime:2.5.0] /home/wappnet-52/.gradle/caches/transforms-3/30ebe3e2cfd5b8f1ed9df04deb45cc45/transformed/room-runtime-2.5.0/AndroidManifest.xml:27:13-37
+260
+261        <receiver
+261-->[com.google.android.gms:play-services-measurement:21.5.0] /home/wappnet-52/.gradle/caches/transforms-3/a3c07753338e82930bb0f29097539e6b/transformed/jetified-play-services-measurement-21.5.0/AndroidManifest.xml:29:9-33:20
+262            android:name="com.google.android.gms.measurement.AppMeasurementReceiver"
+262-->[com.google.android.gms:play-services-measurement:21.5.0] /home/wappnet-52/.gradle/caches/transforms-3/a3c07753338e82930bb0f29097539e6b/transformed/jetified-play-services-measurement-21.5.0/AndroidManifest.xml:30:13-85
+263            android:enabled="true"
+263-->[com.google.android.gms:play-services-measurement:21.5.0] /home/wappnet-52/.gradle/caches/transforms-3/a3c07753338e82930bb0f29097539e6b/transformed/jetified-play-services-measurement-21.5.0/AndroidManifest.xml:31:13-35
+264            android:exported="false" >
+264-->[com.google.android.gms:play-services-measurement:21.5.0] /home/wappnet-52/.gradle/caches/transforms-3/a3c07753338e82930bb0f29097539e6b/transformed/jetified-play-services-measurement-21.5.0/AndroidManifest.xml:32:13-37
+265        </receiver>
+266
+267        <service
+267-->[com.google.android.gms:play-services-measurement:21.5.0] /home/wappnet-52/.gradle/caches/transforms-3/a3c07753338e82930bb0f29097539e6b/transformed/jetified-play-services-measurement-21.5.0/AndroidManifest.xml:35:9-38:40
+268            android:name="com.google.android.gms.measurement.AppMeasurementService"
+268-->[com.google.android.gms:play-services-measurement:21.5.0] /home/wappnet-52/.gradle/caches/transforms-3/a3c07753338e82930bb0f29097539e6b/transformed/jetified-play-services-measurement-21.5.0/AndroidManifest.xml:36:13-84
+269            android:enabled="true"
+269-->[com.google.android.gms:play-services-measurement:21.5.0] /home/wappnet-52/.gradle/caches/transforms-3/a3c07753338e82930bb0f29097539e6b/transformed/jetified-play-services-measurement-21.5.0/AndroidManifest.xml:37:13-35
+270            android:exported="false" />
+270-->[com.google.android.gms:play-services-measurement:21.5.0] /home/wappnet-52/.gradle/caches/transforms-3/a3c07753338e82930bb0f29097539e6b/transformed/jetified-play-services-measurement-21.5.0/AndroidManifest.xml:38:13-37
+271        <service
+271-->[com.google.android.gms:play-services-measurement:21.5.0] /home/wappnet-52/.gradle/caches/transforms-3/a3c07753338e82930bb0f29097539e6b/transformed/jetified-play-services-measurement-21.5.0/AndroidManifest.xml:39:9-43:72
+272            android:name="com.google.android.gms.measurement.AppMeasurementJobService"
+272-->[com.google.android.gms:play-services-measurement:21.5.0] /home/wappnet-52/.gradle/caches/transforms-3/a3c07753338e82930bb0f29097539e6b/transformed/jetified-play-services-measurement-21.5.0/AndroidManifest.xml:40:13-87
+273            android:enabled="true"
+273-->[com.google.android.gms:play-services-measurement:21.5.0] /home/wappnet-52/.gradle/caches/transforms-3/a3c07753338e82930bb0f29097539e6b/transformed/jetified-play-services-measurement-21.5.0/AndroidManifest.xml:41:13-35
+274            android:exported="false"
+274-->[com.google.android.gms:play-services-measurement:21.5.0] /home/wappnet-52/.gradle/caches/transforms-3/a3c07753338e82930bb0f29097539e6b/transformed/jetified-play-services-measurement-21.5.0/AndroidManifest.xml:42:13-37
+275            android:permission="android.permission.BIND_JOB_SERVICE" />
+275-->[com.google.android.gms:play-services-measurement:21.5.0] /home/wappnet-52/.gradle/caches/transforms-3/a3c07753338e82930bb0f29097539e6b/transformed/jetified-play-services-measurement-21.5.0/AndroidManifest.xml:43:13-69
+276
+277        <uses-library
+277-->[androidx.privacysandbox.ads:ads-adservices:1.0.0-beta05] /home/wappnet-52/.gradle/caches/transforms-3/2764083eb3b8f7d8e48a8043e0f42772/transformed/jetified-ads-adservices-1.0.0-beta05/AndroidManifest.xml:23:9-25:40
+278            android:name="android.ext.adservices"
+278-->[androidx.privacysandbox.ads:ads-adservices:1.0.0-beta05] /home/wappnet-52/.gradle/caches/transforms-3/2764083eb3b8f7d8e48a8043e0f42772/transformed/jetified-ads-adservices-1.0.0-beta05/AndroidManifest.xml:24:13-50
+279            android:required="false" />
+279-->[androidx.privacysandbox.ads:ads-adservices:1.0.0-beta05] /home/wappnet-52/.gradle/caches/transforms-3/2764083eb3b8f7d8e48a8043e0f42772/transformed/jetified-ads-adservices-1.0.0-beta05/AndroidManifest.xml:25:13-37
+280        <uses-library
+280-->[androidx.window:window:1.0.0-beta04] /home/wappnet-52/.gradle/caches/transforms-3/11fad413a07dee03e37e38d79dbe6d2d/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:25:9-27:40
+281            android:name="androidx.window.extensions"
+281-->[androidx.window:window:1.0.0-beta04] /home/wappnet-52/.gradle/caches/transforms-3/11fad413a07dee03e37e38d79dbe6d2d/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:26:13-54
+282            android:required="false" />
+282-->[androidx.window:window:1.0.0-beta04] /home/wappnet-52/.gradle/caches/transforms-3/11fad413a07dee03e37e38d79dbe6d2d/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:27:13-37
+283        <uses-library
+283-->[androidx.window:window:1.0.0-beta04] /home/wappnet-52/.gradle/caches/transforms-3/11fad413a07dee03e37e38d79dbe6d2d/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:28:9-30:40
+284            android:name="androidx.window.sidecar"
+284-->[androidx.window:window:1.0.0-beta04] /home/wappnet-52/.gradle/caches/transforms-3/11fad413a07dee03e37e38d79dbe6d2d/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:29:13-51
+285            android:required="false" />
+285-->[androidx.window:window:1.0.0-beta04] /home/wappnet-52/.gradle/caches/transforms-3/11fad413a07dee03e37e38d79dbe6d2d/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:30:13-37
+286
+287        <activity
+287-->[com.google.android.gms:play-services-auth:20.7.0] /home/wappnet-52/.gradle/caches/transforms-3/7ed635486acd2d6945057adc41fbb683/transformed/jetified-play-services-auth-20.7.0/AndroidManifest.xml:23:9-27:75
+288            android:name="com.google.android.gms.auth.api.signin.internal.SignInHubActivity"
+288-->[com.google.android.gms:play-services-auth:20.7.0] /home/wappnet-52/.gradle/caches/transforms-3/7ed635486acd2d6945057adc41fbb683/transformed/jetified-play-services-auth-20.7.0/AndroidManifest.xml:24:13-93
+289            android:excludeFromRecents="true"
+289-->[com.google.android.gms:play-services-auth:20.7.0] /home/wappnet-52/.gradle/caches/transforms-3/7ed635486acd2d6945057adc41fbb683/transformed/jetified-play-services-auth-20.7.0/AndroidManifest.xml:25:13-46
+290            android:exported="false"
+290-->[com.google.android.gms:play-services-auth:20.7.0] /home/wappnet-52/.gradle/caches/transforms-3/7ed635486acd2d6945057adc41fbb683/transformed/jetified-play-services-auth-20.7.0/AndroidManifest.xml:26:13-37
+291            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+291-->[com.google.android.gms:play-services-auth:20.7.0] /home/wappnet-52/.gradle/caches/transforms-3/7ed635486acd2d6945057adc41fbb683/transformed/jetified-play-services-auth-20.7.0/AndroidManifest.xml:27:13-72
+292        <!--
+293            Service handling Google Sign-In user revocation. For apps that do not integrate with
+294            Google Sign-In, this service will never be started.
+295        -->
+296        <service
+296-->[com.google.android.gms:play-services-auth:20.7.0] /home/wappnet-52/.gradle/caches/transforms-3/7ed635486acd2d6945057adc41fbb683/transformed/jetified-play-services-auth-20.7.0/AndroidManifest.xml:33:9-37:51
+297            android:name="com.google.android.gms.auth.api.signin.RevocationBoundService"
+297-->[com.google.android.gms:play-services-auth:20.7.0] /home/wappnet-52/.gradle/caches/transforms-3/7ed635486acd2d6945057adc41fbb683/transformed/jetified-play-services-auth-20.7.0/AndroidManifest.xml:34:13-89
+298            android:exported="true"
+298-->[com.google.android.gms:play-services-auth:20.7.0] /home/wappnet-52/.gradle/caches/transforms-3/7ed635486acd2d6945057adc41fbb683/transformed/jetified-play-services-auth-20.7.0/AndroidManifest.xml:35:13-36
+299            android:permission="com.google.android.gms.auth.api.signin.permission.REVOCATION_NOTIFICATION"
+299-->[com.google.android.gms:play-services-auth:20.7.0] /home/wappnet-52/.gradle/caches/transforms-3/7ed635486acd2d6945057adc41fbb683/transformed/jetified-play-services-auth-20.7.0/AndroidManifest.xml:36:13-107
+300            android:visibleToInstantApps="true" />
+300-->[com.google.android.gms:play-services-auth:20.7.0] /home/wappnet-52/.gradle/caches/transforms-3/7ed635486acd2d6945057adc41fbb683/transformed/jetified-play-services-auth-20.7.0/AndroidManifest.xml:37:13-48
+301
+302        <provider
+302-->[com.google.firebase:firebase-common:20.4.2] /home/wappnet-52/.gradle/caches/transforms-3/efee8ee543948003b8947253ee6a68b8/transformed/jetified-firebase-common-20.4.2/AndroidManifest.xml:23:9-28:39
+303            android:name="com.google.firebase.provider.FirebaseInitProvider"
+303-->[com.google.firebase:firebase-common:20.4.2] /home/wappnet-52/.gradle/caches/transforms-3/efee8ee543948003b8947253ee6a68b8/transformed/jetified-firebase-common-20.4.2/AndroidManifest.xml:24:13-77
+304            android:authorities="com.wappnet.vyaya.firebaseinitprovider"
+304-->[com.google.firebase:firebase-common:20.4.2] /home/wappnet-52/.gradle/caches/transforms-3/efee8ee543948003b8947253ee6a68b8/transformed/jetified-firebase-common-20.4.2/AndroidManifest.xml:25:13-72
+305            android:directBootAware="true"
+305-->[com.google.firebase:firebase-common:20.4.2] /home/wappnet-52/.gradle/caches/transforms-3/efee8ee543948003b8947253ee6a68b8/transformed/jetified-firebase-common-20.4.2/AndroidManifest.xml:26:13-43
+306            android:exported="false"
+306-->[com.google.firebase:firebase-common:20.4.2] /home/wappnet-52/.gradle/caches/transforms-3/efee8ee543948003b8947253ee6a68b8/transformed/jetified-firebase-common-20.4.2/AndroidManifest.xml:27:13-37
+307            android:initOrder="100" />
+307-->[com.google.firebase:firebase-common:20.4.2] /home/wappnet-52/.gradle/caches/transforms-3/efee8ee543948003b8947253ee6a68b8/transformed/jetified-firebase-common-20.4.2/AndroidManifest.xml:28:13-36
+308
+309        <activity
+309-->[com.google.android.gms:play-services-base:18.0.1] /home/wappnet-52/.gradle/caches/transforms-3/710138d57b9c71ee01ed883430bafbe2/transformed/jetified-play-services-base-18.0.1/AndroidManifest.xml:20:9-22:45
+310            android:name="com.google.android.gms.common.api.GoogleApiActivity"
+310-->[com.google.android.gms:play-services-base:18.0.1] /home/wappnet-52/.gradle/caches/transforms-3/710138d57b9c71ee01ed883430bafbe2/transformed/jetified-play-services-base-18.0.1/AndroidManifest.xml:20:19-85
+311            android:exported="false"
+311-->[com.google.android.gms:play-services-base:18.0.1] /home/wappnet-52/.gradle/caches/transforms-3/710138d57b9c71ee01ed883430bafbe2/transformed/jetified-play-services-base-18.0.1/AndroidManifest.xml:22:19-43
+312            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+312-->[com.google.android.gms:play-services-base:18.0.1] /home/wappnet-52/.gradle/caches/transforms-3/710138d57b9c71ee01ed883430bafbe2/transformed/jetified-play-services-base-18.0.1/AndroidManifest.xml:21:19-78
+313
+314        <meta-data
+314-->[com.google.android.gms:play-services-basement:18.2.0] /home/wappnet-52/.gradle/caches/transforms-3/07dfa1584ded872ab78242f6544f542c/transformed/jetified-play-services-basement-18.2.0/AndroidManifest.xml:21:9-23:69
+315            android:name="com.google.android.gms.version"
+315-->[com.google.android.gms:play-services-basement:18.2.0] /home/wappnet-52/.gradle/caches/transforms-3/07dfa1584ded872ab78242f6544f542c/transformed/jetified-play-services-basement-18.2.0/AndroidManifest.xml:22:13-58
+316            android:value="@integer/google_play_services_version" />
+316-->[com.google.android.gms:play-services-basement:18.2.0] /home/wappnet-52/.gradle/caches/transforms-3/07dfa1584ded872ab78242f6544f542c/transformed/jetified-play-services-basement-18.2.0/AndroidManifest.xml:23:13-66
+317
+318        <provider
+318-->[androidx.emoji2:emoji2:1.2.0] /home/wappnet-52/.gradle/caches/transforms-3/c2b11bf34846da7bbea1132ebddb4159/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:24:9-32:20
+319            android:name="androidx.startup.InitializationProvider"
+319-->[androidx.emoji2:emoji2:1.2.0] /home/wappnet-52/.gradle/caches/transforms-3/c2b11bf34846da7bbea1132ebddb4159/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:25:13-67
+320            android:authorities="com.wappnet.vyaya.androidx-startup"
+320-->[androidx.emoji2:emoji2:1.2.0] /home/wappnet-52/.gradle/caches/transforms-3/c2b11bf34846da7bbea1132ebddb4159/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:26:13-68
+321            android:exported="false" >
+321-->[androidx.emoji2:emoji2:1.2.0] /home/wappnet-52/.gradle/caches/transforms-3/c2b11bf34846da7bbea1132ebddb4159/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:27:13-37
+322            <meta-data
+322-->[androidx.emoji2:emoji2:1.2.0] /home/wappnet-52/.gradle/caches/transforms-3/c2b11bf34846da7bbea1132ebddb4159/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:29:13-31:52
+323                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+323-->[androidx.emoji2:emoji2:1.2.0] /home/wappnet-52/.gradle/caches/transforms-3/c2b11bf34846da7bbea1132ebddb4159/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:30:17-75
+324                android:value="androidx.startup" />
+324-->[androidx.emoji2:emoji2:1.2.0] /home/wappnet-52/.gradle/caches/transforms-3/c2b11bf34846da7bbea1132ebddb4159/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:31:17-49
+325            <meta-data
+325-->[androidx.lifecycle:lifecycle-process:2.6.1] /home/wappnet-52/.gradle/caches/transforms-3/fbdadf93a14b78e34fe499710719096a/transformed/jetified-lifecycle-process-2.6.1/AndroidManifest.xml:29:13-31:52
+326                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+326-->[androidx.lifecycle:lifecycle-process:2.6.1] /home/wappnet-52/.gradle/caches/transforms-3/fbdadf93a14b78e34fe499710719096a/transformed/jetified-lifecycle-process-2.6.1/AndroidManifest.xml:30:17-78
+327                android:value="androidx.startup" />
+327-->[androidx.lifecycle:lifecycle-process:2.6.1] /home/wappnet-52/.gradle/caches/transforms-3/fbdadf93a14b78e34fe499710719096a/transformed/jetified-lifecycle-process-2.6.1/AndroidManifest.xml:31:17-49
+328            <meta-data
+328-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/wappnet-52/.gradle/caches/transforms-3/1e10caebcfc7597069c4be7f854da936/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:29:13-31:52
+329                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+329-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/wappnet-52/.gradle/caches/transforms-3/1e10caebcfc7597069c4be7f854da936/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:30:17-85
+330                android:value="androidx.startup" />
+330-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/wappnet-52/.gradle/caches/transforms-3/1e10caebcfc7597069c4be7f854da936/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:31:17-49
+331        </provider>
+332
+333        <receiver
+333-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/wappnet-52/.gradle/caches/transforms-3/1e10caebcfc7597069c4be7f854da936/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:34:9-52:20
+334            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+334-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/wappnet-52/.gradle/caches/transforms-3/1e10caebcfc7597069c4be7f854da936/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:35:13-76
+335            android:directBootAware="false"
+335-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/wappnet-52/.gradle/caches/transforms-3/1e10caebcfc7597069c4be7f854da936/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:36:13-44
+336            android:enabled="true"
+336-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/wappnet-52/.gradle/caches/transforms-3/1e10caebcfc7597069c4be7f854da936/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:37:13-35
+337            android:exported="true"
+337-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/wappnet-52/.gradle/caches/transforms-3/1e10caebcfc7597069c4be7f854da936/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:38:13-36
+338            android:permission="android.permission.DUMP" >
+338-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/wappnet-52/.gradle/caches/transforms-3/1e10caebcfc7597069c4be7f854da936/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:39:13-57
+339            <intent-filter>
+339-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/wappnet-52/.gradle/caches/transforms-3/1e10caebcfc7597069c4be7f854da936/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:40:13-42:29
+340                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+340-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/wappnet-52/.gradle/caches/transforms-3/1e10caebcfc7597069c4be7f854da936/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:41:17-91
+340-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/wappnet-52/.gradle/caches/transforms-3/1e10caebcfc7597069c4be7f854da936/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:41:25-88
+341            </intent-filter>
+342            <intent-filter>
+342-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/wappnet-52/.gradle/caches/transforms-3/1e10caebcfc7597069c4be7f854da936/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:43:13-45:29
+343                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+343-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/wappnet-52/.gradle/caches/transforms-3/1e10caebcfc7597069c4be7f854da936/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:44:17-85
+343-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/wappnet-52/.gradle/caches/transforms-3/1e10caebcfc7597069c4be7f854da936/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:44:25-82
+344            </intent-filter>
+345            <intent-filter>
+345-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/wappnet-52/.gradle/caches/transforms-3/1e10caebcfc7597069c4be7f854da936/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:46:13-48:29
+346                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+346-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/wappnet-52/.gradle/caches/transforms-3/1e10caebcfc7597069c4be7f854da936/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:47:17-88
+346-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/wappnet-52/.gradle/caches/transforms-3/1e10caebcfc7597069c4be7f854da936/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:47:25-85
+347            </intent-filter>
+348            <intent-filter>
+348-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/wappnet-52/.gradle/caches/transforms-3/1e10caebcfc7597069c4be7f854da936/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:49:13-51:29
+349                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+349-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/wappnet-52/.gradle/caches/transforms-3/1e10caebcfc7597069c4be7f854da936/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:50:17-95
+349-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/wappnet-52/.gradle/caches/transforms-3/1e10caebcfc7597069c4be7f854da936/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:50:25-92
+350            </intent-filter>
+351        </receiver>
+352    </application>
+353
+354</manifest>

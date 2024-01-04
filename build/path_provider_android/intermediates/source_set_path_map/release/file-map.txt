@@ -1,0 +1,12 @@
+io.flutter.plugins.pathprovider.path_provider_android-core-1.6.0-0 /home/wappnet-52/.gradle/caches/transforms-3/0f9a6f905d8880e3cc8c6f71541f6102/transformed/core-1.6.0/res
+io.flutter.plugins.pathprovider.path_provider_android-jetified-window-1.0.0-beta04-1 /home/wappnet-52/.gradle/caches/transforms-3/11fad413a07dee03e37e38d79dbe6d2d/transformed/jetified-window-1.0.0-beta04/res
+io.flutter.plugins.pathprovider.path_provider_android-jetified-window-java-1.0.0-beta04-2 /home/wappnet-52/.gradle/caches/transforms-3/3d3335744c9a764486446228a2583c98/transformed/jetified-window-java-1.0.0-beta04/res
+io.flutter.plugins.pathprovider.path_provider_android-jetified-annotation-experimental-1.1.0-3 /home/wappnet-52/.gradle/caches/transforms-3/89a33bb79e76e4a112d88998f95948d6/transformed/jetified-annotation-experimental-1.1.0/res
+io.flutter.plugins.pathprovider.path_provider_android-main-4 /home/wappnet-52/.pub-cache/hosted/pub.dev/path_provider_android-2.2.2/android/src/main/res
+io.flutter.plugins.pathprovider.path_provider_android-release-5 /home/wappnet-52/.pub-cache/hosted/pub.dev/path_provider_android-2.2.2/android/src/release/res
+io.flutter.plugins.pathprovider.path_provider_android-pngs-6 /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/path_provider_android/generated/res/pngs/release
+io.flutter.plugins.pathprovider.path_provider_android-resValues-7 /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/path_provider_android/generated/res/resValues/release
+io.flutter.plugins.pathprovider.path_provider_android-rs-8 /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/path_provider_android/generated/res/rs/release
+io.flutter.plugins.pathprovider.path_provider_android-mergeReleaseResources-9 /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/path_provider_android/intermediates/incremental/release/mergeReleaseResources/merged.dir
+io.flutter.plugins.pathprovider.path_provider_android-mergeReleaseResources-10 /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/path_provider_android/intermediates/incremental/release/mergeReleaseResources/stripped.dir
+io.flutter.plugins.pathprovider.path_provider_android-merged_res-11 /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/path_provider_android/intermediates/merged_res/release

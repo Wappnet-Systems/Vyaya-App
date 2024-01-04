@@ -1,0 +1,44 @@
+me.carda.awesome_notifications-sqlite-framework-2.3.0-0 /home/wappnet-52/.gradle/caches/transforms-3/002f969301e61428895bfd28d2ab0494/transformed/sqlite-framework-2.3.0/res
+me.carda.awesome_notifications-media-1.7.0-1 /home/wappnet-52/.gradle/caches/transforms-3/0e40569d19ab945daf96a77cd7f6a982/transformed/media-1.7.0/res
+me.carda.awesome_notifications-jetified-window-1.0.0-beta04-2 /home/wappnet-52/.gradle/caches/transforms-3/11fad413a07dee03e37e38d79dbe6d2d/transformed/jetified-window-1.0.0-beta04/res
+me.carda.awesome_notifications-jetified-profileinstaller-1.3.0-3 /home/wappnet-52/.gradle/caches/transforms-3/1e10caebcfc7597069c4be7f854da936/transformed/jetified-profileinstaller-1.3.0/res
+me.carda.awesome_notifications-jetified-annotation-experimental-1.3.0-4 /home/wappnet-52/.gradle/caches/transforms-3/29530830a671fe0ebdfef42ab525f1f5/transformed/jetified-annotation-experimental-1.3.0/res
+me.carda.awesome_notifications-recyclerview-1.1.0-5 /home/wappnet-52/.gradle/caches/transforms-3/298411a9765432f0db10933721bef522/transformed/recyclerview-1.1.0/res
+me.carda.awesome_notifications-fragment-1.3.6-6 /home/wappnet-52/.gradle/caches/transforms-3/2ea76d824bfcab811f98de977212e4b8/transformed/fragment-1.3.6/res
+me.carda.awesome_notifications-room-runtime-2.5.0-7 /home/wappnet-52/.gradle/caches/transforms-3/30ebe3e2cfd5b8f1ed9df04deb45cc45/transformed/room-runtime-2.5.0/res
+me.carda.awesome_notifications-jetified-emoji2-views-helper-1.2.0-8 /home/wappnet-52/.gradle/caches/transforms-3/337176c17ba8e6165cde0f58c988033b/transformed/jetified-emoji2-views-helper-1.2.0/res
+me.carda.awesome_notifications-jetified-lifecycle-viewmodel-savedstate-2.6.1-9 /home/wappnet-52/.gradle/caches/transforms-3/39d96a7a38b4ccd22cdad7de6269d94d/transformed/jetified-lifecycle-viewmodel-savedstate-2.6.1/res
+me.carda.awesome_notifications-jetified-window-java-1.0.0-beta04-10 /home/wappnet-52/.gradle/caches/transforms-3/3d3335744c9a764486446228a2583c98/transformed/jetified-window-java-1.0.0-beta04/res
+me.carda.awesome_notifications-jetified-viewpager2-1.0.0-11 /home/wappnet-52/.gradle/caches/transforms-3/4899e8bc47f138ec5d48ddad18f2de19/transformed/jetified-viewpager2-1.0.0/res
+me.carda.awesome_notifications-material-1.11.0-12 /home/wappnet-52/.gradle/caches/transforms-3/4c57a8b759717fec4c410e9c92413076/transformed/material-1.11.0/res
+me.carda.awesome_notifications-jetified-appcompat-resources-1.6.1-13 /home/wappnet-52/.gradle/caches/transforms-3/514a6fb81ca15af3e6b3851c8d7c0f95/transformed/jetified-appcompat-resources-1.6.1/res
+me.carda.awesome_notifications-sqlite-2.3.0-14 /home/wappnet-52/.gradle/caches/transforms-3/5f9f9cb91b09925b0e39f757c05755a1/transformed/sqlite-2.3.0/res
+me.carda.awesome_notifications-jetified-core-ktx-1.9.0-15 /home/wappnet-52/.gradle/caches/transforms-3/64a38aea4dee972e813455d998b30f29/transformed/jetified-core-ktx-1.9.0/res
+me.carda.awesome_notifications-constraintlayout-2.0.1-16 /home/wappnet-52/.gradle/caches/transforms-3/792aa07b79796500a610c6dee37f55f1/transformed/constraintlayout-2.0.1/res
+me.carda.awesome_notifications-lifecycle-livedata-2.6.1-17 /home/wappnet-52/.gradle/caches/transforms-3/798148fca85d424cc2eff064a9375973/transformed/lifecycle-livedata-2.6.1/res
+me.carda.awesome_notifications-jetified-startup-runtime-1.1.1-18 /home/wappnet-52/.gradle/caches/transforms-3/7efea8dd94658769dba25b1b82c5679c/transformed/jetified-startup-runtime-1.1.1/res
+me.carda.awesome_notifications-appcompat-1.6.1-19 /home/wappnet-52/.gradle/caches/transforms-3/8393c8051afb468168bc35faa133f435/transformed/appcompat-1.6.1/res
+me.carda.awesome_notifications-lifecycle-reactivestreams-2.6.1-20 /home/wappnet-52/.gradle/caches/transforms-3/93e56f7d7cc60b3d7a70863626a4ea17/transformed/lifecycle-reactivestreams-2.6.1/res
+me.carda.awesome_notifications-transition-1.2.0-21 /home/wappnet-52/.gradle/caches/transforms-3/a56be544238f6acdd69c5090bb799713/transformed/transition-1.2.0/res
+me.carda.awesome_notifications-core-1.9.0-22 /home/wappnet-52/.gradle/caches/transforms-3/b9b7cb9e8d2107b4880802faabd9b575/transformed/core-1.9.0/res
+me.carda.awesome_notifications-jetified-lifecycle-service-2.6.1-23 /home/wappnet-52/.gradle/caches/transforms-3/c03e6b23411d00cbabc9e0dab5e6ea26/transformed/jetified-lifecycle-service-2.6.1/res
+me.carda.awesome_notifications-jetified-emoji2-1.2.0-24 /home/wappnet-52/.gradle/caches/transforms-3/c2b11bf34846da7bbea1132ebddb4159/transformed/jetified-emoji2-1.2.0/res
+me.carda.awesome_notifications-jetified-savedstate-1.2.1-25 /home/wappnet-52/.gradle/caches/transforms-3/ca3f5d77b3d66a30ddf020a1f61ecce1/transformed/jetified-savedstate-1.2.1/res
+me.carda.awesome_notifications-coordinatorlayout-1.1.0-26 /home/wappnet-52/.gradle/caches/transforms-3/d140860fbaaf238131975dbe75c626e3/transformed/coordinatorlayout-1.1.0/res
+me.carda.awesome_notifications-lifecycle-viewmodel-2.6.1-27 /home/wappnet-52/.gradle/caches/transforms-3/dc15e6ba5e4ab4b4ac3e8a9e9e10fedc/transformed/lifecycle-viewmodel-2.6.1/res
+me.carda.awesome_notifications-lifecycle-runtime-2.6.1-28 /home/wappnet-52/.gradle/caches/transforms-3/e05dfe7c31535dca24dec823fd753d77/transformed/lifecycle-runtime-2.6.1/res
+me.carda.awesome_notifications-jetified-activity-1.8.0-29 /home/wappnet-52/.gradle/caches/transforms-3/e8d616de913c25a8c0c024e06c835c4e/transformed/jetified-activity-1.8.0/res
+me.carda.awesome_notifications-lifecycle-livedata-core-2.6.1-30 /home/wappnet-52/.gradle/caches/transforms-3/eec4ba5be900a011156cec499e4728b0/transformed/lifecycle-livedata-core-2.6.1/res
+me.carda.awesome_notifications-cardview-1.0.0-31 /home/wappnet-52/.gradle/caches/transforms-3/eed13a174c14208a84704fa5684c98b5/transformed/cardview-1.0.0/res
+me.carda.awesome_notifications-core-runtime-2.2.0-32 /home/wappnet-52/.gradle/caches/transforms-3/f50597cecb697341fa523bf2331df113/transformed/core-runtime-2.2.0/res
+me.carda.awesome_notifications-jetified-lifecycle-process-2.6.1-33 /home/wappnet-52/.gradle/caches/transforms-3/fbdadf93a14b78e34fe499710719096a/transformed/jetified-lifecycle-process-2.6.1/res
+me.carda.awesome_notifications-drawerlayout-1.1.1-34 /home/wappnet-52/.gradle/caches/transforms-3/ff5e6d7e0115e90f6d84e648416d5499/transformed/drawerlayout-1.1.1/res
+me.carda.awesome_notifications-localbroadcastmanager-1.1.0-35 /home/wappnet-52/.gradle/caches/transforms-3/ffd413017206a50744344a5fa25ea8b8/transformed/localbroadcastmanager-1.1.0/res
+me.carda.awesome_notifications-main-36 /home/wappnet-52/.pub-cache/hosted/pub.dev/awesome_notifications-0.8.2/android/src/main/res
+me.carda.awesome_notifications-release-37 /home/wappnet-52/.pub-cache/hosted/pub.dev/awesome_notifications-0.8.2/android/src/release/res
+me.carda.awesome_notifications-pngs-38 /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/awesome_notifications/generated/res/pngs/release
+me.carda.awesome_notifications-resValues-39 /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/awesome_notifications/generated/res/resValues/release
+me.carda.awesome_notifications-rs-40 /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/awesome_notifications/generated/res/rs/release
+me.carda.awesome_notifications-mergeReleaseResources-41 /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/awesome_notifications/intermediates/incremental/release/mergeReleaseResources/merged.dir
+me.carda.awesome_notifications-mergeReleaseResources-42 /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/awesome_notifications/intermediates/incremental/release/mergeReleaseResources/stripped.dir
+me.carda.awesome_notifications-merged_res-43 /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/awesome_notifications/intermediates/merged_res/release

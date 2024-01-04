@@ -1,0 +1,16 @@
+io.flutter.plugins.firebase.firestore.cloud_firestore-core-1.6.0-0 /home/wappnet-52/.gradle/caches/transforms-3/0f9a6f905d8880e3cc8c6f71541f6102/transformed/core-1.6.0/res
+io.flutter.plugins.firebase.firestore.cloud_firestore-jetified-window-1.0.0-beta04-1 /home/wappnet-52/.gradle/caches/transforms-3/11fad413a07dee03e37e38d79dbe6d2d/transformed/jetified-window-1.0.0-beta04/res
+io.flutter.plugins.firebase.firestore.cloud_firestore-jetified-play-services-basement-18.1.0-2 /home/wappnet-52/.gradle/caches/transforms-3/2baa7ebcca65a4cc7c04008734307887/transformed/jetified-play-services-basement-18.1.0/res
+io.flutter.plugins.firebase.firestore.cloud_firestore-jetified-window-java-1.0.0-beta04-3 /home/wappnet-52/.gradle/caches/transforms-3/3d3335744c9a764486446228a2583c98/transformed/jetified-window-java-1.0.0-beta04/res
+io.flutter.plugins.firebase.firestore.cloud_firestore-jetified-play-services-base-18.0.1-4 /home/wappnet-52/.gradle/caches/transforms-3/710138d57b9c71ee01ed883430bafbe2/transformed/jetified-play-services-base-18.0.1/res
+io.flutter.plugins.firebase.firestore.cloud_firestore-jetified-annotation-experimental-1.1.0-5 /home/wappnet-52/.gradle/caches/transforms-3/89a33bb79e76e4a112d88998f95948d6/transformed/jetified-annotation-experimental-1.1.0/res
+io.flutter.plugins.firebase.firestore.cloud_firestore-jetified-firebase-common-20.4.2-6 /home/wappnet-52/.gradle/caches/transforms-3/efee8ee543948003b8947253ee6a68b8/transformed/jetified-firebase-common-20.4.2/res
+io.flutter.plugins.firebase.firestore.cloud_firestore-main-7 /home/wappnet-52/.pub-cache/hosted/pub.dev/cloud_firestore-4.13.6/android/src/main/res
+io.flutter.plugins.firebase.firestore.cloud_firestore-release-8 /home/wappnet-52/.pub-cache/hosted/pub.dev/cloud_firestore-4.13.6/android/src/release/res
+io.flutter.plugins.firebase.firestore.cloud_firestore-pngs-9 /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/cloud_firestore/generated/res/pngs/release
+io.flutter.plugins.firebase.firestore.cloud_firestore-resValues-10 /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/cloud_firestore/generated/res/resValues/release
+io.flutter.plugins.firebase.firestore.cloud_firestore-rs-11 /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/cloud_firestore/generated/res/rs/release
+io.flutter.plugins.firebase.firestore.cloud_firestore-mergeReleaseResources-12 /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/cloud_firestore/intermediates/incremental/release/mergeReleaseResources/merged.dir
+io.flutter.plugins.firebase.firestore.cloud_firestore-mergeReleaseResources-13 /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/cloud_firestore/intermediates/incremental/release/mergeReleaseResources/stripped.dir
+io.flutter.plugins.firebase.firestore.cloud_firestore-merged_res-14 /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/cloud_firestore/intermediates/merged_res/release
+io.flutter.plugins.firebase.firestore.cloud_firestore-packaged_res-15 /home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/firebase_core/intermediates/packaged_res/release
