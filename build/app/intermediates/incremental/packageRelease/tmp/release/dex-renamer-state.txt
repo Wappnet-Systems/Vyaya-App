@@ -1,7 +1,0 @@
-#Thu Jan 04 19:25:37 IST 2024
-base.0=/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/app/intermediates/dex/release/minifyReleaseWithR8/classes.dex
-base.1=/home/wappnet-52/Documents/Wappnet Projects/Vyaya-App/expenses_tracker/expenses_tracker/build/app/intermediates/desugar_lib_dex/release/classes1000.dex
-path.0=classes.dex
-path.1=classes1000.dex
-renamed.0=classes.dex
-renamed.1=classes2.dex

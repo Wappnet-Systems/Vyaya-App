@@ -47,6 +47,7 @@ class _CustomCircularChartState extends State<CustomCircularChart> {
                 child: CustomNoData(),
               )
             : SfCircularChart(
+              tooltipBehavior: TooltipBehavior(enable: true),
                 series: <CircularSeries>[
                   PieSeries<AllTransactionDetails, String>(
                     legendIconType: LegendIconType.circle,
