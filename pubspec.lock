@@ -773,6 +773,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.0"
+  package_info_plus:
+    dependency: transitive
+    description:
+      name: package_info_plus
+      sha256: "7e76fad405b3e4016cd39d08f455a4eb5199723cf594cd1b8916d47140d93017"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.2.0"
+  package_info_plus_platform_interface:
+    dependency: transitive
+    description:
+      name: package_info_plus_platform_interface
+      sha256: "9bc8ba46813a4cc42c66ab781470711781940780fd8beddd0c3da62506d3a6c6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.1"
   page_transition:
     dependency: transitive
     description:
@@ -973,6 +989,54 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.1"
+  serious_python:
+    dependency: "direct main"
+    description:
+      name: serious_python
+      sha256: "715e5a734b0284b1e0a667525b25d8bd4d403b4193343a497e22f1e842a82390"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.6.1"
+  serious_python_android:
+    dependency: transitive
+    description:
+      name: serious_python_android
+      sha256: "7279729322aef46edd788030ab54187644fb1c1d8b8d5b20c84fdd9637215353"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.6.1"
+  serious_python_darwin:
+    dependency: transitive
+    description:
+      name: serious_python_darwin
+      sha256: c29a15536ba5ce32399331109d44b461e899d19e5cb2d467dc745f1469413fea
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.6.1"
+  serious_python_linux:
+    dependency: transitive
+    description:
+      name: serious_python_linux
+      sha256: b2b69bd4945b2b2931436cda2e34a2ef0487a3a52556ebf0f1c1edce2ab5077d
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.6.1"
+  serious_python_platform_interface:
+    dependency: transitive
+    description:
+      name: serious_python_platform_interface
+      sha256: b3017d127152be1674c5ecac18ec1897ba44cd11586fa45e003ad0f138e94cd5
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.6.1"
+  serious_python_windows:
+    dependency: transitive
+    description:
+      name: serious_python_windows
+      sha256: "5e4ebb1a8e8d609a97a4f5aad7dbff8f7327a4da295afb611a5386bafefd9164"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.6.1"
   shared_preferences:
     dependency: "direct main"
     description:
@@ -1170,6 +1234,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.1"
+  toml:
+    dependency: transitive
+    description:
+      name: toml
+      sha256: "157c5dca5160fced243f3ce984117f729c788bb5e475504f3dbcda881accee44"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.14.0"
   typed_data:
     dependency: transitive
     description:

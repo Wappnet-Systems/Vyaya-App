@@ -5,6 +5,7 @@ import 'package:expenses_tracker/exports.dart';
 import 'package:expenses_tracker/model/linear_regrassion_model.dart';
 import 'package:expenses_tracker/model/prediaction_helper.dart';
 import 'package:expenses_tracker/screens/prediction_page.dart';
+// import 'package:expenses_tracker/screens/sms_list.dart';
 import 'dart:developer' as dev;
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
@@ -265,7 +266,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             const EdgeInsets.symmetric(horizontal: 12.0),
                         visualDensity: const VisualDensity(vertical: -4),
                         trailing: const SizedBox.shrink(),
-                        onTap: fetchDataFromGoogleScript,
+                        onTap: redirectToBudgetPage,
                       ),
                       const Divider(),
                       ListTile(
@@ -401,7 +402,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  void fetchDataFromGoogleScript() async {
+  void redirectToBudgetPage() async {
     
     try {
       recentTransaction = await getAllLocalTransactions();
@@ -427,7 +428,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
       if (currentPageTransactions.isNotEmpty) {
         categorizedTransactionsMap = {};
-
         for (AllTransactionDetails transaction in currentPageTransactions) {
           String monthYearKey =
               DateFormat.yMMM().format(transaction.transactionDate!);
@@ -438,7 +438,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
             categorizedTransactionsMap![monthYearKey] = [transaction];
           }
         }
-        categorizedTransactionsMap!.forEach((monthYearKey, transactions) {
+        if(categorizedTransactionsMap!.length<=1){
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('It should contain atleast 2 month of Transaction data',maxLines: 2,),
+        ));
+        }
+        else{
+          categorizedTransactionsMap!.forEach((monthYearKey, transactions) {
           predictionHelperMap = {};
           transactions.forEach((transaction) {
             int totalIncome = 0;
@@ -483,11 +489,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
             }
           });
         });
-      } else {
-        print("The list is empty");
+      
+        }
+     } else {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('It should contain atleast 2 month of Transaction data.',maxLines: 2,),
+        ));
       }
     } catch (e) {
       dev.log("$e");
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Error: $e',maxLines: 2,),
+        ));
     }
 
 
@@ -1142,29 +1155,3 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 }
 
-// class LinearRegressionModel {
-//   late double slopeIncome;
-//   late double interceptIncome;
-
-//   void trainForIncome(List<Map<String, PredictionHelper>> data) {
-//     final int n = data.length;
-//     double sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0;
-
-//     for (var i = 0; i < n; i++) {
-//       var helper = data[i].values.first;
-//       var order = i + 1;
-
-//       sumX += order;
-//       sumY += helper.totalIncome!;
-//       sumXY += order * helper.totalIncome!;
-//       sumX2 += order * order;
-//     }
-
-//     slopeIncome = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
-//     interceptIncome = (sumY - slopeIncome * sumX) / n;
-//   }
-
-//   double predictIncome(double order) {
-//     return slopeIncome * order + interceptIncome;
-//   }
-// }

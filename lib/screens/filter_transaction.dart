@@ -42,7 +42,6 @@ class _FilterTransactionState extends State<FilterTransaction> {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primary,
       body: Container(
-        
         padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -59,7 +58,7 @@ class _FilterTransactionState extends State<FilterTransaction> {
               height: 05,
             ),
             SizedBox(
-              height: hp(17, context),
+              // height: hp(17, context),
               child: Form(
                   key: transactionFormKey,
                   child: Column(
@@ -81,10 +80,10 @@ class _FilterTransactionState extends State<FilterTransaction> {
                                 ),
                                 readOnly: true,
                                 onTap: () {
-                                  _selectDateTime(context, true);
+                                  _selectDateTime(context, true);                                  
                                 },
                                 controller: startDateController,
-                                validator: textFormFieldValidator,
+                                validator: textFormFieldValidator,                                
                                 decoration: InputDecoration(
                                     labelText: "Start Date",
                                     labelStyle: TextStyle(
@@ -170,47 +169,11 @@ class _FilterTransactionState extends State<FilterTransaction> {
                             ),
                           ],
                         ),
-                      ),
-                      TextButton(
-                          onPressed: () {
-                            if (_endDate!.isAfter(_startDate!)) {
-                              final tempTransaction =
-                                  getTransactionsBetweenDates();
-                              getDateFormat(tempTransaction);
-                            } else {
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(const SnackBar(
-                                content: Row(
-                                  children: [
-                                    Icon(Icons.error, color: Colors.red),
-                                    SizedBox(width: 10),
-                                    Text(
-                                      'Please Select Start Date Before end Date',
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                  ],
-                                ),
-                              ));
-                            }
-                          },
-                          child: SizedBox(
-                              height: MediaQuery.sizeOf(context).height * 0.06,
-                              width: MediaQuery.of(context).size.width * 0.99,
-                              child: Card(
-                                  color: PrimaryColor.colorBottleGreen,
-                                  child: Center(
-                                      child: Text(
-                                    "Display Transactions",
-                                    style: TextStyle(
-                                        color: PrimaryColor.colorWhite,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize:
-                                            MediaQuery.sizeOf(context).height *
-                                                0.018),
-                                  )))))
+                      ),                    
                     ],
                   )),
             ),
+            const SizedBox(height: 10,),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Row(
@@ -243,7 +206,6 @@ class _FilterTransactionState extends State<FilterTransaction> {
                       ),
               ),
             ),
-            
           ],
         ),
       ),
@@ -268,6 +230,26 @@ class _FilterTransactionState extends State<FilterTransaction> {
           .toList();
       isLoading = false;
     });
+  }
+
+  displayFilterData() {
+    if (_endDate!.isAfter(_startDate!)) {
+      final tempTransaction = getTransactionsBetweenDates();
+      getDateFormat(tempTransaction);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Row(
+          children: [
+            Icon(Icons.error, color: Colors.red),
+            SizedBox(width: 10),
+            Text(
+              'Please Select Start Date Before end Date',
+              style: TextStyle(color: Colors.white),
+            ),
+          ],
+        ),
+      ));
+    }
   }
 
   Future<List<LocalTransaction>> getAllLocalTransactions() async {
@@ -305,8 +287,7 @@ class _FilterTransactionState extends State<FilterTransaction> {
         firstDate: isStartDate ? DateTime(2023) : _startDate!,
         lastDate: DateTime.now(),
         builder: (context, child) {
-          return ZoomInOutDialogWrapper(
-          builder: (context){
+          return ZoomInOutDialogWrapper(builder: (context) {
             return Theme(
               data: Theme.of(context).copyWith(
                   colorScheme: ColorScheme.light(
@@ -322,8 +303,8 @@ class _FilterTransactionState extends State<FilterTransaction> {
                   ),
                   hintColor: Colors.black38),
               child: child!,
-            );}
-          );
+            );
+          });
         });
     if (picked != null) {
       setState(() {
@@ -331,10 +312,12 @@ class _FilterTransactionState extends State<FilterTransaction> {
           _startDate = DateTime(picked.year, picked.month, picked.day, 00, 00);
           startDateController.text =
               DateFormat('MMM dd, yyyy').format(_startDate!).toString();
+              displayFilterData();
         } else {
           _endDate = DateTime(picked.year, picked.month, picked.day, 23, 59);
           endDateController.text =
               DateFormat('MMM dd, yyyy').format(_endDate!).toString();
+              displayFilterData();
         }
       });
     }

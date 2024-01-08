@@ -23,16 +23,15 @@ class _PredictionPageState extends State<PredictionPage> {
   Map<String, PredictionHelper>? lastElement;
   int? lastIncome, lastExpenses, lastRemainingBalance;
   int? pfBalance, pfIncome, pfSpending, pfNeeds, pfWants, pfSaving;
-  int? needLimitCross=0;
-  int? wantsLimitCross=0;
-  int? savingLimitCross=0;
+  int? needLimitCross = 0;
+  int? wantsLimitCross = 0;
+  int? savingLimitCross = 0;
   List<double> needPercentageList = [];
   List<double> wantPercentageList = [];
   List<double> savingPercentageList = [];
   String selectedKey = '';
   @override
   void initState() {
-    
     lastElement = widget.predictionHelperList.isNotEmpty
         ? widget.predictionHelperList.last
         : null;
@@ -54,20 +53,28 @@ class _PredictionPageState extends State<PredictionPage> {
     printListing(needPercentageList,50,"need");
     printListing(wantPercentageList,30,"want");
     printListing(savingPercentageList,20,"saving");
-    print("Need Limit Cross: $needLimitCross");
-    print("Want Limit Cross: $wantsLimitCross");
-    print("Saving Limit Cross: $savingLimitCross");
+    print("Needs Limit Cross: $needLimitCross, Want Limit Cross : $wantsLimitCross, Saving Limit Cross: $savingLimitCross");
     super.initState();
   }
 
-  printListing(List<double> listing,int limit,String value) {
+  printListing(List<double> listing, int limit, String value) {
     for (int i = 0; i < listing.length; i++) {
-      print("Listing ${listing[i]}");
-      if(listing[i]<limit){
-        
-
-      }
       
+      if (listing[i] >= limit) {
+        switch (value) {
+          case "need":
+            needLimitCross=(needLimitCross!+1);
+            break;
+          case "want":
+            wantsLimitCross=(wantsLimitCross!+1);
+            break;
+          case "saving":
+            savingLimitCross=(savingLimitCross!+1);
+            break;
+          default:            
+            break;
+        }
+      }
     }
   }
 
@@ -102,7 +109,7 @@ class _PredictionPageState extends State<PredictionPage> {
         elevation: 5,
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.030),
+        padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.018),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -158,7 +165,6 @@ class _PredictionPageState extends State<PredictionPage> {
                                         0
                                     ? Icons.arrow_downward
                                     : Icons.arrow_upward,
-                                // Icons.arrow_upward,
                                 size: 16,
                                 color: PrimaryColor.colorBottleGreen,
                               ),
@@ -220,7 +226,7 @@ class _PredictionPageState extends State<PredictionPage> {
                   child: Card(
                     color: PrimaryColor.colorRed,
                     child: Padding(
-                      padding: const EdgeInsets.all(10.0),
+                      padding: const EdgeInsets.all(8.0),
                       child: Column(
                         children: [
                           Row(
@@ -243,7 +249,7 @@ class _PredictionPageState extends State<PredictionPage> {
                                 ),
                               ),
                               Text(
-                                'Predicted Spening',
+                                'Predicted Spending',
                                 style: TextStyle(
                                   color: PrimaryColor.colorWhite,
                                   fontWeight: FontWeight.w400,
@@ -322,7 +328,7 @@ class _PredictionPageState extends State<PredictionPage> {
                   child: Card(
                     color: PrimaryColor.colorBottleGreen,
                     child: Padding(
-                      padding: const EdgeInsets.all(10.0),
+                      padding: const EdgeInsets.all(8.0),
                       child: Column(
                         children: [
                           Row(
@@ -870,12 +876,12 @@ class _PredictionPageState extends State<PredictionPage> {
         double savingPercentage = (personalFinanceHelper.savingExpenses! /
                 personalFinanceHelper.totalIncome!) *
             100;
-        print("Needs: $needPercentage Wants: $wantPercentage Saving : $savingPercentage");
+        print(
+            "Needs: $needPercentage Wants: $wantPercentage Saving : $savingPercentage");
         needPercentageList.add(needPercentage);
         wantPercentageList.add(wantPercentage);
         savingPercentageList.add(savingPercentage);
       });
-      // PredictionHelper? personalFinanceHelper = map[selectedKey];
     });
   }
 

@@ -1,10 +1,5 @@
-
 import 'package:expenses_tracker/exports.dart';
-
 import 'package:intl/intl.dart';
-
-
-
 
 class DetailHomeScreen extends StatefulWidget {
   const DetailHomeScreen({super.key});
@@ -33,6 +28,10 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
   static double? needProgressValue = 0.0;
   static double? wantProgressValue = 0.0;
   static double? savingProgressValue = 0.0;
+
+  static double needPercenageValue = 0.0;
+  static double wantPercenageValue = 0.0;
+  static double savingPercenageValue = 0.0;
 
   static bool? balanceHintText = false;
 
@@ -118,7 +117,8 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                       height: 25,
                     ),
                     CustomTextStyle(
-                        customTextStyleText: DateFormat.yMMM().format(DateTime.now()),
+                        customTextStyleText:
+                            DateFormat.yMMM().format(DateTime.now()),
                         customTextColor:
                             Theme.of(context).colorScheme.secondary,
                         customTextFontWeight: FontWeight.normal,
@@ -355,8 +355,6 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                         offset: index % 2 == 0 ? -0.5 : 0.5,
                         child: GestureDetector(
                             onTap: () {
-                              // var curve = Curves.ease;
-                              // var zoomTween = Tween<double>(begin: 0.0, end: 1.0).chain(CurveTween(curve: curve));
                               Navigator.of(context).push(
                                 ZoomInTransitionRoute(
                                   page: TransactionScreen(
@@ -406,7 +404,6 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
 
   Widget buildCustomPersonalFinance(double screenHeight, double screenWidth) {
     return SizedBox(
-      height: screenHeight * 0.43,
       width: screenWidth,
       child: Card(
         elevation: 5,
@@ -415,9 +412,12 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
           borderRadius: BorderRadius.circular(18),
         ),
         child: incomeForPersonalFinance! <= 0
-            ? const Center(
-                child: CustomNoData(),
-              )
+            ? SizedBox(
+              height: screenHeight*0.40,
+              child: const Center(
+                  child: CustomNoData(),
+                ),
+            )
             : Column(
                 children: [
                   const SizedBox(
@@ -583,6 +583,17 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                           )),
                     ],
                   ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      needPercenageValue < 100
+                          ? SizedBox.shrink()
+                          : Text(
+                              "Exceeded allocated needs budget by ${(needPercenageValue -100).toStringAsFixed(0)}%",
+                              style: TextStyle(color: PrimaryColor.colorRed),
+                            )
+                    ],
+                  ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Divider(color: Colors.grey[400]),
@@ -685,6 +696,17 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                             color: Theme.of(context).colorScheme.secondary,
                             size: screenWidth / 20,
                           )),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      wantPercenageValue < 100
+                          ? SizedBox.shrink()
+                          : Text(
+                              "Exceeded allocated wants budget by ${(wantPercenageValue -100).toStringAsFixed(0)}%",
+                              style: TextStyle(color: PrimaryColor.colorRed),
+                            )
                     ],
                   ),
                   Padding(
@@ -791,6 +813,20 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                           )),
                     ],
                   ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      savingPercenageValue < 100
+                          ? SizedBox.shrink()
+                          : Text(
+                              "Exceeded allocated savings budget by ${(savingPercenageValue -100).toStringAsFixed(0)}%",
+                              style: TextStyle(color: PrimaryColor.colorRed),
+                            )
+                    ],
+                  ),
+                  SizedBox(
+                    height: screenHeight * 0.018,
+                  )
                 ],
               ),
       ),
@@ -1187,6 +1223,13 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
     savingProgressValue = (expenseSavingOfTheValue!) / savingOfTheMonthValue!;
     needProgressValue = (expenseNeedsOfTheValue!) / needsOfTheMonthValue!;
     wantProgressValue = (expenseWantsOfTheValue!) / wantsOfTheMonthValue!;
+    needPercenageValue =
+        (expenseNeedsOfTheValue! / needsOfTheMonthValue!) * 100;
+    wantPercenageValue =
+        (expenseWantsOfTheValue! / wantsOfTheMonthValue!) * 100;
+    savingPercenageValue =
+        (expenseSavingOfTheValue! / savingOfTheMonthValue!) * 100;
+
     userScore =
         (savingProgressValue! + needProgressValue! + wantProgressValue!) / 3;
     userScore = (userScore! * 100);
@@ -1202,6 +1245,10 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
     } else if (userScore! >= 61 && userScore! <= 100) {
       pfScore = "Excellent";
     }
+  }
+
+  double calculatePercentageChange(double oldValue, double newValue) {
+    return ((newValue - oldValue) / oldValue) * 100;
   }
 
   void loadVariableFromSharedPreferences() async {
