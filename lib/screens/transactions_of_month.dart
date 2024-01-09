@@ -9,7 +9,7 @@ import '../utils/const.dart';
 import 'package:intl/intl.dart';
 import '../widgets/transaction_list.dart';
 
-class TransactionOfMonth extends StatefulWidget implements PreferredSizeWidget{
+class TransactionOfMonth extends StatefulWidget implements PreferredSizeWidget {
   final int id, amount;
   String? titleText, subtitleText;
   List<AllTransactionDetails>? currentPageTransaction;
@@ -28,7 +28,8 @@ class TransactionOfMonth extends StatefulWidget implements PreferredSizeWidget{
   State<TransactionOfMonth> createState() => _TransactionOfMonthState();
 }
 
-class _TransactionOfMonthState extends State<TransactionOfMonth> with SingleTickerProviderStateMixin{
+class _TransactionOfMonthState extends State<TransactionOfMonth>
+    with SingleTickerProviderStateMixin {
   bool isLoading = false;
   static List<AllTransactionDetails> currentMonthTransactions = [];
   static List<LocalTransaction> transactionOfMonth = [];
@@ -36,13 +37,13 @@ class _TransactionOfMonthState extends State<TransactionOfMonth> with SingleTick
   DateTime? currentDate;
   DateTime? yesterdayDate;
 
-
   Future<void> getAllTransaction() async {
     setState(() {
       isLoading = true;
     });
     try {
-      final tempTransactionDateStampTransactionData = getTransactionsThisMonth();
+      final tempTransactionDateStampTransactionData =
+          getTransactionsThisMonth();
       transactionOfMonth = await tempTransactionDateStampTransactionData;
       setState(() {
         currentMonthTransactions = transactionOfMonth
@@ -88,45 +89,46 @@ class _TransactionOfMonthState extends State<TransactionOfMonth> with SingleTick
     }
 
     return Scaffold(
-        backgroundColor: Theme.of(context).colorScheme.primary,          
+        backgroundColor: Theme.of(context).colorScheme.primary,
         appBar: AppBar(
-            iconTheme: IconThemeData(color: Theme.of(context).colorScheme.secondary),
-            title: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            widget.id == 1
-                ? 'Monthly Transaction'
-                : widget.id == 3
-                    ? 'Monthly Expenses'
-                    : widget.id == 2
-                        ? 'Monthly Income'
-                        : widget.titleText!,
-            style: TextStyle(
-                color: Theme.of(context).colorScheme.secondary,
-                fontSize: MediaQuery.of(context).size.height * 0.025),
-            textAlign: TextAlign.left,
-          ),
-          SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    child: Text(
-                      widget.id == 1
-                      ? "Remaining Balance : ${formatCurrency(widget.amount)}"
-                      : widget.id == 2 || widget.id == 3
-                          ? formatCurrency(widget.amount)
-                          : '${widget.subtitleText}',
-                      style:TextStyle(fontSize: 14, fontWeight: FontWeight.normal,color: Theme.of(context).colorScheme.secondary),
-                      overflow: TextOverflow.clip,
-                    ),
+          iconTheme:
+              IconThemeData(color: Theme.of(context).colorScheme.secondary),
+          title: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  widget.id == 1
+                      ? 'Monthly Transaction'
+                      : widget.id == 3
+                          ? 'Monthly Expenses'
+                          : widget.id == 2
+                              ? 'Monthly Income'
+                              : widget.titleText!,
+                  style: TextStyle(
+                      color: Theme.of(context).colorScheme.secondary,
+                      fontSize: MediaQuery.of(context).size.height * 0.025),
+                  textAlign: TextAlign.left,
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  child: Text(
+                    widget.id == 1
+                        ? "Remaining Balance : ${formatCurrency(widget.amount)}"
+                        : widget.id == 2 || widget.id == 3
+                            ? formatCurrency(widget.amount)
+                            : '${widget.subtitleText}',
+                    style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.normal,
+                        color: Theme.of(context).colorScheme.secondary),
+                    overflow: TextOverflow.clip,
                   ),
-                
-        ]
-            ),
-            elevation: 5,
-            backgroundColor: Theme.of(context).bottomAppBarTheme.color,
-          ),
-        
+                ),
+              ]),
+          elevation: 5,
+          backgroundColor: Theme.of(context).bottomAppBarTheme.color,
+        ),
         body: widget.id == 1 || widget.id == 2 || widget.id == 3
             ? isLoading == true
                 ? const Center(child: CircularProgressIndicator())

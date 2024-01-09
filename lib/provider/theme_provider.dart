@@ -30,7 +30,7 @@ class MyTheme {
         background: PrimaryColor.colorWhite,
         onBackground: PrimaryColor.colorBottleGreen,        
       ),
-      cardColor: const Color.fromARGB(150, 25, 15, 20),
+      cardColor: const Color.fromARGB(150, 30, 30, 30),
       hintColor: Colors.white60,
       dialogBackgroundColor: PrimaryColor.colorBlack,
       useMaterial3: true, 

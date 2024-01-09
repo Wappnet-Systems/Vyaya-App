@@ -2,8 +2,10 @@
 
 import 'package:expenses_tracker/model/prediaction_helper.dart';
 import 'package:expenses_tracker/utils/const.dart';
+import 'package:expenses_tracker/widgets/custom_slider.dart';
 import 'package:expenses_tracker/widgets/custom_text_style.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -29,9 +31,17 @@ class _PredictionPageState extends State<PredictionPage> {
   int? needLimitCross = 0;
   int? wantsLimitCross = 0;
   int? savingLimitCross = 0;
+
+  // List<String> performWell = [];
+  // List<String> performAverage = [];
+  // List<String> performBad = [];
+
   List<double> needPercentageList = [];
   List<double> wantPercentageList = [];
   List<double> savingPercentageList = [];
+  double needResult = 0;
+  double wantResult = 0;
+  double savingResult = 0;
   String selectedKey = '';
   @override
   void initState() {
@@ -53,21 +63,36 @@ class _PredictionPageState extends State<PredictionPage> {
     }
     fetchValuesForSelectedKey();
     fetchPercentageOfSpending();
-    printListing(needPercentageList, 50, "need");
-    printListing(wantPercentageList, 30, "want");
-    printListing(savingPercentageList, 20, "saving");
-    print(
-        "Needs Limit Cross: $needLimitCross, Want Limit Cross : $wantsLimitCross, Saving Limit Cross: $savingLimitCross");
-    print(
-        "Exceeded needs limit $needLimitCross out of ${needPercentageList.length} times.");
-    print(
-        "Exceeded wants limit $wantsLimitCross out of ${needPercentageList.length} times.");
-    print(
-        "Exceeded saving limit $savingLimitCross out of ${needPercentageList.length} times.");
+    categoriseListing(needPercentageList, 50, "need");
+    categoriseListing(wantPercentageList, 30, "want");
+    categoriseListing(savingPercentageList, 20, "saving");
+    findRuleBrekPercetage();
+
     super.initState();
   }
 
-  printListing(List<double> listing, int limit, String value) {
+  // categorisedBasedOnValue(double value, String resultantValue) {
+  //   if (value == 0) {
+  //     performWell.add(resultantValue);
+  //   } else if (value > 0 && value <= 50) {
+  //     performAverage.add(resultantValue);
+  //   } else if (value > 50 && value <= 100) {
+  //     performBad.add(resultantValue);
+  //   } else {
+  //     print("Value percentage can't identify in any category");
+  //   }
+  // }
+
+  findRuleBrekPercetage() {
+    needResult = ((needLimitCross! / (needPercentageList.length)) * 100);
+    wantResult = ((wantsLimitCross! / (wantPercentageList.length)) * 100);
+    savingResult = ((savingLimitCross! / (savingPercentageList.length)) * 100);
+    // categorisedBasedOnValue(needResult, "Needs");
+    // categorisedBasedOnValue(wantResult, "Wants");
+    // categorisedBasedOnValue(savingResult, "Saving");
+  }
+
+  categoriseListing(List<double> listing, int limit, String value) {
     for (int i = 0; i < listing.length; i++) {
       if (listing[i] >= limit) {
         switch (value) {
@@ -109,12 +134,21 @@ class _PredictionPageState extends State<PredictionPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primary,
       appBar: AppBar(
-        backgroundColor: PrimaryColor.colorBottleGreen,
-        iconTheme: IconThemeData(color: PrimaryColor.colorWhite),
+        backgroundColor: Theme.of(context).bottomAppBarTheme.color,
+        iconTheme:
+            IconThemeData(color: Theme.of(context).colorScheme.secondary),
         title: Text(
           'Budget Prediction Page',
-          style: TextStyle(color: PrimaryColor.colorWhite),
+          style: TextStyle(color: Theme.of(context).colorScheme.secondary),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.info_outline),
+            onPressed: () {
+              openBottomSheet(context, screenHeight, screenWidth);
+            },
+          )
+        ],
         elevation: 5,
       ),
       body: SingleChildScrollView(
@@ -622,7 +656,7 @@ class _PredictionPageState extends State<PredictionPage> {
                                     ? (pfNeeds == 0)
                                         ? 0
                                         : 100
-                                    : ((pfNeeds! / pfIncome!) * 100),
+                                    : ((pfNeeds! / pfIncome!) * 100)>100 ?100 :((pfNeeds! / pfIncome!) * 100),
                               ),
                               Text(
                                 'Needs',
@@ -683,7 +717,7 @@ class _PredictionPageState extends State<PredictionPage> {
                                     ? (pfWants == 0)
                                         ? 0
                                         : 100
-                                    : ((pfWants! / pfIncome!) * 100),
+                                    : ((pfWants! / pfIncome!) * 100)>100 ?100 :((pfWants! / pfIncome!) * 100),
                               ),
                               Text(
                                 'Wants',
@@ -744,12 +778,13 @@ class _PredictionPageState extends State<PredictionPage> {
                                     ? (pfSaving == 0)
                                         ? 0
                                         : 100
-                                    : ((pfSaving! / pfIncome!) * 100),
+                                    : ((pfSaving! / pfIncome!) * 100)>100 ?100 :((pfSaving! / pfIncome!) * 100),
                               ),
                               Text(
                                 'Saving',
                                 style: TextStyle(
-                                    color:Theme.of(context).colorScheme.secondary,
+                                    color:
+                                        Theme.of(context).colorScheme.secondary,
                                     fontSize: screenHeight * 0.020),
                                 textAlign: TextAlign.left,
                               ),
@@ -783,12 +818,11 @@ class _PredictionPageState extends State<PredictionPage> {
   }
 
   Widget buildColumnChartForSubCategory() {
-    
     return SfCartesianChart(
-      title:  ChartTitle(text: 'Spending Spectrum'),
-      primaryXAxis:  CategoryAxis(),
+      title: ChartTitle(text: 'Spending Spectrum'),
+      primaryXAxis: CategoryAxis(),
       tooltipBehavior: TooltipBehavior(enable: true),
-      legend:  Legend(
+      legend: Legend(
         isVisible: true,
         position: LegendPosition.bottom,
         overflowMode: LegendItemOverflowMode.wrap,
@@ -824,8 +858,8 @@ class _PredictionPageState extends State<PredictionPage> {
     List<ChartData> expensesData = getExpensesChartData('Expenses');
     return SfCartesianChart(
       primaryXAxis: CategoryAxis(),
-      primaryYAxis:  NumericAxis(),
-      legend:  Legend(
+      primaryYAxis: NumericAxis(),
+      legend: Legend(
         isVisible: true,
         position: LegendPosition.bottom,
         overflowMode: LegendItemOverflowMode.wrap,
@@ -855,10 +889,10 @@ class _PredictionPageState extends State<PredictionPage> {
     List<ChartData> incomeData = getIncomeChartData('Income');
     List<ChartData> expensesData = getExpensesChartData('Expenses');
     return SfCartesianChart(
-      title:  ChartTitle(text: 'Financial Flow'),
-      primaryXAxis:  CategoryAxis(),
-      primaryYAxis:  NumericAxis(),
-      legend:  Legend(
+      title: ChartTitle(text: 'Financial Flow'),
+      primaryXAxis: CategoryAxis(),
+      primaryYAxis: NumericAxis(),
+      legend: Legend(
         isVisible: true,
         position: LegendPosition.bottom,
         overflowMode: LegendItemOverflowMode.wrap,
@@ -881,7 +915,6 @@ class _PredictionPageState extends State<PredictionPage> {
         ),
       ],
     );
-  
   }
 
   fetchPercentageOfSpending() {
@@ -903,6 +936,291 @@ class _PredictionPageState extends State<PredictionPage> {
         savingPercentageList.add(savingPercentage);
       });
     });
+  }
+
+  void openBottomSheet(
+      BuildContext context, double screenHeight, double screenWidth) {
+    showModalBottomSheet(
+      isScrollControlled: true,
+      context: context,
+      builder: (BuildContext context) {
+      Widget fetchPerformanceFromValue(double value,String stringValue) {
+          if (value == 0) {
+            return Row(
+                children: [
+                  Icon(
+                    Icons.star,
+                    color: PrimaryColor.colorBottleGreen,
+                  ),
+                  
+                  Text(
+                    stringValue,
+                    style: TextStyle(
+                        fontSize: screenHeight * 0.020,
+                        fontWeight: FontWeight.bold,
+                        color: PrimaryColor.colorBottleGreen),
+                  ),
+                ],
+              );
+          } else if (value > 0 && value <= 50) {
+            return Row(
+                children: [
+                  const Icon(
+                    Icons.sentiment_satisfied,
+                    color: Colors.orange,
+                  ),
+                  
+                  Text(
+                    stringValue,
+                    style: TextStyle(
+                        fontSize: screenHeight * 0.020,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.orange),
+                  ),
+                ],
+              );
+          } else if (value > 50 && value <= 100) {
+            return Row(
+                children: [
+                  Icon(
+                    Icons.warning_amber_rounded,
+                    color: PrimaryColor.colorRed,
+                  ),
+                  
+                  Text(
+                    stringValue,
+                    style: TextStyle(
+                        fontSize: screenHeight * 0.020,
+                        fontWeight: FontWeight.bold,
+                        color: PrimaryColor.colorRed),
+                  ),
+                ],
+              );
+          } else {
+            return const Text('');
+          }
+        }
+
+        return Container(
+          // height: screenHeight * 0.70,
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Spending Analysis',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: ScreenUtil().setHeight(10)),
+              const Text(
+                "Important :",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+              ),
+              const Text(
+                "\u2022 Stick to the 50-30-20 Budgeting rule!",
+                style: TextStyle(fontSize: 16),
+              ),
+              const Text(
+                "\u2022 Out of all recorded budgets, track instances how many time that rule isn't followed.",
+                style: TextStyle(fontSize: 16),
+                textAlign: TextAlign.justify,
+              ),
+              const Text(
+                "\u2022 Performance measured in 3 categories.",
+                style: TextStyle(fontSize: 16),
+                textAlign: TextAlign.justify,
+              ),
+              Row(
+                children: [
+                  Icon(
+                    Icons.star,
+                    color: PrimaryColor.colorBottleGreen,
+                  ),
+                  SizedBox(width: 10,),
+                  
+                  Text(
+                    '(Outstanding Performance)',
+                    style: TextStyle(
+                        fontSize: 16,
+                        color: PrimaryColor.colorBottleGreen),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Icon(
+                    Icons.sentiment_satisfied,
+                    color: Colors.orange,
+                  ),
+                  SizedBox(width: 10,),
+                  
+                  Text(
+                    '(Average Performance)',
+                    style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.orange),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Icon(
+                    Icons.warning,
+                    color: PrimaryColor.colorRed,
+                  ),
+                  SizedBox(width: 10,),
+                  
+                  Text(
+                    '(Poor Performance)',
+                    style: TextStyle(
+                        color: PrimaryColor.colorRed),
+                  ),
+                ],
+              ),
+              SizedBox(height: ScreenUtil().setHeight(5)),
+              Row(
+                children: [
+                  SizedBox(
+                    width: screenWidth * 0.07,
+                  ),
+                  Flexible(
+                    flex: 3,
+                    child: Column(
+                      children: [
+                        CustomCircularSlider(
+                          initialValue: needResult,
+                          sliderColor: PrimaryColor.colorBottleGreen,
+                        ),
+                        Row(
+                          children: [
+                            fetchPerformanceFromValue(needResult,"Needs"),                            
+                          ],
+                        ),                                             
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    width: screenWidth * 0.07,
+                  ),
+                  Flexible(
+                    flex: 3,
+                    child: Column(
+                      children: [
+                        CustomCircularSlider(
+                          initialValue: wantResult,
+                          sliderColor: PrimaryColor.colorRed,
+                        ),
+                        Row(
+                          children: [
+                            fetchPerformanceFromValue(wantResult,"Wants"),
+                            
+                          ],
+                        ),
+                        
+                        
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    width: screenWidth * 0.07,
+                  ),
+                  Flexible(
+                    flex: 3,
+                    child: Column(
+                      children: [
+                        CustomCircularSlider(
+                          initialValue: savingResult,
+                          sliderColor: PrimaryColor.colorBlue,
+                        ),
+                        Row(
+                          children: [
+                            fetchPerformanceFromValue(savingResult, "Saving"),
+                            
+                          ],
+                        ),
+                        
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    width: screenWidth * 0.07,
+                  ),
+                ],
+              ),
+              // const SizedBox(height: 16.0),
+              // const Text(
+              //   'Recommendation:',
+              //   style: TextStyle(
+              //     fontSize: 18,
+              //     fontWeight: FontWeight.bold,
+              //   ),
+              // ),
+              
+              // Row(
+              //   children: [
+              //     Text(
+              //       printStringListSeparated(performWell, "You have Perform Extremely well in this Categories"),
+              //       style: TextStyle(
+              //           fontSize: 14,
+              //           fontWeight: FontWeight.normal,
+              //           color: PrimaryColor.colorBottleGreen),maxLines: 2,
+              //     ),
+              //   ],
+              // ),
+              
+              // Row(
+              //   children: [
+              //     Text(
+              //       printStringListSeparated(performAverage, "You have to think twice beform spendning in this Categories "),
+              //       style: TextStyle(
+              //           fontSize: 14,
+              //           fontWeight: FontWeight.normal,
+              //           color: PrimaryColor.colorBottleGreen),maxLines: 2,
+              //     ),
+              //   ],
+              // ),
+              // Row(
+              //   children: [
+              //     Icon(
+              //       Icons.star,
+              //       color: PrimaryColor.colorRed,
+              //     ),
+              //     Text(
+              //       'Warning',
+              //       style: TextStyle(
+              //           fontSize: 16,
+              //           fontWeight: FontWeight.bold,
+              //           color: PrimaryColor.colorRed),
+              //     ),
+
+              //   ],
+              // ),
+              // Row(
+              //   children: [
+              //     Text(
+              //       printStringListSeparated(performAverage, "You're Continuesly Breaking the rule of this Categories \n"),
+              //       style: TextStyle(
+              //           fontSize: 14,
+              //           fontWeight: FontWeight.normal,
+              //           color: PrimaryColor.colorRed),
+              //           maxLines: 2,
+              //     ),
+              //   ],
+              // ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   void fetchValuesForSelectedKey() {
