@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:expenses_tracker/api/pdf_api.dart';
 import 'package:expenses_tracker/model/transaction.dart';
 import 'package:expenses_tracker/utils/const.dart';
@@ -46,7 +45,7 @@ class PdfInvoiceApi {
               color: PdfColors.black,
               fontSize: 25,
               fontWeight: FontWeight.bold),
-          textAlign: TextAlign.center),
+          textAlign: TextAlign.center)
     ]));
   }
 
@@ -144,7 +143,7 @@ class PdfInvoiceApi {
       ];
     }).toList();
 
-    return TableHelper.fromTextArray(
+    return Table.fromTextArray(
       headers: headers,
       data: data,
       border: null,

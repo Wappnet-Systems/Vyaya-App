@@ -1,14 +1,15 @@
-import 'package:expenses_tracker/exports.dart';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 // ignore: must_be_immutable
 class CustomTextStyle extends StatelessWidget {
   final String? customTextStyleText;
   final Color? customTextColor;
   final FontWeight? customTextFontWeight;
-  final FontStyle? customTextStyle;
+  final FontStyle? customtextstyle;
   final double? customTextSize;
   TextAlign? textAlign;
-  CustomTextStyle({super.key, required this.customTextStyleText,required this.customTextColor,required this.customTextFontWeight,required this.customTextStyle,required this.customTextSize,this.textAlign});
+  CustomTextStyle({super.key, required this.customTextStyleText,required this.customTextColor,required this.customTextFontWeight,required this.customtextstyle,required this.customTextSize,this.textAlign});
 
   @override
   Widget build(BuildContext context) {

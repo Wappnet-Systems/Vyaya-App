@@ -1,4 +1,8 @@
-import 'package:expenses_tracker/exports.dart';
+import 'package:expenses_tracker/utils/const.dart';
+import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
+import 'custom_header.dart';
+import 'custom_text_style.dart';
 
 class HomeSkeleton extends StatelessWidget {
   const HomeSkeleton({super.key});
@@ -36,7 +40,7 @@ class HomeSkeleton extends StatelessWidget {
                       customTextStyleText: "Current Month",
                       customTextColor: PrimaryColor.colorBlack,
                       customTextFontWeight: FontWeight.normal,
-                      customTextStyle: null,
+                      customtextstyle: null,
                       customTextSize: 25.0),
                   const SizedBox(
                     height: 7,
@@ -88,13 +92,13 @@ class HomeSkeleton extends StatelessWidget {
                             customTextStyleText: "Personal Finance",
                             customTextColor: PrimaryColor.colorBlack,
                             customTextFontWeight: FontWeight.bold,
-                            customTextStyle: null,
+                            customtextstyle: null,
                             customTextSize: 20),
                          CustomTextStyle(
                             customTextStyleText: "Set Manually",
                             customTextColor: Colors.blueAccent,
                             customTextFontWeight: FontWeight.bold,
-                            customTextStyle: null,
+                            customtextstyle: null,
                             customTextSize: 14),
                       ],
                     ),
@@ -117,13 +121,13 @@ class HomeSkeleton extends StatelessWidget {
                             customTextStyleText: "Recent Transaction",
                             customTextColor: PrimaryColor.colorBlack,
                             customTextFontWeight: FontWeight.bold,
-                            customTextStyle: null,
+                            customtextstyle: null,
                             customTextSize: 20),
                         CustomTextStyle(
                             customTextStyleText: "View all",
                             customTextColor: Colors.blueAccent,
                             customTextFontWeight: FontWeight.bold,
-                            customTextStyle: null,
+                            customtextstyle: null,
                             customTextSize: 14),
                       ],
                     ),

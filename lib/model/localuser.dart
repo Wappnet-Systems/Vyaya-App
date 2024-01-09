@@ -1,4 +1,4 @@
-import 'package:expenses_tracker/exports.dart';
+import 'package:hive/hive.dart';
 
 part 'localuser.g.dart';
 

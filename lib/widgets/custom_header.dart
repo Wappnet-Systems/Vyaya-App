@@ -1,4 +1,7 @@
-import 'package:expenses_tracker/exports.dart';
+import 'package:flutter/material.dart';
+
+import '../utils/const.dart';
+import 'custom_text_style.dart';
 
 class CustomHeader extends StatelessWidget {
   final String? wishingText,username,initialOfName;
@@ -20,14 +23,14 @@ class CustomHeader extends StatelessWidget {
                                   customTextColor: textColor,
                                   customTextFontWeight: FontWeight.normal,
                                   customTextSize: 17.0,
-                                  customTextStyle: null,
+                                  customtextstyle: null,
                                 ),
                                 CustomTextStyle(
                                       customTextStyleText: "$username",
                                       customTextColor: textColor,
                                       customTextFontWeight: FontWeight.w400,
                                       customTextSize: 22.0,
-                                      customTextStyle: null,
+                                      customtextstyle: null,
                                     ),
                                   
                               ],

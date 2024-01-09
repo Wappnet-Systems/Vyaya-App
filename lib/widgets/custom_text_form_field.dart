@@ -1,4 +1,5 @@
 // ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -23,7 +24,7 @@ class CustomTextFormField extends StatefulWidget {
       required this.customObscureText,
       required this.validationFunction,
       required this.customInkwell,
-      this.textCapitalization,
+      required this.textCapitalization,
       required this.textInputAction,
       this.readOnly,
       this.inputFormatters

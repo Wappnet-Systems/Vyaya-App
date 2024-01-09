@@ -1,5 +1,8 @@
+import 'package:expenses_tracker/model/transaction.dart';
+import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:expenses_tracker/exports.dart';
+
+import 'custom_no_data.dart';
 
 class CustomCircularChart extends StatefulWidget {
   final List<AllTransactionDetails> currentPageTransactions;
@@ -26,7 +29,7 @@ class _CustomCircularChartState extends State<CustomCircularChart> {
 
   @override
   Widget build(BuildContext context) {
-    int? getExplodeIndex() {
+    int? _getExplodeIndex() {
       if (selectedTransactions.isNotEmpty) {
         final selectedTransaction = selectedTransactions.first;
         return widget.currentPageTransactions.indexOf(selectedTransaction);
@@ -47,7 +50,6 @@ class _CustomCircularChartState extends State<CustomCircularChart> {
                 child: CustomNoData(),
               )
             : SfCircularChart(
-              tooltipBehavior: TooltipBehavior(enable: true),
                 series: <CircularSeries>[
                   PieSeries<AllTransactionDetails, String>(
                     legendIconType: LegendIconType.circle,
@@ -79,7 +81,7 @@ class _CustomCircularChartState extends State<CustomCircularChart> {
                       ),
                     ),
                     explode: true,
-                    explodeIndex: getExplodeIndex(),
+                    explodeIndex: _getExplodeIndex(),
                   ),
                 ],
                 legend: Legend(

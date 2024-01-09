@@ -1,5 +1,9 @@
-
-import 'package:expenses_tracker/exports.dart';
+import 'package:animated_splash_screen/animated_splash_screen.dart';
+import 'package:expenses_tracker/screens/auth_user.dart';
+import 'package:expenses_tracker/screens/home_screen.dart';
+import 'package:expenses_tracker/screens/user_detail.dart';
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});

@@ -1,4 +1,4 @@
-import 'package:expenses_tracker/exports.dart';
+import 'package:flutter/material.dart';
 
 class Category{
   final int? categoryIndex;

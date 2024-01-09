@@ -1,4 +1,6 @@
-import 'package:expenses_tracker/exports.dart';
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../utils/const.dart';
 
 class MyTheme {
   static final lightTheme = ThemeData(
@@ -66,5 +68,3 @@ class ThemeProvider extends ChangeNotifier {
     notifyListeners();
   }   
 }
-
-

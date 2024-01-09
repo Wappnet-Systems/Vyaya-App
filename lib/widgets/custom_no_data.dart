@@ -1,4 +1,6 @@
-import 'package:expenses_tracker/exports.dart';
+import 'package:flutter/material.dart';
+
+import 'custom_text_style.dart';
 
 class CustomNoData extends StatelessWidget {
   const CustomNoData({super.key});
@@ -9,7 +11,7 @@ class CustomNoData extends StatelessWidget {
         customTextStyleText: "No Data",
         customTextColor: Theme.of(context).hintColor,
         customTextFontWeight: FontWeight.bold,
-        customTextStyle: null,
+        customtextstyle: null,
         customTextSize: MediaQuery.of(context).size.height * 0.025);
   }
 }

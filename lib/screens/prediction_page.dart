@@ -1,8 +1,11 @@
 // ignore_for_file: must_be_immutable
 
-import 'package:expenses_tracker/exports.dart';
 import 'package:expenses_tracker/model/prediaction_helper.dart';
+import 'package:expenses_tracker/utils/const.dart';
+import 'package:expenses_tracker/widgets/custom_text_style.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class PredictionPage extends StatefulWidget {
@@ -50,28 +53,34 @@ class _PredictionPageState extends State<PredictionPage> {
     }
     fetchValuesForSelectedKey();
     fetchPercentageOfSpending();
-    printListing(needPercentageList,50,"need");
-    printListing(wantPercentageList,30,"want");
-    printListing(savingPercentageList,20,"saving");
-    print("Needs Limit Cross: $needLimitCross, Want Limit Cross : $wantsLimitCross, Saving Limit Cross: $savingLimitCross");
+    printListing(needPercentageList, 50, "need");
+    printListing(wantPercentageList, 30, "want");
+    printListing(savingPercentageList, 20, "saving");
+    print(
+        "Needs Limit Cross: $needLimitCross, Want Limit Cross : $wantsLimitCross, Saving Limit Cross: $savingLimitCross");
+    print(
+        "Exceeded needs limit $needLimitCross out of ${needPercentageList.length} times.");
+    print(
+        "Exceeded wants limit $wantsLimitCross out of ${needPercentageList.length} times.");
+    print(
+        "Exceeded saving limit $savingLimitCross out of ${needPercentageList.length} times.");
     super.initState();
   }
 
   printListing(List<double> listing, int limit, String value) {
     for (int i = 0; i < listing.length; i++) {
-      
       if (listing[i] >= limit) {
         switch (value) {
           case "need":
-            needLimitCross=(needLimitCross!+1);
+            needLimitCross = (needLimitCross! + 1);
             break;
           case "want":
-            wantsLimitCross=(wantsLimitCross!+1);
+            wantsLimitCross = (wantsLimitCross! + 1);
             break;
           case "saving":
-            savingLimitCross=(savingLimitCross!+1);
+            savingLimitCross = (savingLimitCross! + 1);
             break;
-          default:            
+          default:
             break;
         }
       }
@@ -122,7 +131,7 @@ class _PredictionPageState extends State<PredictionPage> {
                     DateFormat.yMMM().format(DateTime(now.year, now.month + 1)),
                 customTextColor: Theme.of(context).colorScheme.secondary,
                 customTextFontWeight: FontWeight.normal,
-                customTextStyle: null,
+                customtextstyle: null,
                 customTextSize: 25.0),
             const SizedBox(
               height: 7,
@@ -434,7 +443,7 @@ class _PredictionPageState extends State<PredictionPage> {
                 customTextStyleText: 'Previous Records',
                 customTextColor: Theme.of(context).colorScheme.secondary,
                 customTextFontWeight: FontWeight.normal,
-                customTextStyle: null,
+                customtextstyle: null,
                 customTextSize: 25.0),
             SizedBox(
               height: screenHeight * 0.009,
@@ -470,7 +479,7 @@ class _PredictionPageState extends State<PredictionPage> {
                     customTextStyleText: 'Monthly Recap',
                     customTextColor: Theme.of(context).colorScheme.secondary,
                     customTextFontWeight: FontWeight.normal,
-                    customTextStyle: null,
+                    customtextstyle: null,
                     customTextSize: 25.0),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -609,7 +618,11 @@ class _PredictionPageState extends State<PredictionPage> {
                                 ),
                                 min: 0,
                                 max: 100,
-                                initialValue: ((pfNeeds! / pfIncome!) * 100),
+                                initialValue: pfIncome == 0
+                                    ? (pfNeeds == 0)
+                                        ? 0
+                                        : 100
+                                    : ((pfNeeds! / pfIncome!) * 100),
                               ),
                               Text(
                                 'Needs',
@@ -666,7 +679,11 @@ class _PredictionPageState extends State<PredictionPage> {
                                 ),
                                 min: 0,
                                 max: 100,
-                                initialValue: ((pfWants! / pfIncome!) * 100),
+                                initialValue: pfIncome == 0
+                                    ? (pfWants == 0)
+                                        ? 0
+                                        : 100
+                                    : ((pfWants! / pfIncome!) * 100),
                               ),
                               Text(
                                 'Wants',
@@ -723,13 +740,16 @@ class _PredictionPageState extends State<PredictionPage> {
                                 ),
                                 min: 0,
                                 max: 100,
-                                initialValue: ((pfSaving! / pfIncome!) * 100),
+                                initialValue: pfIncome == 0
+                                    ? (pfSaving == 0)
+                                        ? 0
+                                        : 100
+                                    : ((pfSaving! / pfIncome!) * 100),
                               ),
                               Text(
                                 'Saving',
                                 style: TextStyle(
-                                    color:
-                                        Theme.of(context).colorScheme.secondary,
+                                    color:Theme.of(context).colorScheme.secondary,
                                     fontSize: screenHeight * 0.020),
                                 textAlign: TextAlign.left,
                               ),
@@ -763,11 +783,12 @@ class _PredictionPageState extends State<PredictionPage> {
   }
 
   Widget buildColumnChartForSubCategory() {
+    
     return SfCartesianChart(
-      title: const ChartTitle(text: 'Spending Spectrum'),
-      primaryXAxis: const CategoryAxis(),
+      title:  ChartTitle(text: 'Spending Spectrum'),
+      primaryXAxis:  CategoryAxis(),
       tooltipBehavior: TooltipBehavior(enable: true),
-      legend: const Legend(
+      legend:  Legend(
         isVisible: true,
         position: LegendPosition.bottom,
         overflowMode: LegendItemOverflowMode.wrap,
@@ -801,11 +822,10 @@ class _PredictionPageState extends State<PredictionPage> {
   Widget buildLineChart() {
     List<ChartData> incomeData = getIncomeChartData('Income');
     List<ChartData> expensesData = getExpensesChartData('Expenses');
-
     return SfCartesianChart(
       primaryXAxis: CategoryAxis(),
-      primaryYAxis: NumericAxis(),
-      legend: Legend(
+      primaryYAxis:  NumericAxis(),
+      legend:  Legend(
         isVisible: true,
         position: LegendPosition.bottom,
         overflowMode: LegendItemOverflowMode.wrap,
@@ -834,12 +854,11 @@ class _PredictionPageState extends State<PredictionPage> {
   Widget buildColumnChart() {
     List<ChartData> incomeData = getIncomeChartData('Income');
     List<ChartData> expensesData = getExpensesChartData('Expenses');
-
     return SfCartesianChart(
-      title: const ChartTitle(text: 'Financial Flow'),
-      primaryXAxis: const CategoryAxis(),
-      primaryYAxis: const NumericAxis(),
-      legend: const Legend(
+      title:  ChartTitle(text: 'Financial Flow'),
+      primaryXAxis:  CategoryAxis(),
+      primaryYAxis:  NumericAxis(),
+      legend:  Legend(
         isVisible: true,
         position: LegendPosition.bottom,
         overflowMode: LegendItemOverflowMode.wrap,
@@ -862,6 +881,7 @@ class _PredictionPageState extends State<PredictionPage> {
         ),
       ],
     );
+  
   }
 
   fetchPercentageOfSpending() {

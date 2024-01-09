@@ -1,4 +1,5 @@
-import 'package:expenses_tracker/exports.dart';
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ThemeManager {
   static const String _themePreferenceKey = 'theme_preference';
@@ -10,6 +11,8 @@ class ThemeManager {
     _lightTheme = ThemeData.light();
     _darkTheme = ThemeData.dark();
   }
+
+  // bool? get _isDarkMode => isDarkMode;
 
   ThemeData? get lightTheme => _lightTheme;
 

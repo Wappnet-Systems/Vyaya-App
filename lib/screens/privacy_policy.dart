@@ -1,5 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:expenses_tracker/exports.dart';
+
+import '../utils/const.dart';
 
 class PrivacyPolicy extends StatefulWidget {
   const PrivacyPolicy({super.key});
@@ -30,8 +32,8 @@ class _PrivacyPolicyState extends State<PrivacyPolicy> {
             // const Center(child:Text("Privacy Policy")),
             InAppWebView(
                 initialUrlRequest: URLRequest(
-                  url: WebUri.uri(Uri.parse("https://docs.google.com/document/d/e/2PACX-1vQjb7AixWGbrJI6nDvCIvj_6gQhoq9Bei0IUHhfcUu3FJKe0WlbBOLwueHMh2ctkM07xfV0XM6-rY0d/pub")
-                      ),
+                  url: Uri.parse(
+                      "https://docs.google.com/document/d/e/2PACX-1vQjb7AixWGbrJI6nDvCIvj_6gQhoq9Bei0IUHhfcUu3FJKe0WlbBOLwueHMh2ctkM07xfV0XM6-rY0d/pub"),
                 ),
                 onWebViewCreated: (InAppWebViewController controller) {
                   webView = controller;

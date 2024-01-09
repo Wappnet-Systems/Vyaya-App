@@ -10,3 +10,6 @@ double hp(double percentage, context) {
   return result;
 }
 
+double dp(BuildContext context, double size) {
+  return size * MediaQuery.textScaleFactorOf(context);
+}
