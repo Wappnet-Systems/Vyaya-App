@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
-import '../utils/const.dart';
-
 class PrivacyPolicy extends StatefulWidget {
   const PrivacyPolicy({super.key});
 
@@ -20,14 +18,16 @@ class _PrivacyPolicyState extends State<PrivacyPolicy> {
     return Scaffold(
         key: scaffoldKey,
         appBar: AppBar(
-          backgroundColor: PrimaryColor.colorBottleGreen,
-          elevation: 0,
-          iconTheme: IconThemeData(color: PrimaryColor.colorWhite),
-          centerTitle: true,
-          title: Text('Privacy Policy',style: TextStyle(color: PrimaryColor.colorWhite),),
+          backgroundColor: Theme.of(context).bottomAppBarTheme.color,
+          iconTheme:
+              IconThemeData(color: Theme.of(context).colorScheme.secondary),
+          title: Text(
+            'Privacy Policy',
+            style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+          ),
+          elevation: 5,
         ),
-        body: 
-        Stack(
+        body: Stack(
           children: [
             // const Center(child:Text("Privacy Policy")),
             InAppWebView(
@@ -54,7 +54,6 @@ class _PrivacyPolicyState extends State<PrivacyPolicy> {
                   )
                 : const SizedBox()
           ],
-        )
-        );
+        ));
   }
 }

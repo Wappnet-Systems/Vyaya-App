@@ -29,7 +29,7 @@ class _CustomCircularChartState extends State<CustomCircularChart> {
 
   @override
   Widget build(BuildContext context) {
-    int? _getExplodeIndex() {
+    int? getExplodeIndex() {
       if (selectedTransactions.isNotEmpty) {
         final selectedTransaction = selectedTransactions.first;
         return widget.currentPageTransactions.indexOf(selectedTransaction);
@@ -59,7 +59,6 @@ class _CustomCircularChartState extends State<CustomCircularChart> {
                         data.transactionNote as String,
                     yValueMapper: (AllTransactionDetails data, _) =>
                         data.transactionAmount,
-                    
                     dataLabelMapper: (AllTransactionDetails data, _) =>
                         '${data.transactionNote!}\n₹${data.transactionAmount}',
                     radius: '55%',
@@ -69,7 +68,6 @@ class _CustomCircularChartState extends State<CustomCircularChart> {
                       ),
                       isVisible: true,
                       margin: EdgeInsets.zero,
-                      
                       labelIntersectAction: LabelIntersectAction.shift,
                       overflowMode: OverflowMode.shift,
                       labelAlignment: ChartDataLabelAlignment.auto,
@@ -81,12 +79,22 @@ class _CustomCircularChartState extends State<CustomCircularChart> {
                       ),
                     ),
                     explode: true,
-                    explodeIndex: _getExplodeIndex(),
+                    explodeIndex: getExplodeIndex(),
+                    // pointColorMapper: (AllTransactionDetails data, _) {
+                    //   List<Color> colors = [
+                    //     Colors.red,
+                    //     Colors.blue,
+                    //     Colors.green,
+                    //     Colors.yellow,
+                    //   ];
+
+                    //   int index = widget.currentPageTransactions.indexOf(data);
+                    //   return colors[index % colors.length];
+                    // },
                   ),
                 ],
                 legend: Legend(
                   isVisible: true,
-                  
                   position: LegendPosition.bottom,
                   overflowMode: LegendItemOverflowMode.wrap,
                 ),

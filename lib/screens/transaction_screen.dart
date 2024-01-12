@@ -129,16 +129,17 @@ class _TransactionScreenState extends State<TransactionScreen> {
       backgroundColor: Theme.of(context).colorScheme.primary,
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        backgroundColor: PrimaryColor.colorBottleGreen,
-        iconTheme: IconThemeData(color: PrimaryColor.colorWhite),
+        backgroundColor: Theme.of(context).bottomAppBarTheme.color,
+        iconTheme:
+              IconThemeData(color: Theme.of(context).colorScheme.secondary),
         title: widget.id == 1
             ? Text(
                 'Add Transaction',
-                style: TextStyle(color: PrimaryColor.colorWhite),
+                style: TextStyle(color: Theme.of(context).colorScheme.secondary),
               )
             : Text(
                 'Update Transaction',
-                style: TextStyle(color: PrimaryColor.colorWhite),
+                style: TextStyle(color: Theme.of(context).colorScheme.secondary),
               ),
         elevation: 5,
       ),
@@ -665,7 +666,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
     });
   }
 
-  Future<void> _selectDateTime(BuildContext context) async {
+  Future<void> _selectDateTime(context) async {
     final picked = await showDatePicker(
         context: context,
         initialDate: _dateTime,

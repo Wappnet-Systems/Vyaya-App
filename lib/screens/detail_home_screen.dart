@@ -277,23 +277,24 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          CustomTextStyle(
-                              customTextStyleText: "Personal Finance",
-                              customTextColor:
-                                  Theme.of(context).colorScheme.secondary,
-                              customTextFontWeight: FontWeight.w400,
-                              customtextstyle: null,
-                              customTextSize: 20),
+                          Text('Personal Finance',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineMedium!
+                                  .copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary)),
                           GestureDetector(
                             onTap: () {
                               personalFinanceDialog(screenHeight, screenWidth);
                             },
-                            child: CustomTextStyle(
-                                customTextStyleText: "Set Manually",
-                                customTextColor: Colors.blueAccent,
-                                customTextFontWeight: FontWeight.w400,
-                                customtextstyle: null,
-                                customTextSize: 14),
+                            child: Text('Set Manually',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .displaySmall!
+                                    .copyWith(color: PrimaryColor.colorBlue))
+                            
                           ),
                         ],
                       ),
@@ -305,13 +306,14 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          CustomTextStyle(
-                              customTextStyleText: "Recent Transaction",
-                              customTextColor:
-                                  Theme.of(context).colorScheme.secondary,
-                              customTextFontWeight: FontWeight.w400,
-                              customtextstyle: null,
-                              customTextSize: 20),
+                          Text('Recent Transaction',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineMedium!
+                                  .copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary)),
                           GestureDetector(
                             onTap: () {
                               Navigator.of(context).push(
@@ -322,12 +324,12 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                                 )),
                               );
                             },
-                            child: CustomTextStyle(
-                                customTextStyleText: "View all",
-                                customTextColor: Colors.blueAccent,
-                                customTextFontWeight: FontWeight.w400,
-                                customtextstyle: null,
-                                customTextSize: 14),
+                            child: Text('View all',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .displaySmall!
+                                    .copyWith(color: PrimaryColor.colorBlue)),
+                            
                           ),
                         ],
                       ),
@@ -371,34 +373,35 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                     : ShowUpAnimation(
                         animationDuration: const Duration(milliseconds: 1000),
                         direction: Direction.horizontal,
-                        offset: index % 2==0 ?-0.5 :0.5,
+                        offset: index % 2 == 0 ? -0.5 : 0.5,
                         child: GestureDetector(
                             onTap: () {
                               // var curve = Curves.ease;
                               // var zoomTween = Tween<double>(begin: 0.0, end: 1.0).chain(CurveTween(curve: curve));
                               Navigator.of(context).push(
                                 ZoomInTransitionRoute(
-                                    page: TransactionScreen(
-                                  id: 2,
-                                  transactionPaymentMode: transactions[index]
-                                      .transactionPaymentMode,
-                                  transactionId: transactions[index].tID,
-                                  transactionNote:
-                                      transactions[index].transactionNote,
-                                  transactionAmount:
-                                      transactions[index].transactionAmount,
-                                  transactionSubcategoryIndex:
-                                      transactions[index]
-                                          .transactionSubcategoryIndex,
-                                  transactionDate:
-                                      "${DateFormat.yMMMd().format(transactions[index].transactionDate!)} ${DateFormat.jm().format(transactions[index].transactionDate!)}",
-                                  transactionSubcategory: transactions[index]
-                                      .transactionSubcategory,
-                                  transactionCategory:
-                                      transactions[index].transactionCategory,
+                                  page: TransactionScreen(
+                                    id: 2,
+                                    transactionPaymentMode: transactions[index]
+                                        .transactionPaymentMode,
+                                    transactionId: transactions[index].tID,
+                                    transactionNote:
+                                        transactions[index].transactionNote,
+                                    transactionAmount:
+                                        transactions[index].transactionAmount,
+                                    transactionSubcategoryIndex:
+                                        transactions[index]
+                                            .transactionSubcategoryIndex,
+                                    transactionDate:
+                                        "${DateFormat.yMMMd().format(transactions[index].transactionDate!)} ${DateFormat.jm().format(transactions[index].transactionDate!)}",
+                                    transactionSubcategory: transactions[index]
+                                        .transactionSubcategory,
+                                    transactionCategory:
+                                        transactions[index].transactionCategory,
+                                  ),
+                                  zoomIn:
+                                      true, // Set to false if you want ZoomOut animation
                                 ),
-                                        zoomIn: true, // Set to false if you want ZoomOut animation
-),
                               );
                             },
                             child: CustomTransaction(
@@ -415,13 +418,9 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                                 transactionNote:
                                     transactions[index].transactionNote,
                                 dateStamp: DateFormat.yMMMd().format(
-                                    transactions[index]
-                                        .transactionDate!
-                                        ),
+                                    transactions[index].transactionDate!),
                                 timeStamp: DateFormat.jm().format(
-                                    transactions[index]
-                                        .transactionDate!
-                                        ))));
+                                    transactions[index].transactionDate!))));
               }),
     );
   }
@@ -432,6 +431,7 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
       width: screenWidth,
       child: Card(
         elevation: 5,
+        // decoration: BoxDecoration(color: Theme.of(context).cardColor,shape: BoxShape.rectangle),
         color: Theme.of(context).cardColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(18),
@@ -505,313 +505,322 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                           ]))
                     ],
                   ),
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(12),
-                        width: screenWidth / 4,
-                        height: screenHeight / 10,
-                        child: SleekCircularSlider(
-                          appearance: CircularSliderAppearance(
-                            startAngle: 0,
-                            angleRange: 360,
-                            customColors: CustomSliderColors(
-                              trackColor: Theme.of(context).hintColor,
-                              progressBarColor: PrimaryColor.colorBottleGreen,
-                              dotColor: PrimaryColor.colorBottleGreen,
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        FadeSlideTransitionRoute(
+                            page: PfScreen(
+                          id: 0,
+                          transactions: currentMonthNeedsTransaction,
+                        )),
+                      );
+                    },
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          width: screenWidth / 4,
+                          height: screenHeight / 10,
+                          child: SleekCircularSlider(
+                            appearance: CircularSliderAppearance(
+                              startAngle: 0,
+                              angleRange: 360,
+                              customColors: CustomSliderColors(
+                                trackColor: Theme.of(context).hintColor,
+                                progressBarColor: PrimaryColor.colorBottleGreen,
+                                dotColor: PrimaryColor.colorBottleGreen,
+                              ),
+                              customWidths: CustomSliderWidths(
+                                trackWidth: 1.5,
+                                progressBarWidth: 2.5,
+                                handlerSize: 4,
+                              ),
+                              infoProperties: InfoProperties(
+                                modifier: (double value) {
+                                  final roundedValue =
+                                      value.ceil().toInt().toString();
+                                  return '$roundedValue%';
+                                },
+                                mainLabelStyle: TextStyle(
+                                    fontSize: 13.0,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondary),
+                              ),
                             ),
-                            customWidths: CustomSliderWidths(
-                              trackWidth: 1.5,
-                              progressBarWidth: 2.5,
-                              handlerSize: 4,
-                            ),
-                            infoProperties: InfoProperties(
-                              modifier: (double value) {
-                                final roundedValue =
-                                    value.ceil().toInt().toString();
-                                return '$roundedValue%';
-                              },
-                              mainLabelStyle: TextStyle(
-                                  fontSize: 13.0,
-                                  color:
-                                      Theme.of(context).colorScheme.secondary),
-                            ),
+                            min: 0,
+                            max: 100,
+                            initialValue: (expenseNeedsOfTheValue! *
+                                        100 /
+                                        needsOfTheMonthValue!) <=
+                                    0
+                                ? 0
+                                : (expenseNeedsOfTheValue! *
+                                            100 /
+                                            needsOfTheMonthValue!) >=
+                                        100
+                                    ? 100
+                                    : (expenseNeedsOfTheValue! *
+                                        100 /
+                                        needsOfTheMonthValue!),
                           ),
-                          min: 0,
-                          max: 100,
-                          initialValue: (expenseNeedsOfTheValue! *
-                                      100 /
-                                      needsOfTheMonthValue!) <=
-                                  0
-                              ? 0
-                              : (expenseNeedsOfTheValue! *
-                                          100 /
-                                          needsOfTheMonthValue!) >=
-                                      100
-                                  ? 100
-                                  : (expenseNeedsOfTheValue! *
-                                      100 /
-                                      needsOfTheMonthValue!),
                         ),
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            width: screenWidth / 1.7,
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: Text(
-                              'Needs',
-                              style: TextStyle(
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              width: screenWidth / 1.7,
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Text(
+                                'Needs',
+                                style: TextStyle(
+                                    color:
+                                        Theme.of(context).colorScheme.secondary,
+                                    fontSize: screenHeight / 45),
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                            Container(
+                              width: screenWidth / 1.7,
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Text(
+                                '${formatCurrency(expenseNeedsOfTheValue)} / ${formatCurrency(needsOfTheMonthValue)}',
+                                style: TextStyle(
                                   color:
                                       Theme.of(context).colorScheme.secondary,
-                                  fontSize: screenHeight / 45),
-                              textAlign: TextAlign.left,
-                            ),
-                          ),
-                          Container(
-                            width: screenWidth / 1.7,
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: Text(
-                              '${formatCurrency(expenseNeedsOfTheValue)} / ${formatCurrency(needsOfTheMonthValue)}',
-                              style: TextStyle(
-                                color: Theme.of(context).colorScheme.secondary,
-                                fontSize: screenHeight / 55,
+                                  fontSize: screenHeight / 55,
+                                ),
+                                textAlign: TextAlign.left,
+                                maxLines: 1,
+                                overflow: TextOverflow.fade,
                               ),
-                              textAlign: TextAlign.left,
-                              maxLines: 1,
-                              overflow: TextOverflow.fade,
                             ),
-                          ),
-                        ],
-                      ),
-                      GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).push(
-                              FadeSlideTransitionRoute(
-                                  page: PfScreen(
-                                id: 0,
-                                transactions: currentMonthNeedsTransaction,
-                              )),
-                            );
-                          },
-                          child: Icon(
-                            Icons.arrow_forward_ios_outlined,
-                            color: Theme.of(context).colorScheme.secondary,
-                            size: screenWidth / 20,
-                          )),
-                    ],
+                          ],
+                        ),
+                        Icon(
+                          Icons.arrow_forward_ios_outlined,
+                          color: Theme.of(context).colorScheme.secondary,
+                          size: screenWidth / 20,
+                        ),
+                      ],
+                    ),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Divider(color: Colors.grey[400]),
                   ),
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(12),
-                        width: screenWidth / 4,
-                        height: screenHeight / 10,
-                        child: SleekCircularSlider(
-                          appearance: CircularSliderAppearance(
-                            startAngle: 0,
-                            angleRange: 360,
-                            customColors: CustomSliderColors(
-                              trackColor: Theme.of(context).hintColor,
-                              progressBarColor: PrimaryColor.colorRed,
-                              dotColor: PrimaryColor.colorRed,
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        FadeSlideTransitionRoute(
+                            page: PfScreen(
+                          id: 1,
+                          transactions: currentMonthWantsTransaction,
+                        )),
+                      );
+                    },
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          width: screenWidth / 4,
+                          height: screenHeight / 10,
+                          child: SleekCircularSlider(
+                            appearance: CircularSliderAppearance(
+                              startAngle: 0,
+                              angleRange: 360,
+                              customColors: CustomSliderColors(
+                                trackColor: Theme.of(context).hintColor,
+                                progressBarColor: PrimaryColor.colorRed,
+                                dotColor: PrimaryColor.colorRed,
+                              ),
+                              customWidths: CustomSliderWidths(
+                                trackWidth: 1.5,
+                                progressBarWidth: 2.5,
+                                handlerSize: 4,
+                              ),
+                              infoProperties: InfoProperties(
+                                modifier: (double value) {
+                                  final roundedValue =
+                                      value.ceil().toInt().toString();
+                                  return '$roundedValue%';
+                                },
+                                mainLabelStyle: TextStyle(
+                                    fontSize: 13.0,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondary),
+                              ),
                             ),
-                            customWidths: CustomSliderWidths(
-                              trackWidth: 1.5,
-                              progressBarWidth: 2.5,
-                              handlerSize: 4,
-                            ),
-                            infoProperties: InfoProperties(
-                              modifier: (double value) {
-                                final roundedValue =
-                                    value.ceil().toInt().toString();
-                                return '$roundedValue%';
-                              },
-                              mainLabelStyle: TextStyle(
-                                  fontSize: 13.0,
-                                  color:
-                                      Theme.of(context).colorScheme.secondary),
-                            ),
+                            min: 0,
+                            max: 100,
+                            initialValue: (expenseWantsOfTheValue! *
+                                        100 /
+                                        wantsOfTheMonthValue!) <=
+                                    0
+                                ? 0
+                                : (expenseWantsOfTheValue! *
+                                            100 /
+                                            wantsOfTheMonthValue!) >=
+                                        100
+                                    ? 100
+                                    : (expenseWantsOfTheValue! *
+                                        100 /
+                                        wantsOfTheMonthValue!),
                           ),
-                          min: 0,
-                          max: 100,
-                          initialValue: (expenseWantsOfTheValue! *
-                                      100 /
-                                      wantsOfTheMonthValue!) <=
-                                  0
-                              ? 0
-                              : (expenseWantsOfTheValue! *
-                                          100 /
-                                          wantsOfTheMonthValue!) >=
-                                      100
-                                  ? 100
-                                  : (expenseWantsOfTheValue! *
-                                      100 /
-                                      wantsOfTheMonthValue!),
                         ),
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            width: screenWidth / 1.7,
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: Text(
-                              'Wants',
-                              style: TextStyle(
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              width: screenWidth / 1.7,
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Text(
+                                'Wants',
+                                style: TextStyle(
+                                    color:
+                                        Theme.of(context).colorScheme.secondary,
+                                    fontSize: screenHeight / 45),
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                            Container(
+                              width: screenWidth / 1.7,
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Text(
+                                '${formatCurrency(expenseWantsOfTheValue)} / ${formatCurrency(wantsOfTheMonthValue)}',
+                                style: TextStyle(
                                   color:
                                       Theme.of(context).colorScheme.secondary,
-                                  fontSize: screenHeight / 45),
-                              textAlign: TextAlign.left,
-                            ),
-                          ),
-                          Container(
-                            width: screenWidth / 1.7,
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: Text(
-                              '${formatCurrency(expenseWantsOfTheValue)} / ${formatCurrency(wantsOfTheMonthValue)}',
-                              style: TextStyle(
-                                color: Theme.of(context).colorScheme.secondary,
-                                fontSize: screenHeight / 55,
+                                  fontSize: screenHeight / 55,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.fade,
+                                textAlign: TextAlign.left,
                               ),
-                              maxLines: 1,
-                              overflow: TextOverflow.fade,
-                              textAlign: TextAlign.left,
                             ),
-                          ),
-                        ],
-                      ),
-                      GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).push(
-                              FadeSlideTransitionRoute(
-                                  page: PfScreen(
-                                id: 1,
-                                transactions: currentMonthWantsTransaction,
-                              )),
-                            );
-                          },
-                          child: Icon(
-                            Icons.arrow_forward_ios_outlined,
-                            color: Theme.of(context).colorScheme.secondary,
-                            size: screenWidth / 20,
-                          )),
-                    ],
+                          ],
+                        ),
+                        Icon(
+                          Icons.arrow_forward_ios_outlined,
+                          color: Theme.of(context).colorScheme.secondary,
+                          size: screenWidth / 20,
+                        ),
+                      ],
+                    ),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Divider(color: Colors.grey[400]),
                   ),
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(12),
-                        width: screenWidth / 4,
-                        height: screenHeight / 10,
-                        child: SleekCircularSlider(
-                          appearance: CircularSliderAppearance(
-                            startAngle: 0,
-                            angleRange: 360,
-                            customColors: CustomSliderColors(
-                              trackColor: Theme.of(context).hintColor,
-                              progressBarColor: PrimaryColor.colorBlue,
-                              dotColor: PrimaryColor.colorBlue,
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        FadeSlideTransitionRoute(
+                            page: PfScreen(
+                          id: 2,
+                          transactions: currentMonthSavingTransaction,
+                        )),
+                      );
+                    },
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          width: screenWidth / 4,
+                          height: screenHeight / 10,
+                          child: SleekCircularSlider(
+                            appearance: CircularSliderAppearance(
+                              startAngle: 0,
+                              angleRange: 360,
+                              customColors: CustomSliderColors(
+                                trackColor: Theme.of(context).hintColor,
+                                progressBarColor: PrimaryColor.colorBlue,
+                                dotColor: PrimaryColor.colorBlue,
+                              ),
+                              customWidths: CustomSliderWidths(
+                                trackWidth: 1.5,
+                                progressBarWidth: 2.5,
+                                handlerSize: 4,
+                              ),
+                              infoProperties: InfoProperties(
+                                modifier: (double value) {
+                                  final roundedValue =
+                                      value.ceil().toInt().toString();
+                                  return '$roundedValue%';
+                                },
+                                mainLabelStyle: TextStyle(
+                                    fontSize: 13.0,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondary),
+                              ),
                             ),
-                            customWidths: CustomSliderWidths(
-                              trackWidth: 1.5,
-                              progressBarWidth: 2.5,
-                              handlerSize: 4,
-                            ),
-                            infoProperties: InfoProperties(
-                              modifier: (double value) {
-                                final roundedValue =
-                                    value.ceil().toInt().toString();
-                                return '$roundedValue%';
-                              },
-                              mainLabelStyle: TextStyle(
-                                  fontSize: 13.0,
-                                  color:
-                                      Theme.of(context).colorScheme.secondary),
-                            ),
+                            min: 0,
+                            max: 100,
+                            initialValue: (expenseSavingOfTheValue! *
+                                        100 /
+                                        savingOfTheMonthValue!) <=
+                                    0
+                                ? 0
+                                : (expenseSavingOfTheValue! *
+                                            100 /
+                                            savingOfTheMonthValue!) >=
+                                        100
+                                    ? 100
+                                    : (expenseSavingOfTheValue! *
+                                        100 /
+                                        savingOfTheMonthValue!),
                           ),
-                          min: 0,
-                          max: 100,
-                          initialValue: (expenseSavingOfTheValue! *
-                                      100 /
-                                      savingOfTheMonthValue!) <=
-                                  0
-                              ? 0
-                              : (expenseSavingOfTheValue! *
-                                          100 /
-                                          savingOfTheMonthValue!) >=
-                                      100
-                                  ? 100
-                                  : (expenseSavingOfTheValue! *
-                                      100 /
-                                      savingOfTheMonthValue!),
                         ),
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            width: screenWidth / 1.7,
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: Text(
-                              'Saving',
-                              style: TextStyle(
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              width: screenWidth / 1.7,
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Text(
+                                'Saving',
+                                style: TextStyle(
+                                    color:
+                                        Theme.of(context).colorScheme.secondary,
+                                    fontSize: screenHeight / 45),
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                            Container(
+                              width: screenWidth / 1.7,
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Text(
+                                '${formatCurrency(expenseSavingOfTheValue)} / ${formatCurrency(savingOfTheMonthValue)}',
+                                style: TextStyle(
                                   color:
                                       Theme.of(context).colorScheme.secondary,
-                                  fontSize: screenHeight / 45),
-                              textAlign: TextAlign.left,
-                            ),
-                          ),
-                          Container(
-                            width: screenWidth / 1.7,
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: Text(
-                              '${formatCurrency(expenseSavingOfTheValue)} / ${formatCurrency(savingOfTheMonthValue)}',
-                              style: TextStyle(
-                                color: Theme.of(context).colorScheme.secondary,
-                                fontSize: screenHeight / 55,
+                                  fontSize: screenHeight / 55,
+                                ),
+                                textAlign: TextAlign.left,
+                                maxLines: 1,
+                                overflow: TextOverflow.fade,
                               ),
-                              textAlign: TextAlign.left,
-                              maxLines: 1,
-                              overflow: TextOverflow.fade,
                             ),
-                          ),
-                        ],
-                      ),
-                      GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).push(
-                              FadeSlideTransitionRoute(
-                                  page: PfScreen(
-                                id: 2,
-                                transactions: currentMonthSavingTransaction,
-                              )),
-                            );
-                          },
-                          child: Icon(
-                            Icons.arrow_forward_ios_outlined,
-                            color: Theme.of(context).colorScheme.secondary,
-                            size: screenWidth / 20,
-                          )),
-                    ],
+                          ],
+                        ),
+                        Icon(
+                          Icons.arrow_forward_ios_outlined,
+                          color: Theme.of(context).colorScheme.secondary,
+                          size: screenWidth / 20,
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -1280,9 +1289,8 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
         int wants = int.tryParse(wantsController.text) ?? 0;
         int saving = int.tryParse(savingController.text) ?? 0;
         int? finalTotal = needs + wants + saving;
-        return ZoomInOutDialogWrapper(
-          builder: (context){
-            return AlertDialog(
+        return ZoomInOutDialogWrapper(builder: (context) {
+          return AlertDialog(
             scrollable: true,
             backgroundColor: Theme.of(context).colorScheme.primary,
             shape: RoundedRectangleBorder(
@@ -1415,7 +1423,8 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                               children: [
                                 Text(
                                   "Please Enter possible values",
-                                  style: TextStyle(color: PrimaryColor.colorRed),
+                                  style:
+                                      TextStyle(color: PrimaryColor.colorRed),
                                 ),
                               ],
                             ),
@@ -1443,7 +1452,7 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                   int wantsValue = int.tryParse(wantsController.text) ?? 0;
                   int savingValue = int.tryParse(savingController.text) ?? 0;
                   finalTotal = needsValue + wantsValue + savingValue;
-        
+
                   if (finalTotal == 100) {
                     pfManager(
                       wantsValue,
@@ -1469,9 +1478,7 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
               ),
             ],
           );
-         
-          }
-          );
+        });
       },
     );
   }
@@ -1510,14 +1517,14 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
         .map((e) => AllTransactionDetails(
             uId: e.userId,
             tID: e.tID,
-            transactionDate:e.tDateTime,
+            transactionDate: e.tDateTime,
             transactionAmount: e.tAmount,
             transactionCategory: e.tCategory,
             transactionSubcategory: e.tSubcategory,
             transactionSubcategoryIndex: e.tSubcategoryIndex,
             transactionNote: e.tNote,
             transactionPaymentMode: e.tPaymentMode,
-            transactionCreatedAt:e.tCreatedAt))
+            transactionCreatedAt: e.tCreatedAt))
         .toList();
   }
 

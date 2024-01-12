@@ -2,7 +2,6 @@ import 'dart:io';
 // import 'dart:developer';
 import 'package:expenses_tracker/screens/transactions_of_month.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import '../api/pdf_api.dart';
@@ -64,6 +63,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primary,
       body: SingleChildScrollView(
@@ -94,16 +94,14 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 1.0, vertical: 3.0),
-                    child: Text(
-                      "Weekly\nAnalysis",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color: value == 0
-                              ? PrimaryColor.colorBottleGreen
-                              : Theme.of(context).colorScheme.secondary,
-                          fontWeight: FontWeight.w400,
-                          fontSize: ScreenUtil().setSp(15)),
-                    ),
+                    child: Text("Weekly\nAnalysis",
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                              fontSize: 15.0,
+                              color: value == 0
+                                  ? PrimaryColor.colorBottleGreen
+                                  : Theme.of(context).colorScheme.secondary,
+                            )),
                   ),
                 ),
                 SizedBox(
@@ -127,16 +125,14 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 1.0, vertical: 3.0),
-                    child: Text(
-                      "Monthly\nAnalysis",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color: value == 1
-                              ? PrimaryColor.colorBottleGreen
-                              : Theme.of(context).colorScheme.secondary,
-                          fontWeight: FontWeight.w400,
-                          fontSize: ScreenUtil().setSp(15)),
-                    ),
+                    child: Text("Monthly\nAnalysis",
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                              fontSize: 15.0,
+                              color: value == 1
+                                  ? PrimaryColor.colorBottleGreen
+                                  : Theme.of(context).colorScheme.secondary,
+                            )),
                   ),
                 ),
                 SizedBox(
@@ -160,16 +156,14 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 1.0, vertical: 3.0),
-                    child: Text(
-                      "Yearly\nAnalysis",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color: value == 2
-                              ? PrimaryColor.colorBottleGreen
-                              : Theme.of(context).colorScheme.secondary,
-                          fontWeight: FontWeight.w400,
-                          fontSize: ScreenUtil().setSp(15)),
-                    ),
+                    child: Text("Yearly\nAnalysis",
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                              fontSize: 15.0,
+                              color: value == 2
+                                  ? PrimaryColor.colorBottleGreen
+                                  : Theme.of(context).colorScheme.secondary,
+                            )),
                   ),
                 ),
               ],
@@ -197,33 +191,30 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                   color: PrimaryColor.colorBottleGreen,
                 ),
                 value == 0
-                    ? CustomTextStyle(
-                        customTextStyleText: "$analyticsStartWeekText",
-                        customTextColor:
-                            Theme.of(context).colorScheme.secondary,
-                        customTextFontWeight: FontWeight.normal,
-                        customtextstyle: null,
-                        customTextSize:
-                            MediaQuery.of(context).size.height * 0.023)
+                    ? Text("$analyticsStartWeekText",
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineMedium!
+                            .copyWith(
+                                color: Theme.of(context).colorScheme.secondary))
                     : Container(
                         child: value == 1
-                            ? CustomTextStyle(
-                                customTextStyleText: "$analyticsMonthlyText",
-                                customTextColor:
-                                    Theme.of(context).colorScheme.secondary,
-                                customTextFontWeight: FontWeight.normal,
-                                customtextstyle: null,
-                                customTextSize:
-                                    MediaQuery.of(context).size.height * 0.023)
-                            : CustomTextStyle(
-                                customTextStyleText: "$analyticsYearlyText",
-                                customTextColor:
-                                    Theme.of(context).colorScheme.secondary,
-                                customTextFontWeight: FontWeight.normal,
-                                customtextstyle: null,
-                                customTextSize:
-                                    MediaQuery.of(context).size.height *
-                                        0.023)),
+                            ? Text("$analyticsMonthlyText",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineMedium!
+                                    .copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary))
+                            : Text("$analyticsYearlyText",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineMedium!
+                                    .copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary))),
                 IconButton(
                   onPressed: () {
                     setState(() {
@@ -249,11 +240,25 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 GestureDetector(
-                  onTap: (){
+                  onTap: () {
                     Navigator.of(context).push(
-                              FadeSlideTransitionRouteForList(
-                                  page: TransactionOfMonth(id: 4,titleText: value == 0 ?'Weekly Expenses Analysis':value == 1 ?"Monthly Expenses Analysis" :"Yearly Expenses Analysis",amount: incomeOfTheCurrentPageTransactionsValue!,subtitleText: value == 0 ?'$analyticsStartWeekText':value == 1 ?"$analyticsMonthlyText" :"$analyticsYearlyText",currentPageTransaction: currentPageSpendingTransactions,)),);
-                    
+                      FadeSlideTransitionRouteForList(
+                          page: TransactionOfMonth(
+                        id: 4,
+                        titleText: value == 0
+                            ? 'Weekly Expenses Analysis'
+                            : value == 1
+                                ? "Monthly Expenses Analysis"
+                                : "Yearly Expenses Analysis",
+                        amount: incomeOfTheCurrentPageTransactionsValue!,
+                        subtitleText: value == 0
+                            ? '$analyticsStartWeekText'
+                            : value == 1
+                                ? "$analyticsMonthlyText"
+                                : "$analyticsYearlyText",
+                        currentPageTransaction: currentPageSpendingTransactions,
+                      )),
+                    );
                   },
                   child: CustomCard(
                       color: PrimaryColor.colorRed,
@@ -263,15 +268,30 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                         size: 32,
                       ),
                       themeColor: PrimaryColor.colorWhite,
-                      speOrIncMonthValue: spendingOfCurrentPageTransactionsValue,
+                      speOrIncMonthValue:
+                          spendingOfCurrentPageTransactionsValue,
                       title: "Spending"),
                 ),
                 GestureDetector(
-                  onTap: (){
+                  onTap: () {
                     Navigator.of(context).push(
-                              FadeSlideTransitionRouteForList(
-                                  page: TransactionOfMonth(id: 5,titleText:value == 0 ?'Weekly Income Analysis':value == 1 ?"Monthly Income Analysis" :"Yearly Income Analysis", amount: incomeOfTheCurrentPageTransactionsValue!,subtitleText: value == 0 ?'$analyticsStartWeekText':value == 1 ?"$analyticsMonthlyText" :"$analyticsYearlyText",currentPageTransaction: currentPageIncomeTransactions,)),);
-                    
+                      FadeSlideTransitionRouteForList(
+                          page: TransactionOfMonth(
+                        id: 5,
+                        titleText: value == 0
+                            ? 'Weekly Income Analysis'
+                            : value == 1
+                                ? "Monthly Income Analysis"
+                                : "Yearly Income Analysis",
+                        amount: incomeOfTheCurrentPageTransactionsValue!,
+                        subtitleText: value == 0
+                            ? '$analyticsStartWeekText'
+                            : value == 1
+                                ? "$analyticsMonthlyText"
+                                : "$analyticsYearlyText",
+                        currentPageTransaction: currentPageIncomeTransactions,
+                      )),
+                    );
                   },
                   child: CustomCard(
                       color: PrimaryColor.colorBottleGreen,
@@ -281,7 +301,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                         size: 32,
                       ),
                       themeColor: PrimaryColor.colorWhite,
-                      speOrIncMonthValue: incomeOfTheCurrentPageTransactionsValue,
+                      speOrIncMonthValue:
+                          incomeOfTheCurrentPageTransactionsValue,
                       title: "Income"),
                 ),
               ],
@@ -300,17 +321,18 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Row(
                 children: [
-                  CustomTextStyle(
-                      customTextStyleText: "Category-wise Spending",
-                      customTextColor: Theme.of(context).colorScheme.secondary,
-                      customTextFontWeight: FontWeight.w400,
-                      customtextstyle: null,
-                      customTextSize:
-                          MediaQuery.of(context).size.height * 0.024),
+                  Text('Category-wise Spending',
+                      style: Theme.of(context)
+                          .textTheme
+                          .headlineMedium!
+                          .copyWith(
+                              color: Theme.of(context).colorScheme.secondary)),
                 ],
               ),
             ),
-            CustomCircularChart(currentPageTransactions: currentPageSpendingTransactions,),
+            CustomCircularChart(
+              currentPageTransactions: currentPageSpendingTransactions,
+            ),
             const SizedBox(
               height: 10,
             ),
@@ -318,18 +340,18 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Row(
                 children: [
-                  CustomTextStyle(
-                      textAlign: TextAlign.left,
-                      customTextStyleText: "Category-wise Income",
-                      customTextColor: Theme.of(context).colorScheme.secondary,
-                      customTextFontWeight: FontWeight.w400,
-                      customtextstyle: null,
-                      customTextSize:
-                          MediaQuery.of(context).size.height * 0.024),
+                  Text('Category-wise Income',
+                      style: Theme.of(context)
+                          .textTheme
+                          .headlineMedium!
+                          .copyWith(
+                              color: Theme.of(context).colorScheme.secondary)),
                 ],
               ),
             ),
-            CustomCircularChart(currentPageTransactions: currentPageIncomeTransactions,),
+            CustomCircularChart(
+              currentPageTransactions: currentPageIncomeTransactions,
+            ),
             const SizedBox(
               height: 10,
             ),
@@ -338,158 +360,218 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: CustomTextStyle(
-                      textAlign: TextAlign.left,
-                      customTextStyleText: "Stats",
-                      customTextColor: Theme.of(context).colorScheme.secondary,
-                      customTextFontWeight: FontWeight.w400,
-                      customtextstyle: null,
-                      customTextSize:
-                          MediaQuery.of(context).size.height * 0.024),
+                  child: Text('Stats',
+                      style: Theme.of(context)
+                          .textTheme
+                          .headlineMedium!
+                          .copyWith(
+                              color: Theme.of(context).colorScheme.secondary)),
                 ),
               ],
             ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.150,
-              width: MediaQuery.of(context).size.width,
-              child: Card(
+            Card(
                 color: Theme.of(context).cardColor,
                 elevation: 5,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(18),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width / 1.8,
-                            child: CustomTextStyle(
-                                customTextStyleText: "Number of Transaction",
-                                customTextColor:
-                                    Theme.of(context).colorScheme.secondary,
-                                customTextFontWeight: FontWeight.normal,
-                                customtextstyle: null,
-                                customTextSize:
-                                    MediaQuery.of(context).size.height * 0.022),
-                          ),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width / 3.6,
-                            child: CustomTextStyle(
-                                textAlign: TextAlign.right,
-                                customTextStyleText:
-                                    "${currentPageTransactions.length}",
-                                customTextColor:
-                                    Theme.of(context).colorScheme.secondary,
-                                customTextFontWeight: FontWeight.normal,
-                                customtextstyle: null,
-                                customTextSize:
-                                    MediaQuery.of(context).size.height * 0.022),
-                          ),
-                        ],
-                      ),
-                      Container(
-                        padding: const EdgeInsets.only(left: 20, bottom: 5),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  child: Column(children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width / 2.6,
-                              child: CustomTextStyle(
-                                
-                                  customTextStyleText: "Average Income",
-                                  customTextColor:
-                                      Theme.of(context).colorScheme.secondary,
-                                  customTextFontWeight: FontWeight.normal,
-                                  customtextstyle: null,
-                                  customTextSize:
-                                      MediaQuery.of(context).size.height *
-                                          0.020),
+                            Text("Total Number\nof Transaction",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelMedium!
+                                    .copyWith(
+                                      color: Theme.of(context).hintColor,
+                                    )),
+                            const SizedBox(
+                              height: 12,
                             ),
-                            averageIncome!.isNaN
-                                ? CustomTextStyle(
-                                  textAlign: TextAlign.right,
-                                    customTextStyleText: "₹0.0",
-                                    customTextColor:
-                                        Theme.of(context).colorScheme.secondary,
-                                    customTextFontWeight: FontWeight.normal,
-                                    customtextstyle: null,
-                                    customTextSize:
-                                        MediaQuery.of(context).size.height *
-                                            0.020)
-                                : SizedBox(
-                                    width:
-                                        MediaQuery.of(context).size.width / 2.6,
-                                    child: CustomTextStyle(
-                                      textAlign: TextAlign.right,
-                                        customTextStyleText: "₹$averageIncome",
-                                        customTextColor: Theme.of(context)
-                                            .colorScheme
-                                            .secondary,
-                                        customTextFontWeight: FontWeight.normal,
-                                        customtextstyle: null,
-                                        customTextSize:
-                                            MediaQuery.of(context).size.height *
-                                                0.020),
-                                  )
+                            Text("${currentPageTransactions.length}",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineLarge!
+                                    .copyWith(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 22.0,
+                                      color: PrimaryColor.colorBlue,
+                                    ))
                           ],
-                        ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.only(left: 20),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width / 2.6,
-                              child: CustomTextStyle(
-                                  customTextStyleText: "Average Spending",
-                                  customTextColor:
-                                      Theme.of(context).colorScheme.secondary,
-                                  customTextFontWeight: FontWeight.normal,
-                                  customtextstyle: null,
-                                  customTextSize:
-                                      MediaQuery.of(context).size.height *
-                                          0.020),
-                            ),
-                            averageSpending!.isNaN
-                                ? CustomTextStyle(
-                                  textAlign: TextAlign.right,
-                                    customTextStyleText: "₹0.0",
-                                    customTextColor:
-                                        Theme.of(context).colorScheme.secondary,
-                                    customTextFontWeight: FontWeight.normal,
-                                    customtextstyle: null,
-                                    customTextSize:
-                                        MediaQuery.of(context).size.height *
-                                            0.020)
-                                : SizedBox(
-                                    width:
-                                        MediaQuery.of(context).size.width / 2.6,
-                                    child: CustomTextStyle(
-                                      textAlign: TextAlign.right,
-                                        customTextStyleText:
-                                            "₹$averageSpending",
-                                        customTextColor: Theme.of(context)
-                                            .colorScheme
-                                            .secondary,
-                                        customTextFontWeight: FontWeight.normal,
-                                        customtextstyle: null,
-                                        customTextSize:
-                                            MediaQuery.of(context).size.height *
-                                                0.020),
-                                  )
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
+                        )
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 14,
+                    ),
+                    Row(
+                      children: [
+                        SizedBox(
+                            width: screenWidth / 2.201,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "Number of\nIncome Transactions",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .labelMedium!
+                                      .copyWith(
+                                        color: Theme.of(context).hintColor,
+                                      ),
+                                  textAlign: TextAlign.center,
+                                ),
+                                const SizedBox(
+                                  height: 12,
+                                ),
+                                averageIncome!.isNaN
+                                    ? Text("₹0.0",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headlineLarge!
+                                            .copyWith(
+                                              fontWeight: FontWeight.w500,
+                                              color:
+                                                  PrimaryColor.colorBottleGreen,
+                                            ))
+                                    : Text(
+                                        "${incomeOfTheCurrentPageTransactions.length}",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headlineLarge!
+                                            .copyWith(
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 22.0,
+                                              color:
+                                                  PrimaryColor.colorBottleGreen,
+                                            ))
+                              ],
+                            )),
+                        SizedBox(
+                            width: screenWidth / 2.201,
+                            child: Column(children: [
+                              Text(
+                                "Number of\nSpending Transactions",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelMedium!
+                                    .copyWith(
+                                      color: Theme.of(context).hintColor,
+                                    ),
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(
+                                height: 12,
+                              ),
+                              averageSpending!.isNaN
+                                  ? Text("0",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headlineLarge!
+                                          .copyWith(
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 22.0,
+                                            color:
+                                                PrimaryColor.colorBottleGreen,
+                                          ))
+                                  : Text(
+                                      "${spendingOfTheCurrentPageTransactions.length}",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headlineLarge!
+                                          .copyWith(
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 22.0,
+                                            color: PrimaryColor.colorRed,
+                                          )),
+                            ]))
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 14,
+                    ),
+                    Row(
+                      children: [
+                        SizedBox(
+                            width: screenWidth / 2.201,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Text("Average Income",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelMedium!
+                                        .copyWith(
+                                          color: Theme.of(context).hintColor,
+                                        )),
+                                const SizedBox(
+                                  height: 12,
+                                ),
+                                averageIncome!.isNaN
+                                    ? Text("₹0.0",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headlineLarge!
+                                            .copyWith(
+                                              fontSize: 22.0,
+                                              fontWeight: FontWeight.w500,
+                                              color:
+                                                  PrimaryColor.colorBottleGreen,
+                                            ))
+                                    : Text("₹$averageIncome",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headlineLarge!
+                                            .copyWith(
+                                              fontSize: 22.0,
+                                              fontWeight: FontWeight.w500,
+                                              color:
+                                                  PrimaryColor.colorBottleGreen,
+                                            ))
+                              ],
+                            )),
+                        SizedBox(
+                            width: screenWidth / 2.201,
+                            child: Column(children: [
+                              Text('Average Spending',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .labelMedium!
+                                      .copyWith(
+                                        color: Theme.of(context).hintColor,
+                                      )),
+                              const SizedBox(
+                                height: 12,
+                              ),
+                              averageSpending!.isNaN
+                                  ? Text("₹0.0",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headlineLarge!
+                                          .copyWith(
+                                            fontSize: 22.0,
+                                            fontWeight: FontWeight.w500,
+                                            color:
+                                                PrimaryColor.colorBottleGreen,
+                                          ))
+                                  : Text("₹$averageSpending",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headlineLarge!
+                                          .copyWith(
+                                            fontSize: 22.0,
+                                            fontWeight: FontWeight.w500,
+                                            color: PrimaryColor.colorRed,
+                                          )),
+                            ]))
+                      ],
+                    ),
+                  ]),
+                )),
+            
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -560,7 +642,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                   ),
                 ),
               ],
-            )
+            ),
+            const SizedBox(height: 20,)
           ],
         ),
       ),
@@ -599,7 +682,6 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     balanceOfCurrentPageTransactionsValue = 00;
     averageIncome = 00;
     averageSpending = 00;
-    
 
     try {
       recentTransaction = await getTransactionsBetweenDates();
@@ -619,10 +701,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
             .toList();
         findIncomeSpending();
       });
-    // ignore: empty_catches
-    } catch (e) {
-      
-    }
+      // ignore: empty_catches
+    } catch (e) {}
   }
 
   static void findIncomeSpending() {

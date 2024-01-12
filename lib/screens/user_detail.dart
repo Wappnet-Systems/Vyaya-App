@@ -191,7 +191,7 @@ class _UserDetailState extends State<UserDetail> {
                       height: 10,
                     ),
                     GestureDetector(
-                    onTap: addUser,
+                    onTap: (){addUser(context);},
                     child: Container(
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
@@ -244,7 +244,7 @@ class _UserDetailState extends State<UserDetail> {
     return base64Encode(encrypted.bytes);
   }
 
-  void addUser() async {
+  void addUser(context) async {
     if (userDetailFormGlobalKey.currentState!.validate()) {
       uname = "${firstNameController.text} ${lastNameController.text}";
       uEmail = userEmailController.text;

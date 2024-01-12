@@ -26,7 +26,7 @@ class _AuthUserState extends State<AuthUser> {
     super.initState();
     _checkBiometricPermission();
     _checkBiometricAvailability();
-    _authenticate();
+    _authenticate(context);
   }
 
   @override
@@ -96,7 +96,7 @@ class _AuthUserState extends State<AuthUser> {
                   GestureDetector(
                     onTap: () {
                       _checkBiometricAvailability();
-                      _authenticate();
+                      _authenticate(context);
                     },
                     child: Container(
                       alignment: Alignment.center,
@@ -139,7 +139,7 @@ class _AuthUserState extends State<AuthUser> {
     } else {}
   }
 
-  Future<void> _authenticate() async {
+  Future<void> _authenticate(context) async {
     bool isAuthenticated = false;
     _checkBiometricPermission();
 
@@ -188,7 +188,7 @@ class _AuthUserState extends State<AuthUser> {
       });
 
       if (_failedAttempts >= 3) {
-        await _showLockScreen();
+        await _showLockScreen(context);
       } else {
         setState(() {
           authorized = 'Not Authorized';
@@ -210,7 +210,7 @@ class _AuthUserState extends State<AuthUser> {
     }
   }
 
-  Future<void> _showLockScreen() async {
+  Future<void> _showLockScreen(context) async {
     final LocalAuthentication localAuthentication = LocalAuthentication();
 
     try {
@@ -230,6 +230,8 @@ class _AuthUserState extends State<AuthUser> {
           authorized = 'Not Authorized';
         });
       }
-    } catch (e) {}
+    } catch (e) {
+      print(e);
+    }
   }
 }

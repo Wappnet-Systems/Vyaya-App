@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'dart:io';
 import 'package:expenses_tracker/screens/profile_screen.dart';
 import 'package:expenses_tracker/screens/transaction_screen.dart';
@@ -33,23 +35,25 @@ class _HomeScreenState extends State<HomeScreen> {
       const ProfileScreen(),
     ];
 
-    return SafeArea(
-        child: WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) async {
         final shouldPop = await showDialog(
           context: context,
           builder: (BuildContext context) {
             return ZoomInOutDialogWrapper(
-                builder: (context) => const CustomDialogContent(),
-              );
+              builder: (context) => const CustomDialogContent(),
+            );
           },
         );
         return shouldPop!;
       },
       child: Scaffold(
           backgroundColor: Theme.of(context).colorScheme.primary,
-          body: Container(
-            child: screens[_currentIndex],
+          body: SafeArea(
+            child: Container(
+              child: screens[_currentIndex],
+            ),
           ),
           bottomNavigationBar: BottomAppBar(
             shape: const CircularNotchedRectangle(),
@@ -135,7 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: navigationForTransaction,
             child: Icon(Icons.add, color: PrimaryColor.colorWhite),
           )),
-    ));
+    );
   }
 
   String formatTimestamp(int timestamp) {
@@ -186,7 +190,8 @@ class CustomDialogContent extends StatelessWidget {
           children: [
             GestureDetector(
               onTap: () {
-                Navigator.of(context).pop(false); // Close the dialog without exiting
+                Navigator.of(context)
+                    .pop(false); // Close the dialog without exiting
               },
               child: Text(
                 "Close",
@@ -217,7 +222,6 @@ class CustomDialogContent extends StatelessWidget {
   }
 }
 
-
 class ZoomInOutDialogWrapper extends StatefulWidget {
   final Widget Function(BuildContext) builder;
 
@@ -227,7 +231,8 @@ class ZoomInOutDialogWrapper extends StatefulWidget {
   _ZoomInOutDialogWrapperState createState() => _ZoomInOutDialogWrapperState();
 }
 
-class _ZoomInOutDialogWrapperState extends State<ZoomInOutDialogWrapper> with SingleTickerProviderStateMixin {
+class _ZoomInOutDialogWrapperState extends State<ZoomInOutDialogWrapper>
+    with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
 

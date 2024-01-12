@@ -3,7 +3,6 @@
 import 'package:expenses_tracker/model/prediaction_helper.dart';
 import 'package:expenses_tracker/utils/const.dart';
 import 'package:expenses_tracker/widgets/custom_slider.dart';
-import 'package:expenses_tracker/widgets/custom_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
@@ -32,10 +31,6 @@ class _PredictionPageState extends State<PredictionPage> {
   int? wantsLimitCross = 0;
   int? savingLimitCross = 0;
 
-  // List<String> performWell = [];
-  // List<String> performAverage = [];
-  // List<String> performBad = [];
-
   List<double> needPercentageList = [];
   List<double> wantPercentageList = [];
   List<double> savingPercentageList = [];
@@ -43,6 +38,7 @@ class _PredictionPageState extends State<PredictionPage> {
   double wantResult = 0;
   double savingResult = 0;
   String selectedKey = '';
+  
   @override
   void initState() {
     lastElement = widget.predictionHelperList.isNotEmpty
@@ -71,25 +67,10 @@ class _PredictionPageState extends State<PredictionPage> {
     super.initState();
   }
 
-  // categorisedBasedOnValue(double value, String resultantValue) {
-  //   if (value == 0) {
-  //     performWell.add(resultantValue);
-  //   } else if (value > 0 && value <= 50) {
-  //     performAverage.add(resultantValue);
-  //   } else if (value > 50 && value <= 100) {
-  //     performBad.add(resultantValue);
-  //   } else {
-  //     print("Value percentage can't identify in any category");
-  //   }
-  // }
-
   findRuleBrekPercetage() {
     needResult = ((needLimitCross! / (needPercentageList.length)) * 100);
     wantResult = ((wantsLimitCross! / (wantPercentageList.length)) * 100);
-    savingResult = ((savingLimitCross! / (savingPercentageList.length)) * 100);
-    // categorisedBasedOnValue(needResult, "Needs");
-    // categorisedBasedOnValue(wantResult, "Wants");
-    // categorisedBasedOnValue(savingResult, "Saving");
+    savingResult = ((savingLimitCross! / (savingPercentageList.length)) * 100);    
   }
 
   categoriseListing(List<double> listing, int limit, String value) {
@@ -152,7 +133,7 @@ class _PredictionPageState extends State<PredictionPage> {
         elevation: 5,
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.018),
+        padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.020),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -160,13 +141,15 @@ class _PredictionPageState extends State<PredictionPage> {
             const SizedBox(
               height: 25,
             ),
-            CustomTextStyle(
-                customTextStyleText:
-                    DateFormat.yMMM().format(DateTime(now.year, now.month + 1)),
-                customTextColor: Theme.of(context).colorScheme.secondary,
-                customTextFontWeight: FontWeight.normal,
-                customtextstyle: null,
-                customTextSize: 25.0),
+            
+            Text(DateFormat.yMMM().format(DateTime(now.year, now.month + 1)),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineLarge!
+                                  .copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary)),
             const SizedBox(
               height: 7,
             ),
@@ -473,12 +456,15 @@ class _PredictionPageState extends State<PredictionPage> {
             SizedBox(
               height: screenHeight * 0.015,
             ),
-            CustomTextStyle(
-                customTextStyleText: 'Previous Records',
-                customTextColor: Theme.of(context).colorScheme.secondary,
-                customTextFontWeight: FontWeight.normal,
-                customtextstyle: null,
-                customTextSize: 25.0),
+            Text('Previous Records',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineMedium!
+                                  .copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary)),
+            
             SizedBox(
               height: screenHeight * 0.009,
             ),
@@ -509,12 +495,15 @@ class _PredictionPageState extends State<PredictionPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                CustomTextStyle(
-                    customTextStyleText: 'Monthly Recap',
-                    customTextColor: Theme.of(context).colorScheme.secondary,
-                    customTextFontWeight: FontWeight.normal,
-                    customtextstyle: null,
-                    customTextSize: 25.0),
+                Text('Monthly Recap',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineMedium!
+                                  .copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary)),
+                
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   decoration: BoxDecoration(
@@ -918,7 +907,7 @@ class _PredictionPageState extends State<PredictionPage> {
   }
 
   fetchPercentageOfSpending() {
-    widget.predictionHelperList.forEach((map) {
+    for (var map in widget.predictionHelperList) {
       map.forEach((key, personalFinanceHelper) {
         double needPercentage = (personalFinanceHelper.needExpenses! /
                 personalFinanceHelper.totalIncome!) *
@@ -929,13 +918,67 @@ class _PredictionPageState extends State<PredictionPage> {
         double savingPercentage = (personalFinanceHelper.savingExpenses! /
                 personalFinanceHelper.totalIncome!) *
             100;
+
+        double otherPercentage = (personalFinanceHelper.expensesOnOthers! /
+                personalFinanceHelper.totalIncome!) *
+            100;
+        double foodPercentage = (personalFinanceHelper.expensesOnFood! /
+                personalFinanceHelper.totalIncome!) *
+            100;
+        double shoppingPercentage = (personalFinanceHelper.expensesOnShopping! /
+                personalFinanceHelper.totalIncome!) *
+            100;
+        double travellingPercentage = (personalFinanceHelper.expensesOnTravelling! /
+                personalFinanceHelper.totalIncome!) *
+            100;
+        double entertainmentPercentage = (personalFinanceHelper.expensesOnEntertainment! /
+                personalFinanceHelper.totalIncome!) *
+            100;
+        double personalcarePercentage = (personalFinanceHelper.expensesOnPersonalCare! /
+                personalFinanceHelper.totalIncome!) *
+            100;
+        double educationPercentage = (personalFinanceHelper.expensesOnEducation! /
+                personalFinanceHelper.totalIncome!) *
+            100;
+        double billsPercentage = (personalFinanceHelper.expensesOnBillUtils! /
+                personalFinanceHelper.totalIncome!) *
+            100;
+        double investmentPercentage = (personalFinanceHelper.expensesOnInvestment! /
+                personalFinanceHelper.totalIncome!) *
+            100;
+        double rentPercentage = (personalFinanceHelper.expensesOnRent! /
+                personalFinanceHelper.totalIncome!) *
+            100;
+        double taxesPercentage = (personalFinanceHelper.expensesOnTaxes! /
+                personalFinanceHelper.totalIncome!) *
+            100;
+        double insurancePercentage = (personalFinanceHelper.expensesOnInsurance! /
+                personalFinanceHelper.totalIncome!) *
+            100;
+        
+
+
+        print('Expenses on Others: ${otherPercentage}');
+        print('Expenses on Food: ${foodPercentage}');
+        print('Expenses on Shopping: ${shoppingPercentage}');
+        print('Expenses on Travelling: ${travellingPercentage}');
+        print('Expenses on Entertainment: ${entertainmentPercentage}');
+        print('Expenses on Personal Care: ${personalcarePercentage}');
+        print('Expenses on Education: ${educationPercentage}');
+        print('Expenses on Bills Utils: ${billsPercentage}');
+        print('Expenses on Investment: ${investmentPercentage}');
+        print('Expenses on Rent: ${rentPercentage}');
+        print('Expenses on Taxes: ${taxesPercentage}');
+        print('Expenses on Insurance: ${insurancePercentage}');
+
+
         print(
             "Needs: $needPercentage Wants: $wantPercentage Saving : $savingPercentage");
         needPercentageList.add(needPercentage);
         wantPercentageList.add(wantPercentage);
         savingPercentageList.add(savingPercentage);
       });
-    });
+    }
   }
 
   void openBottomSheet(
@@ -968,8 +1011,7 @@ class _PredictionPageState extends State<PredictionPage> {
                   const Icon(
                     Icons.sentiment_satisfied,
                     color: Colors.orange,
-                  ),
-                  
+                  ),                  
                   Text(
                     stringValue,
                     style: TextStyle(
@@ -1045,7 +1087,7 @@ class _PredictionPageState extends State<PredictionPage> {
                     Icons.star,
                     color: PrimaryColor.colorBottleGreen,
                   ),
-                  SizedBox(width: 10,),
+                  const SizedBox(width: 10,),
                   
                   Text(
                     '(Outstanding Performance)',
@@ -1055,7 +1097,7 @@ class _PredictionPageState extends State<PredictionPage> {
                   ),
                 ],
               ),
-              Row(
+              const Row(
                 children: [
                   Icon(
                     Icons.sentiment_satisfied,
@@ -1077,7 +1119,7 @@ class _PredictionPageState extends State<PredictionPage> {
                     Icons.warning,
                     color: PrimaryColor.colorRed,
                   ),
-                  SizedBox(width: 10,),
+                  const SizedBox(width: 10,),
                   
                   Text(
                     '(Poor Performance)',
@@ -1143,8 +1185,7 @@ class _PredictionPageState extends State<PredictionPage> {
                         ),
                         Row(
                           children: [
-                            fetchPerformanceFromValue(savingResult, "Saving"),
-                            
+                            fetchPerformanceFromValue(savingResult, "Saving"),                            
                           ],
                         ),
                         
@@ -1156,66 +1197,7 @@ class _PredictionPageState extends State<PredictionPage> {
                   ),
                 ],
               ),
-              // const SizedBox(height: 16.0),
-              // const Text(
-              //   'Recommendation:',
-              //   style: TextStyle(
-              //     fontSize: 18,
-              //     fontWeight: FontWeight.bold,
-              //   ),
-              // ),
               
-              // Row(
-              //   children: [
-              //     Text(
-              //       printStringListSeparated(performWell, "You have Perform Extremely well in this Categories"),
-              //       style: TextStyle(
-              //           fontSize: 14,
-              //           fontWeight: FontWeight.normal,
-              //           color: PrimaryColor.colorBottleGreen),maxLines: 2,
-              //     ),
-              //   ],
-              // ),
-              
-              // Row(
-              //   children: [
-              //     Text(
-              //       printStringListSeparated(performAverage, "You have to think twice beform spendning in this Categories "),
-              //       style: TextStyle(
-              //           fontSize: 14,
-              //           fontWeight: FontWeight.normal,
-              //           color: PrimaryColor.colorBottleGreen),maxLines: 2,
-              //     ),
-              //   ],
-              // ),
-              // Row(
-              //   children: [
-              //     Icon(
-              //       Icons.star,
-              //       color: PrimaryColor.colorRed,
-              //     ),
-              //     Text(
-              //       'Warning',
-              //       style: TextStyle(
-              //           fontSize: 16,
-              //           fontWeight: FontWeight.bold,
-              //           color: PrimaryColor.colorRed),
-              //     ),
-
-              //   ],
-              // ),
-              // Row(
-              //   children: [
-              //     Text(
-              //       printStringListSeparated(performAverage, "You're Continuesly Breaking the rule of this Categories \n"),
-              //       style: TextStyle(
-              //           fontSize: 14,
-              //           fontWeight: FontWeight.normal,
-              //           color: PrimaryColor.colorRed),
-              //           maxLines: 2,
-              //     ),
-              //   ],
-              // ),
             ],
           ),
         );

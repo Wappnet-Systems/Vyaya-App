@@ -58,10 +58,11 @@ class _FilterTransactionState extends State<FilterTransaction> {
           children: [
             Text(
               'Transaction History',
-              style: TextStyle(
-                  decorationColor: Theme.of(context).colorScheme.onPrimary,
-                  color: Theme.of(context).colorScheme.onPrimary,
-                  fontSize: MediaQuery.sizeOf(context).height * 0.027),
+              style: Theme.of(context).textTheme.headlineLarge!.copyWith(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 22.0,
+                    color: Theme.of(context).colorScheme.onPrimary,
+                  ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(
@@ -90,10 +91,10 @@ class _FilterTransactionState extends State<FilterTransaction> {
                                 ),
                                 readOnly: true,
                                 onTap: () {
-                                  _selectDateTime(context, true);                                  
+                                  _selectDateTime(context, true);
                                 },
                                 controller: startDateController,
-                                validator: textFormFieldValidator,                                
+                                validator: textFormFieldValidator,
                                 decoration: InputDecoration(
                                     labelText: "Start Date",
                                     labelStyle: TextStyle(
@@ -179,11 +180,13 @@ class _FilterTransactionState extends State<FilterTransaction> {
                             ),
                           ],
                         ),
-                      ),                    
+                      ),
                     ],
                   )),
             ),
-            const SizedBox(height: 10,),
+            const SizedBox(
+              height: 10,
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Row(
@@ -191,9 +194,9 @@ class _FilterTransactionState extends State<FilterTransaction> {
                   Text(
                     'Transactions',
                     textAlign: TextAlign.left,
-                    style: TextStyle(
-                        color: Theme.of(context).colorScheme.secondary,
-                        fontSize: MediaQuery.sizeOf(context).height * 0.020),
+                    style: Theme.of(context).textTheme.headlineSmall!.copyWith(                    
+                    color: Theme.of(context).colorScheme.onPrimary,
+                  ),                    
                   ),
                 ],
               ),
@@ -322,12 +325,12 @@ class _FilterTransactionState extends State<FilterTransaction> {
           _startDate = DateTime(picked.year, picked.month, picked.day, 00, 00);
           startDateController.text =
               DateFormat('MMM dd, yyyy').format(_startDate!).toString();
-              displayFilterData();
+          displayFilterData();
         } else {
           _endDate = DateTime(picked.year, picked.month, picked.day, 23, 59);
           endDateController.text =
               DateFormat('MMM dd, yyyy').format(_endDate!).toString();
-              displayFilterData();
+          displayFilterData();
         }
       });
     }
