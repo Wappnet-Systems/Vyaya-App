@@ -187,98 +187,98 @@ class _PredictionPageState extends State<PredictionPage> {
             const SizedBox(
               height: 7,
             ),
-            Card(
-              color: Theme.of(context).cardColor,
-              elevation: 5,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          formatCurrency(
-                              widget.predictionHelperData.remaininBalance),
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineLarge!
-                              .copyWith(
-                                color: PrimaryColor.colorBottleGreen,
-                                fontWeight: FontWeight.w500,
-                              ),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(
-                          width: 5,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 4.0),
-                              child: Icon(
-                                calculatePercentageChange(
-                                            lastRemainingBalance!,
-                                            widget.predictionHelperData
-                                                .remaininBalance!) <
-                                        0
-                                    ? Icons.arrow_downward
-                                    : Icons.arrow_upward,
-                                size: 16,
-                                color: PrimaryColor.colorBottleGreen,
-                              ),
-                            ),
-                            Text(
-                              "${calculatePercentageChange(lastRemainingBalance!, widget.predictionHelperData.remaininBalance!).toStringAsFixed(1).toString()}% ",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .displaySmall!
-                                  .copyWith(
-                                      color: PrimaryColor.colorBottleGreen),
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(
-                              width: 5,
-                            ),
-                            Text(
-                              formatCurrency(lastRemainingBalance),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .displaySmall!
-                                  .copyWith(
-                                    color: Theme.of(context).hintColor,
-                                  ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 05,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Predicted Remaining Balance',
-                          style: Theme.of(context)
-                              .textTheme
-                              .displaySmall!
-                              .copyWith(
-                                color: Theme.of(context).hintColor,
-                              ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            // Card(
+            //   color: Theme.of(context).cardColor,
+            //   elevation: 5,
+            //   child: Padding(
+            //     padding: const EdgeInsets.all(8.0),
+            //     child: Column(
+            //       children: [
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.center,
+                    //   crossAxisAlignment: CrossAxisAlignment.end,
+                    //   children: [
+                    //     Text(
+                    //       formatCurrency(
+                    //           widget.predictionHelperData.remaininBalance),
+                    //       style: Theme.of(context)
+                    //           .textTheme
+                    //           .headlineLarge!
+                    //           .copyWith(
+                    //             color: PrimaryColor.colorBottleGreen,
+                    //             fontWeight: FontWeight.w500,
+                    //           ),
+                    //       textAlign: TextAlign.center,
+                    //     ),
+                    //     const SizedBox(
+                    //       width: 5,
+                    //     ),
+                    //     Row(
+                    //       mainAxisAlignment: MainAxisAlignment.start,
+                    //       crossAxisAlignment: CrossAxisAlignment.end,
+                    //       children: [
+                    //         Padding(
+                    //           padding: const EdgeInsets.only(bottom: 4.0),
+                    //           child: Icon(
+                    //             calculatePercentageChange(
+                    //                         lastRemainingBalance!,
+                    //                         widget.predictionHelperData
+                    //                             .remaininBalance!) <
+                    //                     0
+                    //                 ? Icons.arrow_downward
+                    //                 : Icons.arrow_upward,
+                    //             size: 16,
+                    //             color: PrimaryColor.colorBottleGreen,
+                    //           ),
+                    //         ),
+                    //         Text(
+                    //           "${calculatePercentageChange(lastRemainingBalance!, widget.predictionHelperData.remaininBalance!).toStringAsFixed(1).toString()}% ",
+                    //           style: Theme.of(context)
+                    //               .textTheme
+                    //               .displaySmall!
+                    //               .copyWith(
+                    //                   color: PrimaryColor.colorBottleGreen),
+                    //           textAlign: TextAlign.center,
+                    //         ),
+                    //         const SizedBox(
+                    //           width: 5,
+                    //         ),
+                    //         Text(
+                    //           formatCurrency(lastRemainingBalance),
+                    //           style: Theme.of(context)
+                    //               .textTheme
+                    //               .displaySmall!
+                    //               .copyWith(
+                    //                 color: Theme.of(context).hintColor,
+                    //               ),
+                    //           textAlign: TextAlign.center,
+                    //         ),
+                    //       ],
+                    //     ),
+                    //   ],
+                    // ),
+                    // const SizedBox(
+                    //   height: 05,
+                    // ),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.center,
+                    //   children: [
+                    //     Text(
+                    //       'Predicted Remaining Balance',
+                    //       style: Theme.of(context)
+                    //           .textTheme
+                    //           .displaySmall!
+                    //           .copyWith(
+                    //             color: Theme.of(context).hintColor,
+                    //           ),
+                    //       textAlign: TextAlign.center,
+                    //     ),
+                    //   ],
+                    // ),
+            //       ],
+            //     ),
+            //   ),
+            // ),
             const SizedBox(
               height: 5,
             ),
@@ -288,7 +288,7 @@ class _PredictionPageState extends State<PredictionPage> {
                 Flexible(
                   flex: 2,
                   child: Card(
-                    color: PrimaryColor.colorRed,
+                    color: PrimaryColor.colorBottleGreen,
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Column(
@@ -307,7 +307,7 @@ class _PredictionPageState extends State<PredictionPage> {
                                       MediaQuery.of(context).size.width * 0.045,
                                   child: Icon(
                                     Icons.arrow_upward,
-                                    color: PrimaryColor.colorRed,
+                                    color: PrimaryColor.colorBottleGreen,
                                     size: 16,
                                   ),
                                 ),
@@ -342,27 +342,22 @@ class _PredictionPageState extends State<PredictionPage> {
                                     ),
                                 textAlign: TextAlign.center,
                               ),
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
                               Padding(
-                                padding: const EdgeInsets.only(bottom: 4.0),
-                                child: Icon(
-                                  calculatePercentageChange(
-                                              lastExpenses!,
-                                              widget.predictionHelperData
-                                                  .totalExpenses!) <
-                                          0
-                                      ? Icons.arrow_downward
-                                      : Icons.arrow_upward,
-                                  size: 16,
-                                  color: PrimaryColor.colorWhite,
-                                ),
-                              ),
-                              Text(
+                                padding: const EdgeInsets.only(top: 8.0),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      calculatePercentageChange(
+                                                  lastExpenses!,
+                                                  widget.predictionHelperData
+                                                      .totalExpenses!) <
+                                              0
+                                          ? Icons.arrow_downward
+                                          : Icons.arrow_upward,
+                                      size: 16,
+                                      color: PrimaryColor.colorWhite,
+                                    ),
+                                    Text(
                                 "${calculatePercentageChange(lastExpenses!, widget.predictionHelperData.totalExpenses!).toStringAsFixed(1).toString()}% ",
                                 style: Theme.of(context)
                                     .textTheme
@@ -385,121 +380,133 @@ class _PredictionPageState extends State<PredictionPage> {
                                     ),
                                 textAlign: TextAlign.center,
                               ),
+                                  ],
+                                ),
+                              ),
+                              
                             ],
                           ),
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.center,
+                          //   crossAxisAlignment: CrossAxisAlignment.end,
+                          //   children: [
+                              
+                          //   ],
+                          // ),
                         ],
                       ),
                     ),
                   ),
                 ),
-                Flexible(
-                  flex: 2,
-                  child: Card(
-                    color: PrimaryColor.colorBottleGreen,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Card(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(60)),
-                                color: PrimaryColor.colorWhite,
-                                child: SizedBox(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.045,
-                                  height:
-                                      MediaQuery.of(context).size.width * 0.045,
-                                  child: Icon(
-                                    Icons.arrow_downward,
-                                    color: PrimaryColor.colorBottleGreen,
-                                    size: 16,
-                                  ),
-                                ),
-                              ),
-                              Text(
-                                'Predicted Income',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .displaySmall!
-                                    .copyWith(
-                                      color: PrimaryColor.colorWhite,
-                                    ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 02,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                formatCurrency(
-                                    widget.predictionHelperData.totalIncome),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headlineLarge!
-                                    .copyWith(
-                                      color: PrimaryColor.colorWhite,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 4.0),
-                                child: Icon(
-                                  calculatePercentageChange(
-                                              lastIncome!,
-                                              widget.predictionHelperData
-                                                  .totalIncome!) <
-                                          0
-                                      ? Icons.arrow_downward
-                                      : Icons.arrow_upward,
-                                  size: 16,
-                                  color: PrimaryColor.colorWhite,
-                                ),
-                              ),
-                              Text(
-                                "${calculatePercentageChange(lastIncome!, widget.predictionHelperData.totalIncome!).toStringAsFixed(1).toString()}% ",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .displaySmall!
-                                    .copyWith(
-                                      color: PrimaryColor.colorWhite,
-                                    ),
-                                textAlign: TextAlign.center,
-                              ),
-                              const SizedBox(
-                                width: 5,
-                              ),
-                              Text(
-                                formatCurrency(lastIncome),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .displaySmall!
-                                    .copyWith(
-                                      color: PrimaryColor.colorWhite,
-                                    ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+                // Flexible(
+                //   flex: 2,
+                //   child: Card(
+                //     color: PrimaryColor.colorBottleGreen,
+                //     child: Padding(
+                //       padding: const EdgeInsets.all(8.0),
+                //       child: Column(
+                //         children: [
+                //           Row(
+                //             mainAxisAlignment: MainAxisAlignment.center,
+                //             children: [
+                //               Card(
+                //                 shape: RoundedRectangleBorder(
+                //                     borderRadius: BorderRadius.circular(60)),
+                //                 color: PrimaryColor.colorWhite,
+                //                 child: SizedBox(
+                //                   width:
+                //                       MediaQuery.of(context).size.width * 0.045,
+                //                   height:
+                //                       MediaQuery.of(context).size.width * 0.045,
+                //                   child: Icon(
+                //                     Icons.arrow_downward,
+                //                     color: PrimaryColor.colorBottleGreen,
+                //                     size: 16,
+                //                   ),
+                //                 ),
+                //               ),
+                //               Text(
+                //                 'Predicted Income',
+                //                 style: Theme.of(context)
+                //                     .textTheme
+                //                     .displaySmall!
+                //                     .copyWith(
+                //                       color: PrimaryColor.colorWhite,
+                //                     ),
+                //                 textAlign: TextAlign.center,
+                //               ),
+                //             ],
+                //           ),
+                //           const SizedBox(
+                //             height: 02,
+                //           ),
+                //           Row(
+                //             mainAxisAlignment: MainAxisAlignment.center,
+                //             children: [
+                //               Text(
+                //                 formatCurrency(
+                //                     widget.predictionHelperData.totalIncome),
+                //                 style: Theme.of(context)
+                //                     .textTheme
+                //                     .headlineLarge!
+                //                     .copyWith(
+                //                       color: PrimaryColor.colorWhite,
+                //                       fontWeight: FontWeight.w500,
+                //                     ),
+                //                 textAlign: TextAlign.center,
+                //               ),
+                //             ],
+                //           ),
+                //           Row(
+                //             mainAxisAlignment: MainAxisAlignment.center,
+                //             crossAxisAlignment: CrossAxisAlignment.end,
+                //             children: [
+                //               Padding(
+                //                 padding: const EdgeInsets.only(bottom: 4.0),
+                //                 child: Icon(
+                //                   calculatePercentageChange(
+                //                               lastIncome!,
+                //                               widget.predictionHelperData
+                //                                   .totalIncome!) <
+                //                           0
+                //                       ? Icons.arrow_downward
+                //                       : Icons.arrow_upward,
+                //                   size: 16,
+                //                   color: PrimaryColor.colorWhite,
+                //                 ),
+                //               ),
+                //               Text(
+                //                 "${calculatePercentageChange(lastIncome!, widget.predictionHelperData.totalIncome!).toStringAsFixed(1).toString()}% ",
+                //                 style: Theme.of(context)
+                //                     .textTheme
+                //                     .displaySmall!
+                //                     .copyWith(
+                //                       color: PrimaryColor.colorWhite,
+                //                     ),
+                //                 textAlign: TextAlign.center,
+                //               ),
+                //               const SizedBox(
+                //                 width: 5,
+                //               ),
+                //               Text(
+                //                 formatCurrency(lastIncome),
+                //                 style: Theme.of(context)
+                //                     .textTheme
+                //                     .displaySmall!
+                //                     .copyWith(
+                //                       color: PrimaryColor.colorWhite,
+                //                     ),
+                //                 textAlign: TextAlign.center,
+                //               ),
+                //             ],
+                //           ),
+                //         ],
+                //       ),
+                //     ),
+                //   ),
+                // ),
+
+],
             ),
             SizedBox(
               height: screenHeight * 0.015,
