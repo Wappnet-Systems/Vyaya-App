@@ -7,7 +7,6 @@ import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import '../model/localtransaction.dart';
 import '../utils/const.dart';
-import '../widgets/custom_text_style.dart';
 import '../widgets/fade_transition.dart';
 import 'category_list.dart';
 
@@ -135,11 +134,11 @@ class _TransactionScreenState extends State<TransactionScreen> {
         title: widget.id == 1
             ? Text(
                 'Add Transaction',
-                style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                style: Theme.of(context).textTheme.headlineMedium!.copyWith(color: Theme.of(context).colorScheme.secondary)
               )
             : Text(
                 'Update Transaction',
-                style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                style: Theme.of(context).textTheme.headlineMedium!.copyWith(color: Theme.of(context).colorScheme.secondary)
               ),
         elevation: 5,
       ),
@@ -171,11 +170,12 @@ class _TransactionScreenState extends State<TransactionScreen> {
                         ),
                         child: Text(
                           "Expenses",
-                          style: TextStyle(
-                            color: (value == 0)
+                          style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                              color: (value == 0)
                                 ? Theme.of(context).colorScheme.onPrimary
                                 : Theme.of(context).colorScheme.secondary,
-                          ),
+                          )
+                          
                         ),
                       ),
                     ),
@@ -200,11 +200,11 @@ class _TransactionScreenState extends State<TransactionScreen> {
                         ),
                         child: Text(
                           "Income",
-                          style: TextStyle(
-                            color: (value == 1)
+                          style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                              color: (value == 1)
                                 ? Theme.of(context).colorScheme.onPrimary
-                                : Theme.of(context).colorScheme.secondary,
-                          ),
+                                : Theme.of(context).colorScheme.secondary,),
+                          
                         ),
                       ),
                     ),
@@ -241,11 +241,10 @@ class _TransactionScreenState extends State<TransactionScreen> {
                               },
                               controller: setDateController,
                               validator: textFormFieldValidator,
-                              style: TextStyle(
-                                  color: Theme.of(context).colorScheme.secondary),
-                              decoration: InputDecoration(
-                                hintStyle:
-                                    TextStyle(color: Theme.of(context).hintColor),
+                              style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                              color: Theme.of(context).colorScheme.secondary,),
+                              
+                              decoration: InputDecoration(                         
                                 hintText: "Enter Date",
                                 prefixIconConstraints:
                                     const BoxConstraints.tightFor(
@@ -254,14 +253,14 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                   borderSide: BorderSide(
                                     color: Theme.of(context)
                                         .colorScheme
-                                        .secondary, // Change this to your desired border color
+                                        .secondary, 
                                   ),
                                 ),
                                 focusedBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(
                                     color: Theme.of(context)
                                         .colorScheme
-                                        .onPrimary, // Change this to your desired border color
+                                        .onPrimary, 
                                   ),
                                 ),
                               ),
@@ -298,8 +297,8 @@ class _TransactionScreenState extends State<TransactionScreen> {
                               ],
                               cursorColor:
                                   Theme.of(context).colorScheme.onPrimary,
-                              style: TextStyle(
-                                  color: Theme.of(context).colorScheme.secondary),
+                              style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                              color: Theme.of(context).colorScheme.secondary,),
                               controller: amountController,
                               validator: amountValidator,
                               decoration: InputDecoration(
@@ -351,10 +350,8 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                           },
                                           readOnly: true,
                                           controller: expensesCategoryController,
-                                          style: TextStyle(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .secondary),
+                                          style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                              color: Theme.of(context).colorScheme.secondary,),
                                           decoration: InputDecoration(
                                             suffixIcon: Padding(
                                               padding: EdgeInsets.only(
@@ -395,10 +392,8 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                     },
                                     readOnly: true,
                                     controller: incomeCategoryController,
-                                    style: TextStyle(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .secondary),
+                                    style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                              color: Theme.of(context).colorScheme.secondary,),
                                     decoration: InputDecoration(
                                       suffixIcon: Padding(
                                         padding: EdgeInsets.only(
@@ -487,11 +482,9 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                   value: items,
                                   child: Text(
                                     items,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w400,
-                                      color:
-                                          Theme.of(context).colorScheme.secondary,
-                                    ),
+                                    style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                              color: Theme.of(context).colorScheme.secondary,),
+                                    
                                   ),
                                 );
                               }).toList(),
@@ -533,10 +526,8 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                   ),
                                   Text(
                                     'Add to Personal Finance Portion',
-                                    style: TextStyle(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .secondary),
+                                    style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                              color: Theme.of(context).colorScheme.secondary,),
                                   ),
                                 ],
                               ),
@@ -549,13 +540,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                       ),
                       Row(
                         children: [
-                          CustomTextStyle(
-                              customTextStyleText: "Other Details",
-                              customTextColor:
-                                  Theme.of(context).colorScheme.secondary,
-                              customTextFontWeight: FontWeight.bold,
-                              customtextstyle: null,
-                              customTextSize: 18.00),
+                          Text('Other Details',style: Theme.of(context).textTheme.displayMedium!.copyWith(color: Theme.of(context).colorScheme.secondary,fontWeight: FontWeight.w500),),                        
                         ],
                       ),
                       Row(
@@ -579,8 +564,8 @@ class _TransactionScreenState extends State<TransactionScreen> {
                               readOnly: false,
                               cursorColor:
                                   Theme.of(context).colorScheme.onPrimary,
-                              style: TextStyle(
-                                  color: Theme.of(context).colorScheme.secondary),
+                              style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                              color: Theme.of(context).colorScheme.secondary,),
                               keyboardType: TextInputType.text,
                               maxLength: 20,
                               controller: noteController,

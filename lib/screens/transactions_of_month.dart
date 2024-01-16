@@ -105,9 +105,10 @@ class _TransactionOfMonthState extends State<TransactionOfMonth>
                           : widget.id == 2
                               ? 'Monthly Income'
                               : widget.titleText!,
-                  style: TextStyle(
-                      color: Theme.of(context).colorScheme.secondary,
-                      fontSize: MediaQuery.of(context).size.height * 0.025),
+                  style: Theme.of(context)
+                      .textTheme
+                      .headlineMedium!
+                      .copyWith(color: Theme.of(context).colorScheme.secondary),
                   textAlign: TextAlign.left,
                 ),
                 SizedBox(
@@ -118,9 +119,7 @@ class _TransactionOfMonthState extends State<TransactionOfMonth>
                         : widget.id == 2 || widget.id == 3
                             ? formatCurrency(widget.amount)
                             : '${widget.subtitleText}',
-                    style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.normal,
+                    style: Theme.of(context).textTheme.displaySmall!.copyWith(
                         color: Theme.of(context).colorScheme.secondary),
                     overflow: TextOverflow.clip,
                   ),

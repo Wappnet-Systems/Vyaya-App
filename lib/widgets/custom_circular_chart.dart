@@ -63,9 +63,7 @@ class _CustomCircularChartState extends State<CustomCircularChart> {
                         '${data.transactionNote!}\n₹${data.transactionAmount}',
                     radius: '55%',
                     dataLabelSettings: DataLabelSettings(
-                      textStyle: TextStyle(
-                        color: Theme.of(context).hintColor,
-                      ),
+                      textStyle: Theme.of(context).textTheme.displaySmall!.copyWith(color: Theme.of(context).hintColor,),                      
                       isVisible: true,
                       margin: EdgeInsets.zero,
                       labelIntersectAction: LabelIntersectAction.shift,

@@ -18,7 +18,6 @@ import '../widgets/custom_card.dart';
 import '../widgets/custom_header.dart';
 import '../widgets/custom_no_data.dart';
 import '../widgets/custom_pf_row.dart';
-import '../widgets/custom_text_style.dart';
 import '../widgets/custom_transaction.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -117,6 +116,7 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    DateTime now = DateTime.now();
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
 
@@ -137,13 +137,15 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                     const SizedBox(
                       height: 25,
                     ),
-                    CustomTextStyle(
-                        customTextStyleText: "$currentMonth",
-                        customTextColor:
-                            Theme.of(context).colorScheme.secondary,
-                        customTextFontWeight: FontWeight.normal,
-                        customtextstyle: null,
-                        customTextSize: 25.0),
+                    Text(
+                        DateFormat.yMMM()
+                            .format(DateTime(now.year, now.month + 1)),
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineLarge!
+                            .copyWith(
+                                color:
+                                    Theme.of(context).colorScheme.secondary)),
                     const SizedBox(
                       height: 7,
                     ),
@@ -222,15 +224,13 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                                       balanceOfTheMonthValue! > 0
                                           ? "Balance: ₹$balanceOfTheMonthValue"
                                           : "Balance: -₹${balanceOfTheMonthValue!.abs()}",
-                                      style: TextStyle(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .secondary,
-                                          fontWeight: FontWeight.normal,
-                                          fontSize: MediaQuery.of(context)
-                                                  .size
-                                                  .width /
-                                              25),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headlineSmall!
+                                          .copyWith(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .secondary),
                                       textAlign: TextAlign.center,
                                       maxLines: 1,
                                       overflow: TextOverflow.clip,
@@ -264,10 +264,10 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                             child: Text(
                             "Balance: Remaining balance of Previous months + current month balance",
                             textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: Theme.of(context).hintColor,
-                                fontSize:
-                                    MediaQuery.of(context).size.height * 0.012),
+                            style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall!.copyWith(color: Theme.of(context).hintColor,)
+                           
                           )),
                     const SizedBox(
                       height: 10,
@@ -286,16 +286,16 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                                           .colorScheme
                                           .secondary)),
                           GestureDetector(
-                            onTap: () {
-                              personalFinanceDialog(screenHeight, screenWidth);
-                            },
-                            child: Text('Set Manually',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .displaySmall!
-                                    .copyWith(color: PrimaryColor.colorBlue))
-                            
-                          ),
+                              onTap: () {
+                                personalFinanceDialog(
+                                    screenHeight, screenWidth);
+                              },
+                              child: Text('Set Manually',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .displaySmall!
+                                      .copyWith(
+                                          color: PrimaryColor.colorBlue))),
                         ],
                       ),
                     ),
@@ -329,7 +329,6 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                                     .textTheme
                                     .displaySmall!
                                     .copyWith(color: PrimaryColor.colorBlue)),
-                            
                           ),
                         ],
                       ),
@@ -454,24 +453,20 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                             children: [
                               Text(
                                 "Amount Left",
-                                style: TextStyle(
-                                  color: Theme.of(context).hintColor,
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: screenHeight * 0.016,
-                                ),
+                                style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Theme.of(context).hintColor,)
+                                
                               ),
                               Text(
                                 formatCurrencyForBalance(
                                     balanceOfTheMonthPfValue),
-                                style: TextStyle(
+                                style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                                fontWeight: FontWeight.w500,
                                   color: pfScore == 'Excellent'
-                                      ? PrimaryColor.colorBottleGreen
-                                      : pfScore == 'Good'
-                                          ? PrimaryColor.colorBlue
-                                          : PrimaryColor.colorRed,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: screenHeight * 0.022,
-                                ),
+                                    ? PrimaryColor.colorBottleGreen
+                                    : pfScore == 'Good'
+                                        ? PrimaryColor.colorBlue
+                                        : PrimaryColor.colorRed,
+                              ),
                                 maxLines: 1,
                                 overflow: TextOverflow.fade,
                               ),
@@ -482,23 +477,18 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                           child: Column(children: [
                             Text(
                               'Performance',
-                              style: TextStyle(
-                                color: Theme.of(context).hintColor,
-                                fontWeight: FontWeight.w400,
-                                fontSize: screenHeight * 0.016,
-                              ),
+                              style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Theme.of(context).hintColor,)
                             ),
                             Text(
                               '$pfScore',
-                              style: TextStyle(
-                                color: pfScore == 'Excellent'
+                              style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                                fontWeight: FontWeight.w500,
+                                  color: pfScore == 'Excellent'
                                     ? PrimaryColor.colorBottleGreen
                                     : pfScore == 'Good'
                                         ? PrimaryColor.colorBlue
                                         : PrimaryColor.colorRed,
-                                fontWeight: FontWeight.w500,
-                                fontSize: screenHeight * 0.022,
-                              ),
+                              ),                              
                               maxLines: 1,
                               overflow: TextOverflow.fade,
                             ),
@@ -541,11 +531,14 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                                       value.ceil().toInt().toString();
                                   return '$roundedValue%';
                                 },
-                                mainLabelStyle: TextStyle(
-                                    fontSize: 13.0,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .secondary),
+                                mainLabelStyle: Theme.of(context)
+                                        .textTheme
+                                        .displaySmall!
+                                        .copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .secondary,
+                                        ),
                               ),
                             ),
                             min: 0,
@@ -575,10 +568,7 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                                   const EdgeInsets.symmetric(horizontal: 8.0),
                               child: Text(
                                 'Needs',
-                                style: TextStyle(
-                                    color:
-                                        Theme.of(context).colorScheme.secondary,
-                                    fontSize: screenHeight / 45),
+                                style: Theme.of(context).textTheme.headlineMedium,                                
                                 textAlign: TextAlign.left,
                               ),
                             ),
@@ -648,11 +638,14 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                                       value.ceil().toInt().toString();
                                   return '$roundedValue%';
                                 },
-                                mainLabelStyle: TextStyle(
-                                    fontSize: 13.0,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .secondary),
+                                mainLabelStyle: Theme.of(context)
+                                        .textTheme
+                                        .displaySmall!
+                                        .copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .secondary,
+                                        ),
                               ),
                             ),
                             min: 0,
@@ -682,10 +675,7 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                                   const EdgeInsets.symmetric(horizontal: 8.0),
                               child: Text(
                                 'Wants',
-                                style: TextStyle(
-                                    color:
-                                        Theme.of(context).colorScheme.secondary,
-                                    fontSize: screenHeight / 45),
+                                style: Theme.of(context).textTheme.headlineMedium,
                                 textAlign: TextAlign.left,
                               ),
                             ),
@@ -755,11 +745,14 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                                       value.ceil().toInt().toString();
                                   return '$roundedValue%';
                                 },
-                                mainLabelStyle: TextStyle(
-                                    fontSize: 13.0,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .secondary),
+                                mainLabelStyle: Theme.of(context)
+                                        .textTheme
+                                        .displaySmall!
+                                        .copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .secondary,
+                                        ),
                               ),
                             ),
                             min: 0,
@@ -789,10 +782,7 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                                   const EdgeInsets.symmetric(horizontal: 8.0),
                               child: Text(
                                 'Saving',
-                                style: TextStyle(
-                                    color:
-                                        Theme.of(context).colorScheme.secondary,
-                                    fontSize: screenHeight / 45),
+                                style: Theme.of(context).textTheme.headlineMedium,
                                 textAlign: TextAlign.left,
                               ),
                             ),
@@ -1297,13 +1287,11 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
               side: BorderSide(color: Theme.of(context).colorScheme.secondary),
               borderRadius: BorderRadius.circular(8),
             ),
-            title: CustomTextStyle(
-              customTextStyleText: "Set Personal Finance",
-              customTextColor: Theme.of(context).colorScheme.secondary,
-              customTextFontWeight: FontWeight.normal,
-              customtextstyle: null,
-              customTextSize: screenHeight * 0.022,
-            ),
+            title: Text('Set Personal Finance',style: Theme.of(context)
+                    .textTheme
+                    .headlineMedium!
+                    .copyWith(color: Theme.of(context).colorScheme.secondary)),
+            
             content: SizedBox(
               height: screenHeight * 1 / 3,
               child: SingleChildScrollView(

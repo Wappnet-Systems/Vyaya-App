@@ -84,11 +84,10 @@ class _FilterTransactionState extends State<FilterTransaction> {
                             Flexible(
                               flex: 2,
                               child: TextFormField(
-                                style: TextStyle(
-                                  color:
-                                      Theme.of(context).colorScheme.secondary,
-                                  fontSize: ScreenUtil().setSp(15),
-                                ),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(fontSize: 15),
                                 readOnly: true,
                                 onTap: () {
                                   _selectDateTime(context, true);
@@ -97,11 +96,13 @@ class _FilterTransactionState extends State<FilterTransaction> {
                                 validator: textFormFieldValidator,
                                 decoration: InputDecoration(
                                     labelText: "Start Date",
-                                    labelStyle: TextStyle(
-                                        fontSize: ScreenUtil().setSp(13),
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onPrimary),
+                                    labelStyle: Theme.of(context)
+                                        .textTheme
+                                        .displaySmall!
+                                        .copyWith(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onPrimary),
                                     focusedBorder: OutlineInputBorder(
                                       borderSide: BorderSide(
                                           color: Theme.of(context)
@@ -121,8 +122,7 @@ class _FilterTransactionState extends State<FilterTransaction> {
                                           .secondary,
                                     ),
                                     hintText: "Select Start Date",
-                                    hintStyle: TextStyle(
-                                        color: Theme.of(context).hintColor),
+                                    
                                     prefixIconConstraints:
                                         const BoxConstraints.tightFor(
                                             height: 25, width: 50)),
@@ -136,10 +136,10 @@ class _FilterTransactionState extends State<FilterTransaction> {
                               child: TextFormField(
                                 cursorColor:
                                     Theme.of(context).colorScheme.secondary,
-                                style: TextStyle(
-                                    color:
-                                        Theme.of(context).colorScheme.secondary,
-                                    fontSize: ScreenUtil().setSp(15)),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(fontSize: 15),
                                 readOnly: true,
                                 onTap: () {
                                   _selectDateTime(context, false);
@@ -148,11 +148,13 @@ class _FilterTransactionState extends State<FilterTransaction> {
                                 validator: textFormFieldValidator,
                                 decoration: InputDecoration(
                                     labelText: "End Date",
-                                    labelStyle: TextStyle(
-                                        fontSize: ScreenUtil().setSp(13),
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onPrimary), //label style
+                                    labelStyle: Theme.of(context)
+                                        .textTheme
+                                        .displaySmall!
+                                        .copyWith(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onPrimary),
 
                                     focusedBorder: OutlineInputBorder(
                                       borderSide: BorderSide(
@@ -171,8 +173,7 @@ class _FilterTransactionState extends State<FilterTransaction> {
                                             .colorScheme
                                             .secondary),
                                     hintText: "Select End Date",
-                                    hintStyle: TextStyle(
-                                        color: Theme.of(context).hintColor),
+                                    
                                     prefixIconConstraints:
                                         const BoxConstraints.tightFor(
                                             height: 25, width: 50)),
@@ -194,9 +195,9 @@ class _FilterTransactionState extends State<FilterTransaction> {
                   Text(
                     'Transactions',
                     textAlign: TextAlign.left,
-                    style: Theme.of(context).textTheme.headlineSmall!.copyWith(                    
-                    color: Theme.of(context).colorScheme.onPrimary,
-                  ),                    
+                    style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                          color: Theme.of(context).colorScheme.onPrimary,
+                        ),
                   ),
                 ],
               ),
@@ -250,14 +251,14 @@ class _FilterTransactionState extends State<FilterTransaction> {
       final tempTransaction = getTransactionsBetweenDates();
       getDateFormat(tempTransaction);
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar( SnackBar(
         content: Row(
           children: [
-            Icon(Icons.error, color: Colors.red),
-            SizedBox(width: 10),
+            const Icon(Icons.error, color: Colors.red),
+            const SizedBox(width: 10),
             Text(
               'Please Select Start Date Before end Date',
-              style: TextStyle(color: Colors.white),
+              style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.white),              
             ),
           ],
         ),

@@ -42,10 +42,15 @@ class TransactionList extends StatelessWidget {
                                         getDatestamp(transactionList[i]
                                             .transactionDate!
                                             ),
-                                        style: TextStyle(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .secondary)),
+                                            style: Theme.of(context)
+                                .textTheme
+                                .displaySmall!
+                                .copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondary)
+                                        
+                                                ),
                                   ],
                                 ))),
                       ShowUpAnimation(

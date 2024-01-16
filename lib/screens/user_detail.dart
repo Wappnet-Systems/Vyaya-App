@@ -10,7 +10,6 @@ import '../model/localuser.dart';
 import '../model/users.dart';
 import '../utils/validation.dart';
 import '../widgets/custom_text_form_field.dart';
-import '../widgets/custom_text_style.dart';
 import '../widgets/fade_transition.dart';
 import 'auth_user.dart';
 
@@ -98,7 +97,7 @@ class _UserDetailState extends State<UserDetail> {
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
             child: Form(
-              autovalidateMode: AutovalidateMode.onUserInteraction,
+              // autovalidateMode: AutovalidateMode.onUserInteraction,
               key: userDetailFormGlobalKey,                      
               child: Padding(
                           padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.03,horizontal: MediaQuery.of(context).size.width*0.03),
@@ -118,27 +117,25 @@ class _UserDetailState extends State<UserDetail> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: widget.id == 1
-                              ? CustomTextStyle(
-                                  customTextStyleText: "Update your Profile",
-                                  customTextColor:
-                                      PrimaryColor.colorBottleGreen,
-                                  customTextFontWeight: FontWeight.normal,
-                                  customtextstyle: null,
-                                  textAlign: TextAlign.left,
-                                  customTextSize:
-                                      MediaQuery.of(context).size.height *
-                                          0.030)
-                              : CustomTextStyle(
-                                  customTextStyleText: "Login / Registration",
-                                  customTextColor:
-                                      PrimaryColor.colorBottleGreen,
-                                  customTextFontWeight: FontWeight.normal,
-                                  customtextstyle: null,
-                                  customTextSize:
-                                      MediaQuery.of(context).size.height *
-                                          0.030,
-                                          textAlign: TextAlign.left,),
+                                                child: widget.id == 1
+                          ? Text(
+                              'Update your Profile',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineLarge!
+                                  .copyWith(
+                                      color:
+                                          PrimaryColor.colorBottleGreen),
+                            )
+                          : Text(
+                              'Login / Registration',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineLarge!
+                                  .copyWith(
+                                      color:
+                                          PrimaryColor.colorBottleGreen),
+                            )
                         ),
                       ],
                     ),

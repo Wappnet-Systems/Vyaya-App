@@ -43,7 +43,10 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
       textCapitalization: widget.textCapitalization!,
       inputFormatters: widget.inputFormatters,
       keyboardType: widget.textInputType,
-      style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+      style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(fontSize: 15),
       obscureText: !widget.customObscureText,
       cursorColor: Theme.of(context).colorScheme.onPrimary,
       readOnly: widget.readOnly ?? false,
@@ -59,11 +62,8 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
         ),
         contentPadding: const EdgeInsets.symmetric(horizontal: 13, vertical: 12),
         hintText: widget.textEditingHintText,
-        hintStyle: TextStyle(
-          color: Theme.of(context).hintColor,
-          fontWeight: FontWeight.w400,
-          fontSize: 14,
-        ),
+        hintStyle: Theme.of(context).textTheme.displaySmall!.copyWith(color: Theme.of(context).hintColor,),
+        
         prefixIcon: widget.customPreFixIcon,
         suffixIcon: widget.customInkwell,
       ),

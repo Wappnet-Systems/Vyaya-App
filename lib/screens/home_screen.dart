@@ -50,6 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
       },
       child: Scaffold(
           backgroundColor: Theme.of(context).colorScheme.primary,
+          resizeToAvoidBottomInset: false,
           body: SafeArea(
             child: Container(
               child: screens[_currentIndex],
@@ -172,17 +173,16 @@ class CustomDialogContent extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
       ),
       backgroundColor: Theme.of(context).colorScheme.primary,
-      title: const Text(
+      title: Text(
         "Close App",
-        style: TextStyle(
-          color: Colors.red,
-        ),
+        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                        color: PrimaryColor.colorRed),        
       ),
       content: Text(
         "Are you sure you want to Exit?",
-        style: TextStyle(
-          color: Theme.of(context).colorScheme.secondary,
-        ),
+        style: Theme.of(context).textTheme.displaySmall!.copyWith(
+                        color: Theme.of(context).colorScheme.secondary),
+        
       ),
       actions: <Widget>[
         Row(
@@ -195,9 +195,8 @@ class CustomDialogContent extends StatelessWidget {
               },
               child: Text(
                 "Close",
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
+                style: Theme.of(context).textTheme.displaySmall!.copyWith(
+                        color: Theme.of(context).colorScheme.secondary),
               ),
             ),
             const SizedBox(
@@ -207,12 +206,10 @@ class CustomDialogContent extends StatelessWidget {
               onTap: () {
                 exit(0);
               },
-              child: const Text(
+              child:  Text(
                 "Exit",
-                style: TextStyle(
-                  color: Colors.red,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                        color: PrimaryColor.colorRed),
               ),
             ),
           ],

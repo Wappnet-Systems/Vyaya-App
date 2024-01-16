@@ -1,4 +1,4 @@
-// ignore_for_file: library_prefixes
+// ignore_for_file: library_prefixes, use_build_context_synchronously
 
 import 'dart:convert';
 import 'dart:io';
@@ -13,7 +13,6 @@ import 'package:expenses_tracker/utils/const.dart';
 import 'package:expenses_tracker/utils/functions.dart';
 import 'package:expenses_tracker/widgets/change_theme_button_widget.dart';
 import 'package:expenses_tracker/widgets/custom_header.dart';
-import 'package:expenses_tracker/widgets/custom_text_style.dart';
 import 'package:expenses_tracker/widgets/fade_transition.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -301,17 +300,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           Theme.of(context).colorScheme.primary,
                                       title: Text(
                                         "Logout",
-                                        style: TextStyle(
-                                          color: PrimaryColor.colorRed,
-                                        ),
+                                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                        color: PrimaryColor.colorRed),  
                                       ),
                                       content: Text(
                                         "Are you sure you want to logout?",
-                                        style: TextStyle(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .secondary,
-                                        ),
+                                        style: Theme.of(context).textTheme.displaySmall!.copyWith(
+                        color: Theme.of(context).colorScheme.secondary),
                                       ),
                                       actions: <Widget>[
                                         Row(
@@ -324,11 +319,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                               },
                                               child: Text(
                                                 "Close",
-                                                style: TextStyle(
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .secondary,
-                                                ),
+                                                style: Theme.of(context).textTheme.displaySmall!.copyWith(
+                        color: Theme.of(context).colorScheme.secondary),
                                               ),
                                             ),
                                             horizontalSpacer(15),
@@ -339,11 +331,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                               },
                                               child: Text(
                                                 "Logout",
-                                                style: TextStyle(
-                                                    color:
-                                                        PrimaryColor.colorRed,
-                                                    fontWeight:
-                                                        FontWeight.bold),
+                                                style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                        color: PrimaryColor.colorRed),
                                               ),
                                             ),
                                           ],
@@ -360,7 +349,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     borderRadius: BorderRadius.circular(10))),
                             child: Text(
                               "Logout",
-                              style: TextStyle(color: PrimaryColor.colorWhite),
+                              style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                                fontWeight: FontWeight.w500,
+                        color: PrimaryColor.colorWhite),
                             )),
                       )
                     ])),
@@ -625,13 +616,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     side: BorderSide(
                         color: Theme.of(context).colorScheme.secondary),
                     borderRadius: BorderRadius.circular(8)),
-                title: CustomTextStyle(
-                  customTextStyleText: titleText,
-                  customTextColor: Theme.of(context).colorScheme.secondary,
-                  customTextFontWeight: FontWeight.normal,
-                  customTextSize: MediaQuery.sizeOf(context).height * 0.022,
-                  customtextstyle: null,
-                ),
+                title: Text(titleText,
+                    style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                        color: Theme.of(context).colorScheme.secondary)),
                 content: SizedBox(
                   height: MediaQuery.sizeOf(context).height * 0.7 / 3,
                   child: Form(
@@ -644,10 +631,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           children: [
                             Text(
                               'Important',
-                              style: TextStyle(
-                                  color: Theme.of(context).hintColor,
-                                  fontWeight: FontWeight.w500),
-                              textAlign: TextAlign.start,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleSmall!
+                                  .copyWith(color: Theme.of(context).hintColor),
                             ),
                           ],
                         ),
@@ -656,11 +643,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         Text(
                           warningText,
-                          style: TextStyle(
-                              color: Theme.of(context).hintColor,
-                              fontWeight: FontWeight.w400,
-                              fontSize:
-                                  MediaQuery.of(context).size.height * 0.015),
+                          style: Theme.of(context)
+                                  .textTheme
+                                  .displaySmall!
+                                  .copyWith(color: Theme.of(context).hintColor),
                           overflow: TextOverflow.visible,
                           textAlign: TextAlign.justify,
                         ),
@@ -677,8 +663,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           maxLength: 8,
                           controller: masterPasswordController,
                           cursorColor: Theme.of(context).colorScheme.onPrimary,
-                          style: TextStyle(
-                              color: Theme.of(context).colorScheme.secondary),
+                          style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(fontSize: 15),
                           keyboardType: TextInputType.emailAddress,
                           decoration: InputDecoration(
                               contentPadding: const EdgeInsets.symmetric(
@@ -690,11 +678,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         .onPrimary),
                               ),
                               labelText: "Master Password",
-                              labelStyle: const TextStyle(
-                                color:
-                                    Colors.grey, // Change color based on focus
-                                fontSize: 16,
-                              ),
+                              labelStyle: Theme.of(context)
+                                        .textTheme
+                                        .displaySmall!.copyWith(color: Theme.of(context).hintColor),
                               border: OutlineInputBorder(
                                 borderSide: BorderSide(
                                     color: Theme.of(context)
@@ -715,7 +701,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       },
                       child: Text(
                         "Cancel",
-                        style: TextStyle(color: PrimaryColor.colorRed),
+                        style: Theme.of(context).textTheme.displaySmall!.copyWith(
+                        color: PrimaryColor.colorRed)
                       )),
                   horizontalSpacer(7),
                   GestureDetector(
@@ -772,8 +759,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       },
                       child: Text(
                         "Save",
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.onPrimary),
+                        style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                        color: Theme.of(context).colorScheme.onPrimary)
                       )),
                 ],
               ),
@@ -872,9 +859,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               const Icon(Icons.check_circle, color: Colors.green),
               horizontalSpacer(10),
-              const Text(
+              Text(
                 'Backup Uploaded successfully',
-                style: TextStyle(color: Colors.green),
+                style: Theme.of(context)
+                    .textTheme
+                    .labelSmall!
+                    .copyWith(color: PrimaryColor.colorBottleGreen),
               ),
             ],
           ),
@@ -892,9 +882,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               const Icon(Icons.warning, color: Colors.orange),
               horizontalSpacer(10),
-              const Text(
+              Text(
                 'Failed to update',
-                style: TextStyle(color: Colors.orange),
+                style: Theme.of(context)
+                    .textTheme
+                    .labelSmall!
+                    .copyWith(color: Colors.orange),
               ),
             ],
           ),
@@ -906,9 +899,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
           children: [
             const Icon(Icons.error, color: Colors.red),
             horizontalSpacer(10),
-            const Text(
+            Text(
               'Sync failed',
-              style: TextStyle(color: Colors.red),
+              style: Theme.of(context)
+                  .textTheme
+                  .labelSmall!
+                  .copyWith(color: PrimaryColor.colorRed),
             ),
           ],
         ),
@@ -946,9 +942,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               const Icon(Icons.check_circle, color: Colors.red),
               horizontalSpacer(10),
-              const Text(
+              Text(
                 'File Does not Exist',
-                style: TextStyle(color: Colors.red),
+                style: Theme.of(context)
+                    .textTheme
+                    .labelSmall!
+                    .copyWith(color: PrimaryColor.colorRed),
               ),
             ],
           ),
@@ -960,9 +959,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               const Icon(Icons.warning, color: Colors.orange),
               horizontalSpacer(10),
-              const Text(
+              Text(
                 'Failed to Sync Data',
-                style: TextStyle(color: Colors.orange),
+                style: Theme.of(context)
+                    .textTheme
+                    .labelSmall!
+                    .copyWith(color: Colors.orange),
               ),
             ],
           ),
@@ -974,9 +976,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
           children: [
             const Icon(Icons.error, color: Colors.red),
             horizontalSpacer(10),
-            const Text(
+            Text(
               'Failed to Data Sync',
-              style: TextStyle(color: Colors.red),
+              style: Theme.of(context)
+                  .textTheme
+                  .labelSmall!
+                  .copyWith(color: PrimaryColor.colorRed),
             ),
           ],
         ),
@@ -1078,9 +1083,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               const Icon(Icons.check_circle, color: Colors.green),
               horizontalSpacer(10),
-              const Text(
+              Text(
                 'File Uploaded successfully',
-                style: TextStyle(color: Colors.green),
+                style: Theme.of(context)
+                    .textTheme
+                    .labelSmall!
+                    .copyWith(color: PrimaryColor.colorBottleGreen),
               ),
             ],
           ),
@@ -1097,9 +1105,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               const Icon(Icons.warning, color: Colors.orange),
               horizontalSpacer(10),
-              const Text(
+              Text(
                 'Empty File is Created',
-                style: TextStyle(color: Colors.orange),
+                style: Theme.of(context)
+                    .textTheme
+                    .labelSmall!
+                    .copyWith(color: Colors.orange),
               ),
             ],
           ),
@@ -1111,9 +1122,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
           children: [
             const Icon(Icons.error, color: Colors.red),
             horizontalSpacer(10),
-            const Text(
+            Text(
               'Upload failed',
-              style: TextStyle(color: Colors.red),
+              style: Theme.of(context)
+                  .textTheme
+                  .labelSmall!
+                  .copyWith(color: PrimaryColor.colorRed),
             ),
           ],
         ),

@@ -25,21 +25,46 @@ class CustomBalanceCard extends StatelessWidget {
             ),
             child: Center(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                  child: balanceOfTheMonthValue > 0
-                      ? SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.50,
-                        child: Center(
-                          child: Text("Balance: ₹$balanceOfTheMonthValue",style: TextStyle(color: textThemeColor,fontWeight: FontWeight.normal,fontSize: MediaQuery.of(context).size.width/25),textAlign: TextAlign.left,maxLines: 1,  overflow: TextOverflow.clip,),
-                        ),
-                      )
-                      : SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.50,
-                        child: Center(
-                          child: Text("Balance: -₹${balanceOfTheMonthValue.abs()}",style: TextStyle(color: textThemeColor,fontWeight: FontWeight.normal,fontSize: MediaQuery.of(context).size.width/25),textAlign: TextAlign.left,maxLines: 1,  overflow: TextOverflow.ellipsis),
+              padding: const EdgeInsets.symmetric(horizontal: 15.0),
+              child: balanceOfTheMonthValue > 0
+                  ? SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.50,
+                      child: Center(
+                        child: Text(
+                          "Balance: ₹$balanceOfTheMonthValue",
+                          style: Theme.of(context)
+                                          .textTheme
+                                          .headlineSmall!
+                                          .copyWith(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .secondary),
+                         
+                          textAlign: TextAlign.left,
+                          maxLines: 1,
+                          overflow: TextOverflow.clip,
                         ),
                       ),
-                )),
+                    )
+                  : SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.50,
+                      child: Center(
+                        child: Text(
+                            "Balance: -₹${balanceOfTheMonthValue.abs()}",
+                            
+                            style: Theme.of(context)
+                                          .textTheme
+                                          .headlineSmall!
+                                          .copyWith(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .secondary),
+                            textAlign: TextAlign.left,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis),
+                      ),
+                    ),
+            )),
           )),
     );
   }

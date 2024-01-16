@@ -23,7 +23,7 @@ class _PrivacyPolicyState extends State<PrivacyPolicy> {
               IconThemeData(color: Theme.of(context).colorScheme.secondary),
           title: Text(
             'Privacy Policy',
-            style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+            style: Theme.of(context).textTheme.headlineMedium!.copyWith(color: Theme.of(context).colorScheme.secondary)
           ),
           elevation: 5,
         ),

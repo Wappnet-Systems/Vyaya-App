@@ -15,13 +15,15 @@ class _CategoryListState extends State<CategoryList> {
     return Scaffold(
         backgroundColor: Theme.of(context).colorScheme.primary,
         appBar: AppBar(
-          iconTheme: IconThemeData(color: PrimaryColor.colorWhite),
-          title: Text(
-            widget.id == 2 ? 'Mode of Payment' : 'Categories',
-            style: TextStyle(color: PrimaryColor.colorWhite),
-          ),
+          backgroundColor: Theme.of(context).bottomAppBarTheme.color,
+          iconTheme:
+              IconThemeData(color: Theme.of(context).colorScheme.secondary),
+          title: Text('Categories',
+              style: Theme.of(context)
+                  .textTheme
+                  .headlineMedium!
+                  .copyWith(color: Theme.of(context).colorScheme.secondary)),
           elevation: 5,
-          backgroundColor: PrimaryColor.colorBottleGreen,
         ),
         body: ListView.builder(
             itemCount: widget.id == 0
@@ -58,13 +60,16 @@ class _CategoryListState extends State<CategoryList> {
                           width: 10,
                         ),
                         Text(
-                          widget.id == 0
-                              ? "${ListOfAppData.listOfIncome[index].categoryText}"
-                              : "${ListOfAppData.listOfCategory[index].categoryText}",
-                          style: TextStyle(
-                              color: Theme.of(context).colorScheme.secondary,
-                              fontSize: 15),
-                        ),
+                            widget.id == 0
+                                ? "${ListOfAppData.listOfIncome[index].categoryText}"
+                                : "${ListOfAppData.listOfCategory[index].categoryText}",
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineSmall!
+                                .copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondary)),
                       ],
                     ),
                   ),

@@ -1,6 +1,7 @@
 // ignore_for_file: must_be_immutable
 
 import 'package:expenses_tracker/model/prediaction_helper.dart';
+import 'package:expenses_tracker/screens/spending_category_percentage.dart';
 import 'package:expenses_tracker/utils/const.dart';
 import 'package:expenses_tracker/widgets/custom_slider.dart';
 import 'package:flutter/material.dart';
@@ -34,11 +35,41 @@ class _PredictionPageState extends State<PredictionPage> {
   List<double> needPercentageList = [];
   List<double> wantPercentageList = [];
   List<double> savingPercentageList = [];
+
+  List<double> othersPercentageList = [];
+  List<double> foodPercentageList = [];
+  List<double> shoppingPercentageList = [];
+  List<double> travellingPercentageList = [];
+  List<double> entertainmentPercentageList = [];
+  List<double> personalcarePercentageList = [];
+  List<double> educationPercentageList = [];
+  List<double> billsUtillsPercentageList = [];
+  List<double> investmentPercentageList = [];
+  List<double> rentPercentageList = [];
+  List<double> taxesPercentageList = [];
+  List<double> insurancePercentageList = [];
+
+  double? othersAverage;
+  double? foodAverage;
+  double? shoppingAverage;
+  double? travellingAverage;
+  double? entertainmentAverage;
+  double? personalcareAverage;
+  double? educationAverage;
+  double? billsUtillsAverage;
+  double? investmentAverage;
+  double? rentAverage;
+  double? taxesAverage;
+  double? insuranceAverage;
+  Map<String, double>? averages;
+  Map<String, double>? top3Values;
+
   double needResult = 0;
   double wantResult = 0;
   double savingResult = 0;
+
   String selectedKey = '';
-  
+
   @override
   void initState() {
     lastElement = widget.predictionHelperList.isNotEmpty
@@ -48,6 +79,7 @@ class _PredictionPageState extends State<PredictionPage> {
     for (var element in widget.predictionHelperList) {
       selectedKey = element.keys.last;
     }
+
     if (lastElement != null) {
       lastElement!.forEach((key, value) {
         lastIncome = value.totalIncome!;
@@ -67,10 +99,15 @@ class _PredictionPageState extends State<PredictionPage> {
     super.initState();
   }
 
+  double calculateAverage(List<double> list) {
+    double sum = list.reduce((a, b) => a + b);
+    return sum / list.length;
+  }
+
   findRuleBrekPercetage() {
-    needResult = ((needLimitCross! / (needPercentageList.length)) * 100);
+    needResult = (((needLimitCross)! / (needPercentageList.length)) * 100);
     wantResult = ((wantsLimitCross! / (wantPercentageList.length)) * 100);
-    savingResult = ((savingLimitCross! / (savingPercentageList.length)) * 100);    
+    savingResult = ((savingLimitCross! / (savingPercentageList.length)) * 100);
   }
 
   categoriseListing(List<double> listing, int limit, String value) {
@@ -118,10 +155,11 @@ class _PredictionPageState extends State<PredictionPage> {
         backgroundColor: Theme.of(context).bottomAppBarTheme.color,
         iconTheme:
             IconThemeData(color: Theme.of(context).colorScheme.secondary),
-        title: Text(
-          'Budget Prediction Page',
-          style: TextStyle(color: Theme.of(context).colorScheme.secondary),
-        ),
+        title: Text('Budget Prediction',
+            style: Theme.of(context)
+                .textTheme
+                .headlineMedium!
+                .copyWith(color: Theme.of(context).colorScheme.secondary)),
         actions: [
           IconButton(
             icon: const Icon(Icons.info_outline),
@@ -141,15 +179,11 @@ class _PredictionPageState extends State<PredictionPage> {
             const SizedBox(
               height: 25,
             ),
-            
             Text(DateFormat.yMMM().format(DateTime(now.year, now.month + 1)),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headlineLarge!
-                                  .copyWith(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .secondary)),
+                style: Theme.of(context)
+                    .textTheme
+                    .headlineLarge!
+                    .copyWith(color: Theme.of(context).colorScheme.secondary)),
             const SizedBox(
               height: 7,
             ),
@@ -167,11 +201,13 @@ class _PredictionPageState extends State<PredictionPage> {
                         Text(
                           formatCurrency(
                               widget.predictionHelperData.remaininBalance),
-                          style: TextStyle(
-                            color: PrimaryColor.colorBottleGreen,
-                            fontWeight: FontWeight.w500,
-                            fontSize: screenHeight * 0.030,
-                          ),
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineLarge!
+                              .copyWith(
+                                color: PrimaryColor.colorBottleGreen,
+                                fontWeight: FontWeight.w500,
+                              ),
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(
@@ -197,11 +233,11 @@ class _PredictionPageState extends State<PredictionPage> {
                             ),
                             Text(
                               "${calculatePercentageChange(lastRemainingBalance!, widget.predictionHelperData.remaininBalance!).toStringAsFixed(1).toString()}% ",
-                              style: TextStyle(
-                                color: PrimaryColor.colorBottleGreen,
-                                fontWeight: FontWeight.w500,
-                                fontSize: screenHeight * 0.015,
-                              ),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .displaySmall!
+                                  .copyWith(
+                                      color: PrimaryColor.colorBottleGreen),
                               textAlign: TextAlign.center,
                             ),
                             const SizedBox(
@@ -209,11 +245,12 @@ class _PredictionPageState extends State<PredictionPage> {
                             ),
                             Text(
                               formatCurrency(lastRemainingBalance),
-                              style: TextStyle(
-                                color: Theme.of(context).hintColor,
-                                fontWeight: FontWeight.w500,
-                                fontSize: screenHeight * 0.015,
-                              ),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .displaySmall!
+                                  .copyWith(
+                                    color: Theme.of(context).hintColor,
+                                  ),
                               textAlign: TextAlign.center,
                             ),
                           ],
@@ -228,11 +265,12 @@ class _PredictionPageState extends State<PredictionPage> {
                       children: [
                         Text(
                           'Predicted Remaining Balance',
-                          style: TextStyle(
-                            color: Theme.of(context).hintColor,
-                            fontWeight: FontWeight.w400,
-                            fontSize: screenHeight * 0.016,
-                          ),
+                          style: Theme.of(context)
+                              .textTheme
+                              .displaySmall!
+                              .copyWith(
+                                color: Theme.of(context).hintColor,
+                              ),
                           textAlign: TextAlign.center,
                         ),
                       ],
@@ -276,11 +314,12 @@ class _PredictionPageState extends State<PredictionPage> {
                               ),
                               Text(
                                 'Predicted Spending',
-                                style: TextStyle(
-                                  color: PrimaryColor.colorWhite,
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: screenHeight * 0.016,
-                                ),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .displaySmall!
+                                    .copyWith(
+                                      color: PrimaryColor.colorWhite,
+                                    ),
                                 textAlign: TextAlign.center,
                               ),
                             ],
@@ -294,11 +333,13 @@ class _PredictionPageState extends State<PredictionPage> {
                               Text(
                                 formatCurrency(
                                     widget.predictionHelperData.totalExpenses),
-                                style: TextStyle(
-                                  color: PrimaryColor.colorWhite,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: screenHeight * 0.030,
-                                ),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineLarge!
+                                    .copyWith(
+                                      color: PrimaryColor.colorWhite,
+                                      fontWeight: FontWeight.w500,
+                                    ),
                                 textAlign: TextAlign.center,
                               ),
                             ],
@@ -323,11 +364,12 @@ class _PredictionPageState extends State<PredictionPage> {
                               ),
                               Text(
                                 "${calculatePercentageChange(lastExpenses!, widget.predictionHelperData.totalExpenses!).toStringAsFixed(1).toString()}% ",
-                                style: TextStyle(
-                                  color: PrimaryColor.colorWhite,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: screenHeight * 0.015,
-                                ),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .displaySmall!
+                                    .copyWith(
+                                      color: PrimaryColor.colorWhite,
+                                    ),
                                 textAlign: TextAlign.center,
                               ),
                               const SizedBox(
@@ -335,11 +377,12 @@ class _PredictionPageState extends State<PredictionPage> {
                               ),
                               Text(
                                 formatCurrency(lastExpenses),
-                                style: TextStyle(
-                                  color: PrimaryColor.colorWhite,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: screenHeight * 0.015,
-                                ),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .displaySmall!
+                                    .copyWith(
+                                      color: PrimaryColor.colorWhite,
+                                    ),
                                 textAlign: TextAlign.center,
                               ),
                             ],
@@ -378,11 +421,12 @@ class _PredictionPageState extends State<PredictionPage> {
                               ),
                               Text(
                                 'Predicted Income',
-                                style: TextStyle(
-                                  color: PrimaryColor.colorWhite,
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: screenHeight * 0.016,
-                                ),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .displaySmall!
+                                    .copyWith(
+                                      color: PrimaryColor.colorWhite,
+                                    ),
                                 textAlign: TextAlign.center,
                               ),
                             ],
@@ -396,11 +440,13 @@ class _PredictionPageState extends State<PredictionPage> {
                               Text(
                                 formatCurrency(
                                     widget.predictionHelperData.totalIncome),
-                                style: TextStyle(
-                                  color: PrimaryColor.colorWhite,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: screenHeight * 0.030,
-                                ),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineLarge!
+                                    .copyWith(
+                                      color: PrimaryColor.colorWhite,
+                                      fontWeight: FontWeight.w500,
+                                    ),
                                 textAlign: TextAlign.center,
                               ),
                             ],
@@ -425,11 +471,12 @@ class _PredictionPageState extends State<PredictionPage> {
                               ),
                               Text(
                                 "${calculatePercentageChange(lastIncome!, widget.predictionHelperData.totalIncome!).toStringAsFixed(1).toString()}% ",
-                                style: TextStyle(
-                                  color: PrimaryColor.colorWhite,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: screenHeight * 0.015,
-                                ),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .displaySmall!
+                                    .copyWith(
+                                      color: PrimaryColor.colorWhite,
+                                    ),
                                 textAlign: TextAlign.center,
                               ),
                               const SizedBox(
@@ -437,11 +484,12 @@ class _PredictionPageState extends State<PredictionPage> {
                               ),
                               Text(
                                 formatCurrency(lastIncome),
-                                style: TextStyle(
-                                  color: PrimaryColor.colorWhite,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: screenHeight * 0.015,
-                                ),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .displaySmall!
+                                    .copyWith(
+                                      color: PrimaryColor.colorWhite,
+                                    ),
                                 textAlign: TextAlign.center,
                               ),
                             ],
@@ -456,15 +504,175 @@ class _PredictionPageState extends State<PredictionPage> {
             SizedBox(
               height: screenHeight * 0.015,
             ),
+            Text('Most spending categories',
+                style: Theme.of(context)
+                    .textTheme
+                    .headlineMedium!
+                    .copyWith(color: Theme.of(context).colorScheme.secondary)),
+            SizedBox(
+              height: screenHeight * 0.009,
+            ),
+            Card(
+              color: Theme.of(context).cardColor,
+              elevation: 5,
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        SizedBox(
+                          width: screenWidth * 0.04,
+                        ),
+                        Flexible(
+                          flex: 4,
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                height: screenHeight * 0.03,
+                              ),
+                              CustomCircularSlider(
+                                initialValue:
+                                    top3Values!.entries.elementAt(1).value,
+                                sliderColor: PrimaryColor.colorBlue,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SizedBox(
+                                    height: 50,
+                                    width: 80,
+                                    child: Text(
+                                        '${top3Values!.entries.elementAt(1).key}',
+                                        maxLines: 2,
+                                        overflow: TextOverflow.clip,
+                                        textAlign: TextAlign.center,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headlineSmall!
+                                            .copyWith(
+                                                color: PrimaryColor.colorBlue)),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          width: screenWidth * 0.04,
+                        ),
+                        Flexible(
+                          flex: 5,
+                          child: Column(
+                            children: [
+                              CustomCircularSlider(
+                                initialValue:
+                                    top3Values!.entries.elementAt(0).value,
+                                sliderColor: PrimaryColor.colorRed,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SizedBox(
+                                    height: 50,
+                                    width: 80,
+                                    child: Text(
+                                        '${top3Values!.entries.elementAt(0).key}',
+                                        maxLines: 2,
+                                        overflow: TextOverflow.clip,
+                                        textAlign: TextAlign.center,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headlineSmall!
+                                            .copyWith(
+                                                color: PrimaryColor.colorRed)),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          width: screenWidth * 0.04,
+                        ),
+                        Flexible(
+                          flex: 4,
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                height: screenHeight * 0.03,
+                              ),
+                              CustomCircularSlider(
+                                initialValue:
+                                    top3Values!.entries.elementAt(2).value,
+                                sliderColor: PrimaryColor.colorBottleGreen,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SizedBox(
+                                    height: 50,
+                                    width: 80,
+                                    child: Text(
+                                        top3Values!.entries.elementAt(2).key,
+                                        maxLines: 2,
+                                        overflow: TextOverflow.clip,
+                                        textAlign: TextAlign.center,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headlineSmall!
+                                            .copyWith(
+                                                color: PrimaryColor
+                                                    .colorBottleGreen)),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          width: screenWidth * 0.04,
+                        ),
+                      ],
+                    ),
+                    Divider(
+                      color: Theme.of(context).hintColor.withOpacity(.4),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    SpendingCategoryPercentage(
+                                      averages: averages,
+                                    )));
+                      },
+                      child: Padding(
+                        padding:
+                            EdgeInsets.symmetric(vertical: screenHeight * .007),
+                        child: Text('View All',
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineSmall!
+                                .copyWith(
+                                    color: Theme.of(context)
+                                        .hintColor
+                                        .withOpacity(.4))),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(
+              height: screenHeight * 0.015,
+            ),
             Text('Previous Records',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headlineMedium!
-                                  .copyWith(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .secondary)),
-            
+                style: Theme.of(context)
+                    .textTheme
+                    .headlineMedium!
+                    .copyWith(color: Theme.of(context).colorScheme.secondary)),
             SizedBox(
               height: screenHeight * 0.009,
             ),
@@ -496,14 +704,8 @@ class _PredictionPageState extends State<PredictionPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('Monthly Recap',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headlineMedium!
-                                  .copyWith(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .secondary)),
-                
+                    style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                        color: Theme.of(context).colorScheme.secondary)),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   decoration: BoxDecoration(
@@ -524,13 +726,14 @@ class _PredictionPageState extends State<PredictionPage> {
                           return map.keys.map((String key) {
                             return DropdownMenuItem<String>(
                               value: key,
-                              child: Text(
-                                key,
-                                style: TextStyle(
-                                  color: PrimaryColor.colorBottleGreen,
-                                  fontWeight: FontWeight.normal,
-                                ),
-                              ),
+                              child: Text(key,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headlineSmall!
+                                      .copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onPrimary)),
                             );
                           }).toList();
                         })
@@ -558,21 +761,22 @@ class _PredictionPageState extends State<PredictionPage> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
-                                Text(
-                                  "Total Income",
-                                  style: TextStyle(
-                                    color: Theme.of(context).hintColor,
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: screenHeight * 0.016,
-                                  ),
-                                ),
+                                Text("Total Income",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium!
+                                        .copyWith(
+                                          color: Theme.of(context).hintColor,
+                                        )),
                                 Text(
                                   formatCurrency(pfIncome),
-                                  style: TextStyle(
-                                    color: PrimaryColor.colorBottleGreen,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: screenHeight * 0.022,
-                                  ),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headlineMedium!
+                                      .copyWith(
+                                        fontWeight: FontWeight.w500,
+                                        color: PrimaryColor.colorBottleGreen,
+                                      ),
                                   maxLines: 1,
                                   overflow: TextOverflow.fade,
                                 ),
@@ -581,21 +785,22 @@ class _PredictionPageState extends State<PredictionPage> {
                         SizedBox(
                             width: screenWidth / 2.201,
                             child: Column(children: [
-                              Text(
-                                'Total Spending',
-                                style: TextStyle(
-                                  color: Theme.of(context).hintColor,
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: screenHeight * 0.016,
-                                ),
-                              ),
+                              Text('Total Spending',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium!
+                                      .copyWith(
+                                        color: Theme.of(context).hintColor,
+                                      )),
                               Text(
                                 formatCurrency(pfSpending),
-                                style: TextStyle(
-                                  color: PrimaryColor.colorRed,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: screenHeight * 0.022,
-                                ),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineMedium!
+                                    .copyWith(
+                                      fontWeight: FontWeight.w500,
+                                      color: PrimaryColor.colorRed,
+                                    ),
                                 maxLines: 1,
                                 overflow: TextOverflow.fade,
                               ),
@@ -632,11 +837,15 @@ class _PredictionPageState extends State<PredictionPage> {
                                           value.ceil().toInt().toString();
                                       return '$roundedValue%';
                                     },
-                                    mainLabelStyle: TextStyle(
-                                        fontSize: 13.0,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .secondary),
+                                    mainLabelStyle: Theme.of(context)
+                                        .textTheme
+                                        .displaySmall!
+                                        .copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .secondary,
+                                        ),
+                                    
                                   ),
                                 ),
                                 min: 0,
@@ -645,22 +854,18 @@ class _PredictionPageState extends State<PredictionPage> {
                                     ? (pfNeeds == 0)
                                         ? 0
                                         : 100
-                                    : ((pfNeeds! / pfIncome!) * 100)>100 ?100 :((pfNeeds! / pfIncome!) * 100),
+                                    : ((pfNeeds! / pfIncome!) * 100) > 100
+                                        ? 100
+                                        : ((pfNeeds! / pfIncome!) * 100),
                               ),
                               Text(
                                 'Needs',
-                                style: TextStyle(
-                                    color:
-                                        Theme.of(context).colorScheme.secondary,
-                                    fontSize: screenHeight * 0.020),
+                                style: Theme.of(context).textTheme.displayMedium,
                                 textAlign: TextAlign.left,
                               ),
                               Text(
                                 formatCurrency(pfNeeds),
-                                style: TextStyle(
-                                    color:
-                                        Theme.of(context).colorScheme.secondary,
-                                    fontSize: screenHeight * 0.020),
+                                style: Theme.of(context).textTheme.displayMedium,
                                 textAlign: TextAlign.left,
                               ),
                             ],
@@ -693,11 +898,14 @@ class _PredictionPageState extends State<PredictionPage> {
                                           value.ceil().toInt().toString();
                                       return '$roundedValue%';
                                     },
-                                    mainLabelStyle: TextStyle(
-                                        fontSize: 13.0,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .secondary),
+                                    mainLabelStyle: Theme.of(context)
+                                        .textTheme
+                                        .displaySmall!
+                                        .copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .secondary,
+                                        ),
                                   ),
                                 ),
                                 min: 0,
@@ -706,22 +914,18 @@ class _PredictionPageState extends State<PredictionPage> {
                                     ? (pfWants == 0)
                                         ? 0
                                         : 100
-                                    : ((pfWants! / pfIncome!) * 100)>100 ?100 :((pfWants! / pfIncome!) * 100),
+                                    : ((pfWants! / pfIncome!) * 100) > 100
+                                        ? 100
+                                        : ((pfWants! / pfIncome!) * 100),
                               ),
                               Text(
                                 'Wants',
-                                style: TextStyle(
-                                    color:
-                                        Theme.of(context).colorScheme.secondary,
-                                    fontSize: screenHeight * 0.020),
+                                style: Theme.of(context).textTheme.displayMedium,
                                 textAlign: TextAlign.left,
                               ),
                               Text(
                                 formatCurrency(pfWants),
-                                style: TextStyle(
-                                    color:
-                                        Theme.of(context).colorScheme.secondary,
-                                    fontSize: screenHeight * 0.020),
+                                style: Theme.of(context).textTheme.displayMedium,
                                 textAlign: TextAlign.left,
                               ),
                             ],
@@ -754,11 +958,14 @@ class _PredictionPageState extends State<PredictionPage> {
                                           value.ceil().toInt().toString();
                                       return '$roundedValue%';
                                     },
-                                    mainLabelStyle: TextStyle(
-                                        fontSize: 13.0,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .secondary),
+                                    mainLabelStyle: Theme.of(context)
+                                        .textTheme
+                                        .displaySmall!
+                                        .copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .secondary,
+                                        ),
                                   ),
                                 ),
                                 min: 0,
@@ -767,22 +974,18 @@ class _PredictionPageState extends State<PredictionPage> {
                                     ? (pfSaving == 0)
                                         ? 0
                                         : 100
-                                    : ((pfSaving! / pfIncome!) * 100)>100 ?100 :((pfSaving! / pfIncome!) * 100),
+                                    : ((pfSaving! / pfIncome!) * 100) > 100
+                                        ? 100
+                                        : ((pfSaving! / pfIncome!) * 100),
                               ),
                               Text(
                                 'Saving',
-                                style: TextStyle(
-                                    color:
-                                        Theme.of(context).colorScheme.secondary,
-                                    fontSize: screenHeight * 0.020),
+                                style: Theme.of(context).textTheme.displayMedium,
                                 textAlign: TextAlign.left,
                               ),
                               Text(
                                 formatCurrency(pfSaving),
-                                style: TextStyle(
-                                    color:
-                                        Theme.of(context).colorScheme.secondary,
-                                    fontSize: screenHeight * 0.020),
+                                style: Theme.of(context).textTheme.displayMedium,
                                 textAlign: TextAlign.left,
                               ),
                             ],
@@ -803,6 +1006,7 @@ class _PredictionPageState extends State<PredictionPage> {
           ],
         ),
       ),
+      // floatingActionButton: FloatingActionButton(onPressed: ),
     );
   }
 
@@ -928,50 +1132,56 @@ class _PredictionPageState extends State<PredictionPage> {
         double shoppingPercentage = (personalFinanceHelper.expensesOnShopping! /
                 personalFinanceHelper.totalIncome!) *
             100;
-        double travellingPercentage = (personalFinanceHelper.expensesOnTravelling! /
-                personalFinanceHelper.totalIncome!) *
-            100;
-        double entertainmentPercentage = (personalFinanceHelper.expensesOnEntertainment! /
-                personalFinanceHelper.totalIncome!) *
-            100;
-        double personalcarePercentage = (personalFinanceHelper.expensesOnPersonalCare! /
-                personalFinanceHelper.totalIncome!) *
-            100;
-        double educationPercentage = (personalFinanceHelper.expensesOnEducation! /
-                personalFinanceHelper.totalIncome!) *
-            100;
+        double travellingPercentage =
+            (personalFinanceHelper.expensesOnTravelling! /
+                    personalFinanceHelper.totalIncome!) *
+                100;
+        double entertainmentPercentage =
+            (personalFinanceHelper.expensesOnEntertainment! /
+                    personalFinanceHelper.totalIncome!) *
+                100;
+        double personalcarePercentage =
+            (personalFinanceHelper.expensesOnPersonalCare! /
+                    personalFinanceHelper.totalIncome!) *
+                100;
+        double educationPercentage =
+            (personalFinanceHelper.expensesOnEducation! /
+                    personalFinanceHelper.totalIncome!) *
+                100;
         double billsPercentage = (personalFinanceHelper.expensesOnBillUtils! /
                 personalFinanceHelper.totalIncome!) *
             100;
-        double investmentPercentage = (personalFinanceHelper.expensesOnInvestment! /
-                personalFinanceHelper.totalIncome!) *
-            100;
+        double investmentPercentage =
+            (personalFinanceHelper.expensesOnInvestment! /
+                    personalFinanceHelper.totalIncome!) *
+                100;
         double rentPercentage = (personalFinanceHelper.expensesOnRent! /
                 personalFinanceHelper.totalIncome!) *
             100;
         double taxesPercentage = (personalFinanceHelper.expensesOnTaxes! /
                 personalFinanceHelper.totalIncome!) *
             100;
-        double insurancePercentage = (personalFinanceHelper.expensesOnInsurance! /
-                personalFinanceHelper.totalIncome!) *
-            100;
-        
+        double insurancePercentage =
+            (personalFinanceHelper.expensesOnInsurance! /
+                    personalFinanceHelper.totalIncome!) *
+                100;
 
+        // print("Expenses on \nOthers: $otherPercentage\nFood: $foodPercentage\nShopping: $shoppingPercentage\nTravelling: $travellingPercentage\nEntertainment: $entertainmentPercentage\nPersonal Care: $personalcarePercentage \nEducation: $educationPercentage \nBills Utils: $billsPercentage\nInvestment: $investmentPercentage \nRent: $rentPercentage \nTaxes: $taxesPercentage \nInsurance: $insurancePercentage");
 
-        print('Expenses on Others: ${otherPercentage}');
-        print('Expenses on Food: ${foodPercentage}');
-        print('Expenses on Shopping: ${shoppingPercentage}');
-        print('Expenses on Travelling: ${travellingPercentage}');
-        print('Expenses on Entertainment: ${entertainmentPercentage}');
-        print('Expenses on Personal Care: ${personalcarePercentage}');
-        print('Expenses on Education: ${educationPercentage}');
-        print('Expenses on Bills Utils: ${billsPercentage}');
-        print('Expenses on Investment: ${investmentPercentage}');
-        print('Expenses on Rent: ${rentPercentage}');
-        print('Expenses on Taxes: ${taxesPercentage}');
-        print('Expenses on Insurance: ${insurancePercentage}');
+        othersPercentageList.add(otherPercentage);
+        foodPercentageList.add(foodPercentage);
+        shoppingPercentageList.add(shoppingPercentage);
+        travellingPercentageList.add(travellingPercentage);
+        entertainmentPercentageList.add(entertainmentPercentage);
+        personalcarePercentageList.add(personalcarePercentage);
+        educationPercentageList.add(educationPercentage);
+        billsUtillsPercentageList.add(billsPercentage);
+        investmentPercentageList.add(investmentPercentage);
+        rentPercentageList.add(rentPercentage);
+        taxesPercentageList.add(taxesPercentage);
+        insurancePercentageList.add(insurancePercentage);
 
-
+        findMostSpendCategory();
         print(
             "Needs: $needPercentage Wants: $wantPercentage Saving : $savingPercentage");
         needPercentageList.add(needPercentage);
@@ -981,63 +1191,93 @@ class _PredictionPageState extends State<PredictionPage> {
     }
   }
 
+  findMostSpendCategory() {
+    othersAverage = calculateAverage(othersPercentageList);
+    foodAverage = calculateAverage(foodPercentageList);
+    shoppingAverage = calculateAverage(shoppingPercentageList);
+    travellingAverage = calculateAverage(travellingPercentageList);
+    entertainmentAverage = calculateAverage(entertainmentPercentageList);
+    personalcareAverage = calculateAverage(personalcarePercentageList);
+    educationAverage = calculateAverage(educationPercentageList);
+    billsUtillsAverage = calculateAverage(billsUtillsPercentageList);
+    investmentAverage = calculateAverage(investmentPercentageList);
+    rentAverage = calculateAverage(rentPercentageList);
+    taxesAverage = calculateAverage(taxesPercentageList);
+    insuranceAverage = calculateAverage(insurancePercentageList);
+
+    averages = {
+      'Others': othersAverage!,
+      'Food': foodAverage!,
+      'Shopping': shoppingAverage!,
+      'Travelling': travellingAverage!,
+      'Entertainment': entertainmentAverage!,
+      'Personalcare': personalcareAverage!,
+      'Education': educationAverage!,
+      'BillsUtills': billsUtillsAverage!,
+      'Investment': investmentAverage!,
+      'Rent': rentAverage!,
+      'Taxes': taxesAverage!,
+      'Insurance': insuranceAverage!,
+    };
+
+    var sortedEntries = averages!.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+
+    var top3Entries = sortedEntries.take(3);
+    top3Values = Map.fromEntries(top3Entries);
+    top3Values!.forEach((key, value) {
+      print('$key: $value');
+    });
+  }
+
   void openBottomSheet(
       BuildContext context, double screenHeight, double screenWidth) {
     showModalBottomSheet(
       isScrollControlled: true,
       context: context,
       builder: (BuildContext context) {
-      Widget fetchPerformanceFromValue(double value,String stringValue) {
+        Widget fetchPerformanceFromValue(double value, String stringValue) {
           if (value == 0) {
             return Row(
-                children: [
-                  Icon(
-                    Icons.star,
-                    color: PrimaryColor.colorBottleGreen,
-                  ),
+              children: [
+                Icon(
+                  Icons.star,
+                  color: PrimaryColor.colorBottleGreen,
+                ),
+                Text(
+                  stringValue,
+                  style: Theme.of(context).textTheme.displayMedium!.copyWith(color: PrimaryColor.colorBottleGreen,),
                   
-                  Text(
-                    stringValue,
-                    style: TextStyle(
-                        fontSize: screenHeight * 0.020,
-                        fontWeight: FontWeight.bold,
-                        color: PrimaryColor.colorBottleGreen),
-                  ),
-                ],
-              );
+                ),
+              ],
+            );
           } else if (value > 0 && value <= 50) {
             return Row(
-                children: [
-                  const Icon(
-                    Icons.sentiment_satisfied,
-                    color: Colors.orange,
-                  ),                  
-                  Text(
-                    stringValue,
-                    style: TextStyle(
-                        fontSize: screenHeight * 0.020,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.orange),
-                  ),
-                ],
-              );
+              children: [
+                const Icon(
+                  Icons.sentiment_satisfied,
+                  color: Colors.orange,
+                ),
+                Text(
+                  stringValue,
+                  style: Theme.of(context).textTheme.displayMedium!.copyWith(color: Colors.orange,),
+                ),
+              ],
+            );
           } else if (value > 50 && value <= 100) {
             return Row(
-                children: [
-                  Icon(
-                    Icons.warning_amber_rounded,
-                    color: PrimaryColor.colorRed,
-                  ),
+              children: [
+                Icon(
+                  Icons.warning_amber_rounded,
+                  color: PrimaryColor.colorRed,
+                ),
+                Text(
+                  stringValue,
+                  style: Theme.of(context).textTheme.displayMedium!.copyWith(color: PrimaryColor.colorRed,),
                   
-                  Text(
-                    stringValue,
-                    style: TextStyle(
-                        fontSize: screenHeight * 0.020,
-                        fontWeight: FontWeight.bold,
-                        color: PrimaryColor.colorRed),
-                  ),
-                ],
-              );
+                ),
+              ],
+            );
           } else {
             return const Text('');
           }
@@ -1050,35 +1290,34 @@ class _PredictionPageState extends State<PredictionPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              const Row(
+              Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
                     'Spending Analysis',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w500,),                    
                   ),
                 ],
               ),
               SizedBox(height: ScreenUtil().setHeight(10)),
-              const Text(
+              Text(
                 "Important :",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                style: Theme.of(context).textTheme.displayMedium!.copyWith(fontWeight: FontWeight.w400)
+                
               ),
-              const Text(
+              Text(
                 "\u2022 Stick to the 50-30-20 Budgeting rule!",
-                style: TextStyle(fontSize: 16),
+                style: Theme.of(context).textTheme.headlineSmall
+                
               ),
-              const Text(
+              Text(
                 "\u2022 Out of all recorded budgets, track instances how many time that rule isn't followed.",
-                style: TextStyle(fontSize: 16),
+                style: Theme.of(context).textTheme.headlineSmall,
                 textAlign: TextAlign.justify,
               ),
-              const Text(
+              Text(
                 "\u2022 Performance measured in 3 categories.",
-                style: TextStyle(fontSize: 16),
+                style: Theme.of(context).textTheme.headlineSmall,
                 textAlign: TextAlign.justify,
               ),
               Row(
@@ -1087,29 +1326,28 @@ class _PredictionPageState extends State<PredictionPage> {
                     Icons.star,
                     color: PrimaryColor.colorBottleGreen,
                   ),
-                  const SizedBox(width: 10,),
-                  
+                  const SizedBox(
+                    width: 10,
+                  ),
                   Text(
                     '(Outstanding Performance)',
-                    style: TextStyle(
-                        fontSize: 16,
-                        color: PrimaryColor.colorBottleGreen),
+                    style: Theme.of(context).textTheme.headlineSmall!.copyWith(color: PrimaryColor.colorBottleGreen)
+                    
                   ),
                 ],
               ),
-              const Row(
+              Row(
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.sentiment_satisfied,
                     color: Colors.orange,
                   ),
-                  SizedBox(width: 10,),
-                  
+                  const SizedBox(
+                    width: 10,
+                  ),
                   Text(
                     '(Average Performance)',
-                    style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.orange),
+                    style: Theme.of(context).textTheme.headlineSmall!.copyWith(color: Colors.orange)
                   ),
                 ],
               ),
@@ -1119,12 +1357,12 @@ class _PredictionPageState extends State<PredictionPage> {
                     Icons.warning,
                     color: PrimaryColor.colorRed,
                   ),
-                  const SizedBox(width: 10,),
-                  
+                  const SizedBox(
+                    width: 10,
+                  ),
                   Text(
                     '(Poor Performance)',
-                    style: TextStyle(
-                        color: PrimaryColor.colorRed),
+                    style: Theme.of(context).textTheme.headlineSmall!.copyWith(color: PrimaryColor.colorRed)
                   ),
                 ],
               ),
@@ -1144,9 +1382,9 @@ class _PredictionPageState extends State<PredictionPage> {
                         ),
                         Row(
                           children: [
-                            fetchPerformanceFromValue(needResult,"Needs"),                            
+                            fetchPerformanceFromValue(needResult, "Needs"),
                           ],
-                        ),                                             
+                        ),
                       ],
                     ),
                   ),
@@ -1163,12 +1401,9 @@ class _PredictionPageState extends State<PredictionPage> {
                         ),
                         Row(
                           children: [
-                            fetchPerformanceFromValue(wantResult,"Wants"),
-                            
+                            fetchPerformanceFromValue(wantResult, "Wants"),
                           ],
                         ),
-                        
-                        
                       ],
                     ),
                   ),
@@ -1185,10 +1420,9 @@ class _PredictionPageState extends State<PredictionPage> {
                         ),
                         Row(
                           children: [
-                            fetchPerformanceFromValue(savingResult, "Saving"),                            
+                            fetchPerformanceFromValue(savingResult, "Saving"),
                           ],
                         ),
-                        
                       ],
                     ),
                   ),
@@ -1197,7 +1431,6 @@ class _PredictionPageState extends State<PredictionPage> {
                   ),
                 ],
               ),
-              
             ],
           ),
         );

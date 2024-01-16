@@ -126,11 +126,10 @@ class CustomTransaction extends StatelessWidget {
                             children: [
                               Text(
                                 '$dateStamp \t$timeStamp',
-                                style: TextStyle(
-                                    color: textTheme,
-                                    fontSize:
-                                        MediaQuery.of(context).size.height *
-                                            0.016),
+                                style: Theme.of(context)
+                                        .textTheme
+                                        .headlineSmall!.copyWith(fontSize: 15),
+                                
                               ),
                             ],
                           )

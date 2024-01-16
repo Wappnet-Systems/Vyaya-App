@@ -2,7 +2,7 @@ import 'package:expenses_tracker/utils/const.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import 'custom_header.dart';
-import 'custom_text_style.dart';
+
 
 class HomeSkeleton extends StatelessWidget {
   const HomeSkeleton({super.key});
@@ -36,12 +36,7 @@ class HomeSkeleton extends StatelessWidget {
                       wishingText: "...",
                       textColor: PrimaryColor.colorBlack),
                   const SizedBox(height: 25),
-                  CustomTextStyle(
-                      customTextStyleText: "Current Month",
-                      customTextColor: PrimaryColor.colorBlack,
-                      customTextFontWeight: FontWeight.normal,
-                      customtextstyle: null,
-                      customTextSize: 25.0),
+                  Text('Current Month',style: Theme.of(context).textTheme.headlineLarge),                  
                   const SizedBox(
                     height: 7,
                   ),
@@ -88,18 +83,9 @@ class HomeSkeleton extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        CustomTextStyle(
-                            customTextStyleText: "Personal Finance",
-                            customTextColor: PrimaryColor.colorBlack,
-                            customTextFontWeight: FontWeight.bold,
-                            customtextstyle: null,
-                            customTextSize: 20),
-                         CustomTextStyle(
-                            customTextStyleText: "Set Manually",
-                            customTextColor: Colors.blueAccent,
-                            customTextFontWeight: FontWeight.bold,
-                            customtextstyle: null,
-                            customTextSize: 14),
+                        Text('Personal Finance',style: Theme.of(context).textTheme.titleMedium,),
+                        Text('Set Manually',style: Theme.of(context).textTheme.displaySmall,),
+                        
                       ],
                     ),
                   ),
@@ -117,18 +103,10 @@ class HomeSkeleton extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        CustomTextStyle(
-                            customTextStyleText: "Recent Transaction",
-                            customTextColor: PrimaryColor.colorBlack,
-                            customTextFontWeight: FontWeight.bold,
-                            customtextstyle: null,
-                            customTextSize: 20),
-                        CustomTextStyle(
-                            customTextStyleText: "View all",
-                            customTextColor: Colors.blueAccent,
-                            customTextFontWeight: FontWeight.bold,
-                            customtextstyle: null,
-                            customTextSize: 14),
+                        Text('Recent Transaction',style: Theme.of(context).textTheme.titleMedium,),
+                        Text('View all',style: Theme.of(context).textTheme.displaySmall,),
+                        
+                        
                       ],
                     ),
                   ),

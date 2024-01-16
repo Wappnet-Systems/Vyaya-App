@@ -4,7 +4,6 @@ import 'package:expenses_tracker/utils/const.dart';
 import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:permission_handler/permission_handler.dart';
-
 import '../widgets/fade_transition.dart';
 
 class AuthUser extends StatefulWidget {

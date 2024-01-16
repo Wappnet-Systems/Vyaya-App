@@ -1,4 +1,3 @@
-
 import 'package:expenses_tracker/utils/const.dart';
 import 'package:expenses_tracker/widgets/custom_no_data.dart';
 import 'package:flutter/material.dart';
@@ -136,7 +135,7 @@ class _PfScreenState extends State<PfScreen> {
                     widget.transactions[i].transactionCreatedAt));
         e++;
       } else {}
-      
+
       super.initState();
     }
   }
@@ -151,264 +150,304 @@ class _PfScreenState extends State<PfScreen> {
           backgroundColor: Theme.of(context).bottomAppBarTheme.color,
           elevation: 5,
           title: widget.id == 0
-              ? Text(
-                  "Needs of Month",
-                  style:
-                      TextStyle(color: Theme.of(context).colorScheme.secondary),
-                )
+              ? Text("Needs of Month",
+                  style: Theme.of(context)
+                      .textTheme
+                      .headlineMedium!
+                      .copyWith(color: Theme.of(context).colorScheme.secondary))
               : widget.id == 1
-                  ? Text(
-                      "Wants of Month",
-                      style: TextStyle(
-                          color: Theme.of(context).colorScheme.secondary),
-                    )
-                  : Text(
-                      "Saving of Month",
-                      style: TextStyle(
-                          color: Theme.of(context).colorScheme.secondary),
-                    ),
+                  ? Text("Wants of Month",
+                      style: Theme.of(context)
+                          .textTheme
+                          .headlineMedium!
+                          .copyWith(
+                              color: Theme.of(context).colorScheme.secondary))
+                  : Text("Saving of Month",
+                      style: Theme.of(context)
+                          .textTheme
+                          .headlineMedium!
+                          .copyWith(
+                              color: Theme.of(context).colorScheme.secondary)),
         ),
         body: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: transactionList1.isEmpty && transactionList2.isEmpty && transactionList3.isEmpty && transactionList4.isEmpty && transactionList5.isEmpty
-              
-          ?const Center(child: CustomNoData(),)
-          :SingleChildScrollView(
-            child: Column(
-              children: [
-                transactionList1.isNotEmpty
-                    ? widget.id == 0
-                        ? Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                            child: Row(
-                              children: [
-                                Text(
-                                  "Personal Care",
-                                  style: GoogleFonts.roboto(
-                                      color: PrimaryColor.colorBottleGreen,
-                                      fontSize:
-                                          MediaQuery.of(context).size.height *
-                                              0.021,
-                                      fontWeight: FontWeight.w400),
-                                ),
-                              ],
-                            ),
-                          )
-                        : widget.id == 1
-                            ? Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 12.0),
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      "Others",
-                                      style: GoogleFonts.roboto(
-                                          color: PrimaryColor.colorBottleGreen,
-                                          fontSize:
-                                              MediaQuery.of(context).size.height *
+            padding: const EdgeInsets.all(8.0),
+            child: transactionList1.isEmpty &&
+                    transactionList2.isEmpty &&
+                    transactionList3.isEmpty &&
+                    transactionList4.isEmpty &&
+                    transactionList5.isEmpty
+                ? const Center(
+                    child: CustomNoData(),
+                  )
+                : SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        transactionList1.isNotEmpty
+                            ? widget.id == 0
+                                ? Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12.0),
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          "Personal Care",
+                                          style: GoogleFonts.roboto(
+                                              color:
+                                                  PrimaryColor.colorBottleGreen,
+                                              fontSize: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
                                                   0.021,
-                                          fontWeight: FontWeight.w400),
+                                              fontWeight: FontWeight.w400),
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
-                              )
-                            : Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 12.0),
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      "Investment",
-                                      style: GoogleFonts.roboto(
-                                          color: PrimaryColor.colorBottleGreen,
-                                          fontSize:
-                                              MediaQuery.of(context).size.height *
+                                  )
+                                : widget.id == 1
+                                    ? Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 12.0),
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              "Others",
+                                              style: GoogleFonts.roboto(
+                                                  color: PrimaryColor
+                                                      .colorBottleGreen,
+                                                  fontSize:
+                                                      MediaQuery.of(context)
+                                                              .size
+                                                              .height *
+                                                          0.021,
+                                                  fontWeight: FontWeight.w400),
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    : Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 12.0),
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              "Investment",
+                                              style: GoogleFonts.roboto(
+                                                  color: PrimaryColor
+                                                      .colorBottleGreen,
+                                                  fontSize:
+                                                      MediaQuery.of(context)
+                                                              .size
+                                                              .height *
+                                                          0.021,
+                                                  fontWeight: FontWeight.w400),
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                            : const SizedBox.shrink(),
+                        TransactionList(
+                          transactionList: transactionList1,
+                        ),
+                        transactionList2.isNotEmpty
+                            ? widget.id == 0
+                                ? Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12.0),
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          "Education",
+                                          style: GoogleFonts.roboto(
+                                              color:
+                                                  PrimaryColor.colorBottleGreen,
+                                              fontSize: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
                                                   0.021,
-                                          fontWeight: FontWeight.w400),
+                                              fontWeight: FontWeight.w400),
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
-                              )
-                    : const SizedBox.shrink(),
-                TransactionList(
-                  transactionList: transactionList1,
-                ),
-                transactionList2.isNotEmpty
-                    ? widget.id == 0
-                        ? Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                            child: Row(
-                              children: [
-                                Text(
-                                  "Education",
-                                  style: GoogleFonts.roboto(
-                                      color: PrimaryColor.colorBottleGreen,
-                                      fontSize:
-                                          MediaQuery.of(context).size.height *
-                                              0.021,
-                                      fontWeight: FontWeight.w400),
-                                ),
-                              ],
-                            ),
-                          )
-                        : widget.id == 1
-                            ? Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 12.0),
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      "Food",
-                                      style: GoogleFonts.roboto(
-                                          color: PrimaryColor.colorBottleGreen,
-                                          fontSize:
-                                              MediaQuery.of(context).size.height *
+                                  )
+                                : widget.id == 1
+                                    ? Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 12.0),
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              "Food",
+                                              style: GoogleFonts.roboto(
+                                                  color: PrimaryColor
+                                                      .colorBottleGreen,
+                                                  fontSize:
+                                                      MediaQuery.of(context)
+                                                              .size
+                                                              .height *
+                                                          0.021,
+                                                  fontWeight: FontWeight.w400),
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    : Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 12.0),
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              "Insurance",
+                                              style: GoogleFonts.roboto(
+                                                  color: PrimaryColor
+                                                      .colorBottleGreen,
+                                                  fontSize:
+                                                      MediaQuery.of(context)
+                                                              .size
+                                                              .height *
+                                                          0.021,
+                                                  fontWeight: FontWeight.w400),
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                            : const SizedBox.shrink(),
+                        TransactionList(
+                          transactionList: transactionList2,
+                        ),
+                        transactionList3.isNotEmpty
+                            ? widget.id == 0
+                                ? Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12.0),
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          "Bills and Utilities",
+                                          style: GoogleFonts.roboto(
+                                              color:
+                                                  PrimaryColor.colorBottleGreen,
+                                              fontSize: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
                                                   0.021,
-                                          fontWeight: FontWeight.w400),
+                                              fontWeight: FontWeight.w400),
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
-                              )
-                            : Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 12.0),
-                                child: 
-                                
-                                Row(
-                                  children: [
-                                    Text(
-                                      "Insurance",
-                                      style: GoogleFonts.roboto(
-                                          color: PrimaryColor.colorBottleGreen,
-                                          fontSize:
-                                              MediaQuery.of(context).size.height *
+                                  )
+                                : Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12.0),
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          "Shopping",
+                                          style: GoogleFonts.roboto(
+                                              color:
+                                                  PrimaryColor.colorBottleGreen,
+                                              fontSize: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
                                                   0.021,
-                                          fontWeight: FontWeight.w400),
+                                              fontWeight: FontWeight.w400),
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
-                              )
-                    : const SizedBox.shrink(),
-                TransactionList(
-                  transactionList: transactionList2,
-                ),
-                transactionList3.isNotEmpty
-                    ? widget.id == 0
-                        ? Padding(                        padding: const EdgeInsets.symmetric(horizontal: 12.0),
-          
-          
-                          child: Row(
-                              children: [
-                                Text(
-                                  "Bills and Utilities",
-                                  style: GoogleFonts.roboto(
-                                      color: PrimaryColor.colorBottleGreen,
-                                      fontSize: MediaQuery.of(context).size.height *
-                                          0.021,
-                                      fontWeight: FontWeight.w400),
-                                ),
-                              ],
-                            ),
-                        )
-                        : Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                          child: Row(
-                              children: [
-                                Text(
-                                  "Shopping",
-                                  style: GoogleFonts.roboto(
-                                      color: PrimaryColor.colorBottleGreen,
-                                      fontSize: MediaQuery.of(context).size.height *
-                                          0.021,
-                                      fontWeight: FontWeight.w400),
-                                ),
-                              ],
-                            ),
-                        )
-                    : const SizedBox.shrink(),
-                TransactionList(
-                  transactionList: transactionList3,
-                ),
-                transactionList4.isNotEmpty
-                    ? widget.id == 0
-                        ? Padding(                        padding: const EdgeInsets.symmetric(horizontal: 12.0),
-          
-          
-                          child: Row(
-                              children: [
-                                Text(
-                                  "Rent",
-                                  style: GoogleFonts.roboto(
-                                      color: PrimaryColor.colorBottleGreen,
-                                      fontSize: MediaQuery.of(context).size.height *
-                                          0.021,
-                                      fontWeight: FontWeight.w400),
-                                ),
-                              ],
-                            ),
-                        )
-                        : Padding(
-                                                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
-          
-                          child: Row(
-                              children: [
-                                Text(
-                                  "Traveling",
-                                  style: GoogleFonts.roboto(
-                                      color: PrimaryColor.colorBottleGreen,
-                                      fontSize: MediaQuery.of(context).size.height *
-                                          0.021,
-                                      fontWeight: FontWeight.w400),
-                                ),
-                              ],
-                            ),
-                        )
-                    : const SizedBox.shrink(),
-                TransactionList(
-                  transactionList: transactionList4,
-                ),
-                transactionList5.isNotEmpty
-                    ? widget.id == 0
-                        ? Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                            child: Row(
-                              children: [
-                                Text(
-                                  "Taxes",
-                                  style: GoogleFonts.roboto(
-                                      color: PrimaryColor.colorBottleGreen,
-                                      fontSize:
-                                          MediaQuery.of(context).size.height *
-                                              0.021,
-                                      fontWeight: FontWeight.w400),
-                                ),
-                              ],
-                            ),
-                          )
-                        : Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                          child: Row(
-                              children: [
-                                Text(
-                                  "Entertainment",
-                                  style: GoogleFonts.roboto(
-                                      color: PrimaryColor.colorBottleGreen,
-                                      fontSize: MediaQuery.of(context).size.height *
-                                          0.021,
-                                      fontWeight: FontWeight.w400),
-                                ),
-                              ],
-                            ),
-                        )
-                    : const SizedBox.shrink(),
-                TransactionList(
-                  transactionList: transactionList5,
-                ),
-          
-              ],
-            ),
-          )
-          
-        ));
+                                  )
+                            : const SizedBox.shrink(),
+                        TransactionList(
+                          transactionList: transactionList3,
+                        ),
+                        transactionList4.isNotEmpty
+                            ? widget.id == 0
+                                ? Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12.0),
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          "Rent",
+                                          style: GoogleFonts.roboto(
+                                              color:
+                                                  PrimaryColor.colorBottleGreen,
+                                              fontSize: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.021,
+                                              fontWeight: FontWeight.w400),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                : Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12.0),
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          "Traveling",
+                                          style: GoogleFonts.roboto(
+                                              color:
+                                                  PrimaryColor.colorBottleGreen,
+                                              fontSize: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.021,
+                                              fontWeight: FontWeight.w400),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                            : const SizedBox.shrink(),
+                        TransactionList(
+                          transactionList: transactionList4,
+                        ),
+                        transactionList5.isNotEmpty
+                            ? widget.id == 0
+                                ? Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12.0),
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          "Taxes",
+                                          style: GoogleFonts.roboto(
+                                              color:
+                                                  PrimaryColor.colorBottleGreen,
+                                              fontSize: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.021,
+                                              fontWeight: FontWeight.w400),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                : Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12.0),
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          "Entertainment",
+                                          style: GoogleFonts.roboto(
+                                              color:
+                                                  PrimaryColor.colorBottleGreen,
+                                              fontSize: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.021,
+                                              fontWeight: FontWeight.w400),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                            : const SizedBox.shrink(),
+                        TransactionList(
+                          transactionList: transactionList5,
+                        ),
+                      ],
+                    ),
+                  )));
   }
 }

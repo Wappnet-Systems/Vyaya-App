@@ -59,7 +59,10 @@ class _CustomPfRowState extends State<CustomPfRow> {
             enableInteractiveSelection: false,
             focusNode: focusNode,
             cursorColor: Theme.of(context).colorScheme.onPrimary,
-            style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+            style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(fontSize: 15),
             inputFormatters: [FilteringTextInputFormatter.digitsOnly,
                               LengthLimitingTextInputFormatter(2),],
             keyboardType: TextInputType.phone,            
@@ -76,10 +79,9 @@ class _CustomPfRowState extends State<CustomPfRow> {
                       color: Theme.of(context).colorScheme.secondary),
                 ),
                 labelText: widget.labelText,
-                labelStyle: TextStyle(
-          color: _isFocused ? Theme.of(context).colorScheme.onPrimary : Colors.grey, // Change color based on focus
-          fontSize: 16,
-        ),
+                labelStyle: Theme.of(context).textTheme.headlineSmall!.copyWith(color: _isFocused ? Theme.of(context).colorScheme.onPrimary : Colors.grey,),
+        
+
                 hintText: widget.hintText),
           ),
         ),

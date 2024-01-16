@@ -13,7 +13,6 @@ import '../utils/functions.dart';
 import '../widgets/custom_balance_card.dart';
 import '../widgets/custom_card.dart';
 import '../widgets/custom_circular_chart.dart';
-import '../widgets/custom_text_style.dart';
 import '../widgets/fade_transition.dart';
 
 class AnalyticsScreen extends StatefulWidget {
@@ -451,7 +450,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                               ],
                             )),
                         SizedBox(
-                            width: screenWidth / 2.201,
+                            width: screenWidth / 2.20,
                             child: Column(children: [
                               Text(
                                 "Number of\nSpending Transactions",
@@ -475,7 +474,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                             fontWeight: FontWeight.w500,
                                             fontSize: 22.0,
                                             color:
-                                                PrimaryColor.colorBottleGreen,
+                                                PrimaryColor.colorRed,
                                           ))
                                   : Text(
                                       "${spendingOfTheCurrentPageTransactions.length}",
@@ -555,7 +554,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                             fontSize: 22.0,
                                             fontWeight: FontWeight.w500,
                                             color:
-                                                PrimaryColor.colorBottleGreen,
+                                                PrimaryColor.colorRed,
                                           ))
                                   : Text("₹$averageSpending",
                                       style: Theme.of(context)
@@ -578,14 +577,14 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 GestureDetector(
                   onTap: () async {
                     if (currentPageTransactions.isEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      ScaffoldMessenger.of(context).showSnackBar( SnackBar(
                         content: Row(
                           children: [
-                            Icon(Icons.warning, color: Colors.orange),
-                            SizedBox(width: 05),
+                            const Icon(Icons.warning, color: Colors.orange),
+                            const SizedBox(width: 05),
                             Text(
                               'No Transactions between this time duration',
-                              style: TextStyle(color: Colors.orange),
+                              style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.orange),
                             ),
                           ],
                         ),
@@ -625,17 +624,14 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                       padding: const EdgeInsets.all(6.0),
                       child: Row(
                         children: [
+                          const SizedBox(width: 5,),
                           Icon(
                             Icons.file_download,
                             color: PrimaryColor.colorWhite,
                           ),
-                          CustomTextStyle(
-                              customTextStyleText: "Download stats",
-                              customTextColor: PrimaryColor.colorWhite,
-                              customTextFontWeight: FontWeight.normal,
-                              customtextstyle: null,
-                              customTextSize:
-                                  MediaQuery.of(context).size.height * 0.02)
+                          const SizedBox(width: 5,),
+                          Text('Download stats',style: Theme.of(context).textTheme.displayMedium!.copyWith(color: PrimaryColor.colorWhite,),),
+                          const SizedBox(width: 5,),
                         ],
                       ),
                     ),

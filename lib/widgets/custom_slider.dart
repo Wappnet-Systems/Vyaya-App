@@ -34,10 +34,14 @@ class CustomCircularSlider extends StatelessWidget {
             final roundedValue = value.ceil().toInt().toString();
             return '$roundedValue%';
           },
-          mainLabelStyle: TextStyle(
-            fontSize: 13.0,
-            color: Theme.of(context).colorScheme.secondary,
-          ),
+          mainLabelStyle: Theme.of(context)
+                                        .textTheme
+                                        .displaySmall!
+                                        .copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .secondary,
+                                        ),
         ),
       ),
       min: 0,
