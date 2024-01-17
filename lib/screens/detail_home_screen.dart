@@ -430,7 +430,6 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
       width: screenWidth,
       child: Card(
         elevation: 5,
-        // decoration: BoxDecoration(color: Theme.of(context).cardColor,shape: BoxShape.rectangle),
         color: Theme.of(context).cardColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(18),

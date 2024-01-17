@@ -50,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
       },
       child: Scaffold(
           backgroundColor: Theme.of(context).colorScheme.primary,
-          resizeToAvoidBottomInset: false,
+          resizeToAvoidBottomInset: true,          
           body: SafeArea(
             child: Container(
               child: screens[_currentIndex],

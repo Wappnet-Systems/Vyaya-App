@@ -1,7 +1,5 @@
-import 'package:expenses_tracker/utils/const.dart';
 import 'package:expenses_tracker/widgets/custom_no_data.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../model/transaction.dart';
 import '../widgets/transaction_list.dart';
 
@@ -191,14 +189,14 @@ class _PfScreenState extends State<PfScreen> {
                                       children: [
                                         Text(
                                           "Personal Care",
-                                          style: GoogleFonts.roboto(
-                                              color:
-                                                  PrimaryColor.colorBottleGreen,
-                                              fontSize: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.021,
-                                              fontWeight: FontWeight.w400),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headlineSmall!
+                                              .copyWith(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .onPrimary,
+                                              ),
                                         ),
                                       ],
                                     ),
@@ -211,15 +209,14 @@ class _PfScreenState extends State<PfScreen> {
                                           children: [
                                             Text(
                                               "Others",
-                                              style: GoogleFonts.roboto(
-                                                  color: PrimaryColor
-                                                      .colorBottleGreen,
-                                                  fontSize:
-                                                      MediaQuery.of(context)
-                                                              .size
-                                                              .height *
-                                                          0.021,
-                                                  fontWeight: FontWeight.w400),
+                                              style: Theme.of(context)
+                                              .textTheme
+                                              .headlineSmall!
+                                              .copyWith(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .onPrimary,
+                                              ),
                                             ),
                                           ],
                                         ),
@@ -231,15 +228,14 @@ class _PfScreenState extends State<PfScreen> {
                                           children: [
                                             Text(
                                               "Investment",
-                                              style: GoogleFonts.roboto(
-                                                  color: PrimaryColor
-                                                      .colorBottleGreen,
-                                                  fontSize:
-                                                      MediaQuery.of(context)
-                                                              .size
-                                                              .height *
-                                                          0.021,
-                                                  fontWeight: FontWeight.w400),
+                                              style: Theme.of(context)
+                                              .textTheme
+                                              .headlineSmall!
+                                              .copyWith(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .onPrimary,
+                                              ),
                                             ),
                                           ],
                                         ),
@@ -257,14 +253,14 @@ class _PfScreenState extends State<PfScreen> {
                                       children: [
                                         Text(
                                           "Education",
-                                          style: GoogleFonts.roboto(
-                                              color:
-                                                  PrimaryColor.colorBottleGreen,
-                                              fontSize: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.021,
-                                              fontWeight: FontWeight.w400),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headlineSmall!
+                                              .copyWith(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .onPrimary,
+                                              ),
                                         ),
                                       ],
                                     ),
@@ -277,15 +273,14 @@ class _PfScreenState extends State<PfScreen> {
                                           children: [
                                             Text(
                                               "Food",
-                                              style: GoogleFonts.roboto(
-                                                  color: PrimaryColor
-                                                      .colorBottleGreen,
-                                                  fontSize:
-                                                      MediaQuery.of(context)
-                                                              .size
-                                                              .height *
-                                                          0.021,
-                                                  fontWeight: FontWeight.w400),
+                                              style: Theme.of(context)
+                                              .textTheme
+                                              .headlineSmall!
+                                              .copyWith(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .onPrimary,
+                                              ),
                                             ),
                                           ],
                                         ),
@@ -297,15 +292,14 @@ class _PfScreenState extends State<PfScreen> {
                                           children: [
                                             Text(
                                               "Insurance",
-                                              style: GoogleFonts.roboto(
-                                                  color: PrimaryColor
-                                                      .colorBottleGreen,
-                                                  fontSize:
-                                                      MediaQuery.of(context)
-                                                              .size
-                                                              .height *
-                                                          0.021,
-                                                  fontWeight: FontWeight.w400),
+                                              style: Theme.of(context)
+                                              .textTheme
+                                              .headlineSmall!
+                                              .copyWith(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .onPrimary,
+                                              ),
                                             ),
                                           ],
                                         ),
@@ -323,14 +317,14 @@ class _PfScreenState extends State<PfScreen> {
                                       children: [
                                         Text(
                                           "Bills and Utilities",
-                                          style: GoogleFonts.roboto(
-                                              color:
-                                                  PrimaryColor.colorBottleGreen,
-                                              fontSize: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.021,
-                                              fontWeight: FontWeight.w400),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headlineSmall!
+                                              .copyWith(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .onPrimary,
+                                              ),
                                         ),
                                       ],
                                     ),
@@ -342,14 +336,14 @@ class _PfScreenState extends State<PfScreen> {
                                       children: [
                                         Text(
                                           "Shopping",
-                                          style: GoogleFonts.roboto(
-                                              color:
-                                                  PrimaryColor.colorBottleGreen,
-                                              fontSize: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.021,
-                                              fontWeight: FontWeight.w400),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headlineSmall!
+                                              .copyWith(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .onPrimary,
+                                              ),
                                         ),
                                       ],
                                     ),
@@ -367,14 +361,14 @@ class _PfScreenState extends State<PfScreen> {
                                       children: [
                                         Text(
                                           "Rent",
-                                          style: GoogleFonts.roboto(
-                                              color:
-                                                  PrimaryColor.colorBottleGreen,
-                                              fontSize: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.021,
-                                              fontWeight: FontWeight.w400),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headlineSmall!
+                                              .copyWith(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .onPrimary,
+                                              ),
                                         ),
                                       ],
                                     ),
@@ -386,14 +380,14 @@ class _PfScreenState extends State<PfScreen> {
                                       children: [
                                         Text(
                                           "Traveling",
-                                          style: GoogleFonts.roboto(
-                                              color:
-                                                  PrimaryColor.colorBottleGreen,
-                                              fontSize: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.021,
-                                              fontWeight: FontWeight.w400),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headlineSmall!
+                                              .copyWith(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .onPrimary,
+                                              ),
                                         ),
                                       ],
                                     ),
@@ -411,14 +405,14 @@ class _PfScreenState extends State<PfScreen> {
                                       children: [
                                         Text(
                                           "Taxes",
-                                          style: GoogleFonts.roboto(
-                                              color:
-                                                  PrimaryColor.colorBottleGreen,
-                                              fontSize: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.021,
-                                              fontWeight: FontWeight.w400),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headlineSmall!
+                                              .copyWith(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .onPrimary,
+                                              ),
                                         ),
                                       ],
                                     ),
@@ -430,14 +424,14 @@ class _PfScreenState extends State<PfScreen> {
                                       children: [
                                         Text(
                                           "Entertainment",
-                                          style: GoogleFonts.roboto(
-                                              color:
-                                                  PrimaryColor.colorBottleGreen,
-                                              fontSize: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.021,
-                                              fontWeight: FontWeight.w400),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headlineSmall!
+                                              .copyWith(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .onPrimary,
+                                              ),
                                         ),
                                       ],
                                     ),

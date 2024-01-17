@@ -1,10 +1,11 @@
 import 'dart:io';
 // import 'dart:developer';
+import 'package:expenses_tracker/screens/file_view.dart';
 import 'package:expenses_tracker/screens/transactions_of_month.dart';
+
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
-import '../api/pdf_api.dart';
 import '../api/pdf_transaction_api.dart';
 import '../model/localtransaction.dart';
 import '../model/transaction.dart';
@@ -473,8 +474,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                           .copyWith(
                                             fontWeight: FontWeight.w500,
                                             fontSize: 22.0,
-                                            color:
-                                                PrimaryColor.colorRed,
+                                            color: PrimaryColor.colorRed,
                                           ))
                                   : Text(
                                       "${spendingOfTheCurrentPageTransactions.length}",
@@ -553,8 +553,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                           .copyWith(
                                             fontSize: 22.0,
                                             fontWeight: FontWeight.w500,
-                                            color:
-                                                PrimaryColor.colorRed,
+                                            color: PrimaryColor.colorRed,
                                           ))
                                   : Text("₹$averageSpending",
                                       style: Theme.of(context)
@@ -570,21 +569,23 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                     ),
                   ]),
                 )),
-            
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 GestureDetector(
                   onTap: () async {
                     if (currentPageTransactions.isEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar( SnackBar(
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         content: Row(
                           children: [
                             const Icon(Icons.warning, color: Colors.orange),
                             const SizedBox(width: 05),
                             Text(
                               'No Transactions between this time duration',
-                              style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.orange),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelSmall!
+                                  .copyWith(color: Colors.orange),
                             ),
                           ],
                         ),
@@ -592,6 +593,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                     } else {
                       // log("File Saved");
                       final File pdfFile;
+                      String? pdfFileName;
+                      value ==0 ?pdfFileName= "Weekly Analysis" :value == 1 ?pdfFileName= "Monthly Analysis" : pdfFileName="Yearly Analysis";
                       value == 0
                           ? pdfFile = await PdfInvoiceApi.generate(
                               currentPageTransactions,
@@ -615,7 +618,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                   incomeOfTheCurrentPageTransactionsValue!,
                                   spendingOfCurrentPageTransactionsValue!,
                                   balanceOfCurrentPageTransactionsValue!);
-                      PdfApi.openFile(pdfFile);
+                      inAppPdfView(pdfFile.path,pdfFileName);
+                      // PdfApi.openFile(pdfFile);
                     }
                   },
                   child: Card(
@@ -624,14 +628,28 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                       padding: const EdgeInsets.all(6.0),
                       child: Row(
                         children: [
-                          const SizedBox(width: 5,),
+                          const SizedBox(
+                            width: 5,
+                          ),
                           Icon(
                             Icons.file_download,
                             color: PrimaryColor.colorWhite,
                           ),
-                          const SizedBox(width: 5,),
-                          Text('Download stats',style: Theme.of(context).textTheme.displayMedium!.copyWith(color: PrimaryColor.colorWhite,),),
-                          const SizedBox(width: 5,),
+                          const SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            'Download stats',
+                            style: Theme.of(context)
+                                .textTheme
+                                .displayMedium!
+                                .copyWith(
+                                  color: PrimaryColor.colorWhite,
+                                ),
+                          ),
+                          const SizedBox(
+                            width: 5,
+                          ),
                         ],
                       ),
                     ),
@@ -639,11 +657,23 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 20,)
+            const SizedBox(
+              height: 20,
+            )
           ],
         ),
       ),
     );
+  }
+
+  inAppPdfView(String path, String selectedPdfName) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => FileViewWidget(
+                  path: path,
+                  filename: selectedPdfName,
+                )));
   }
 
   Future<List<LocalTransaction>> getAllLocalTransactions() async {

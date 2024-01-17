@@ -96,10 +96,20 @@ class _TransactionScreenState extends State<TransactionScreen> {
       subcategory = 1;
       personalFinanceCategory = 1;
     } else {
+      print("Date : ${widget.transactionDate}");
       amountController.text = widget.transactionAmount.toString();
       noteController.text = widget.transactionNote.toString();
       paymentModeController.text = widget.transactionPaymentMode!;
       setDateController.text = widget.transactionDate!;
+  //     DateTime dt = DateTime.parse('${widget.transactionDate}');
+  // print(dt);
+      // DateFormat dateFormat = DateFormat('MMM dd, yyyy hh:mm a');
+      // DateTime parsedDateTime = dateFormat.parse(widget.transactionDate!);
+
+// Now you can use the parsedDateTime as needed
+// print(parsedDateTime);
+      // _dateTime = DateFormat("MMM dd, yyyy hh:mm a").parse(widget.transactionDate!);
+      // print("without update: ${_dateTime.toString()}");
       dropdownvalue = paymentModeController.text;
       subcategory = widget.transactionSubcategory;
       personalFinanceCategory = 1;

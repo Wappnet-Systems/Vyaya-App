@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import '../utils/const.dart';
 
@@ -110,27 +109,18 @@ class CustomTransaction extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           SizedBox(
-                            width: MediaQuery.of(context).size.width/2.5,
-                            child: Text(
-                              "$transactionNote",
-                              maxLines: 1,
-                              overflow: TextOverflow.fade,
-                              style: GoogleFonts.roboto(
-                                  color: textTheme,
-                                  fontSize:
-                                      MediaQuery.of(context).size.height * 0.021,
-                                  fontWeight: FontWeight.w400),
-                            ),
+                            width: MediaQuery.of(context).size.width / 2.5,
+                            child: Text("$transactionNote",
+                                maxLines: 1,
+                                overflow: TextOverflow.fade,
+                                style:
+                                    Theme.of(context).textTheme.displayMedium),
                           ),
                           Row(
                             children: [
-                              Text(
-                                '$dateStamp \t$timeStamp',
-                                style: Theme.of(context)
-                                        .textTheme
-                                        .headlineSmall!.copyWith(fontSize: 15),
-                                
-                              ),
+                              Text('$dateStamp \t$timeStamp',
+                                  style:
+                                      Theme.of(context).textTheme.displaySmall),
                             ],
                           )
                         ],
@@ -140,26 +130,28 @@ class CustomTransaction extends StatelessWidget {
                   Column(
                     children: [
                       SizedBox(
-                        width: MediaQuery.of(context).size.width/3.5,
+                        width: MediaQuery.of(context).size.width / 3.5,
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Text(                                                      
+                          child: Text(
                             NumberFormat.currency(
-                              symbol: categoryId == 0 || categoryId == 3 ?'+ ₹' :"- ₹",
+                              symbol: categoryId == 0 || categoryId == 3
+                                  ? '+ ₹'
+                                  : "- ₹",
                               locale: "HI",
                               decimalDigits: 0,
                             ).format(transactionAmount),
-                          
-                            style: GoogleFonts.roboto(
-                                color: categoryId == 0 || categoryId == 3
-                                      ? PrimaryColor.colorBottleGreen
-                                      : PrimaryColor.colorRed,
-                                fontSize:
-                                    MediaQuery.of(context).size.height * 0.020,
-                                fontWeight: FontWeight.w500),
-                                maxLines: 1,
-                                overflow: TextOverflow.fade,
-                                textAlign: TextAlign.end,
+                            style: Theme.of(context)
+                                .textTheme
+                                .displayMedium!
+                                .copyWith(
+                                    color: categoryId == 0 || categoryId == 3
+                                        ? PrimaryColor.colorBottleGreen
+                                        : PrimaryColor.colorRed,
+                                    fontWeight: FontWeight.w500),
+                            maxLines: 1,
+                            overflow: TextOverflow.fade,
+                            textAlign: TextAlign.end,
                           ),
                         ),
                       ),

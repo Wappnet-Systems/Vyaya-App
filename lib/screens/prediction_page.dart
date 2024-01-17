@@ -105,9 +105,9 @@ class _PredictionPageState extends State<PredictionPage> {
   }
 
   findRuleBrekPercetage() {
-    needResult = (((needLimitCross)! / (needPercentageList.length)) * 100);
-    wantResult = ((wantsLimitCross! / (wantPercentageList.length)) * 100);
-    savingResult = ((savingLimitCross! / (savingPercentageList.length)) * 100);
+    needResult = (100-(((needLimitCross)! / (needPercentageList.length)) * 100));
+    wantResult = (100-((wantsLimitCross! / (wantPercentageList.length)) * 100));
+    savingResult = (100-(savingLimitCross! / (savingPercentageList.length)) * 100);
   }
 
   categoriseListing(List<double> listing, int limit, String value) {
@@ -194,91 +194,92 @@ class _PredictionPageState extends State<PredictionPage> {
             //     padding: const EdgeInsets.all(8.0),
             //     child: Column(
             //       children: [
-                    // Row(
-                    //   mainAxisAlignment: MainAxisAlignment.center,
-                    //   crossAxisAlignment: CrossAxisAlignment.end,
-                    //   children: [
-                    //     Text(
-                    //       formatCurrency(
-                    //           widget.predictionHelperData.remaininBalance),
-                    //       style: Theme.of(context)
-                    //           .textTheme
-                    //           .headlineLarge!
-                    //           .copyWith(
-                    //             color: PrimaryColor.colorBottleGreen,
-                    //             fontWeight: FontWeight.w500,
-                    //           ),
-                    //       textAlign: TextAlign.center,
-                    //     ),
-                    //     const SizedBox(
-                    //       width: 5,
-                    //     ),
-                    //     Row(
-                    //       mainAxisAlignment: MainAxisAlignment.start,
-                    //       crossAxisAlignment: CrossAxisAlignment.end,
-                    //       children: [
-                    //         Padding(
-                    //           padding: const EdgeInsets.only(bottom: 4.0),
-                    //           child: Icon(
-                    //             calculatePercentageChange(
-                    //                         lastRemainingBalance!,
-                    //                         widget.predictionHelperData
-                    //                             .remaininBalance!) <
-                    //                     0
-                    //                 ? Icons.arrow_downward
-                    //                 : Icons.arrow_upward,
-                    //             size: 16,
-                    //             color: PrimaryColor.colorBottleGreen,
-                    //           ),
-                    //         ),
-                    //         Text(
-                    //           "${calculatePercentageChange(lastRemainingBalance!, widget.predictionHelperData.remaininBalance!).toStringAsFixed(1).toString()}% ",
-                    //           style: Theme.of(context)
-                    //               .textTheme
-                    //               .displaySmall!
-                    //               .copyWith(
-                    //                   color: PrimaryColor.colorBottleGreen),
-                    //           textAlign: TextAlign.center,
-                    //         ),
-                    //         const SizedBox(
-                    //           width: 5,
-                    //         ),
-                    //         Text(
-                    //           formatCurrency(lastRemainingBalance),
-                    //           style: Theme.of(context)
-                    //               .textTheme
-                    //               .displaySmall!
-                    //               .copyWith(
-                    //                 color: Theme.of(context).hintColor,
-                    //               ),
-                    //           textAlign: TextAlign.center,
-                    //         ),
-                    //       ],
-                    //     ),
-                    //   ],
-                    // ),
-                    // const SizedBox(
-                    //   height: 05,
-                    // ),
-                    // Row(
-                    //   mainAxisAlignment: MainAxisAlignment.center,
-                    //   children: [
-                    //     Text(
-                    //       'Predicted Remaining Balance',
-                    //       style: Theme.of(context)
-                    //           .textTheme
-                    //           .displaySmall!
-                    //           .copyWith(
-                    //             color: Theme.of(context).hintColor,
-                    //           ),
-                    //       textAlign: TextAlign.center,
-                    //     ),
-                    //   ],
-                    // ),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.center,
+            //   crossAxisAlignment: CrossAxisAlignment.end,
+            //   children: [
+            //     Text(
+            //       formatCurrency(
+            //           widget.predictionHelperData.remaininBalance),
+            //       style: Theme.of(context)
+            //           .textTheme
+            //           .headlineLarge!
+            //           .copyWith(
+            //             color: PrimaryColor.colorBottleGreen,
+            //             fontWeight: FontWeight.w500,
+            //           ),
+            //       textAlign: TextAlign.center,
+            //     ),
+            //     const SizedBox(
+            //       width: 5,
+            //     ),
+            //     Row(
+            //       mainAxisAlignment: MainAxisAlignment.start,
+            //       crossAxisAlignment: CrossAxisAlignment.end,
+            //       children: [
+            //         Padding(
+            //           padding: const EdgeInsets.only(bottom: 4.0),
+            //           child: Icon(
+            //             calculatePercentageChange(
+            //                         lastRemainingBalance!,
+            //                         widget.predictionHelperData
+            //                             .remaininBalance!) <
+            //                     0
+            //                 ? Icons.arrow_downward
+            //                 : Icons.arrow_upward,
+            //             size: 16,
+            //             color: PrimaryColor.colorBottleGreen,
+            //           ),
+            //         ),
+            //         Text(
+            //           "${calculatePercentageChange(lastRemainingBalance!, widget.predictionHelperData.remaininBalance!).toStringAsFixed(1).toString()}% ",
+            //           style: Theme.of(context)
+            //               .textTheme
+            //               .displaySmall!
+            //               .copyWith(
+            //                   color: PrimaryColor.colorBottleGreen),
+            //           textAlign: TextAlign.center,
+            //         ),
+            //         const SizedBox(
+            //           width: 5,
+            //         ),
+            //         Text(
+            //           formatCurrency(lastRemainingBalance),
+            //           style: Theme.of(context)
+            //               .textTheme
+            //               .displaySmall!
+            //               .copyWith(
+            //                 color: Theme.of(context).hintColor,
+            //               ),
+            //           textAlign: TextAlign.center,
+            //         ),
+            //       ],
+            //     ),
+            //   ],
+            // ),
+            // const SizedBox(
+            //   height: 05,
+            // ),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.center,
+            //   children: [
+            //     Text(
+            //       'Predicted Spending',
+            //       style: Theme.of(context)
+            //           .textTheme
+            //           .displaySmall!
+            //           .copyWith(
+            //             color: Theme.of(context).hintColor,
+            //           ),
+            //       textAlign: TextAlign.center,
+            //     ),
+            //   ],
+            // ),
             //       ],
             //     ),
             //   ),
             // ),
+            
             const SizedBox(
               height: 5,
             ),
@@ -288,45 +289,13 @@ class _PredictionPageState extends State<PredictionPage> {
                 Flexible(
                   flex: 2,
                   child: Card(
-                    color: PrimaryColor.colorBottleGreen,
+                    // color: PrimaryColor.colorBottleGreen,
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Column(
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Card(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(60)),
-                                color: PrimaryColor.colorWhite,
-                                child: SizedBox(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.045,
-                                  height:
-                                      MediaQuery.of(context).size.width * 0.045,
-                                  child: Icon(
-                                    Icons.arrow_upward,
-                                    color: PrimaryColor.colorBottleGreen,
-                                    size: 16,
-                                  ),
-                                ),
-                              ),
-                              Text(
-                                'Predicted Spending',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .displaySmall!
-                                    .copyWith(
-                                      color: PrimaryColor.colorWhite,
-                                    ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 02,
-                          ),
+                          
+                          
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -337,7 +306,7 @@ class _PredictionPageState extends State<PredictionPage> {
                                     .textTheme
                                     .headlineLarge!
                                     .copyWith(
-                                      color: PrimaryColor.colorWhite,
+                                      color: PrimaryColor.colorRed,
                                       fontWeight: FontWeight.w500,
                                     ),
                                 textAlign: TextAlign.center,
@@ -355,44 +324,68 @@ class _PredictionPageState extends State<PredictionPage> {
                                           ? Icons.arrow_downward
                                           : Icons.arrow_upward,
                                       size: 16,
-                                      color: PrimaryColor.colorWhite,
+                                      color: PrimaryColor.colorRed,
                                     ),
                                     Text(
-                                "${calculatePercentageChange(lastExpenses!, widget.predictionHelperData.totalExpenses!).toStringAsFixed(1).toString()}% ",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .displaySmall!
-                                    .copyWith(
-                                      color: PrimaryColor.colorWhite,
+                                      "${calculatePercentageChange(lastExpenses!, widget.predictionHelperData.totalExpenses!).toStringAsFixed(1).toString()}% ",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .displaySmall!
+                                          .copyWith(
+                                            color: PrimaryColor.colorRed,
+                                          ),
+                                      textAlign: TextAlign.center,
                                     ),
-                                textAlign: TextAlign.center,
-                              ),
-                              const SizedBox(
-                                width: 5,
-                              ),
-                              Text(
-                                formatCurrency(lastExpenses),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .displaySmall!
-                                    .copyWith(
-                                      color: PrimaryColor.colorWhite,
+                                    const SizedBox(
+                                      width: 5,
                                     ),
-                                textAlign: TextAlign.center,
-                              ),
+                                    Text(
+                                      formatCurrency(lastExpenses),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .displaySmall!
+                                          .copyWith(
+                                            color: Theme.of(context).hintColor,
+                                          ),
+                                      textAlign: TextAlign.center,
+                                    ),
                                   ],
                                 ),
                               ),
-                              
                             ],
                           ),
-                          // Row(
-                          //   mainAxisAlignment: MainAxisAlignment.center,
-                          //   crossAxisAlignment: CrossAxisAlignment.end,
-                          //   children: [
-                              
-                          //   ],
-                          // ),
+                          const SizedBox(height: 10,),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              // Card(
+                              //   shape: RoundedRectangleBorder(
+                              //       borderRadius: BorderRadius.circular(60)),
+                              //   color: PrimaryColor.colorWhite,
+                              //   child: SizedBox(
+                              //     width:
+                              //         MediaQuery.of(context).size.width * 0.045,
+                              //     height:
+                              //         MediaQuery.of(context).size.width * 0.045,
+                              //     child: Icon(
+                              //       Icons.arrow_upward,
+                              //       color: PrimaryColor.colorRed,
+                              //       size: 16,
+                              //     ),
+                              //   ),
+                              // ),
+                              Text(
+                                'Predicted Spending',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .displaySmall!
+                                    .copyWith(
+                                      color:  Theme.of(context).hintColor,
+                                    ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          ),
                         ],
                       ),
                     ),
@@ -505,8 +498,7 @@ class _PredictionPageState extends State<PredictionPage> {
                 //     ),
                 //   ),
                 // ),
-
-],
+              ],
             ),
             SizedBox(
               height: screenHeight * 0.015,
@@ -852,7 +844,6 @@ class _PredictionPageState extends State<PredictionPage> {
                                               .colorScheme
                                               .secondary,
                                         ),
-                                    
                                   ),
                                 ),
                                 min: 0,
@@ -867,12 +858,14 @@ class _PredictionPageState extends State<PredictionPage> {
                               ),
                               Text(
                                 'Needs',
-                                style: Theme.of(context).textTheme.displayMedium,
+                                style:
+                                    Theme.of(context).textTheme.displayMedium,
                                 textAlign: TextAlign.left,
                               ),
                               Text(
                                 formatCurrency(pfNeeds),
-                                style: Theme.of(context).textTheme.displayMedium,
+                                style:
+                                    Theme.of(context).textTheme.displayMedium,
                                 textAlign: TextAlign.left,
                               ),
                             ],
@@ -927,12 +920,14 @@ class _PredictionPageState extends State<PredictionPage> {
                               ),
                               Text(
                                 'Wants',
-                                style: Theme.of(context).textTheme.displayMedium,
+                                style:
+                                    Theme.of(context).textTheme.displayMedium,
                                 textAlign: TextAlign.left,
                               ),
                               Text(
                                 formatCurrency(pfWants),
-                                style: Theme.of(context).textTheme.displayMedium,
+                                style:
+                                    Theme.of(context).textTheme.displayMedium,
                                 textAlign: TextAlign.left,
                               ),
                             ],
@@ -987,12 +982,14 @@ class _PredictionPageState extends State<PredictionPage> {
                               ),
                               Text(
                                 'Saving',
-                                style: Theme.of(context).textTheme.displayMedium,
+                                style:
+                                    Theme.of(context).textTheme.displayMedium,
                                 textAlign: TextAlign.left,
                               ),
                               Text(
                                 formatCurrency(pfSaving),
-                                style: Theme.of(context).textTheme.displayMedium,
+                                style:
+                                    Theme.of(context).textTheme.displayMedium,
                                 textAlign: TextAlign.left,
                               ),
                             ],
@@ -1013,7 +1010,7 @@ class _PredictionPageState extends State<PredictionPage> {
           ],
         ),
       ),
-      // floatingActionButton: FloatingActionButton(onPressed: ),
+      
     );
   }
 
@@ -1247,15 +1244,19 @@ class _PredictionPageState extends State<PredictionPage> {
           if (value == 0) {
             return Row(
               children: [
+
                 Icon(
-                  Icons.star,
-                  color: PrimaryColor.colorBottleGreen,
+                  Icons.warning_amber_rounded,
+                  color: PrimaryColor.colorRed,
                 ),
                 Text(
                   stringValue,
-                  style: Theme.of(context).textTheme.displayMedium!.copyWith(color: PrimaryColor.colorBottleGreen,),
-                  
+                  style: Theme.of(context).textTheme.displayMedium!.copyWith(
+                        color: PrimaryColor.colorRed,
+                      ),
                 ),
+
+                
               ],
             );
           } else if (value > 0 && value <= 50) {
@@ -1267,7 +1268,9 @@ class _PredictionPageState extends State<PredictionPage> {
                 ),
                 Text(
                   stringValue,
-                  style: Theme.of(context).textTheme.displayMedium!.copyWith(color: Colors.orange,),
+                  style: Theme.of(context).textTheme.displayMedium!.copyWith(
+                        color: Colors.orange,
+                      ),
                 ),
               ],
             );
@@ -1275,13 +1278,14 @@ class _PredictionPageState extends State<PredictionPage> {
             return Row(
               children: [
                 Icon(
-                  Icons.warning_amber_rounded,
-                  color: PrimaryColor.colorRed,
+                  Icons.star,
+                  color: PrimaryColor.colorBottleGreen,
                 ),
                 Text(
                   stringValue,
-                  style: Theme.of(context).textTheme.displayMedium!.copyWith(color: PrimaryColor.colorRed,),
-                  
+                  style: Theme.of(context).textTheme.displayMedium!.copyWith(
+                        color: PrimaryColor.colorBottleGreen,
+                      ),
                 ),
               ],
             );
@@ -1301,24 +1305,23 @@ class _PredictionPageState extends State<PredictionPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Spending Analysis',
-                    style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w500,),                    
+                    'Spending Behaviour',
+                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                          fontWeight: FontWeight.w500,
+                        ),
                   ),
                 ],
               ),
               SizedBox(height: ScreenUtil().setHeight(10)),
+              Text("Important :",
+                  style: Theme.of(context)
+                      .textTheme
+                      .displayMedium!
+                      .copyWith(fontWeight: FontWeight.w400)),
+              Text("\u2022 Stick to the 50-30-20 Budgeting rule!",
+                  style: Theme.of(context).textTheme.headlineSmall),
               Text(
-                "Important :",
-                style: Theme.of(context).textTheme.displayMedium!.copyWith(fontWeight: FontWeight.w400)
-                
-              ),
-              Text(
-                "\u2022 Stick to the 50-30-20 Budgeting rule!",
-                style: Theme.of(context).textTheme.headlineSmall
-                
-              ),
-              Text(
-                "\u2022 Out of all recorded budgets, track instances how many time that rule isn't followed.",
+                "\u2022 Out of all recorded budgets, track instances how many time that rule is followed.",
                 style: Theme.of(context).textTheme.headlineSmall,
                 textAlign: TextAlign.justify,
               ),
@@ -1336,11 +1339,11 @@ class _PredictionPageState extends State<PredictionPage> {
                   const SizedBox(
                     width: 10,
                   ),
-                  Text(
-                    '(Outstanding Performance)',
-                    style: Theme.of(context).textTheme.headlineSmall!.copyWith(color: PrimaryColor.colorBottleGreen)
-                    
-                  ),
+                  Text('(Outstanding Performance)',
+                      style: Theme.of(context)
+                          .textTheme
+                          .headlineSmall!
+                          .copyWith(color: PrimaryColor.colorBottleGreen)),
                 ],
               ),
               Row(
@@ -1352,10 +1355,11 @@ class _PredictionPageState extends State<PredictionPage> {
                   const SizedBox(
                     width: 10,
                   ),
-                  Text(
-                    '(Average Performance)',
-                    style: Theme.of(context).textTheme.headlineSmall!.copyWith(color: Colors.orange)
-                  ),
+                  Text('(Average Performance)',
+                      style: Theme.of(context)
+                          .textTheme
+                          .headlineSmall!
+                          .copyWith(color: Colors.orange)),
                 ],
               ),
               Row(
@@ -1367,10 +1371,11 @@ class _PredictionPageState extends State<PredictionPage> {
                   const SizedBox(
                     width: 10,
                   ),
-                  Text(
-                    '(Poor Performance)',
-                    style: Theme.of(context).textTheme.headlineSmall!.copyWith(color: PrimaryColor.colorRed)
-                  ),
+                  Text('(Poor Performance)',
+                      style: Theme.of(context)
+                          .textTheme
+                          .headlineSmall!
+                          .copyWith(color: PrimaryColor.colorRed)),
                 ],
               ),
               SizedBox(height: ScreenUtil().setHeight(5)),
