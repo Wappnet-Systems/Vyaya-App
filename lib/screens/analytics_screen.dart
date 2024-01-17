@@ -594,7 +594,11 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                       // log("File Saved");
                       final File pdfFile;
                       String? pdfFileName;
-                      value ==0 ?pdfFileName= "Weekly Analysis" :value == 1 ?pdfFileName= "Monthly Analysis" : pdfFileName="Yearly Analysis";
+                      value == 0
+                          ? pdfFileName = "Weekly Analysis"
+                          : value == 1
+                              ? pdfFileName = "Monthly Analysis"
+                              : pdfFileName = "Yearly Analysis";
                       value == 0
                           ? pdfFile = await PdfInvoiceApi.generate(
                               currentPageTransactions,
@@ -618,7 +622,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                   incomeOfTheCurrentPageTransactionsValue!,
                                   spendingOfCurrentPageTransactionsValue!,
                                   balanceOfCurrentPageTransactionsValue!);
-                      inAppPdfView(pdfFile.path,pdfFileName);
+                      inAppPdfView(pdfFile.path, pdfFileName);
                       // PdfApi.openFile(pdfFile);
                     }
                   },
@@ -667,13 +671,13 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
   }
 
   inAppPdfView(String path, String selectedPdfName) {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => FileViewWidget(
-                  path: path,
-                  filename: selectedPdfName,
-                )));
+    Navigator.of(context).push(
+      FadeSlideTransitionRoute(
+          page: FileViewWidget(
+        path: path,
+        filename: selectedPdfName,
+      )),
+    );
   }
 
   Future<List<LocalTransaction>> getAllLocalTransactions() async {

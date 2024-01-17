@@ -101,15 +101,11 @@ class _TransactionScreenState extends State<TransactionScreen> {
       noteController.text = widget.transactionNote.toString();
       paymentModeController.text = widget.transactionPaymentMode!;
       setDateController.text = widget.transactionDate!;
-  //     DateTime dt = DateTime.parse('${widget.transactionDate}');
-  // print(dt);
-      // DateFormat dateFormat = DateFormat('MMM dd, yyyy hh:mm a');
-      // DateTime parsedDateTime = dateFormat.parse(widget.transactionDate!);
-
-// Now you can use the parsedDateTime as needed
-// print(parsedDateTime);
-      // _dateTime = DateFormat("MMM dd, yyyy hh:mm a").parse(widget.transactionDate!);
-      // print("without update: ${_dateTime.toString()}");
+      DateTime inputDate =
+          DateFormat("MMM dd, yyyy h:mm a").parse(widget.transactionDate!);
+      String outputDateString =
+          DateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(inputDate);
+      _dateTime = DateTime.parse(outputDateString);
       dropdownvalue = paymentModeController.text;
       subcategory = widget.transactionSubcategory;
       personalFinanceCategory = 1;
@@ -140,20 +136,41 @@ class _TransactionScreenState extends State<TransactionScreen> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).bottomAppBarTheme.color,
         iconTheme:
-              IconThemeData(color: Theme.of(context).colorScheme.secondary),
+            IconThemeData(color: Theme.of(context).colorScheme.secondary),
         title: widget.id == 1
-            ? Text(
-                'Add Transaction',
-                style: Theme.of(context).textTheme.headlineMedium!.copyWith(color: Theme.of(context).colorScheme.secondary)
-              )
-            : Text(
-                'Update Transaction',
-                style: Theme.of(context).textTheme.headlineMedium!.copyWith(color: Theme.of(context).colorScheme.secondary)
-              ),
+            ? Text('Add Transaction',
+                style: Theme.of(context)
+                    .textTheme
+                    .headlineMedium!
+                    .copyWith(color: Theme.of(context).colorScheme.secondary))
+            : Text('Update Transaction',
+                style: Theme.of(context)
+                    .textTheme
+                    .headlineMedium!
+                    .copyWith(color: Theme.of(context).colorScheme.secondary)),
         elevation: 5,
+        // actions: [
+        //   widget.id == 1
+        //       ? const SizedBox.shrink()
+        //       : IconButton(
+        //           onPressed: () {
+        //             showDialog(
+        //                 context: context,
+        //                 builder: (BuildContext context) {
+        //                   return ZoomInOutDialogWrapper(builder: (context) {
+        //                     return customDeleteDialogue();
+        //                   });
+        //                 });
+        //             //
+        //           },
+        //           icon: Icon(
+        //             Icons.delete,
+        //             color: PrimaryColor.colorRed,
+        //           ))
+        // ],
       ),
       body: Material(
-        color: Colors.transparent, // Set transparent background
+        color: Colors.transparent,
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -178,15 +195,15 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                   ? Theme.of(context).colorScheme.onPrimary
                                   : Theme.of(context).colorScheme.secondary),
                         ),
-                        child: Text(
-                          "Expenses",
-                          style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                              color: (value == 0)
-                                ? Theme.of(context).colorScheme.onPrimary
-                                : Theme.of(context).colorScheme.secondary,
-                          )
-                          
-                        ),
+                        child: Text("Expenses",
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineSmall!
+                                .copyWith(
+                                  color: (value == 0)
+                                      ? Theme.of(context).colorScheme.onPrimary
+                                      : Theme.of(context).colorScheme.secondary,
+                                )),
                       ),
                     ),
                     SizedBox(
@@ -210,11 +227,14 @@ class _TransactionScreenState extends State<TransactionScreen> {
                         ),
                         child: Text(
                           "Income",
-                          style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                              color: (value == 1)
-                                ? Theme.of(context).colorScheme.onPrimary
-                                : Theme.of(context).colorScheme.secondary,),
-                          
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineSmall!
+                              .copyWith(
+                                color: (value == 1)
+                                    ? Theme.of(context).colorScheme.onPrimary
+                                    : Theme.of(context).colorScheme.secondary,
+                              ),
                         ),
                       ),
                     ),
@@ -251,26 +271,28 @@ class _TransactionScreenState extends State<TransactionScreen> {
                               },
                               controller: setDateController,
                               validator: textFormFieldValidator,
-                              style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                              color: Theme.of(context).colorScheme.secondary,),
-                              
-                              decoration: InputDecoration(                         
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineSmall!
+                                  .copyWith(
+                                    color:
+                                        Theme.of(context).colorScheme.secondary,
+                                  ),
+                              decoration: InputDecoration(
                                 hintText: "Enter Date",
                                 prefixIconConstraints:
                                     const BoxConstraints.tightFor(
                                         height: 05, width: 35),
                                 enabledBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .secondary, 
+                                    color:
+                                        Theme.of(context).colorScheme.secondary,
                                   ),
                                 ),
                                 focusedBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onPrimary, 
+                                    color:
+                                        Theme.of(context).colorScheme.onPrimary,
                                   ),
                                 ),
                               ),
@@ -307,8 +329,13 @@ class _TransactionScreenState extends State<TransactionScreen> {
                               ],
                               cursorColor:
                                   Theme.of(context).colorScheme.onPrimary,
-                              style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                              color: Theme.of(context).colorScheme.secondary,),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineSmall!
+                                  .copyWith(
+                                    color:
+                                        Theme.of(context).colorScheme.secondary,
+                                  ),
                               controller: amountController,
                               validator: amountValidator,
                               decoration: InputDecoration(
@@ -359,17 +386,25 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                             navigate(context, 0);
                                           },
                                           readOnly: true,
-                                          controller: expensesCategoryController,
-                                          style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                              color: Theme.of(context).colorScheme.secondary,),
+                                          controller:
+                                              expensesCategoryController,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headlineSmall!
+                                              .copyWith(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .secondary,
+                                              ),
                                           decoration: InputDecoration(
                                             suffixIcon: Padding(
                                               padding: EdgeInsets.only(
-                                                  left: MediaQuery.sizeOf(context)
-                                                          .width *
-                                                      0.07),
-                                              child:
-                                                  const Icon(Icons.chevron_right),
+                                                  left:
+                                                      MediaQuery.sizeOf(context)
+                                                              .width *
+                                                          0.07),
+                                              child: const Icon(
+                                                  Icons.chevron_right),
                                             ),
                                             prefixIconConstraints:
                                                 const BoxConstraints.tightFor(
@@ -402,14 +437,20 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                     },
                                     readOnly: true,
                                     controller: incomeCategoryController,
-                                    style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                              color: Theme.of(context).colorScheme.secondary,),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineSmall!
+                                        .copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .secondary,
+                                        ),
                                     decoration: InputDecoration(
                                       suffixIcon: Padding(
                                         padding: EdgeInsets.only(
-                                            left:
-                                                MediaQuery.sizeOf(context).width *
-                                                    0.07),
+                                            left: MediaQuery.sizeOf(context)
+                                                    .width *
+                                                0.07),
                                         child: const Icon(Icons.chevron_right),
                                       ),
                                       prefixIconConstraints:
@@ -492,9 +533,14 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                   value: items,
                                   child: Text(
                                     items,
-                                    style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                              color: Theme.of(context).colorScheme.secondary,),
-                                    
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineSmall!
+                                        .copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .secondary,
+                                        ),
                                   ),
                                 );
                               }).toList(),
@@ -510,7 +556,8 @@ class _TransactionScreenState extends State<TransactionScreen> {
                       ),
                       value == 1
                           ? Padding(
-                              padding: const EdgeInsets.only(top: 8.0, left: 8.0),
+                              padding:
+                                  const EdgeInsets.only(top: 8.0, left: 8.0),
                               child: Row(
                                 children: [
                                   Checkbox(
@@ -530,14 +577,20 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                     value: _isChecked,
                                     onChanged: (bool? newValue) {
                                       _isChecked = newValue!;
-      
+
                                       setState(() {});
                                     },
                                   ),
                                   Text(
                                     'Add to Personal Finance Portion',
-                                    style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                              color: Theme.of(context).colorScheme.secondary,),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineSmall!
+                                        .copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .secondary,
+                                        ),
                                   ),
                                 ],
                               ),
@@ -550,7 +603,16 @@ class _TransactionScreenState extends State<TransactionScreen> {
                       ),
                       Row(
                         children: [
-                          Text('Other Details',style: Theme.of(context).textTheme.displayMedium!.copyWith(color: Theme.of(context).colorScheme.secondary,fontWeight: FontWeight.w500),),                        
+                          Text(
+                            'Other Details',
+                            style: Theme.of(context)
+                                .textTheme
+                                .displayMedium!
+                                .copyWith(
+                                    color:
+                                        Theme.of(context).colorScheme.secondary,
+                                    fontWeight: FontWeight.w500),
+                          ),
                         ],
                       ),
                       Row(
@@ -574,8 +636,13 @@ class _TransactionScreenState extends State<TransactionScreen> {
                               readOnly: false,
                               cursorColor:
                                   Theme.of(context).colorScheme.onPrimary,
-                              style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                              color: Theme.of(context).colorScheme.secondary,),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineSmall!
+                                  .copyWith(
+                                    color:
+                                        Theme.of(context).colorScheme.secondary,
+                                  ),
                               keyboardType: TextInputType.text,
                               maxLength: 20,
                               controller: noteController,
@@ -629,9 +696,9 @@ class _TransactionScreenState extends State<TransactionScreen> {
 
   Future<void> navigate(BuildContext context, int id) async {
     final result = await Navigator.of(context).push(
-                              FadeSlideTransitionRoute(
-                                  page: CategoryList(id: id)),);
-    
+      FadeSlideTransitionRoute(page: CategoryList(id: id)),
+    );
+
     if (!mounted) return;
     int index = int.parse(result);
     int indexForIcon = index;
@@ -668,8 +735,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
         firstDate: DateTime(2023),
         lastDate: DateTime.now(),
         builder: (context, child) {
-          return ZoomInOutDialogWrapper(
-          builder: (context){
+          return ZoomInOutDialogWrapper(builder: (context) {
             return Theme(
               data: Theme.of(context).copyWith(
                   colorScheme: ColorScheme.light(
@@ -685,8 +751,8 @@ class _TransactionScreenState extends State<TransactionScreen> {
                   ),
                   hintColor: Colors.black38),
               child: child!,
-            );}
-          );
+            );
+          });
         });
     if (picked != null) {
       final time = await showTimePicker(
@@ -733,6 +799,20 @@ class _TransactionScreenState extends State<TransactionScreen> {
     return transaction;
   }
 
+  Future<void> deleteLocalTransaction() async {
+    final box = await Hive.openBox<LocalTransaction>('local_transactions');
+    final index = box.values
+        .toList()
+        .indexWhere((transaction) => transaction.tID == widget.transactionId);
+    if (index != -1) {
+      await box.deleteAt(index);
+    }
+    getAllLocalTransactions();
+    Navigator.of(context).push(
+      FadeSlideTransitionRoute(page: const HomeScreen()),
+    );
+  }
+
   Future<void> updateLocalTransaction(
       LocalTransaction updatedTransaction) async {
     final box = await Hive.openBox<LocalTransaction>('local_transactions');
@@ -747,7 +827,6 @@ class _TransactionScreenState extends State<TransactionScreen> {
   void updateTransaction() {
     if (transactionFormGlobalKey.currentState!.validate()) {
       DateTime currentDateTime = DateTime.now();
-
       if (value == 1) {
         if (_isChecked == true) {
           categoryIndex = 3;
@@ -783,9 +862,8 @@ class _TransactionScreenState extends State<TransactionScreen> {
       updateLocalTransaction(localTransaction);
       getAllLocalTransactions();
       Navigator.of(context).push(
-                              FadeSlideTransitionRoute(
-                                  page:  const HomeScreen()),);
-      
+        FadeSlideTransitionRoute(page: const HomeScreen()),
+      );
     }
   }
 
@@ -812,7 +890,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
         }
       }
       if (noteController.text.isEmpty) {
-        if (categoryIndex == 0 || categoryIndex==3) {
+        if (categoryIndex == 0 || categoryIndex == 3) {
           noteController.text =
               ListOfAppData.listOfIncome[subcategoryIndex!].categoryText!;
         }
@@ -845,9 +923,8 @@ class _TransactionScreenState extends State<TransactionScreen> {
       createLocalTransaction(localTransaction);
       getAllLocalTransactions();
       Navigator.of(context).push(
-                              FadeSlideTransitionRoute(
-                                  page: const HomeScreen()),);
-      
+        FadeSlideTransitionRoute(page: const HomeScreen()),
+      );
     }
   }
 
@@ -861,4 +938,77 @@ class _TransactionScreenState extends State<TransactionScreen> {
     }
     return buffer.toString();
   }
+
+  Widget customDeleteDialogue() {
+    return AlertDialog(
+      shape: RoundedRectangleBorder(
+        side: BorderSide(
+          color: Theme.of(context).colorScheme.secondary,
+        ),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      backgroundColor: Theme.of(context).colorScheme.primary,
+      title: Text(
+        "Delete Transction",
+        style: Theme.of(context)
+            .textTheme
+            .titleLarge!
+            .copyWith(color: PrimaryColor.colorRed),
+      ),
+      content: Text(
+        "Are you sure you want to Delete this Transaction?",
+        style: Theme.of(context)
+            .textTheme
+            .headlineSmall!
+            .copyWith(color: Theme.of(context).colorScheme.secondary),
+      ),
+      actions: <Widget>[
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            GestureDetector(
+              onTap: () {
+                Navigator.of(context).pop(false);
+              },
+              child: Text(
+                "Cancel",
+                style: Theme.of(context)
+                    .textTheme
+                    .displaySmall!
+                    .copyWith(color: Theme.of(context).colorScheme.secondary),
+              ),
+            ),
+            const SizedBox(
+              width: 25,
+            ),
+            TextButton(
+              style: TextButton.styleFrom(
+                backgroundColor: PrimaryColor.colorRed,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+              ),
+              onPressed: () {
+                deleteLocalTransaction();
+              },
+              child: Text("Delete",
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleSmall!
+                      .copyWith(color: PrimaryColor.colorWhite)),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
 }
+
+// class CustomDialogContent extends StatelessWidget {
+//   const CustomDialogContent({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return
+//   }
+// }

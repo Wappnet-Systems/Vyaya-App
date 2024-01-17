@@ -121,7 +121,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           color: Theme.of(context).colorScheme.secondary,
                         ),
                         trailing: syncCheck == true
-                            ? GestureDetector(
+                            ? InkWell(
                                 onTap: () async {
                                   final sharedPreferences =
                                       await SharedPreferences.getInstance();
@@ -299,41 +299,65 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       backgroundColor:
                                           Theme.of(context).colorScheme.primary,
                                       title: Text(
-                                        "Logout",
-                                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                        color: PrimaryColor.colorRed),  
+                                        "Confirm Logout",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleLarge!
+                                            .copyWith(
+                                                color: PrimaryColor.colorRed),
                                       ),
                                       content: Text(
-                                        "Are you sure you want to logout?",
-                                        style: Theme.of(context).textTheme.displaySmall!.copyWith(
-                        color: Theme.of(context).colorScheme.secondary),
+                                        "Are you sure you want to log out of your account?",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headlineSmall!
+                                            .copyWith(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .secondary),
                                       ),
                                       actions: <Widget>[
                                         Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.end,
                                           children: [
-                                            GestureDetector(
+                                            InkWell(
                                               onTap: () {
                                                 Navigator.of(context).pop();
                                               },
                                               child: Text(
                                                 "Close",
-                                                style: Theme.of(context).textTheme.displaySmall!.copyWith(
-                        color: Theme.of(context).colorScheme.secondary),
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .displaySmall!
+                                                    .copyWith(
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .secondary),
                                               ),
                                             ),
-                                            horizontalSpacer(15),
-                                            GestureDetector(
-                                              onTap: () {
+                                            horizontalSpacer(25),
+                                            TextButton(
+                                              style: TextButton.styleFrom(
+                                                backgroundColor:
+                                                    PrimaryColor.colorRed,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          8.0),
+                                                ),
+                                              ),
+                                              onPressed: () {
                                                 signOutFunction(context);
                                                 Navigator.of(context).pop();
                                               },
-                                              child: Text(
-                                                "Logout",
-                                                style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                        color: PrimaryColor.colorRed),
-                                              ),
+                                              child: Text("Logout",
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .titleSmall!
+                                                      .copyWith(
+                                                          color: PrimaryColor
+                                                              .colorWhite)),
                                             ),
                                           ],
                                         ),
@@ -349,9 +373,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     borderRadius: BorderRadius.circular(10))),
                             child: Text(
                               "Logout",
-                              style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                                fontWeight: FontWeight.w500,
-                        color: PrimaryColor.colorWhite),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineSmall!
+                                  .copyWith(
+                                      fontWeight: FontWeight.w500,
+                                      color: PrimaryColor.colorWhite),
                             )),
                       )
                     ])),
@@ -644,9 +671,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Text(
                           warningText,
                           style: Theme.of(context)
-                                  .textTheme
-                                  .displaySmall!
-                                  .copyWith(color: Theme.of(context).hintColor),
+                              .textTheme
+                              .displaySmall!
+                              .copyWith(color: Theme.of(context).hintColor),
                           overflow: TextOverflow.visible,
                           textAlign: TextAlign.justify,
                         ),
@@ -664,9 +691,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           controller: masterPasswordController,
                           cursorColor: Theme.of(context).colorScheme.onPrimary,
                           style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(fontSize: 15),
+                              .textTheme
+                              .bodyMedium!
+                              .copyWith(fontSize: 15),
                           keyboardType: TextInputType.emailAddress,
                           decoration: InputDecoration(
                               contentPadding: const EdgeInsets.symmetric(
@@ -679,8 +706,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                               labelText: "Master Password",
                               labelStyle: Theme.of(context)
-                                        .textTheme
-                                        .displaySmall!.copyWith(color: Theme.of(context).hintColor),
+                                  .textTheme
+                                  .displaySmall!
+                                  .copyWith(color: Theme.of(context).hintColor),
                               border: OutlineInputBorder(
                                 borderSide: BorderSide(
                                     color: Theme.of(context)
@@ -694,18 +722,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
                 actions: <Widget>[
-                  GestureDetector(
+                  InkWell(
                       onTap: () {
                         masterPasswordController.clear();
                         Navigator.pop(context);
                       },
-                      child: Text(
-                        "Cancel",
-                        style: Theme.of(context).textTheme.displaySmall!.copyWith(
-                        color: PrimaryColor.colorRed)
-                      )),
+                      child: Text("Cancel",
+                          style: Theme.of(context)
+                              .textTheme
+                              .displaySmall!
+                              .copyWith(color: PrimaryColor.colorRed))),
                   horizontalSpacer(7),
-                  GestureDetector(
+                  InkWell(
                       onTap: () {
                         if (formKey.currentState!.validate()) {
                           if (id == 0) {
@@ -757,11 +785,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           masterPasswordController.clear();
                         }
                       },
-                      child: Text(
-                        "Save",
-                        style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                        color: Theme.of(context).colorScheme.onPrimary)
-                      )),
+                      child: Text("Save",
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleSmall!
+                              .copyWith(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onPrimary))),
                 ],
               ),
             );

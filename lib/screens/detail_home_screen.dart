@@ -262,13 +262,14 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                         ? const SizedBox.shrink()
                         : Center(
                             child: Text(
-                            "Balance: Remaining balance of Previous months + current month balance",
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context)
-                                          .textTheme
-                                          .bodySmall!.copyWith(color: Theme.of(context).hintColor,)
-                           
-                          )),
+                                "Balance: Remaining balance of Previous months + current month balance",
+                                textAlign: TextAlign.center,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall!
+                                    .copyWith(
+                                      color: Theme.of(context).hintColor,
+                                    ))),
                     const SizedBox(
                       height: 10,
                     ),
@@ -375,10 +376,8 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                         offset: index % 2 == 0 ? -0.5 : 0.5,
                         child: GestureDetector(
                             onTap: () {
-                              // var curve = Curves.ease;
-                              // var zoomTween = Tween<double>(begin: 0.0, end: 1.0).chain(CurveTween(curve: curve));
                               Navigator.of(context).push(
-                                ZoomInTransitionRoute(
+                                FadeSlideTransitionRoute(
                                   page: TransactionScreen(
                                     id: 2,
                                     transactionPaymentMode: transactions[index]
@@ -398,8 +397,6 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                                     transactionCategory:
                                         transactions[index].transactionCategory,
                                   ),
-                                  zoomIn:
-                                      true, // Set to false if you want ZoomOut animation
                                 ),
                               );
                             },
@@ -450,22 +447,27 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
-                              Text(
-                                "Amount Left",
-                                style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Theme.of(context).hintColor,)
-                                
-                              ),
+                              Text("Amount Left",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium!
+                                      .copyWith(
+                                        color: Theme.of(context).hintColor,
+                                      )),
                               Text(
                                 formatCurrencyForBalance(
                                     balanceOfTheMonthPfValue),
-                                style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                                fontWeight: FontWeight.w500,
-                                  color: pfScore == 'Excellent'
-                                    ? PrimaryColor.colorBottleGreen
-                                    : pfScore == 'Good'
-                                        ? PrimaryColor.colorBlue
-                                        : PrimaryColor.colorRed,
-                              ),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineMedium!
+                                    .copyWith(
+                                      fontWeight: FontWeight.w500,
+                                      color: pfScore == 'Excellent'
+                                          ? PrimaryColor.colorBottleGreen
+                                          : pfScore == 'Good'
+                                              ? PrimaryColor.colorBlue
+                                              : PrimaryColor.colorRed,
+                                    ),
                                 maxLines: 1,
                                 overflow: TextOverflow.fade,
                               ),
@@ -474,20 +476,26 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                       SizedBox(
                           width: screenWidth / 2.201,
                           child: Column(children: [
-                            Text(
-                              'Performance',
-                              style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Theme.of(context).hintColor,)
-                            ),
+                            Text('Performance',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(
+                                      color: Theme.of(context).hintColor,
+                                    )),
                             Text(
                               '$pfScore',
-                              style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                                fontWeight: FontWeight.w500,
-                                  color: pfScore == 'Excellent'
-                                    ? PrimaryColor.colorBottleGreen
-                                    : pfScore == 'Good'
-                                        ? PrimaryColor.colorBlue
-                                        : PrimaryColor.colorRed,
-                              ),                              
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineMedium!
+                                  .copyWith(
+                                    fontWeight: FontWeight.w500,
+                                    color: pfScore == 'Excellent'
+                                        ? PrimaryColor.colorBottleGreen
+                                        : pfScore == 'Good'
+                                            ? PrimaryColor.colorBlue
+                                            : PrimaryColor.colorRed,
+                                  ),
                               maxLines: 1,
                               overflow: TextOverflow.fade,
                             ),
@@ -531,13 +539,13 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                                   return '$roundedValue%';
                                 },
                                 mainLabelStyle: Theme.of(context)
-                                        .textTheme
-                                        .displaySmall!
-                                        .copyWith(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .secondary,
-                                        ),
+                                    .textTheme
+                                    .displaySmall!
+                                    .copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary,
+                                    ),
                               ),
                             ),
                             min: 0,
@@ -567,7 +575,8 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                                   const EdgeInsets.symmetric(horizontal: 8.0),
                               child: Text(
                                 'Needs',
-                                style: Theme.of(context).textTheme.headlineMedium,                                
+                                style:
+                                    Theme.of(context).textTheme.headlineMedium,
                                 textAlign: TextAlign.left,
                               ),
                             ),
@@ -638,13 +647,13 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                                   return '$roundedValue%';
                                 },
                                 mainLabelStyle: Theme.of(context)
-                                        .textTheme
-                                        .displaySmall!
-                                        .copyWith(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .secondary,
-                                        ),
+                                    .textTheme
+                                    .displaySmall!
+                                    .copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary,
+                                    ),
                               ),
                             ),
                             min: 0,
@@ -674,7 +683,8 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                                   const EdgeInsets.symmetric(horizontal: 8.0),
                               child: Text(
                                 'Wants',
-                                style: Theme.of(context).textTheme.headlineMedium,
+                                style:
+                                    Theme.of(context).textTheme.headlineMedium,
                                 textAlign: TextAlign.left,
                               ),
                             ),
@@ -745,13 +755,13 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                                   return '$roundedValue%';
                                 },
                                 mainLabelStyle: Theme.of(context)
-                                        .textTheme
-                                        .displaySmall!
-                                        .copyWith(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .secondary,
-                                        ),
+                                    .textTheme
+                                    .displaySmall!
+                                    .copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary,
+                                    ),
                               ),
                             ),
                             min: 0,
@@ -781,7 +791,8 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
                                   const EdgeInsets.symmetric(horizontal: 8.0),
                               child: Text(
                                 'Saving',
-                                style: Theme.of(context).textTheme.headlineMedium,
+                                style:
+                                    Theme.of(context).textTheme.headlineMedium,
                                 textAlign: TextAlign.left,
                               ),
                             ),
@@ -1286,11 +1297,11 @@ class _DetailHomeScreenState extends State<DetailHomeScreen> {
               side: BorderSide(color: Theme.of(context).colorScheme.secondary),
               borderRadius: BorderRadius.circular(8),
             ),
-            title: Text('Set Personal Finance',style: Theme.of(context)
+            title: Text('Set Personal Finance',
+                style: Theme.of(context)
                     .textTheme
                     .headlineMedium!
                     .copyWith(color: Theme.of(context).colorScheme.secondary)),
-            
             content: SizedBox(
               height: screenHeight * 1 / 3,
               child: SingleChildScrollView(

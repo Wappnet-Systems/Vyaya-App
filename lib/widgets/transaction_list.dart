@@ -1,3 +1,5 @@
+import 'package:expenses_tracker/screens/transaction_screen.dart';
+import 'package:expenses_tracker/widgets/fade_transition.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:show_up_animation/show_up_animation.dart';
@@ -57,22 +59,47 @@ class TransactionList extends StatelessWidget {
                         animationDuration: const Duration(milliseconds: 750),
                         direction: Direction.horizontal,
                         offset: i % 2==0 ?-0.5 :0.5,
-                        child: CustomTransaction(
-                          iconColor: PrimaryColor.colorRed,
-                          categoryId: transactionList[i].transactionCategory,
-                          subCateId:
-                              transactionList[i].transactionSubcategoryIndex,
-                          transactionAmount:
-                              transactionList[i].transactionAmount,
-                          transactionNote: transactionList[i].transactionNote,
-                          dateStamp: DateFormat.yMMMd().format(
-                            transactionList[i].transactionDate!,
+                        child: GestureDetector(
+                          onTap: (){
+                            Navigator.of(context).push(
+                                FadeSlideTransitionRoute(
+                                  page: TransactionScreen(
+                                    id: 2,
+                                    transactionPaymentMode: transactionList[i].transactionPaymentMode,
+                                    transactionId: transactionList[i].tID,
+                                    transactionNote:
+                                        transactionList[i].transactionNote,
+                                    transactionAmount:
+                                        transactionList[i].transactionAmount,
+                                    transactionSubcategoryIndex:
+                                        transactionList[i].transactionSubcategoryIndex!,
+                                    transactionDate:
+                                        "${DateFormat.yMMMd().format(transactionList[i].transactionDate!)} ${DateFormat.jm().format(transactionList[i].transactionDate!)}",
+                                    transactionSubcategory: transactionList[i].transactionSubcategory,
+                                    transactionCategory:
+                                        transactionList[i].transactionCategory,
+                                  ),
+                                   
+                                ),
+                              );
+                          },
+                          child: CustomTransaction(
+                            iconColor: PrimaryColor.colorRed,
+                            categoryId: transactionList[i].transactionCategory,
+                            subCateId:
+                                transactionList[i].transactionSubcategoryIndex,
+                            transactionAmount:
+                                transactionList[i].transactionAmount,
+                            transactionNote: transactionList[i].transactionNote,
+                            dateStamp: DateFormat.yMMMd().format(
+                              transactionList[i].transactionDate!,
+                            ),
+                            timeStamp: DateFormat.jm().format(
+                              transactionList[i].transactionDate!,
+                            ),
+                            themeColor: Theme.of(context).colorScheme.primary,
+                            textTheme: Theme.of(context).colorScheme.secondary,
                           ),
-                          timeStamp: DateFormat.jm().format(
-                            transactionList[i].transactionDate!,
-                          ),
-                          themeColor: Theme.of(context).colorScheme.primary,
-                          textTheme: Theme.of(context).colorScheme.secondary,
                         ),
                       )
                     ],

@@ -50,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
       },
       child: Scaffold(
           backgroundColor: Theme.of(context).colorScheme.primary,
-          resizeToAvoidBottomInset: true,          
+          resizeToAvoidBottomInset: true,
           body: SafeArea(
             child: Container(
               child: screens[_currentIndex],
@@ -175,14 +175,17 @@ class CustomDialogContent extends StatelessWidget {
       backgroundColor: Theme.of(context).colorScheme.primary,
       title: Text(
         "Close App",
-        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                        color: PrimaryColor.colorRed),        
+        style: Theme.of(context)
+            .textTheme
+            .titleLarge!
+            .copyWith(color: PrimaryColor.colorRed),
       ),
       content: Text(
-        "Are you sure you want to Exit?",
-        style: Theme.of(context).textTheme.displaySmall!.copyWith(
-                        color: Theme.of(context).colorScheme.secondary),
-        
+        "Are you sure you want to close the application?",
+        style: Theme.of(context)
+            .textTheme
+            .headlineSmall!
+            .copyWith(color: Theme.of(context).colorScheme.secondary),
       ),
       actions: <Widget>[
         Row(
@@ -191,26 +194,34 @@ class CustomDialogContent extends StatelessWidget {
             GestureDetector(
               onTap: () {
                 Navigator.of(context)
-                    .pop(false); // Close the dialog without exiting
+                    .pop(false);
               },
               child: Text(
                 "Close",
-                style: Theme.of(context).textTheme.displaySmall!.copyWith(
-                        color: Theme.of(context).colorScheme.secondary),
+                style: Theme.of(context)
+                    .textTheme
+                    .displaySmall!
+                    .copyWith(color: Theme.of(context).colorScheme.secondary),
               ),
             ),
             const SizedBox(
-              width: 15,
+              width: 25,
             ),
-            GestureDetector(
-              onTap: () {
+            TextButton(
+              style: TextButton.styleFrom(
+                backgroundColor: PrimaryColor.colorRed,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+              ),
+              onPressed: () {
                 exit(0);
               },
-              child:  Text(
-                "Exit",
-                style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                        color: PrimaryColor.colorRed),
-              ),
+              child: Text("Exit",
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleSmall!
+                      .copyWith(color: PrimaryColor.colorWhite)),
             ),
           ],
         ),

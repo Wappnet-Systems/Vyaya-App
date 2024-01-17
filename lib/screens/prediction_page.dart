@@ -4,6 +4,7 @@ import 'package:expenses_tracker/model/prediaction_helper.dart';
 import 'package:expenses_tracker/screens/spending_category_percentage.dart';
 import 'package:expenses_tracker/utils/const.dart';
 import 'package:expenses_tracker/widgets/custom_slider.dart';
+import 'package:expenses_tracker/widgets/fade_transition.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
@@ -105,9 +106,12 @@ class _PredictionPageState extends State<PredictionPage> {
   }
 
   findRuleBrekPercetage() {
-    needResult = (100-(((needLimitCross)! / (needPercentageList.length)) * 100));
-    wantResult = (100-((wantsLimitCross! / (wantPercentageList.length)) * 100));
-    savingResult = (100-(savingLimitCross! / (savingPercentageList.length)) * 100);
+    needResult =
+        (100 - (((needLimitCross)! / (needPercentageList.length)) * 100));
+    wantResult =
+        (100 - ((wantsLimitCross! / (wantPercentageList.length)) * 100));
+    savingResult =
+        (100 - (savingLimitCross! / (savingPercentageList.length)) * 100);
   }
 
   categoriseListing(List<double> listing, int limit, String value) {
@@ -279,7 +283,7 @@ class _PredictionPageState extends State<PredictionPage> {
             //     ),
             //   ),
             // ),
-            
+
             const SizedBox(
               height: 5,
             ),
@@ -294,8 +298,6 @@ class _PredictionPageState extends State<PredictionPage> {
                       padding: const EdgeInsets.all(8.0),
                       child: Column(
                         children: [
-                          
-                          
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -354,7 +356,9 @@ class _PredictionPageState extends State<PredictionPage> {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 10,),
+                          const SizedBox(
+                            height: 10,
+                          ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -380,7 +384,7 @@ class _PredictionPageState extends State<PredictionPage> {
                                     .textTheme
                                     .displaySmall!
                                     .copyWith(
-                                      color:  Theme.of(context).hintColor,
+                                      color: Theme.of(context).hintColor,
                                     ),
                                 textAlign: TextAlign.center,
                               ),
@@ -639,13 +643,12 @@ class _PredictionPageState extends State<PredictionPage> {
                     ),
                     InkWell(
                       onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    SpendingCategoryPercentage(
-                                      averages: averages,
-                                    )));
+                        Navigator.of(context).push(
+                          FadeSlideTransitionRoute(
+                              page: SpendingCategoryPercentage(
+                            averages: averages,
+                          )),
+                        );
                       },
                       child: Padding(
                         padding:
@@ -1010,7 +1013,6 @@ class _PredictionPageState extends State<PredictionPage> {
           ],
         ),
       ),
-      
     );
   }
 
@@ -1244,7 +1246,6 @@ class _PredictionPageState extends State<PredictionPage> {
           if (value == 0) {
             return Row(
               children: [
-
                 Icon(
                   Icons.warning_amber_rounded,
                   color: PrimaryColor.colorRed,
@@ -1255,8 +1256,6 @@ class _PredictionPageState extends State<PredictionPage> {
                         color: PrimaryColor.colorRed,
                       ),
                 ),
-
-                
               ],
             );
           } else if (value > 0 && value <= 50) {
