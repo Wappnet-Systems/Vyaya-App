@@ -1,4 +1,4 @@
-// ignore_for_file: library_prefixes, use_build_context_synchronously
+// ignore_for_file: library_prefixes, use_build_context_synchronously, avoid_function_literals_in_foreach_calls
 
 import 'dart:convert';
 import 'dart:io';

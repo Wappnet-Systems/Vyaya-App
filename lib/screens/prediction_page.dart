@@ -1,6 +1,6 @@
 // ignore_for_file: must_be_immutable
-
 import 'package:expenses_tracker/model/prediaction_helper.dart';
+import 'dart:developer';
 import 'package:expenses_tracker/screens/spending_category_percentage.dart';
 import 'package:expenses_tracker/utils/const.dart';
 import 'package:expenses_tracker/widgets/custom_slider.dart';
@@ -88,7 +88,7 @@ class _PredictionPageState extends State<PredictionPage> {
         lastRemainingBalance = value.remaininBalance;
       });
     } else {
-      print('The list is empty');
+      log('The list is empty');
     }
     fetchValuesForSelectedKey();
     fetchPercentageOfSpending();
@@ -546,7 +546,7 @@ class _PredictionPageState extends State<PredictionPage> {
                                     height: 50,
                                     width: 80,
                                     child: Text(
-                                        '${top3Values!.entries.elementAt(1).key}',
+                                        top3Values!.entries.elementAt(1).key,
                                         maxLines: 2,
                                         overflow: TextOverflow.clip,
                                         textAlign: TextAlign.center,
@@ -580,7 +580,7 @@ class _PredictionPageState extends State<PredictionPage> {
                                     height: 50,
                                     width: 80,
                                     child: Text(
-                                        '${top3Values!.entries.elementAt(0).key}',
+                                        top3Values!.entries.elementAt(0).key,
                                         maxLines: 2,
                                         overflow: TextOverflow.clip,
                                         textAlign: TextAlign.center,
@@ -1188,7 +1188,7 @@ class _PredictionPageState extends State<PredictionPage> {
         insurancePercentageList.add(insurancePercentage);
 
         findMostSpendCategory();
-        print(
+        log(
             "Needs: $needPercentage Wants: $wantPercentage Saving : $savingPercentage");
         needPercentageList.add(needPercentage);
         wantPercentageList.add(wantPercentage);
@@ -1232,7 +1232,7 @@ class _PredictionPageState extends State<PredictionPage> {
     var top3Entries = sortedEntries.take(3);
     top3Values = Map.fromEntries(top3Entries);
     top3Values!.forEach((key, value) {
-      print('$key: $value');
+      log('$key: $value');
     });
   }
 
@@ -1465,7 +1465,7 @@ class _PredictionPageState extends State<PredictionPage> {
       pfWants = personalFinanceHelper.wantsExpenses;
       pfSaving = personalFinanceHelper.savingExpenses;
     } else {
-      print('No PredictionHelper found for $selectedKey');
+      log('No PredictionHelper found for $selectedKey');
     }
   }
 

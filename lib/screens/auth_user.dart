@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 import 'package:expenses_tracker/screens/home_screen.dart';
 import 'package:expenses_tracker/utils/const.dart';
@@ -38,8 +39,7 @@ class _AuthUserState extends State<AuthUser> {
           height: MediaQuery.sizeOf(context).height / 3.5,
           width: MediaQuery.sizeOf(context).width,
           padding: const EdgeInsets.all(16.0),
-          child: Card(
-            
+          child: Card(            
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [              
@@ -230,7 +230,7 @@ class _AuthUserState extends State<AuthUser> {
         });
       }
     } catch (e) {
-      print(e);
+      log('$e');
     }
   }
 }

@@ -96,7 +96,6 @@ class _TransactionScreenState extends State<TransactionScreen> {
       subcategory = 1;
       personalFinanceCategory = 1;
     } else {
-      print("Date : ${widget.transactionDate}");
       amountController.text = widget.transactionAmount.toString();
       noteController.text = widget.transactionNote.toString();
       paymentModeController.text = widget.transactionPaymentMode!;
@@ -799,7 +798,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
     return transaction;
   }
 
-  Future<void> deleteLocalTransaction() async {
+  Future<void> deleteLocalTransaction(context) async {
     final box = await Hive.openBox<LocalTransaction>('local_transactions');
     final index = box.values
         .toList()
@@ -989,7 +988,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                 ),
               ),
               onPressed: () {
-                deleteLocalTransaction();
+                deleteLocalTransaction(context);
               },
               child: Text("Delete",
                   style: Theme.of(context)

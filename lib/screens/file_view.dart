@@ -4,7 +4,7 @@ import 'package:flutter_pdfview/flutter_pdfview.dart';
 class FileViewWidget extends StatelessWidget {
   final String path;
   final String filename;
-  FileViewWidget({Key? key, required this.path, required this.filename})
+  const FileViewWidget({Key? key, required this.path, required this.filename})
       : super(key: key);
 
   @override
