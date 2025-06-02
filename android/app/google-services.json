@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "843670768687",
+    "project_id": "vyayatracker",
+    "storage_bucket": "vyayatracker.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:843670768687:android:1341a53215623922880ada",
+        "android_client_info": {
+          "package_name": "com.wappnet.vyaya"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "843670768687-7dt3n668ek5g8i0viqqmqrim0q5psdq5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.wappnet.vyaya",
+            "certificate_hash": "b2df1e5dc93ec9f0ee39072ff4978f4e380a1790"
+          }
+        },
+        {
+          "client_id": "843670768687-m628fhhfrs0n4viatrqt4dv7s1b3kljq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDFbwgFpeRMJSaEDd-OTDr4y4OC9FNItM8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "843670768687-m628fhhfrs0n4viatrqt4dv7s1b3kljq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
